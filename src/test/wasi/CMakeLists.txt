@@ -1,17 +1,17 @@
 # CMake simple example
 
-set(WASABI_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../../../wasabi)
+set(WASABI_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../..)
 
 ## [main]
-set(CMAKE_SYSTEM_NAME WASI)
+set(CMAKE_SYSTEM_NAME WAsm)
 
 set(CLANG_TARGET_TRIPLE wasm32-unknown-wasi)
 set(CMAKE_SYSROOT ${WASABI_ROOT}/wasi-sdk-12/wasi-sysroot)
 
-set(CMAKE_C_COMPILER ${WASABI_ROOT}/llvm-11.0.0/bin/clang)
+set(CMAKE_C_COMPILER ${WASABI_ROOT}/llvm/bin/clang)
 set(CMAKE_C_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
 
-set(CMAKE_CXX_COMPILER ${WASABI_ROOT}/llvm-11.0.0/bin/clang++)
+set(CMAKE_CXX_COMPILER ${WASABI_ROOT}/llvm/bin/clang++)
 set(CMAKE_CXX_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
 
 
