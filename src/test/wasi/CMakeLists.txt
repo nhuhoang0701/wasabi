@@ -3,7 +3,7 @@
 set(WASABI_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../../../wasabi)
 
 ## [main]
-set(CMAKE_SYSTEM_NAME Emscripten)
+set(CMAKE_SYSTEM_NAME WASI)
 
 set(CLANG_TARGET_TRIPLE wasm32-unknown-wasi)
 set(CMAKE_SYSROOT ${WASABI_ROOT}/wasi-sdk-12/wasi-sysroot)
