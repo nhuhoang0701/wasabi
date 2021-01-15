@@ -14,6 +14,9 @@ set(CMAKE_C_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
 set(CMAKE_CXX_COMPILER ${WASABI_ROOT}/llvm/bin/clang++)
 set(CMAKE_CXX_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
 
+set(CMAKE_AR ${WASABI_ROOT}/llvm/bin/llvm-ar)
+set(CMAKE_SPLIT ${WASABI_ROOT}/llvm/bin/llvm-split)
+
 
 # Almost all CMake files should start with this
 # You should always specify a range with the newest
