@@ -1,21 +1,22 @@
 # CMake simple example
 
 set(WASABI_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../..)
+set(WASABI_EXTERNAL ${WASABI_ROOT}/external)
 
 ## [main]
 set(CMAKE_SYSTEM_NAME WAsm)
 
 set(CLANG_TARGET_TRIPLE wasm32-unknown-wasi)
-set(CMAKE_SYSROOT ${WASABI_ROOT}/wasi-sdk-12/wasi-sysroot)
+set(CMAKE_SYSROOT ${WASABI_EXTERNAL}/wasi-sdk-12/wasi-sysroot)
 
-set(CMAKE_C_COMPILER ${WASABI_ROOT}/llvm/bin/clang)
+set(CMAKE_C_COMPILER ${WASABI_EXTERNAL}/llvm/bin/clang)
 set(CMAKE_C_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
 
-set(CMAKE_CXX_COMPILER ${WASABI_ROOT}/llvm/bin/clang++)
+set(CMAKE_CXX_COMPILER ${WASABI_EXTERNAL}/llvm/bin/clang++)
 set(CMAKE_CXX_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
 
-set(CMAKE_AR ${WASABI_ROOT}/llvm/bin/llvm-ar)
-set(CMAKE_SPLIT ${WASABI_ROOT}/llvm/bin/llvm-split)
+set(CMAKE_AR ${WASABI_EXTERNAL}/llvm/bin/llvm-ar)
+set(CMAKE_SPLIT ${WASABI_EXTERNAL}/llvm/bin/llvm-split)
 
 
 # Almost all CMake files should start with this
