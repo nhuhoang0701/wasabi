@@ -62,5 +62,29 @@ make >> compile.log
 $WASABI_EXTERNAL/wasmtime-v0.22.0/wasmtime ./MyExample.wasm
 
 
+echo
+echo -----------------------------------
+echo ---- cJSON install and compile ----
+echo " $(date +"%T")"
+\rm -rf $WASABI_EXTERNAL/cJSON
+cd $WASABI_EXTERNAL/
+git clone https://github.com/DaveGamble/cJSON.git
+cd cJSON
+mkdir build
+cd build
+cmake .. \
+	-DCMAKE_SYSTEM_NAME=Generic \
+	-DCMAKE_SYSTEM_PROCESSOR=wasm \
+	-DCMAKE_C_COMPILER_WORKS=1 \
+	-DCMAKE_CROSSCOMPILING=1 \
+	-DCLANG_TARGET_TRIPLE=wasm32-unknown-wasi \
+	-DCMAKE_SYSROOT=$WASABI_EXTERNAL/wasi-sdk-12/wasi-sysroot \
+	-DCMAKE_C_COMPILER=$WASABI_EXTERNAL/llvm/bin/clang \
+	-DCMAKE_C_COMPILER_TARGET=wasm32-unknown-wasi \
+	-DCMAKE_CXX_COMPILER_TARGET=wasm32-unknown-wasi \
+	-DCMAKE_AR=$WASABI_EXTERNAL/llvm/bin/llvm-ar \
+	-DENABLE_CJSON_TEST=off \
+	-DBUILD_SHARED_LIBS=off
+make
 
 echo "End $(date +"%T")"
