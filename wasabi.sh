@@ -59,7 +59,7 @@ mkdir $WASABI_ROOT/src/test/wasi/build
 cd $WASABI_ROOT/src/test/wasi/build
 cmake .. &> compile.log
 make >> compile.log
-$WASABI_EXTERNAL/wasmtime-v0.22.0/wasmtime ./MyExample
+$WASABI_EXTERNAL/wasmtime-v0.22.0/wasmtime ./MyExample.wasm
 
 
 
