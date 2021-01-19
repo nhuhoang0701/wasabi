@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# exit on error
+set -e
 
 warning() {
     printf '\n\033[1;33mWarning\033[0m: %s\n\n' "$1" 
@@ -10,7 +12,7 @@ warning() {
 export WASABI_ROOT=$(pwd)
 export WASABI_EXTERNAL=$(pwd)/external
 
-mkdir $WASABI_EXTERNAL
+mkdir -p $WASABI_EXTERNAL
 
 
 echo
@@ -21,10 +23,15 @@ echo " Installing external tools into " $WASABI_EXTERNAL
 echo
 echo -----------------------------------
 echo ---------- install clang ----------
+export LLVM_VERSION=11.0.0
 echo " $(date +"%T")"
-\rm -rf $WASABI_EXTERNAL/llvm
-\rm -rf $WASABI_EXTERNAL/clang+llvm-11.0.0-x86_64-linux-gnu-ubuntu-20.04
-wget -qO - https://github.com/llvm/llvm-project/releases/download/llvmorg-11.0.0/clang+llvm-11.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz | tar xfJ - -C $WASABI_EXTERNAL/ && mv $WASABI_EXTERNAL/clang+llvm-11.0.0-x86_64-linux-gnu-ubuntu-20.04 $WASABI_EXTERNAL/llvm
+echo "version: $LLVM_VERSION"
+if [ ! -d "$WASABI_EXTERNAL/llvm" ]
+then
+    wget -qO - https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVM_VERSION/clang+llvm-$LLVM_VERSION-x86_64-linux-gnu-ubuntu-20.04.tar.xz | tar xfJ - -C $WASABI_EXTERNAL/ && \rm -rf $WASABI_EXTERNAL/llvm && mv $WASABI_EXTERNAL/clang+llvm-$LLVM_VERSION-x86_64-linux-gnu-ubuntu-20.04 $WASABI_EXTERNAL/llvm
+else
+	echo "Clang already installed in '$WASABI_EXTERNAL/llvm'"
+fi
 
 echo -----------------------------------
 echo ---- install clang wasm librt  ----
@@ -64,14 +71,17 @@ $WASABI_EXTERNAL/wasmtime-v0.22.0/wasmtime ./MyExample.wasm
 
 echo
 echo -----------------------------------
-echo ---- cJSON install and compile ----
+echo -------------- cJSON --------------
 echo " $(date +"%T")"
 \rm -rf $WASABI_EXTERNAL/cJSON
 cd $WASABI_EXTERNAL/
+echo --------------- git ---------------
 git clone https://github.com/DaveGamble/cJSON.git
 cd cJSON
 mkdir build
 cd build
+
+echo ------------- cmake ---------------
 cmake .. \
 	-DCMAKE_SYSTEM_NAME=Generic \
 	-DCMAKE_SYSTEM_PROCESSOR=wasm \
@@ -94,10 +104,12 @@ cmake .. \
 	-DENABLE_VALGRIND=off \
 	-DENABLE_SANITIZERS=off \
 	-DENABLE_CUSTOM_COMPILER_FLAGS=off
-	
+
+echo -------------- make ---------------
 make cjson
 make cJSON_test
 
+echo -------------- test ---------------
 $WASABI_EXTERNAL/wasmtime-v0.22.0/wasmtime $WASABI_EXTERNAL/cJSON/build/cJSON_test
 
 echo "End $(date +"%T")"
