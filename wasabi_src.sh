@@ -32,7 +32,18 @@ cmake ..
 make
 make install
 
-
+echo
+echo -----------------------------------
+echo -------------- json ---------------
+echo " $(date +"%T")"
+cd $WASABI_ROOT/src/json
+\rm -rf build
+mkdir build
+cd build
+cmake ..
+make
+make install
+#TODO @cmea : make test
 
 
 
