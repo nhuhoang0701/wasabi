@@ -7,10 +7,7 @@ warning() {
     printf '\n\033[1;33mWarning\033[0m: %s\n\n' "$1" 
 }
 
-
-
-export WASABI_ROOT=$(pwd)
-export WASABI_EXTERNAL=$(pwd)/external
+source ./set_env.sh
 
 mkdir -p $WASABI_EXTERNAL
 
@@ -26,11 +23,11 @@ echo ---------- install clang ----------
 export LLVM_VERSION=11.0.0
 echo " $(date +"%T")"
 echo "version: $LLVM_VERSION"
-if [ ! -d "$WASABI_EXTERNAL/llvm" ]
+if [ ! -d "$LLVM" ]
 then
     wget -qO - https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVM_VERSION/clang+llvm-$LLVM_VERSION-x86_64-linux-gnu-ubuntu-20.04.tar.xz | tar xfJ - -C $WASABI_EXTERNAL/ && \rm -rf $WASABI_EXTERNAL/llvm && mv $WASABI_EXTERNAL/clang+llvm-$LLVM_VERSION-x86_64-linux-gnu-ubuntu-20.04 $WASABI_EXTERNAL/llvm
 else
-	echo "Clang already installed in '$WASABI_EXTERNAL/llvm'"
+	echo "Clang already installed in '$LLVM'"
 fi
 
 echo -----------------------------------
@@ -42,8 +39,8 @@ echo
 echo -----------------------------------
 echo ------ install wasm sysroot  ------
 echo " $(date +"%T")"
-\rm -rf $WASABI_EXTERNAL/wasi-sdk-12
-mkdir -p $WASABI_EXTERNAL/wasi-sdk-12
+\rm -rf $WASI_SDK
+mkdir -p $WASI_SDK
 wget -qO - https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-12/wasi-sysroot-12.0.tar.gz | tar xfz - -C $WASABI_EXTERNAL/wasi-sdk-12
 
 echo
@@ -52,8 +49,8 @@ echo ------- install wasmtime runtime --
 echo " $(date +"%T")"
 # see packages on https://github.com/bytecodealliance/wasmtime/releases
 
-\rm -rf $WASABI_EXTERNAL/wasmtime-v0.22.0
-\rm -rf $WASABI_EXTERNAL/wasmtime-v0.22.0-x86_64-linux
+\rm -rf $WASMTIME
+\rm -rf $WASMTIME_LINUX
 wget -qO - https://github.com/bytecodealliance/wasmtime/releases/download/v0.22.0/wasmtime-v0.22.0-x86_64-linux.tar.xz | tar xfJ -  -C $WASABI_EXTERNAL/ && mv $WASABI_EXTERNAL/wasmtime-v0.22.0-x86_64-linux $WASABI_EXTERNAL/wasmtime-v0.22.0
 
 
@@ -66,14 +63,14 @@ mkdir $WASABI_ROOT/src/test/wasi/build
 cd $WASABI_ROOT/src/test/wasi/build
 cmake .. &> compile.log
 make >> compile.log
-$WASABI_EXTERNAL/wasmtime-v0.22.0/wasmtime ./MyExample.wasm
+$WASMTIME/wasmtime ./MyExample.wasm
 
 
 echo
 echo -----------------------------------
 echo -------------- cJSON --------------
 echo " $(date +"%T")"
-\rm -rf $WASABI_EXTERNAL/cJSON
+\rm -rf $CJSON
 cd $WASABI_EXTERNAL/
 echo --------------- git ---------------
 git clone https://github.com/DaveGamble/cJSON.git
@@ -88,15 +85,15 @@ cmake .. \
 	-DCMAKE_C_COMPILER_WORKS=ON \
 	-DCMAKE_C_COMPILER_FORCED=ON \
 	-DCMAKE_CROSSCOMPILING=ON \
-	-DCMAKE_SYSROOT=$WASABI_EXTERNAL/wasi-sdk-12/wasi-sysroot \
+	-DCMAKE_SYSROOT=$SYSROOT \
 	\
-	-DCMAKE_C_COMPILER=$WASABI_EXTERNAL/llvm/bin/clang \
+	-DCMAKE_C_COMPILER=$C_COMPILER \
 	-DCMAKE_C_COMPILER_TARGET=wasm32-unknown-wasi \
 	-DCMAKE_CXX_COMPILER_TARGET=wasm32-unknown-wasi \
-	-DCMAKE_AR=$WASABI_EXTERNAL/llvm/bin/llvm-ar \
+	-DCMAKE_AR=$LLVM_AR \
 	-DCMAKE_C_FLAGS=-fno-stack-protector \
 	\
-	-DCMAKE_INSTALL_PREFIX=$WASABI_EXTERNAL/cJSON/install \
+	-DCMAKE_INSTALL_PREFIX=$CJSON/install \
 	\
 	-DENABLE_CJSON_TEST=on \
 	-DENABLE_CJSON_UTILS=off \
@@ -110,6 +107,6 @@ make cjson
 make cJSON_test
 
 echo -------------- test ---------------
-$WASABI_EXTERNAL/wasmtime-v0.22.0/wasmtime $WASABI_EXTERNAL/cJSON/build/cJSON_test
+$WASMTIME/wasmtime $CJSON/build/cJSON_test
 
 echo "End $(date +"%T")"
