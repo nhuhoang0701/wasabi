@@ -21,9 +21,6 @@ add_executable(TestJson.wasm ${SRCS} ${HEADERS})
 target_link_libraries(TestJson.wasm PRIVATE cjson jsonUtils.wasm exceptions.wasm)
 
 
-## [test] TODO : @cmea
-
-# This part is so the Modern CMake book can verify this example builds. For your code,
-# you'll probably want tests too
-#enable_testing()
-#add_test(NAME TestJson COMMAND TestJson)
+## [test]
+# run with ctest -V
+add_test(NAME TestJson COMMAND ${WASABI_EXTERNAL}/wasmtime-v0.22.0/wasmtime TestJson.wasm)

@@ -40,7 +40,8 @@ project(
 
 
 
-
+# generate a "test" target (this command must be issued at project's root)
+enable_testing()
 
 add_subdirectory(src)
 

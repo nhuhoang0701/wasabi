@@ -41,9 +41,9 @@ cd $WASABI_ROOT/src/json
 mkdir build
 cd build
 cmake ..
-make
+cmake --build .
 make install
-#TODO @cmea : make test
+ctest -V
 
 
 
