@@ -13,7 +13,7 @@
 	 << " From function: " << __func__ \
 	 << " at " << __FILE__ << ":" << __LINE__ << std::endl)
 
-#define CPPUNIT_ASSERT(x) {if (!(x)) {ASSERT_MESSAGE(WASABI_xstr(x)); res=1;}}
+#define CPPUNIT_ASSERT(x) {if (!(x)) {ASSERT_MESSAGE(WASABI_xstr(x)); if (res==0) {res=-1;}}}
 
 #define CPPUNIT_ASSERT_EQUAL(x,y) CPPUNIT_ASSERT( (x) == (y) )
 

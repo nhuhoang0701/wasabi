@@ -132,8 +132,8 @@ int main()
 {
 	int res = 0;
 
-	if (! Test_reader())
-		res = 1;
+	if (res = Test_reader())
+		return res;
 
 	return res;
 }
