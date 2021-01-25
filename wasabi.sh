@@ -3,7 +3,7 @@
 # exit on error
 set -e
 
-###./wasabi_external.sh
+./wasabi_external.sh
 
 
 ./wasabi_src.sh
