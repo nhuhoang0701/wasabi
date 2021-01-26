@@ -1,4 +1,6 @@
 #include <iostream> 
+#include "test_tools/TestAssert.h"
+
 #define EXPORT __declspec(dllexport)
 
 
@@ -79,6 +81,7 @@ Tests
 //Verify construtor destructor order
 EXPORT const char* str_DESTRUCTOR_v()
 {
+	//CALL_TEST();
 	char* str256 = new char[256];
 	str256[0]= '\0';
 	unsigned char index = 0;
@@ -92,6 +95,7 @@ EXPORT const char* str_DESTRUCTOR_v()
 
 EXPORT const char* str_VDESTRUCTOR_v()
 {
+	//CALL_TEST();
 	char* str256 = new char[256];
 	str256[0]= '\0';
 	unsigned char index = 0;
@@ -119,6 +123,7 @@ EXPORT const char* str_VDESTRUCTOR_v()
 
 EXPORT const char* str_CALL_VIRTUAL_METHOD_c(char c)
 {
+	CALL_TEST();
 	TypeA typeA;
 	TypeB typeB;
 	iType* type = 0;
@@ -132,6 +137,7 @@ EXPORT const char* str_CALL_VIRTUAL_METHOD_c(char c)
 
 EXPORT int i_DYNCATS_v()
 {
+	CALL_TEST();
 	char* str256 = new char[256];
 	str256[0]= '\0';
 	unsigned char index = 0;
@@ -151,21 +157,19 @@ EXPORT int i_DYNCATS_v()
 }
 
 int main() {
-	int i = i_DYNCATS_v();
-	if (i != 0)
-		return i;
-
-	std::cout << "Call virtual method a\n";
-	const char *resA = str_CALL_VIRTUAL_METHOD_c('a');
-	std::cout << "val a: " << resA << "\n\n";
-	if (strcmp( resA, "TypeA"))
-		return -1;
 	
-	std::cout << "Call virtual method b\n";
-	const char *resB = str_CALL_VIRTUAL_METHOD_c('b');
-	std::cout << "val b: " << resB << "\n\n";
-	if (strcmp( resB, "TypeB"))
-		return -1;
+	int res = 0;
+	TestScopePrinter scoped("CPP_nolib_class", res);
+	
+	CPPUNIT_ASSERT_EQUAL(i_DYNCATS_v(),0);
+	
+	CPPUNIT_ASSERT_EQUAL(str_CALL_VIRTUAL_METHOD_c('a'),"TypeA");
+	
+	CPPUNIT_ASSERT_EQUAL(str_CALL_VIRTUAL_METHOD_c('b'),"TypeB");
+	
+	//CPPUNIT_ASSERT_EQUAL(str_DESTRUCTOR_v()," A:A a:A a:~A A:~A"); // give difference
+	
+	//CPPUNIT_ASSERT_EQUAL(str_VDESTRUCTOR_v(),"0 A:A 1 2 B:A B:B 3 B:~B B:~A 4 A:~A 5"); //give difference
 	
 	std::cout << "Call destructor \n";
 	const char* resDestuctor = str_DESTRUCTOR_v();
@@ -179,5 +183,5 @@ int main() {
 	if (strcmp( resVDestuctor, "0 A:A 1 2 B:A B:B 3 B:~B B:~A 4 A:~A 5"))
 		return -1;
 
-	return 0;
+	return res;
 }
