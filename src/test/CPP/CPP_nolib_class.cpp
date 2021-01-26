@@ -1,5 +1,4 @@
 #include <iostream> 
-#include "wasm_helper.h"
 #define EXPORT __declspec(dllexport)
 
 
