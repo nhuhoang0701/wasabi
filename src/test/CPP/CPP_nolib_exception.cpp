@@ -1,34 +1,8 @@
 #include <iostream> 
-//#include "wasm_helper.h"
 
 #define EXPORT __declspec(dllexport)
 
 #include <vector>         // For vector
-
-
-extern "C"
-{
-	void __cxa_throw(void *thrown_object, std::type_info *tinfo, void (*dest)(void *))
-	{
-		;
-	}
-	
-	void *__cxa_allocate_exception(size_t thrown_size) throw()
-	{
-		return NULL;
-	}
-	
-	void* __cxa_begin_catch(void* unwind_arg) throw()
-	{
-		return unwind_arg;
-	}
-	void __cxa_end_catch() throw()
-	{
-
-	}
-}
-
-
 
 const char* str_VECTOR_DOUBLE_d(double d)
 {
@@ -175,16 +149,18 @@ int main() {
 	if (res != 0)
 		return res;
 	
+	
 	std::cout << "Call str_VECTOR_DOUBLE_d \n";
 	const char* pRes = str_VECTOR_DOUBLE_d(1984);
 	std::cout << "val str_VECTOR_DOUBLE_d: " << pRes << "\n";
-	if (strcmp( pRes, "Test OK"))
+	if (strcmp( pRes, "Test OK") == 0)
 		;
 	else
 	{
 		std::cout << "Error str_VECTOR_DOUBLE_d: " << pRes << "\n";
 		return -1;
 	}
+	
 	
 	std::cout << "Call str_TRYTHROWINTANDCATCHIT_v \n";
 	std::cout << "Compilation Not supported str_TRYTHROWINTANDCATCHIT_v \n\n";
