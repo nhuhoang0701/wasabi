@@ -3,7 +3,10 @@
 # exit on error
 set -e
 
-./wasabi_external.sh
+export WASABI_ROOT_DIR=$(pwd)
 
+./scripts/check_env.sh
 
-./wasabi_src.sh
+./scripts/wasabi_external.sh
+
+./scripts/wasabi_src.sh
