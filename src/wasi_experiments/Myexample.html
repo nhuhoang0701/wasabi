@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en-us">
+  <body>
+    
+	<script src="/js/wasm/library.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="Myexample.js"></script>
+	<script type="text/javascript">
+		/*if (window.Worker) {
+		const myWorker = new LibraryWorker();
+		myWorker.postMessage( [WorkerEvent.eLoad, "/wasm_clang/libv_microCube"] );
+		console.log('Load posted to worker');
+		myWorker.postMessage([WorkerEvent.eGetServerInfo]);
+		console.log('GetServerInfo posted to worker');
+		myWorker.postMessage([WorkerEvent.eGetResponse, "{\"THIS IS THE GETRESPONSE QUERY IN UPPER CASE...\"}"]);
+		console.log('GetResponse posted to worker');
+
+		 myWorker.onmessage = function(e) {
+		console.log("Message receive from worker");
+		console.log(e.data);
+		}
+		//myWorker.terminate();
+		} else {
+		console.error('Your browser doesn\'t support web workers.')
+		}*/
+		_loadWASMFile();
+	</script>
+  </body>
+</html>
+
+
