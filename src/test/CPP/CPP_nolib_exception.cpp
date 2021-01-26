@@ -1,11 +1,12 @@
 #include <iostream> 
+#include <vector>         // For vector
+#include "test_tools/TestAssert.h"
 
 #define EXPORT __declspec(dllexport)
 
-#include <vector>         // For vector
-
 const char* str_VECTOR_DOUBLE_d(double d)
 {
+	CALL_TEST();
 	std::vector<double> v;
 	std::vector<int> vint;
 	double da = 1984;
@@ -57,6 +58,7 @@ EXPORT int i_TrycatchObjDesc_i(int i)
 
 EXPORT int i_TRYCATCHTHROW_v()
 {
+	CALL_TEST();
 	try
 	{
 		try
@@ -81,11 +83,13 @@ EXPORT int i_TRYCATCHTHROW_v()
 
 EXPORT void v_JUSTTHROW_v()
 {
-		throw;
+	CALL_TEST();
+	throw;
 }
 
 EXPORT const char* str_TRYTHROWINTANDCATCHIT_v()
 {
+	CALL_TEST();
 	int i = 42;
 	try
 	{
@@ -108,6 +112,7 @@ EXPORT const char* str_TRYTHROWINTANDCATCHIT_v()
 
 EXPORT int i_TRYCATCHDIV_i(int d)
 {
+	CALL_TEST();
 	int i = 1;
 	try
 	{
@@ -123,6 +128,7 @@ EXPORT int i_TRYCATCHDIV_i(int d)
 
 EXPORT double d_TRYCATCHDIV_d(double d)
 {
+	CALL_TEST();
 	double i = 1;
 	try
 	{
@@ -137,30 +143,14 @@ EXPORT double d_TRYCATCHDIV_d(double d)
 }
 
 int main() {
-	std::cout << "Call d_TRYCATCHDIV_d \n";
-	int res = d_TRYCATCHDIV_d(5);
-	std::cout << "val d_TRYCATCHDIV_d: " << res << "\n\n";
-	if (res != 0)
-		return res;
+	int res = 0;
+	TestScopePrinter scoped("CPP_nolib_exception", res);
 	
-	std::cout << "Call i_TRYCATCHDIV_i \n";
-	res = i_TRYCATCHDIV_i(5);
-	std::cout << "val i_TRYCATCHDIV_i: " << res << "\n\n";
-	if (res != 0)
-		return res;
+	CPPUNIT_ASSERT_EQUAL(d_TRYCATCHDIV_d(5),0.2);
+		
+	CPPUNIT_ASSERT_EQUAL(i_TRYCATCHDIV_i(5),0);
 	
-	
-	std::cout << "Call str_VECTOR_DOUBLE_d \n";
-	const char* pRes = str_VECTOR_DOUBLE_d(1984);
-	std::cout << "val str_VECTOR_DOUBLE_d: " << pRes << "\n";
-	if (strcmp( pRes, "Test OK") == 0)
-		;
-	else
-	{
-		std::cout << "Error str_VECTOR_DOUBLE_d: " << pRes << "\n";
-		return -1;
-	}
-	
+	CPPUNIT_ASSERT_EQUAL(str_VECTOR_DOUBLE_d(1984),"Test OK");
 	
 	std::cout << "Call str_TRYTHROWINTANDCATCHIT_v \n";
 	std::cout << "Compilation Not supported str_TRYTHROWINTANDCATCHIT_v \n\n";
@@ -177,6 +167,6 @@ int main() {
 	std::cout << "Compilation Not supported i_TRYCATCHTHROW_v \n\n";
 	//res = i_TRYCATCHTHROW_v();
 
-	return 0;
+	return res;
 }
 

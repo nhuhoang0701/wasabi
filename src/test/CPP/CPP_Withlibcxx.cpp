@@ -3,6 +3,7 @@
 
 int main()
 {
+	
 	std::cout << "Call d_STDSQRT_d \n";
 	int res = d_STDSQRT_d(4);
 	std::cout << "val d_STDSQRT_d: " << res << "\n\n";

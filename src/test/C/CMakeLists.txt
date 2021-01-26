@@ -15,7 +15,7 @@ set(CMAKE_CXX_COMPILER ${WASABI_EXTERNAL}/llvm/bin/clang++)
 set(CMAKE_CXX_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
 
 set(CMAKE_C_FLAGS "-fdeclspec")
-set(CMAKE_VERBOSE_MAKEFILE on ) 
+#set(CMAKE_VERBOSE_MAKEFILE on ) 
 
 
 # Almost all CMake files should start with this
@@ -45,9 +45,8 @@ add_executable(C_nolib.wasm C_nolib.c)
 
 # Make sure you link your targets with this command. It can also link libraries and
 # even flags, so linking a target that does not exist will not give a configure-time error.
-#target_link_libraries(C_libc PRIVATE )
-#target_link_libraries(C_nolib PRIVATE )
-#target_link_libraries(C_libc_dl PRIVATE )
+#target_link_libraries(C_libc.wasm PRIVATE )
+#target_link_libraries(C_libc_dl.wasm PRIVATE )
 
 
 ## [main]
@@ -56,6 +55,7 @@ add_executable(C_nolib.wasm C_nolib.c)
 # you'll probably want tests too
 enable_testing()
 add_test(NAME C_nolib COMMAND wasmtime C_nolib.wasm)
+## check --dir if usable or not, it's for open file
 add_test(NAME C_libc COMMAND wasmtime --dir=. C_libc.wasm)
 
 

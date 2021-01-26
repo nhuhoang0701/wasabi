@@ -16,7 +16,7 @@ set(CMAKE_CXX_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
 
 set(CMAKE_CXX_FLAGS "-fdeclspec ")
 
-set( CMAKE_VERBOSE_MAKEFILE on ) 
+#set( CMAKE_VERBOSE_MAKEFILE on ) 
 
 cmake_minimum_required(VERSION 3.1...3.19)
 
@@ -25,6 +25,7 @@ project(
   VERSION 1.0
   LANGUAGES CXX)
 
+include_directories(${WASABI_ROOT}/src/test_tools/include)
 link_directories(${WASABI_ROOT}/src/build/lib)
 
 add_library(CPP_libcxx.wasm CPP_libcxx.cpp )

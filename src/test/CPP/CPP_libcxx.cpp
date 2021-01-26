@@ -2,6 +2,7 @@
 #include <cmath>          // For pow
 #include <vector>         // For vector
 #include "CPP_libcxx.hpp"
+#include "test_tools/TestAssert.h"
 
 #define EXPORT __declspec(dllexport)
 
@@ -46,12 +47,14 @@ void operator delete(void * p) throw()
 
 EXPORT void v_COUT_i(int i)
 {
+	CALL_TEST();
 	std::cout << "Enter in v_print_i, param:" << i << std::endl;
 }
 
 
 EXPORT double d_STDSQRT_d(double d)
 {
+	CALL_TEST();
 	return std::sqrt(d);
 }
 
@@ -74,7 +77,7 @@ EXPORT const char* str_VECTOR_DOUBLE_d(double d)
 
 EXPORT int* pi_NEW_INT_v()
 {
-
+	CALL_TEST();
 	return new int;
 
 }
@@ -82,7 +85,7 @@ EXPORT int* pi_NEW_INT_v()
 
 EXPORT void v_DELETE_pv(void* sz)
 {
-
+	CALL_TEST();
 	//throw "Not implemented";
 	delete (int*)sz;
 
