@@ -1,10 +1,11 @@
 
 #include <stdio.h>         // For printf
-#include <math.h>          // For pow
+#include <math.h>          // For pow, sqrt
 #include <string.h>        // For memcpy
 #include <stdlib.h>        // For malloc and co
 
-#define EXPORT __declspec(dllexport)
+//TODO: Centralyse it
+#define EXPORT 
 
 char buf[1024];
 
@@ -36,7 +37,7 @@ double (*ptr_on_d_SQRT_d)(double d) = d_SQRT_d;
 EXPORT double d_CALLFCT_D_SQRT_D_d(double d)
 {
 	printf("d_CALLFCT_D_SQRT_D_d: @ptr_on_d_SQRT_d '%p'\n", ptr_on_d_SQRT_d);
-	printf("d_CALLFCT_D_SQRT_D_d: @ptr_on_d_SQRT_d '%d'\n", (size_t)ptr_on_d_SQRT_d);
+	printf("d_CALLFCT_D_SQRT_D_d: @ptr_on_d_SQRT_d '%ld'\n", (size_t)ptr_on_d_SQRT_d);
 	fflush(stdout);
 	return ptr_on_d_SQRT_d(d);
 }
