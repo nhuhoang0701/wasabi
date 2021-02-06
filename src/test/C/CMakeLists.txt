@@ -6,16 +6,13 @@ set(WASABI_EXTERNAL ${WASABI_ROOT}/external)
 set(CMAKE_SYSTEM_NAME WAsm)
 
 set(CLANG_TARGET_TRIPLE wasm32-unknown-wasi)
-set(CMAKE_SYSROOT ${WASABI_EXTERNAL}/wasi-sdk-12/wasi-sysroot)
+set(CMAKE_SYSROOT ${SYSROOT_DIR})
 
-set(CMAKE_C_COMPILER ${WASABI_EXTERNAL}/llvm/bin/clang)
+set(CMAKE_C_COMPILER ${C_COMPILER})
 set(CMAKE_C_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
 
-set(CMAKE_CXX_COMPILER ${WASABI_EXTERNAL}/llvm/bin/clang++)
+set(CMAKE_CXX_COMPILER ${CXX_COMPILER})
 set(CMAKE_CXX_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
-
-set(CMAKE_C_FLAGS "-fdeclspec")
-#set(CMAKE_VERBOSE_MAKEFILE on ) 
 
 
 # Almost all CMake files should start with this
@@ -54,8 +51,8 @@ add_executable(C_nolib.wasm C_nolib.c)
 # This part is so the Modern CMake book can verify this example builds. For your code,
 # you'll probably want tests too
 enable_testing()
-add_test(NAME C_nolib COMMAND wasmtime C_nolib.wasm)
+add_test(NAME C_nolib COMMAND ${WASMTIME} C_nolib.wasm)
 ## check --dir if usable or not, it's for open file
-add_test(NAME C_libc COMMAND wasmtime --dir=. C_libc.wasm)
+add_test(NAME C_libc COMMAND ${WASMTIME} C_libc.wasm)
 
 
