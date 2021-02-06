@@ -13,11 +13,11 @@
 	 << " From function: " << __func__ \
 	 << " at " << __FILE__ << ":" << __LINE__ << std::endl)
 
-#define CPPUNIT_ASSERT(x) \
+#define CPPUNIT_ASSERT_MSG(x, msg) \
 {\
 	if (!(x))\
 	{\
-		ASSERT_MESSAGE(WASABI_xstr(x));\
+		ASSERT_MESSAGE(msg);\
 		if (res==0)\
 		{\
 			res=-1;\
@@ -28,6 +28,12 @@
 		std::cout << "OK:" << WASABI_xstr(x) << std::endl;\
 	}\
 }
+
+#define CPPUNIT_ASSERT(x) \
+{\
+	CPPUNIT_ASSERT_MSG(x, WASABI_xstr(x));\
+}
+
 #define CPPUNIT_ASSERT_IGNORED(x) \
 {\
 	{\
@@ -35,7 +41,9 @@
 	}\
 }
 
-#define CPPUNIT_ASSERT_EQUAL(x,y) CPPUNIT_ASSERT( (x) == (y) )
+#define CPPUNIT_ASSERT_EQUAL(x,y) CPPUNIT_ASSERT((x) == (y) );
+
+#define CPPUNIT_ASSERT_EQUAL_STR(x,y) CPPUNIT_ASSERT_MSG((strcmp(x, y) == 0), x );
 
 #define LDE_CPPUNIT_EXCEPTION(x, y)
 
