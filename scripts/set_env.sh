@@ -29,8 +29,11 @@ echo "SYSROOT_DIR: " "'"$SYSROOT_DIR"'";
 export WASMTIME_DIR=$WASABI_EXTERNAL_DIR/wasmtime-v0.22.0
 export WASMTIME_LINUX_DIR=$WASMTIME_DIR-x86_64-linux
 export WASMTIME=$WASMTIME_DIR/wasmtime
-echo "WASMTIME: " "'"$SYSROOT_DIR"'";
+echo "WASMTIME: " "'"$WASMTIME"'";
 
 export CJSON_DIR=$WASABI_EXTERNAL_DIR/cJSON
+
+export HTTP_SERVER="python3 -m http.server 8080"
+echo "HTTP_SERVER: " "'"$HTTP_SERVER"'";
 
 echo
