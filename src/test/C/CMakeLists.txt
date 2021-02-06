@@ -1,9 +1,3 @@
-
-message( $ENV{C_COMPILER} )
-message( $ENV{CXX_COMPILER} )
-message( $ENV{SYSROOT_DIR} )
-
-
 ## [main]
 set(CMAKE_SYSTEM_NAME WAsm)
 
