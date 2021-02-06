@@ -1,12 +1,13 @@
 #include <iostream> 
 #include "test_tools/TestAssert.h"
 
-#define EXPORT __declspec(dllexport)
+#define EXPORT 
 
 
 /***************************************
 Class define for testing purpose
 */
+
 
 class iType
 {
@@ -81,7 +82,6 @@ Tests
 //Verify construtor destructor order
 EXPORT const char* str_DESTRUCTOR_v()
 {
-	//CALL_TEST();
 	char* str256 = new char[256];
 	str256[0]= '\0';
 	unsigned char index = 0;
@@ -95,7 +95,6 @@ EXPORT const char* str_DESTRUCTOR_v()
 
 EXPORT const char* str_VDESTRUCTOR_v()
 {
-	//CALL_TEST();
 	char* str256 = new char[256];
 	str256[0]= '\0';
 	unsigned char index = 0;
@@ -123,7 +122,6 @@ EXPORT const char* str_VDESTRUCTOR_v()
 
 EXPORT const char* str_CALL_VIRTUAL_METHOD_c(char c)
 {
-	CALL_TEST();
 	TypeA typeA;
 	TypeB typeB;
 	iType* type = 0;
@@ -137,7 +135,6 @@ EXPORT const char* str_CALL_VIRTUAL_METHOD_c(char c)
 
 EXPORT int i_DYNCATS_v()
 {
-	CALL_TEST();
 	char* str256 = new char[256];
 	str256[0]= '\0';
 	unsigned char index = 0;
@@ -156,32 +153,20 @@ EXPORT int i_DYNCATS_v()
 	return 0;
 }
 
-int main() {
-	
+int main()
+{	
 	int res = 0;
 	TestScopePrinter scoped("CPP_nolib_class", res);
 	
 	CPPUNIT_ASSERT_EQUAL(i_DYNCATS_v(),0);
 	
-	CPPUNIT_ASSERT_EQUAL(str_CALL_VIRTUAL_METHOD_c('a'),"TypeA");
+	CPPUNIT_ASSERT_EQUAL_STR(str_CALL_VIRTUAL_METHOD_c('a'),"TypeA");
 	
-	CPPUNIT_ASSERT_EQUAL(str_CALL_VIRTUAL_METHOD_c('b'),"TypeB");
+	CPPUNIT_ASSERT_EQUAL_STR(str_CALL_VIRTUAL_METHOD_c('b'),"TypeB");
 	
-	//CPPUNIT_ASSERT_EQUAL(str_DESTRUCTOR_v()," A:A a:A a:~A A:~A"); // give difference
+	CPPUNIT_ASSERT_EQUAL_STR(str_DESTRUCTOR_v()," A:A a:A a:~A A:~A");
 	
-	//CPPUNIT_ASSERT_EQUAL(str_VDESTRUCTOR_v(),"0 A:A 1 2 B:A B:B 3 B:~B B:~A 4 A:~A 5"); //give difference
-	
-	std::cout << "Call destructor \n";
-	const char* resDestuctor = str_DESTRUCTOR_v();
-	std::cout << "val destructor: " << resDestuctor << "\n\n";
-	if (strcmp( resDestuctor, " A:A a:A a:~A A:~A"))
-		return -1;
-		
-	std::cout << "Call virtual destructor \n";
-	const char* resVDestuctor = str_VDESTRUCTOR_v();
-	std::cout << "val Vdestructor: " << resVDestuctor << "\n\n";
-	if (strcmp( resVDestuctor, "0 A:A 1 2 B:A B:B 3 B:~B B:~A 4 A:~A 5"))
-		return -1;
+	CPPUNIT_ASSERT_EQUAL_STR(str_VDESTRUCTOR_v(),"0 A:A 1 2 B:A B:B 3 B:~B B:~A 4 A:~A 5");
 
 	return res;
 }
