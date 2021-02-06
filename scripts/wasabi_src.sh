@@ -43,9 +43,7 @@ cd build
 cmake ..
 cmake --build .
 make install
-ctest -V
-
-
+ctest
 
 
 echo "End $(date +"%T")"
