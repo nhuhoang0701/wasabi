@@ -1,7 +1,5 @@
 # CMake json
 
-set(WASABI_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../..)
-set(WASABI_EXTERNAL ${WASABI_ROOT}/external)
 
 ## [main]
 set(CMAKE_SYSTEM_NAME Generic)
@@ -11,16 +9,16 @@ set(CMAKE_C_COMPILER_WORKS 1)
 set(CMAKE_CXX_COMPILER_WORKS 1)
 
 set(CLANG_TARGET_TRIPLE wasm32-unknown-wasi)
-set(CMAKE_SYSROOT ${WASABI_EXTERNAL}/wasi-sdk-12/wasi-sysroot)
+set(CMAKE_SYSROOT $ENV{SYSROOT_DIR})
 
-set(CMAKE_C_COMPILER ${WASABI_EXTERNAL}/llvm/bin/clang)
+set(CMAKE_C_COMPILER $ENV{C_COMPILER})
 set(CMAKE_C_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
 
-set(CMAKE_CXX_COMPILER ${WASABI_EXTERNAL}/llvm/bin/clang++)
+set(CMAKE_CXX_COMPILER $ENV{CXX_COMPILER})
 set(CMAKE_CXX_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
 
-set(CMAKE_AR ${WASABI_EXTERNAL}/llvm/bin/llvm-ar)
-set(CMAKE_SPLIT ${WASABI_EXTERNAL}/llvm/bin/llvm-split)
+set(CMAKE_AR $ENV{LLVM_AR})
+set(CMAKE_SPLIT $ENV{LLVM_SPLIT})
 
 # WASI does not support exceptions
 #add_compile_options(-fno-exceptions) # for this project and all sub-projects
