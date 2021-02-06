@@ -2,7 +2,7 @@
 
 # [Build the library]
 
-include_directories(${WASABI_EXTERNAL})
+include_directories($ENV{WASABI_EXTERNAL_DIR})
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 set(SRCS
