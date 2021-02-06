@@ -130,10 +130,6 @@ static int Test_reader()
 
 int main()
 {
-	int res = 0;
-
-	if (res = Test_reader())
-		return res;
-
+	int res = Test_reader();
 	return res;
 }
