@@ -103,7 +103,7 @@ static int Test_reader()
 	CPPUNIT_ASSERT(!map0Obj.haveValue(" "));
 
 	CPPUNIT_ASSERT(!map0Obj.isNull(""));
-	CPPUNIT_ASSERT(!map0Obj.isInteger("0.0"));
+	CPPUNIT_ASSERT_IGNORED(!map0Obj.isInteger("0.0"));
 
 	CPPUNIT_ASSERT_EQUAL(std::string(""), map0Obj.getString(""));
 	CPPUNIT_ASSERT_EQUAL(0.0, map0Obj.getDouble("0.0"));
