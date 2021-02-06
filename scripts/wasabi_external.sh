@@ -63,7 +63,7 @@ mkdir $WASABI_ROOT_DIR/src/test/wasi/build
 cd $WASABI_ROOT_DIR/src/test/wasi/build
 cmake .. &> compile.log
 make >> compile.log
-$WASMTIME ./MyExample.wasm
+make test
 
 
 echo
@@ -107,6 +107,13 @@ make cjson
 make cJSON_test
 
 echo -------------- test ---------------
-$WASMTIME $CJSON_DIR/build/cJSON_test
+$WASMTIME $CJSON_DIR/build/cJSON_test &> /dev/null 
+if [ $? -ne 0 ]
+then
+	echo "Error: cJSON test didn't works" 
+	exit 1
+else
+	echo "cJSON test passed"
+fi
 
 echo "End $(date +"%T")"
