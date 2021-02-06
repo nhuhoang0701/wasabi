@@ -1,21 +1,21 @@
 #include <iostream> 
 #include "CPP_libcxx.hpp"
 
+#include "test_tools/TestAssert.h"
+
 int main()
-{
+{	
+	int res = 0;
+	TestScopePrinter scoped("CPP_Withlibcxx", res);
+
+	CPPUNIT_ASSERT_EQUAL(d_STDSQRT_d(4),2);
+
+	CPPUNIT_ASSERT_EQUAL_STR(str_VECTOR_DOUBLE_d(13),"Test OK");
 	
-	std::cout << "Call d_STDSQRT_d \n";
-	int res = d_STDSQRT_d(4);
-	std::cout << "val d_STDSQRT_d: " << res << "\n\n";
-	if (res != 2)
-		return -1;
 	
 	int* pRes = NULL;
-	std::cout << "Call pi_NEW_INT_v \n";
 	pRes = pi_NEW_INT_v();
-	std::cout << "val pi_NEW_INT_v: " << pRes << "\n\n";
-	if (pRes == NULL)
-		return -1;
+	CPPUNIT_ASSERT(pRes);
 
 	std::cout << "Call v_DELETE_pv \n";
 	v_DELETE_pv(pRes);
