@@ -13,7 +13,27 @@
 	 << " From function: " << __func__ \
 	 << " at " << __FILE__ << ":" << __LINE__ << std::endl)
 
-#define CPPUNIT_ASSERT(x) {if (!(x)) {ASSERT_MESSAGE(WASABI_xstr(x)); if (res==0) {res=-1;}}}
+#define CPPUNIT_ASSERT(x) \
+{\
+	if (!(x))\
+	{\
+		ASSERT_MESSAGE(WASABI_xstr(x));\
+		if (res==0)\
+		{\
+			res=-1;\
+		}\
+	}\
+	else\
+	{\
+		std::cout << "OK:" << WASABI_xstr(x) << std::endl;\
+	}\
+}
+#define CPPUNIT_ASSERT_IGNORED(x) \
+{\
+	{\
+		std::cout << "IGNORED:" << WASABI_xstr(x) << std::endl;\
+	}\
+}
 
 #define CPPUNIT_ASSERT_EQUAL(x,y) CPPUNIT_ASSERT( (x) == (y) )
 
