@@ -1,30 +1,9 @@
 #include <iostream> 
-#include <vector>         // For vector
+
 #include "test_tools/TestAssert.h"
 
-#define EXPORT __declspec(dllexport)
+#define EXPORT 
 
-const char* str_VECTOR_DOUBLE_d(double d)
-{
-	CALL_TEST();
-	std::vector<double> v;
-	std::vector<int> vint;
-	double da = 1984;
-	
-	if(v.empty() == false)
-		return "Size of the vector should be 0";
-	
-	v.push_back(d);
-	if(v.size() != 1)
-		return "Size of the vector should be 1";
-	if(v[0] != 1984)
-		return "vector[0] should be 1984";
-
-	return "Test OK";
-}
-
-/*
-//TODO: this case need std::terminate for the moment not clear where std::terminate should be implemented in the JS kernel side
 class Ae
 {
 public:
@@ -54,11 +33,9 @@ EXPORT int i_TrycatchObjDesc_i(int i)
 
 	return ie;
 }
-*/
 
-EXPORT int i_TRYCATCHTHROW_v()
+EXPORT int b_TRYCATCHTHROW_v()
 {
-	CALL_TEST();
 	try
 	{
 		try
@@ -83,36 +60,33 @@ EXPORT int i_TRYCATCHTHROW_v()
 
 EXPORT void v_JUSTTHROW_v()
 {
-	CALL_TEST();
 	throw;
 }
 
-EXPORT const char* str_TRYTHROWINTANDCATCHIT_v()
+EXPORT bool b_TRYTHROWINTANDCATCHIT_v()
 {
-	CALL_TEST();
 	int i = 42;
 	try
 	{
 		throw i;
-		return "KO: exception not throw";
+		return false;
 	}
 	catch(const int& i)
 	{
 		if(i == 42)
-			return "Test OK";
-		return "KO: catch by value of exception";
+			return true;
+		return false;
 	}
 	catch(...)
 	{
-		return "KO: int type exception not catched";
+		return false;
 	}
 
-	return "KO: exception not catched";
+	return false;
 }
 
 EXPORT int i_TRYCATCHDIV_i(int d)
 {
-	CALL_TEST();
 	int i = 1;
 	try
 	{
@@ -128,7 +102,6 @@ EXPORT int i_TRYCATCHDIV_i(int d)
 
 EXPORT double d_TRYCATCHDIV_d(double d)
 {
-	CALL_TEST();
 	double i = 1;
 	try
 	{
@@ -146,26 +119,17 @@ int main() {
 	int res = 0;
 	TestScopePrinter scoped("CPP_nolib_exception", res);
 	
-	CPPUNIT_ASSERT_EQUAL(d_TRYCATCHDIV_d(5),0.2);
+	CPPUNIT_ASSERT_EQUAL(d_TRYCATCHDIV_d(1),1);
+	CPPUNIT_ASSERT_EQUAL(d_TRYCATCHDIV_d(0),-1);
 		
-	CPPUNIT_ASSERT_EQUAL(i_TRYCATCHDIV_i(5),0);
+	CPPUNIT_ASSERT_EQUAL(i_TRYCATCHDIV_i(1),1);
+	CPPUNIT_ASSERT_EQUAL(i_TRYCATCHDIV_i(0),-1);
 	
-	CPPUNIT_ASSERT_EQUAL(str_VECTOR_DOUBLE_d(1984),"Test OK");
+	CPPUNIT_ASSERT(b_TRYTHROWINTANDCATCHIT_v());
 	
-	std::cout << "Call str_TRYTHROWINTANDCATCHIT_v \n";
-	std::cout << "Compilation Not supported str_TRYTHROWINTANDCATCHIT_v \n\n";
-	//const char* c_res = str_TRYTHROWINTANDCATCHIT_v();
-	/*std::cout << "val str_TRYTHROWINTANDCATCHIT_v: " << c_res << "\n";
-	if (strcmp( c_res, "KO: exception not catched"))
-		return -1;
-	*/
-	std::cout << "Call v_JUSTTHROW_v \n";
-	std::cout << "Compilation Not supported v_JUSTTHROW_v \n\n";
-	//v_JUSTTHROW_v();
+	CPPUNIT_ASSERT_EQUAL(b_TRYCATCHTHROW_v(), 0);
 	
-	std::cout << "Call i_TRYCATCHTHROW_v \n";
-	std::cout << "Compilation Not supported i_TRYCATCHTHROW_v \n\n";
-	//res = i_TRYCATCHTHROW_v();
+	CPPUNIT_ASSERT_EQUAL(i_TrycatchObjDesc_i(1977), 1977);
 
 	return res;
 }
