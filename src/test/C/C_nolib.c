@@ -1,30 +1,8 @@
 
-#define EXPORT __declspec(dllexport)
+//TODO: Centralyze
+#define EXPORT 
 
 EXPORT static char* staticstr = "THIS IS A STATIC CHAR*";
-
-int main()
-{
-	int res = TestNumericalOperator();
-	if (res != 0)
-	{
-		return -1;
-	}
-
-	res = TestChar_C();
-	if (res != 0)
-	{
-		return -1;
-	}
-
-	res = Test_CFunctionPointer();
-	if (res != 0)
-	{
-		return -1;
-	}
-
-	return 0;
-}
 
 
 /*********************************************
@@ -56,6 +34,107 @@ EXPORT double d_DIV_d_d(double a, double b)
 {
 	return a/b;
 }
+
+
+/*********************************************
+* Basics C char tests
+*/
+EXPORT const char* str_STATICSTR_c(char firstChar)
+{
+	staticstr[0] = firstChar;
+	return staticstr;
+}
+
+EXPORT const char* str_LOCALSTR_c(char firstChar)
+{
+	char* localstr = "THIS IS A LOCAL CHAR*";
+	localstr[0] = firstChar;
+	return localstr;
+}
+
+EXPORT char c_ITOCHAR_i(unsigned int i)
+{
+	if(i > 9)
+		return '#';
+
+	return i + '0';
+}
+
+EXPORT char* str_TOLOWER_str(char* a)
+{
+	if( a )
+	{
+		char *b = a;
+		while ( *b )
+		{
+			if( *b >= 'A' && *b <= 'Z')
+				*b += ('a' - 'A');
+			b++;
+		}
+	}
+	return a;
+}
+
+EXPORT char* str_TOLOWER_pv(void* a)
+{
+	return str_TOLOWER_str(a);
+}
+
+
+/*********************************************
+* Basics C function pointer tests
+*/
+typedef int (*ptr_on_i_FCT_i)(int);
+EXPORT int i_CALLFCT_pv_i(ptr_on_i_FCT_i ordinal, int val)
+{
+	ptr_on_i_FCT_i ptr = ordinal;
+	return ptr(val);
+}
+
+EXPORT int i_CALLFCT_I_DIV_I_i(int i)
+{
+	ptr_on_i_FCT_i ptr = i_DIV_i;
+	return ptr(i);
+}
+
+EXPORT int i_CALLFCT_I_MULT_I_i(int i)
+{
+	ptr_on_i_FCT_i ptr = i_MULT_i;
+	return ptr(i);
+}
+
+EXPORT int i_CALLFCT_I_ADD_I_i(int i)
+{
+	ptr_on_i_FCT_i ptr = i_ADD_i;
+	return ptr(i);
+}
+
+EXPORT ptr_on_i_FCT_i pv_getFctPtr_str(const char* fctName)
+{
+	if( fctName[12] == 'D')
+	{
+		return i_CALLFCT_I_DIV_I_i;
+	}
+	if( fctName[12] == 'M')
+	{
+		return i_CALLFCT_I_MULT_I_i;
+	}
+	if( fctName[12] == 'A')
+	{
+		return i_CALLFCT_I_ADD_I_i;
+	}
+	
+	return 0;
+}
+
+
+
+/*********************************************
+* TODO: Put the lines after in a separate file
+*/
+#include <stdio.h>  // For printf
+#include <string.h> // For strcmp
+
 
 int TestNumericalOperator()
 {
@@ -113,51 +192,6 @@ int TestNumericalOperator()
 	return 0;
 }
 
-
-/*********************************************
-* Basics C char tests
-*/
-EXPORT const char* str_STATICSTR_c(char firstChar)
-{
-	staticstr[0] = firstChar;
-	return staticstr;
-}
-
-EXPORT const char* str_LOCALSTR_c(char firstChar)
-{
-	char* localstr = "THIS IS A LOCAL CHAR*";
-	localstr[0] = firstChar;
-	return localstr;
-}
-
-EXPORT char c_ITOCHAR_i(unsigned int i)
-{
-	if(i > 9)
-		return '#';
-
-	return i + '0';
-}
-
-EXPORT char* str_TOLOWER_str(char* a)
-{
-	if( a )
-	{
-		char *b = a;
-		while ( *b )
-		{
-			if( *b >= 'A' && *b <= 'Z')
-				*b += ('a' - 'A');
-			b++;
-		}
-	}
-	return a;
-}
-
-EXPORT char* str_TOLOWER_pv(void* a)
-{
-	return str_TOLOWER_str(a);
-}
-
 int TestChar_C()
 {
 	printf("Call str_STATICSTR_c \n");
@@ -195,55 +229,6 @@ int TestChar_C()
 	return 0;
 }
 
-
-/*********************************************
-* Basics C function pointer tests
-*/
-typedef int (*ptr_on_i_FCT_i)(int);
-EXPORT int i_CALLFCT_pv_i(ptr_on_i_FCT_i ordinal, int val)
-{
-	ptr_on_i_FCT_i ptr = ordinal;
-	return ptr(val);
-}
-
-EXPORT int i_CALLFCT_I_DIV_I_i(int i)
-{
-	ptr_on_i_FCT_i ptr = i_DIV_i;
-	return ptr(i);
-}
-
-EXPORT int i_CALLFCT_I_MULT_I_i(int i)
-{
-	ptr_on_i_FCT_i ptr = i_MULT_i;
-	return ptr(i);
-}
-
-EXPORT int i_CALLFCT_I_ADD_I_i(int i)
-{
-	ptr_on_i_FCT_i ptr = i_ADD_i;
-	return ptr(i);
-}
-
-EXPORT ptr_on_i_FCT_i pv_getFctPtr_str(const char* fctName)
-{
-	if( fctName[12] == 'D')
-	{
-		return i_CALLFCT_I_DIV_I_i;
-	}
-	if( fctName[12] == 'M')
-	{
-		return i_CALLFCT_I_MULT_I_i;
-	}
-	if( fctName[12] == 'A')
-	{
-		return i_CALLFCT_I_ADD_I_i;
-	}
-	
-	return 0;
-}
-
-
-
 int Test_CFunctionPointer()
 {
 	/*
@@ -267,3 +252,11 @@ int Test_CFunctionPointer()
 	return 0;
 }
 
+int main()
+{
+	int res = TestNumericalOperator();
+	res += TestChar_C();
+	res += Test_CFunctionPointer();
+	
+	return res;
+}
