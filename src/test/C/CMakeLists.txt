@@ -47,8 +47,8 @@ add_executable(C_nolib.wasm C_nolib.c)
 # This part is so the Modern CMake book can verify this example builds. For your code,
 # you'll probably want tests too
 enable_testing()
-add_test(NAME C_nolib COMMAND ${WASMTIME} C_nolib.wasm)
+add_test(NAME C_nolib COMMAND $ENV{WASMTIME} C_nolib.wasm)
 ## check --dir if usable or not, it's for open file
-add_test(NAME C_libc COMMAND ${WASMTIME} C_libc.wasm)
+add_test(NAME C_libc COMMAND $ENV{WASMTIME} C_libc.wasm)
 
 
