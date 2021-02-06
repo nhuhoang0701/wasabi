@@ -6,7 +6,7 @@ echo --------- set variables  ----------
 if [ ! -d "$WASABI_ROOT_DIR" ];
 then
 echo "error: variable WASABI_ROOT_DIR not set";
-exit 1;
+return 1;
 else
 echo "WASABI_ROOT_DIR: " "'"$WASABI_ROOT_DIR"'";
 fi
