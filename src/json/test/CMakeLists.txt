@@ -1,11 +1,11 @@
 # CMake json/test
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${WASABI_ROOT}/src/test_tools/include)
+include_directories($ENV{WASABI_ROOT_DIR}/src/test_tools/include)
 
-link_directories(${WASABI_EXTERNAL}/cJSON/build)
-link_directories(${WASABI_ROOT}/src/json/build)
-link_directories(${WASABI_ROOT}/src/build/lib)
+link_directories($ENV{WASABI_EXTERNAL_DIR}/cJSON/build)
+link_directories($ENV{WASABI_ROOT_DIR}/src/json/build)
+link_directories($ENV{WASABI_ROOT_DIR}/src/build/lib)
 
 ## [main]
 
@@ -23,4 +23,4 @@ target_link_libraries(TestJson.wasm PRIVATE cjson jsonUtils.wasm exceptions.wasm
 
 ## [test]
 # run with ctest -V
-add_test(NAME TestJson COMMAND ${WASABI_EXTERNAL}/wasmtime-v0.22.0/wasmtime TestJson.wasm)
+add_test(NAME TestJson COMMAND $ENV{WASMTIME} TestJson.wasm)
