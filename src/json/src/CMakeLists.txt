@@ -18,4 +18,4 @@ add_library(jsonUtils.wasm ${SRCS} ${HEADERS})
 ## [installation]
 
 install(TARGETS jsonUtils.wasm
-  DESTINATION ${WASABI_ROOT}/src/build/lib)
+  DESTINATION $ENV{WASABI_ROOT_DIR}/src/build/lib)
