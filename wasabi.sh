@@ -10,3 +10,5 @@ export WASABI_ROOT_DIR=$(pwd)
 ./scripts/wasabi_external.sh
 
 ./scripts/wasabi_src.sh
+
+source ./scripts/set_env.sh
