@@ -27,16 +27,14 @@ The dev. env. is with Ubuntu on WSL
   - source ./wasabi.sh
  
  # to execute wasm/WASI file on your browser:
+ From the folder wasabi/src/wasi (open the debug to set the output in the console):
+  - $HTTSERVER
+  - Open your browser at http://localhost:8080 and select your wasm file
  If you want to debug c++ in your browser :
   - Install canary "https://www.google.com/chrome/canary/"
   - Install this exetension https://chrome.google.com/webstore/detail/cc%20%20-devtools-support-dwa/pdcpmagijalfljmkmjngeonclgbbannb
     In the parameter of the extension add a path subtitution rule :
       "/home/$user" -> "\\wsl$\Ubuntu\home\$user" (replace $user by your Linux user) 
- 
- From the folder wasabi/src/wasi (open the debug to set the output in the console):
-  - $HTTSERVER
-  - Open your browser at http://localhost:8080 and select your wasm file
-    
  
  # to execute wasm/WASI file on your machine:
  $WASMTIME YOURWASMFILE
