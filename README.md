@@ -7,12 +7,12 @@ The dev. env. is with Ubuntu on WSL
    - To access git from the ubuntu add this line in the Windows host file :
      10.67.76.20  github.wdf.sap.corp
  
-  - Tips : From the wls terminal to open the current folder in windows explorer:
-       ~/wasabi/src$ explorer.exe .
-       This will open the windows explorer in "\\wsl$\Ubuntu\home\ghislain\wasabi\git\src"
   - To install/configure git (and retrieve the source)
      https://teams.microsoft.com/l/entity/com.microsoft.teamspace.tab.wiki/tab::a8896480-ec96-4bc1-91fd-1f3baa4c22b9?context=%7B%22subEntityId%22%3A%22%7B%5C%22pageId%5C%22%3A16%2C%5C%22origin%5C%22%3A2%7D%22%2C%22channelId%22%3A%2219%3Afbca808d7716451fa3cf0a9679cb6970%40thread.tacv2%22%7D&tenantId=42f7676c-f455-423c-82f6-dc2d99791af7
-     
+
+  - Tips : From the wls terminal to open the current linux folder in windows explorer:
+       ~/wasabi/src$ explorer.exe .
+
 # wasabi
 
 POC to execute InA query in the Browser the goal is to have an engine whic hcan process some computation (blending , scalar function, filtering, aggregation)
