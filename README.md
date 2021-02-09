@@ -8,7 +8,7 @@ The technical language stack will be :
   wasi https://wasi.dev/   https://github.com/WebAssembly/wasi-sdk
   libc++ LLVM https://releases.llvm.org/11.0.0/projects/libcxx/docs/
 
-# WSL
+# WindowsSubsystemLinux
 The dev. env. is with Ubuntu on WSL
   - Install unbuntu on windows :
      https://ubuntu.com/wsl
