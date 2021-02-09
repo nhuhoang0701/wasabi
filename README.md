@@ -20,6 +20,8 @@ The dev. env. is with Ubuntu on WSL
        ~/wasabi/src$ explorer.exe .
   
  # to set the environment:
+ git clone https://github.wdf.sap.corp/I056617/wasabi.git
+ 
  From the wasabi root folder (the folder containing this README.md file):
   - source ./wasabi.sh
     This will import all necessaries dependencies , compile and place necessary var. env.
