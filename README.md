@@ -27,7 +27,7 @@ The dev. env. is with Ubuntu on WSL
     This will import all necessaries dependencies , compile and place necessary var. env.
  
  # to execute wasm/WASI file on your browser:
- From the folder wasabi/src/wasi (open the debug to set the output in the console):
+ From the folder wasabi/src/wasi_browser (open the debugger to see the output in the console):
   - $HTTSERVER
   - Open your browser at http://localhost:8080 and select your wasm file.
   
