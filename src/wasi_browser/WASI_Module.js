@@ -131,6 +131,10 @@ function start(response) {
 		environ_get: function(environ, environ_buf) {
 			console.error("NYI:" + arguments.callee.name);
 		},
+		clock_time_get: function(clock_id, precision, time) {
+			console.error("NYI:" + arguments.callee.name);
+			return WASI_EINVAL;
+		},
 	};
 	const importObject =
 	{
