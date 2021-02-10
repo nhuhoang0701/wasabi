@@ -42,3 +42,5 @@ The dev. env. is tested on Ubuntu in WSL1
  # Execute wasm/WASI file locally on your machine:  
    - `$WASMTIME ./wasabi/src/test/wasi/build/MyExample.wasm`
  
+# Troubleshooting
+  - explorer.exe cannot open WSL directories: https://github.com/microsoft/WSL/issues/4027#issuecomment-496628274
