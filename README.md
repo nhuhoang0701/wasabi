@@ -20,19 +20,19 @@ The dev. env. is with Ubuntu on WSL
   - Install unbuntu on windows :
      https://ubuntu.com/wsl
 
-  - Tips : From the wls terminal to open the current linux folder in windows explorer:
-       ~/wasabi/src$ explorer.exe .
+  - Tips : From the wls terminal to open the current linux folder in windows explorer:  
+    <code>~/wasabi/src$ explorer.exe .</code>
   
  # to get the environment:
   
   - install/configure [git](https://teams.microsoft.com/l/entity/com.microsoft.teamspace.tab.wiki/tab::a8896480-ec96-4bc1-91fd-1f3baa4c22b9?context=%7B%22subEntityId%22%3A%22%7B%5C%22pageId%5C%22%3A16%2C%5C%22origin%5C%22%3A2%7D%22%2C%22channelId%22%3A%2219%3Afbca808d7716451fa3cf0a9679cb6970%40thread.tacv2%22%7D&tenantId=42f7676c-f455-423c-82f6-dc2d99791af7) (and retrieve the source)
-  - From the wasabi root folder (the folder containing this README.md file):
-     - source ./wasabi.sh
+  - From the wasabi root folder (the folder containing this README.md file):  
+     <code>source ./wasabi.sh</code>  
         This will import all necessaries dependencies , compile and place necessary var. env.
  
  # to execute wasm/WASI file on your browser:
- From the folder wasabi/src/wasi_browser (open the debugger to see the output in the console):
-  - $HTTSERVER
+ From the folder wasabi/src/wasi_browser (open the debugger to see the output in the console):  
+    <code>$HTTSERVER</code>
   - Open your browser at http://localhost:8080 and select your wasm file.
   
       If you want to debug c++ in your browser :
@@ -43,6 +43,6 @@ The dev. env. is with Ubuntu on WSL
           
           And use Canary as browser and the Canary debugger tools :)
  
- # to execute wasm/WASI file on your machine:
- $WASMTIME YOURWASMFILE
+ # to execute wasm/WASI file on your machine:  
+ <code>$WASMTIME YOURWASMFILE</code>
  
