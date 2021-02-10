@@ -1,9 +1,20 @@
 
-function _handleFiles(file) {
-	start(file[0].name);
+function _handleFiles(fileInput) {
+	if (fileInput.length == 0) {
+		console.error("Missing file");
+		return;
+	}
+	
+	var file = fileInput[0];
+	if(file.type !== "application/wasm" ) {
+		console.error("File type is not 'application/wasm' but was '" + file.type + "'");
+		return;
+	}
+	let response = new Response(file);
+	start(response);
 };
 
-function start(moduleFile) {
+function start(response) {
 	var moduleInstanceExports = null;
 	function getModuleMemoryDataView() {
 		return new DataView(moduleInstanceExports.memory.buffer);
@@ -128,7 +139,7 @@ function start(moduleFile) {
 		js : {mem: new WebAssembly.Memory({initial: 2,maximum: 2})}
 	};
 
-	WebAssembly.instantiateStreaming(fetch(moduleFile), importObject).then(module =>
+	WebAssembly.instantiateStreaming(response, importObject).then(module =>
 	{
 		setModuleInstance(module.instance);
 		try {module.instance.exports._start();}
