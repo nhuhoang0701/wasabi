@@ -27,11 +27,11 @@ The dev. env. is tested on Ubuntu in WSL1
         This will import all necessaries dependencies , compile and place necessary var. env.
  
  # to execute wasm/WASI file on your browser:
-   - From the folder ./wasabi/src/wasi_browser (open the debugger to see the output in the console):  
-    `$HTTSERVER`
-  - Open your browser at http://localhost:8080 and select your wasm file (for example \\wsl$\Ubuntu\home\ghislain\wasabi5\wasabi\src\test\wasi\build\MyExample.wasm ).
-  
-      If you want to debug c++ in your browser :
+  - From the folder './wasabi/src/wasi_browser' start the http server  by typing `$HTTSERVER`  
+  - Open your browser at http://localhost:8080 and select your wasm file  
+      for example \\wsl$\Ubuntu\home\ghislain\wasabi5\wasabi\src\test\wasi\build\MyExample.wasm
+      Don't forget to open the browser debugger to see the output in the console.
+  - If you want to debug c++ in your browser :
       - Install [canary](https://www.google.com/chrome/canary/)
       - Install this [exetension](https://chrome.google.com/webstore/detail/cc%20%20-devtools-support-dwa/pdcpmagijalfljmkmjngeonclgbbannb)  
         In the options of this extension add a path subtitution rule :
