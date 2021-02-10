@@ -1,3 +1,4 @@
+#include "test_tools/TestAssert.h"
 
 #include <stdio.h>         // For printf
 #include <math.h>          // For pow, sqrt
@@ -84,7 +85,6 @@ EXPORT char* str_OPENFILE_READ_str(const char* file)
 	for(size_t i = 0; i < 1024; ++i)
 		buf[i] = 0;
 
-	printf("val : %s \n\n",file);
 	FILE* fp = fopen (file, "r");
 	if(fp == 0)
 		return "Error during fopen call";
@@ -123,79 +123,27 @@ EXPORT char* str_OPENFILE_SEEK_READ_str_i(const char* file, int offset, int when
 	return buf;
 }
 
-int main() {
-	printf("Call i_PRINT_i \n");
-	double res = i_PRINT_i(2);
-	printf("val : %f \n\n",res);
-	if (res != 85)
-	{
-		return -1;
-	}
-
-	printf("Call d_SQRT_d \n");
-	res = d_SQRT_d(4);
-	printf("val : %f \n\n",res);
-	if (res != 2)
-	{
-		return -1;
-	}
-
-	printf("Call d_FLOOR_d \n");
-	res = d_FLOOR_d(4);
-	printf("val : %f \n\n",res);
-	if (res != 4)
-	{
-		return -1;
-	}
-
-	printf("Call pv_MALLOC_i \n");
+int main()
+{
+	CPPUNIT_ASSERT_EQUAL(i_PRINT_i(2),85);
+	CPPUNIT_ASSERT_EQUAL(d_SQRT_d(4),2);
+	CPPUNIT_ASSERT_EQUAL(d_FLOOR_d(4),4);
+	
 	void* pint = pv_MALLOC_i(4);
-	printf("val : %p \n\n",pint);
-	if (pint == NULL)
-	{
-		return -1;
-	}
+	CPPUNIT_ASSERT_NOTEQUAL(pint,NULL);
+	v_FREE_pv(pint);
 
-	printf("Call v_FREE_pv \n");
-	v_FREE_pv(pint); // don't know how to check
-	printf("val : %p \n\n",pint);
-	if (pint == NULL)
-	{
-		return -1;
-	}
-
-	printf("Call pi_MALLOCFREE_i \n");
 	pint = pi_MALLOCFREE_i(4);
-	printf("val : %p \n\n",pint);
-	if (pint == NULL)
-	{
-		return -1;
-	}
+	CPPUNIT_ASSERT_NOTEQUAL(pint,NULL);
 
+	CPPUNIT_ASSERT_EQUAL_STR(pc_HEAPSTR_c('D'), "Dello");
 
-	printf("Call pc_HEAPSTR_c \n");
-	char * pc_res = pc_HEAPSTR_c('D');
-	printf("val : %s \n\n",pc_res);
-	if (strcmp( pc_res, "Dello"))
-		return -1;
-
-	printf("Call v_MEMCPY_vp_vp_i \n");
 	char* pcharSrc = "Source";
-	char* pcharDest = malloc(10) ;
+	char* pcharDest = malloc(10);
+	v_MEMCPY_vp_vp_i(pcharSrc,pcharDest,strlen(pcharSrc)+1);
+	CPPUNIT_ASSERT_EQUAL_STR(pcharDest, "Source");
 
-	int len = strlen(pcharSrc);
-
-	v_MEMCPY_vp_vp_i(pcharSrc,pcharDest,len+1);
-	printf("len : %d val : %s \n\n",len,pcharDest);
-	if (strcmp( pcharDest, "Source"))
-		return -1;
-
-	printf("Call str_OPENFILE_READ_str \n");
-	pc_res = str_OPENFILE_READ_str("/home/i051142/wasabi/src/test/C/Build/toto.txt");
-	printf("val : %s \n\n",pc_res);
-	//if (strcmp( pc_res, "Dello"))
-	//	return -1;
-
+	CPPUNIT_ASSERT_EQUAL_STR(str_OPENFILE_READ_str("../resources/text.txt"), "Hello from text.txt");
 
    return 0;
 }
