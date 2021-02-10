@@ -116,4 +116,39 @@ else
 	echo "cJSON test passed"
 fi
 
+
+
+echo
+echo -----------------------------------
+echo ------------- sqlite --------------
+echo " $(date +"%T")"
+\rm -rf $SQLITE_DIR
+cd $WASABI_EXTERNAL_DIR/
+echo --------------- git ---------------
+git clone https://github.com/wapm-packages/sqlite.git
+cd sqlite
+mkdir build
+cd build
+
+echo ------------- cmake ---------------
+cmake .. \
+	-DCMAKE_SYSTEM_NAME=Generic \
+	-DCMAKE_SYSTEM_PROCESSOR=wasm \
+	-DCMAKE_C_COMPILER_WORKS=ON \
+	-DCMAKE_C_COMPILER_FORCED=ON \
+	-DCMAKE_CROSSCOMPILING=ON \
+	-DCMAKE_SYSROOT=$SYSROOT_DIR \
+	\
+	-DCMAKE_C_COMPILER=$C_COMPILER \
+	-DCMAKE_C_COMPILER_TARGET=wasm32-unknown-wasi \
+	-DCMAKE_CXX_COMPILER=$CXX_COMPILER \
+	-DCMAKE_CXX_COMPILER_TARGET=wasm32-unknown-wasi \
+	-DCMAKE_AR=$LLVM_AR \
+	-DCMAKE_C_FLAGS=-fno-stack-protector \
+	\
+	-DCMAKE_INSTALL_PREFIX=$SQLITE_DIR/install
+
+echo -------------- make ---------------
+make
+
 echo "End $(date +"%T")"
