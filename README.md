@@ -1,12 +1,19 @@
 
 # wasabi
-POC to execute InA query in the Browser the goal is to have an engine whic hcan process some computation (blending , scalar function, filtering, aggregation)
+POC to execute InA query in the Browser the goal is to have an engine which can process some computation (blending , totaux, scalar function, filtering, aggregation)
+Tis engine can would be also be plug to CS client to consume some SQL DataBase in  Live way.
 
 To execute it in the browser we will use webassembly https://webassembly.org/
-We will use c++ to have more chance in case this go in prouction to integrate some MDS or Cube code
+We will use c++ to have more chance to integrate some existing code MDS / Micro Cube code
 The technical language stack will be : 
-  wasi https://wasi.dev/   https://github.com/WebAssembly/wasi-sdk
-  libc++ LLVM https://releases.llvm.org/11.0.0/projects/libcxx/docs/
+
+  wasi        : can be executed in the browser, nodejs or on a machine throw Wasmtime  
+                     * https://wasi.dev/  
+                     * https://wasmtime.dev/  
+                      
+  wasi-sdk   :  https://github.com/WebAssembly/wasi-sdk
+  
+  native c++ :  compiler clang (No Emscripten !)
 
 # WindowsSubsystemLinux
 The dev. env. is with Ubuntu on WSL
