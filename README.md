@@ -4,16 +4,12 @@ POC to execute InA query in the Browser the goal is to have an engine which can 
 Tis engine can would be also be plug to CS client to consume some SQL DataBase in  Live way.
 
 To execute it in the browser we will use webassembly https://webassembly.org/
-We will use c++ to have more chance to integrate some existing code MDS / Micro Cube code
-The technical language stack will be : 
+We will use c++ to have more chance to integrate some existing code MDS / Micro Cube code  
 
-  wasi        : can be executed in the browser, nodejs or on a machine throw Wasmtime  
-                     * https://wasi.dev/  
-                     * https://wasmtime.dev/  
-                      
-  wasi-sdk   :  https://github.com/WebAssembly/wasi-sdk
-  
-  native c++ :  compiler clang (No Emscripten !)
+The technical layers stack will be :  
+  [wasi](https://wasi.dev/)        : can be executed in the browser, nodejs or on any machine throw [Wasmtime](https://wasmtime.dev/)      
+  [wasi-sdk](https://github.com/WebAssembly/wasi-sdk)  
+  native c++ :  compiler [clang](https://clang.llvm.org/) (No Emscripten !)  
 
 # WindowsSubsystemLinux
 The dev. env. is with Ubuntu on WSL
@@ -36,12 +32,12 @@ The dev. env. is with Ubuntu on WSL
   - Open your browser at http://localhost:8080 and select your wasm file.
   
       If you want to debug c++ in your browser :
-      - Install canary "https://www.google.com/chrome/canary/"
-      - Install this exetension https://chrome.google.com/webstore/detail/cc%20%20-devtools-support-dwa/pdcpmagijalfljmkmjngeonclgbbannb
-        In the parameter of the extension add a path subtitution rule :
+      - Install [canary](https://www.google.com/chrome/canary/)
+      - Install this [exetension](https://chrome.google.com/webstore/detail/cc%20%20-devtools-support-dwa/pdcpmagijalfljmkmjngeonclgbbannb)  
+        In the options of this extension add a path subtitution rule :
           "/home/$user" -> "\\wsl$\Ubuntu\home\$user" (replace $user by your Linux user) 
           
-          And use Canary as browser and the Canary debugger tools :)
+          And use Canary as browser and the Canary debugger tools as usual :)
  
  # to execute wasm/WASI file on your machine:  
  <code>$WASMTIME YOURWASMFILE</code>
