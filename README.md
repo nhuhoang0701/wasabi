@@ -6,10 +6,10 @@ Tis engine can would be also be plug to CS client to consume some SQL DataBase i
 To execute it in the browser we will use webassembly https://webassembly.org/
 We will use c++ to have more chance to integrate some existing code MDS / Micro Cube code  
 
-The technical layers stack will be :  
-  [wasi](https://wasi.dev/)        : can be executed in the browser, nodejs or on any machine throw [Wasmtime](https://wasmtime.dev/)      
-  [wasi-sdk](https://github.com/WebAssembly/wasi-sdk)  
-  native c++ :  compiler [clang](https://clang.llvm.org/) (No Emscripten !)  
+The technical stacks will be :  
+  - [wasi](https://wasi.dev/)        : can be executed in the browser, nodejs or on any machine throw [Wasmtime](https://wasmtime.dev/)      
+  - [wasi-sdk](https://github.com/WebAssembly/wasi-sdk)  
+  - [clang](https://clang.llvm.org/) compiler (No Emscripten !)  
 
 # WindowsSubsystemLinux
 The dev. env. is with Ubuntu on WSL
