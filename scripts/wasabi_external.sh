@@ -11,6 +11,7 @@ source ./scripts/set_env.sh
 
 mkdir -p $WASABI_EXTERNAL_DIR
 
+export outfile=./output_ext.log
 
 echo
 echo -----------------------------------
@@ -61,8 +62,8 @@ echo " $(date +"%T")"
 \rm -rf $WASABI_ROOT_DIR/src/test/wasi/build
 mkdir $WASABI_ROOT_DIR/src/test/wasi/build
 cd $WASABI_ROOT_DIR/src/test/wasi/build
-cmake .. &> compile.log
-make >> compile.log
+cmake .. &> $outfile
+make &> $outfile
 make test
 
 
@@ -73,7 +74,7 @@ echo " $(date +"%T")"
 \rm -rf $CJSON_DIR
 cd $WASABI_EXTERNAL_DIR/
 echo --------------- git ---------------
-git clone https://github.com/DaveGamble/cJSON.git
+git clone https://github.com/DaveGamble/cJSON.git &> $outfile
 cd cJSON
 mkdir build
 cd build
@@ -100,14 +101,14 @@ cmake .. \
 	-DBUILD_SHARED_LIBS=off \
 	-DENABLE_VALGRIND=off \
 	-DENABLE_SANITIZERS=off \
-	-DENABLE_CUSTOM_COMPILER_FLAGS=off
+	-DENABLE_CUSTOM_COMPILER_FLAGS=off &> $outfile
 
 echo -------------- make ---------------
-make cjson
-make cJSON_test
+make cjson  &> $outfile
+make cJSON_test &> $outfile
 
 echo -------------- test ---------------
-$WASMTIME $CJSON_DIR/build/cJSON_test &> /dev/null 
+$WASMTIME $CJSON_DIR/build/cJSON_test &> $outfile
 if [ $? -ne 0 ]
 then
 	echo "Error: cJSON test didn't works" 
@@ -125,7 +126,7 @@ echo " $(date +"%T")"
 \rm -rf $SQLITE_DIR
 cd $WASABI_EXTERNAL_DIR/
 echo --------------- git ---------------
-git clone https://github.com/wapm-packages/sqlite.git
+git clone https://github.com/wapm-packages/sqlite.git  &> $outfile
 cd sqlite
 mkdir build
 cd build
@@ -146,9 +147,18 @@ cmake .. \
 	-DCMAKE_AR=$LLVM_AR \
 	-DCMAKE_C_FLAGS=-fno-stack-protector \
 	\
-	-DCMAKE_INSTALL_PREFIX=$SQLITE_DIR/install
+	-DCMAKE_INSTALL_PREFIX=$SQLITE_DIR/install &> $outfile
 
 echo -------------- make ---------------
-make
+make &> $outfile
+
+echo -------------- test ---------------
+\rm -rf $WASABI_ROOT_DIR/src/test/sqlite/build
+mkdir $WASABI_ROOT_DIR/src/test/sqlite/build
+cd $WASABI_ROOT_DIR/src/test/sqlite/build
+cmake .. &> $outfile
+make &> $outfile
+make test
+
 
 echo "End $(date +"%T")"
