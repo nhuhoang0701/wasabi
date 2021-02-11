@@ -1,2 +1,2 @@
 /external
-/src/test/wasi/build
+build/
