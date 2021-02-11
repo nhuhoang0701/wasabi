@@ -27,7 +27,8 @@ The dev. env. is tested on Ubuntu in WSL1
   - From the ~/wasabi root folder (the folder which contains this README.md file):  
      `./wasabi.sh`  
         This will import all necessaries dependencies , compile and place necessary var. env.
- Once the env. is ready, to get all necessaries var. env., from the ~/wasabi root folder (the folder which contains this README.md file):  
+        
+ Once the env. is ready, to just get the necessaries var. env., from the ~/wasabi root folder (the folder which contains this README.md file):  
       `source ./scripts/set_env.sh`  
  
  # Execute wasm/WASI file on your browser:
