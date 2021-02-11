@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
+[[ "${BASH_SOURCE[0]}" != "${0}" ]] && echo "*** ERROR *** source does not work with wasabi.sh" && return 0
+
 
 # exit on error
 set -e
-
-export WASABI_ROOT_DIR=$(pwd)
 
 ./scripts/check_env.sh
 
@@ -11,4 +11,9 @@ export WASABI_ROOT_DIR=$(pwd)
 
 ./scripts/wasabi_src.sh
 
-source ./scripts/set_env.sh
+
+echo
+echo "-----------------------------------"
+echo "run:"
+echo "source ./scripts/set_env.sh"
+echo "to set your environment variables"

@@ -3,15 +3,8 @@
 
 echo -----------------------------------
 echo --------- set variables  ----------
-if [ ! -d "$WASABI_ROOT_DIR" ];
-then
-echo "error: variable WASABI_ROOT_DIR not set";
-return 1;
-else
+export WASABI_ROOT_DIR=$(pwd)
 echo "WASABI_ROOT_DIR: " "'"$WASABI_ROOT_DIR"'";
-fi
-
-
 export WASABI_EXTERNAL_DIR=$WASABI_ROOT_DIR/external
 echo "WASABI_EXTERNAL_DIR: " "'"$WASABI_EXTERNAL_DIR"'";
 
