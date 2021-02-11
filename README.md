@@ -16,6 +16,7 @@ The technical stacks are :
 The dev. env. is tested on Ubuntu in WSL1
   - Install unbuntu on windows :
      https://ubuntu.com/wsl
+     Scroll down on this page until: "Install Ubuntu on Windows Subsystem for Linux (WSL)"
 
   - Tips : From the wls terminal to open the current linux folder in windows explorer:  
     <code>~/wasabi/src$ explorer.exe .</code>
