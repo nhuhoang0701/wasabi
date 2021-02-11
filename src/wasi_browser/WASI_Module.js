@@ -37,6 +37,23 @@ function start(response) {
 		path_open: function(dirfd, dirflags, path, path_len, oflags, fs_rights_base, fs_rights_inheriting, fs_flags, fd) {
 			throw new Error("NYI:" + arguments.callee.name);
 		},
+		path_filestat_get: function(fd, path, path_len, buf) {
+			console.error("NYI:" + arguments.callee.name);
+			return WASI_ENOSYS;
+		},
+		path_unlink_file: function(fd, path, path_len, flags) {
+			console.error("NYI:" + arguments.callee.name);
+			return WASI_ENOSYS;
+		},
+		poll_oneoff: function(in_, out, nsubscriptions, nevents) {
+			console.error("NYI:" + arguments.callee.name);
+			return WASI_ENOSYS;
+		},
+		
+		fd_sync: function(fd) {
+			console.error("NYI:" + arguments.callee.name);
+			return WASI_ENOSYS;
+		},
 		fd_seek: function(fd, offset, whence, newoffset) {
 			throw new Error("NYI:" + arguments.callee.name);
 		},
@@ -84,6 +101,10 @@ function start(response) {
 			console.error("NYI:" + arguments.callee.name);
 		},
 		fd_close: function(fd) {
+			console.error("NYI:" + arguments.callee.name);
+			return WASI_ENOSYS;
+		},
+		fd_filestat_get: function(fd, buf) {
 			console.error("NYI:" + arguments.callee.name);
 			return WASI_ENOSYS;
 		},
