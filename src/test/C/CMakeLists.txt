@@ -31,6 +31,9 @@ project(
   VERSION 1.0
   LANGUAGES C)
 
+include_directories($ENV{WASABI_ROOT_DIR}/src/test_tools/include)
+link_directories($ENV{WASABI_ROOT_DIR}/src/build/lib)
+
 #add_library(MyLibExample simple_lib.cpp simple_lib.hpp)
 #add_library(C_libc_dl C_libc_dl.c)
 
@@ -56,6 +59,6 @@ add_executable(C_nolib.wasm C_nolib.c)
 enable_testing()
 add_test(NAME C_nolib COMMAND $ENV{WASMTIME} C_nolib.wasm)
 ## check --dir if usable or not, it's for open file
-add_test(NAME C_libc COMMAND $ENV{WASMTIME} C_libc.wasm)
+add_test(NAME C_libc COMMAND $ENV{WASMTIME} --dir=../resources/ C_libc.wasm)
 
 

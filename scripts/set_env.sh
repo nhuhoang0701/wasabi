@@ -25,6 +25,7 @@ export WASMTIME=$WASMTIME_DIR/wasmtime
 echo "WASMTIME: " "'"$WASMTIME"'";
 
 export CJSON_DIR=$WASABI_EXTERNAL_DIR/cJSON
+export SQLITE_DIR=$WASABI_EXTERNAL_DIR/sqlite
 
 export HTTP_SERVER="python3 -m http.server 8080"
 echo "HTTP_SERVER: " "'"$HTTP_SERVER"'";

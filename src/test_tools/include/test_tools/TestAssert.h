@@ -1,31 +1,22 @@
 #pragma once
-
-#include <string>
-#include <iostream>
+#include <stdio.h>
 
 
 #define WASABI_xstr(s) WASABI_str(s)
 
 #define WASABI_str(s) #s
 
-#define ASSERT_MESSAGE(m)					  \
-	(std::cout << "FAILED assertion: " << (m) \
-	 << " From function: " << __func__ \
-	 << " at " << __FILE__ << ":" << __LINE__ << std::endl)
+#define ASSERT_MESSAGE(m) (printf("FAILED assertion: %s From function: %s at %s: %d  \n", m, __func__, __FILE__, __LINE__))
 
 #define CPPUNIT_ASSERT_MSG(x, msg) \
 {\
 	if (!(x))\
 	{\
 		ASSERT_MESSAGE(msg);\
-		if (res==0)\
-		{\
-			res=-1;\
-		}\
 	}\
 	else\
 	{\
-		std::cout << "OK:" << WASABI_xstr(x) << std::endl;\
+		printf("OK: %s  \n", WASABI_xstr(x));\
 	}\
 }
 
@@ -37,11 +28,12 @@
 #define CPPUNIT_ASSERT_IGNORED(x) \
 {\
 	{\
-		std::cout << "IGNORED:" << WASABI_xstr(x) << std::endl;\
+		printf("IGNORED: %s \n", WASABI_xstr(x));\
 	}\
 }
 
 #define CPPUNIT_ASSERT_EQUAL(x,y) CPPUNIT_ASSERT((x) == (y) );
+#define CPPUNIT_ASSERT_NOTEQUAL(x,y) CPPUNIT_ASSERT((x) != (y) );
 
 #define CPPUNIT_ASSERT_EQUAL_STR(x,y) CPPUNIT_ASSERT_MSG((strcmp(x, y) == 0), x );
 
@@ -60,6 +52,10 @@
 //   return res;
 // }
 //
+#ifdef __cplusplus
+#include <string>	
+#include <iostream>
+
 class TestScopePrinter
 {
 public:
@@ -79,5 +75,6 @@ public:
 
 private:
 	std::string m_name;
-	int& m_testStatus;
+	int&        m_testStatus;
 };
+#endif // __cplusplus
