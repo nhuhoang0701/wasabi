@@ -42,7 +42,7 @@ The dev. env. is tested on Ubuntu in WSL1
       - Install [canary](https://www.google.com/chrome/canary/)
       - Inside Canary install this [exetension](https://chrome.google.com/webstore/detail/cc%20%20-devtools-support-dwa/pdcpmagijalfljmkmjngeonclgbbannb), in extension option add a path subtitution rule :  
           "/home/$user" -> "\\wsl$\Ubuntu\home\\$user" (replace $user by your Linux user) 
-          
+      - Enable WebAssemblyDebugging in Canary: https://developers.google.com/web/updates/2020/12/webassembly
       - Now use Canary browser and his debugger to debug the c++ code :)
  
  # Execute wasm/WASI file locally on your machine:  
