@@ -9,7 +9,7 @@ warning() {
 
 source ./scripts/set_env.sh
 
-
+export outfile=./output_src.log
 
 echo
 echo -----------------------------------
@@ -28,8 +28,8 @@ cd $WASABI_ROOT_DIR/src/exceptions
 \rm -rf build
 mkdir build
 cd build
-cmake ..
-make
+cmake .. &> $outfile
+make  &> $outfile
 make install
 
 echo
@@ -40,9 +40,9 @@ cd $WASABI_ROOT_DIR/src/json
 \rm -rf build
 mkdir build
 cd build
-cmake ..
-cmake --build .
-make install
+cmake .. &> $outfile
+cmake --build .  &> $outfile
+make install &> $outfile
 ctest
 
 

@@ -41,3 +41,4 @@ then
 else
 	echo    "$CMAKE installed."
 fi
+

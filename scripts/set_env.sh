@@ -3,15 +3,8 @@
 
 echo -----------------------------------
 echo --------- set variables  ----------
-if [ ! -d "$WASABI_ROOT_DIR" ];
-then
-echo "error: variable WASABI_ROOT_DIR not set";
-return 1;
-else
+export WASABI_ROOT_DIR=$(pwd)
 echo "WASABI_ROOT_DIR: " "'"$WASABI_ROOT_DIR"'";
-fi
-
-
 export WASABI_EXTERNAL_DIR=$WASABI_ROOT_DIR/external
 echo "WASABI_EXTERNAL_DIR: " "'"$WASABI_EXTERNAL_DIR"'";
 
@@ -32,6 +25,7 @@ export WASMTIME=$WASMTIME_DIR/wasmtime
 echo "WASMTIME: " "'"$WASMTIME"'";
 
 export CJSON_DIR=$WASABI_EXTERNAL_DIR/cJSON
+export SQLITE_DIR=$WASABI_EXTERNAL_DIR/sqlite
 
 export HTTP_SERVER="python3 -m http.server 8080"
 echo "HTTP_SERVER: " "'"$HTTP_SERVER"'";
