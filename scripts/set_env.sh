@@ -13,7 +13,10 @@ export LLVM_AR=$LLVM_DIR/bin/llvm-ar
 export LLVM_SPLIT=$LLVM_DIR/bin/llvm-split
 
 export C_COMPILER=$LLVM_DIR/bin/clang
+echo -e "C_COMPILER: " "\t\t'"$C_COMPILER"'";
+
 export CXX_COMPILER=$LLVM_DIR/bin/clang++
+echo -e "CXX_COMPILER: " "\t\t'"$CXX_COMPILER"'";
 
 export WASI_SDK_DIR=$WASABI_EXTERNAL_DIR/wasi-sdk-12
 export SYSROOT_DIR=$WASI_SDK_DIR/wasi-sysroot
