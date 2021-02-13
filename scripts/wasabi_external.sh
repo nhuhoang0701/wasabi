@@ -21,12 +21,15 @@ echo " Installing external tools into " $WASABI_EXTERNAL_DIR
 echo
 echo -----------------------------------
 echo ---------- install clang ----------
-export LLVM_VERSION=11.0.1
 echo " $(date +"%T")"
-echo "version: $LLVM_VERSION"
+export LLVM_VERSION=${LLVM_VERSION:-11.0.1}
+export LLVM_ARCH=${LLVM_ARCH:-x86_64}
+export LLVM_OS=${LLVM_OS:-linux-gnu-ubuntu-16.04}
+export LLVMFile=clang+llvm-$LLVM_VERSION-$LLVM_ARCH-$LLVM_OS
+echo "LLVMFile: $LLVMFile"
 if [ ! -d "$LLVM_DIR" ]
 then
-    wget -qO - https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVM_VERSION/clang+llvm-$LLVM_VERSION-x86_64-linux-gnu-ubuntu-16.04.tar.xz | tar xfJ - -C $WASABI_EXTERNAL_DIR/ && \rm -rf $LLVM_DIR && mv $WASABI_EXTERNAL_DIR/clang+llvm-$LLVM_VERSION-x86_64-linux-gnu-ubuntu-16.04 $LLVM_DIR
+    wget -qO - https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVM_VERSION/$LLVMFile.tar.xz | tar xfJ - -C $WASABI_EXTERNAL_DIR/ && \rm -rf $LLVM_DIR && mv $WASABI_EXTERNAL_DIR/$LLVMFile $LLVM_DIR
 else
 	echo "Clang already installed in '$LLVM_DIR'"
 fi
