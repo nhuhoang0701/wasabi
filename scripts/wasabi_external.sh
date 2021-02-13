@@ -11,7 +11,7 @@ source ./scripts/set_env.sh
 
 mkdir -p $WASABI_EXTERNAL_DIR
 
-export outfile=./output_ext.log
+export outfile=$WASABI_EXTERNAL_DIR/output.log
 
 echo
 echo -----------------------------------
@@ -21,12 +21,12 @@ echo " Installing external tools into " $WASABI_EXTERNAL_DIR
 echo
 echo -----------------------------------
 echo ---------- install clang ----------
-export LLVM_VERSION=11.0.0
+export LLVM_VERSION=11.0.1
 echo " $(date +"%T")"
 echo "version: $LLVM_VERSION"
 if [ ! -d "$LLVM_DIR" ]
 then
-    wget -qO - https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVM_VERSION/clang+llvm-$LLVM_VERSION-x86_64-linux-gnu-ubuntu-20.04.tar.xz | tar xfJ - -C $WASABI_EXTERNAL_DIR/ && \rm -rf $LLVM_DIR && mv $WASABI_EXTERNAL_DIR/clang+llvm-$LLVM_VERSION-x86_64-linux-gnu-ubuntu-20.04 $LLVM_DIR
+    wget -qO - https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVM_VERSION/clang+llvm-$LLVM_VERSION-x86_64-linux-gnu-ubuntu-16.04.tar.xz | tar xfJ - -C $WASABI_EXTERNAL_DIR/ && \rm -rf $LLVM_DIR && mv $WASABI_EXTERNAL_DIR/clang+llvm-$LLVM_VERSION-x86_64-linux-gnu-ubuntu-16.04 $LLVM_DIR
 else
 	echo "Clang already installed in '$LLVM_DIR'"
 fi
@@ -34,7 +34,7 @@ fi
 echo -----------------------------------
 echo ---- install clang wasm librt  ----
 echo " $(date +"%T")"
-wget -qO - https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-12/libclang_rt.builtins-wasm32-wasi-12.0.tar.gz | tar xfz - -C $WASABI_EXTERNAL_DIR/llvm/lib/clang/11.0.0
+wget -qO - https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-12/libclang_rt.builtins-wasm32-wasi-12.0.tar.gz | tar xfz - -C $WASABI_EXTERNAL_DIR/llvm/lib/clang/$LLVM_VERSION
 
 echo
 echo -----------------------------------
