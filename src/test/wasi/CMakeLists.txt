@@ -1,24 +1,24 @@
 # CMake simple example
-
+include ($ENV{WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
 ## [main]
-set(CMAKE_SYSTEM_NAME Generic)
-set(CMAKE_SYSTEM_PROCESSOR wasm)
-set(CMAKE_CROSSCOMPILING 1)
-set(CMAKE_C_COMPILER_WORKS 1)
-set(CMAKE_CXX_COMPILER_WORKS 1)
+#set(CMAKE_SYSTEM_NAME Generic)
+#set(CMAKE_SYSTEM_PROCESSOR wasm)
+#set(CMAKE_CROSSCOMPILING 1)
+#set(CMAKE_C_COMPILER_WORKS 1)
+#set(CMAKE_CXX_COMPILER_WORKS 1)
 
-set(CLANG_TARGET_TRIPLE wasm32-unknown-wasi)
-set(CMAKE_SYSROOT $ENV{SYSROOT_DIR})
+#set(CLANG_TARGET_TRIPLE wasm32-unknown-wasi)
+#set(CMAKE_SYSROOT $ENV{SYSROOT_DIR})
 
-set(CMAKE_C_COMPILER $ENV{C_COMPILER})
-set(CMAKE_C_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
+#set(CMAKE_C_COMPILER $ENV{C_COMPILER})
+#set(CMAKE_C_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
 
-set(CMAKE_CXX_COMPILER $ENV{CXX_COMPILER})
-set(CMAKE_CXX_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
+#set(CMAKE_CXX_COMPILER $ENV{CXX_COMPILER})
+#set(CMAKE_CXX_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
 
-set(CMAKE_AR $ENV{LLVM_AR})
-set(CMAKE_SPLIT $ENV{LLVM_SPLIT})
+#set(CMAKE_AR $ENV{LLVM_AR})
+#set(CMAKE_SPLIT $ENV{LLVM_SPLIT})
 
 
 # Almost all CMake files should start with this
@@ -61,5 +61,5 @@ target_link_libraries(MyExample.wasm PRIVATE MyLibExample.wasm)
 # This part is so the Modern CMake book can verify this example builds. For your code,
 # you'll probably want tests too
 enable_testing()
-add_test(NAME MyExample COMMAND $ENV{WASMTIME} MyExample.wasm)
+add_test(NAME MyExample COMMAND MyExample.wasm)
 
