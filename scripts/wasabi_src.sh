@@ -29,8 +29,8 @@ cd $WASABI_ROOT_DIR/src/exceptions
 mkdir build
 cd build
 $CMAKE .. &> $outfile
-make  &> $outfile
-make install
+$MAKE  &> $outfile
+$MAKE install
 
 echo
 echo -----------------------------------
@@ -42,7 +42,7 @@ mkdir build
 cd build
 $CMAKE .. &> $outfile
 $CMAKE --build .  &> $outfile
-make install &> $outfile
+$MAKE install &> $outfile
 ctest
 
 
