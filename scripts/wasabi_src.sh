@@ -28,7 +28,7 @@ cd $WASABI_ROOT_DIR/src/exceptions
 \rm -rf build
 mkdir build
 cd build
-cmake .. &> $outfile
+$CMAKE .. &> $outfile
 make  &> $outfile
 make install
 
@@ -40,8 +40,8 @@ cd $WASABI_ROOT_DIR/src/json
 \rm -rf build
 mkdir build
 cd build
-cmake .. &> $outfile
-cmake --build .  &> $outfile
+$CMAKE .. &> $outfile
+$CMAKE --build .  &> $outfile
 make install &> $outfile
 ctest
 

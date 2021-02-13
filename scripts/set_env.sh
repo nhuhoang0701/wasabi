@@ -4,9 +4,9 @@
 echo -----------------------------------
 echo --------- set variables  ----------
 export WASABI_ROOT_DIR=$(pwd)
-echo "WASABI_ROOT_DIR: " "'"$WASABI_ROOT_DIR"'";
+echo -e "WASABI_ROOT_DIR: " "\t'"$WASABI_ROOT_DIR"'";
 export WASABI_EXTERNAL_DIR=$WASABI_ROOT_DIR/external
-echo "WASABI_EXTERNAL_DIR: " "'"$WASABI_EXTERNAL_DIR"'";
+echo -e "WASABI_EXTERNAL_DIR: " "\t'"$WASABI_EXTERNAL_DIR"'";
 
 export LLVM_DIR=$WASABI_EXTERNAL_DIR/llvm
 export LLVM_AR=$LLVM_DIR/bin/llvm-ar
@@ -17,17 +17,24 @@ export CXX_COMPILER=$LLVM_DIR/bin/clang++
 
 export WASI_SDK_DIR=$WASABI_EXTERNAL_DIR/wasi-sdk-12
 export SYSROOT_DIR=$WASI_SDK_DIR/wasi-sysroot
-echo "SYSROOT_DIR: " "'"$SYSROOT_DIR"'";
+echo -e "SYSROOT_DIR: " "\t\t'"$SYSROOT_DIR"'";
 
 export WASMTIME_DIR=$WASABI_EXTERNAL_DIR/wasmtime-v0.22.0
 export WASMTIME_LINUX_DIR=$WASMTIME_DIR-x86_64-linux
 export WASMTIME=$WASMTIME_DIR/wasmtime
-echo "WASMTIME: " "'"$WASMTIME"'";
+echo -e "WASMTIME: " "\t\t'"$WASMTIME"'";
 
 export CJSON_DIR=$WASABI_EXTERNAL_DIR/cJSON
 export SQLITE_DIR=$WASABI_EXTERNAL_DIR/sqlite
 
+export CMAKE=${CMAKE:-cmake}
+echo -e "CMAKE: "  "\t\t'"$CMAKE"'";
+export MAKE=${MAKE:-make}
+echo -e "MAKE: "  "\t\t\t'"$MAKE"'";
+export NINJA=${NINJA:-ninja}
+echo -e "NINJA: "  "\t\t'"$NINJA"'";
+
 export HTTP_SERVER="python3 -m http.server 8080"
-echo "HTTP_SERVER: " "'"$HTTP_SERVER"'";
+echo -e "HTTP_SERVER: " "\t\t'"$HTTP_SERVER"'";
 
 echo

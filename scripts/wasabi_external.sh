@@ -62,7 +62,7 @@ echo " $(date +"%T")"
 \rm -rf $WASABI_ROOT_DIR/src/test/wasi/build
 mkdir $WASABI_ROOT_DIR/src/test/wasi/build
 cd $WASABI_ROOT_DIR/src/test/wasi/build
-cmake .. &> $outfile
+$CMAKE .. &> $outfile
 make &> $outfile
 make test
 
@@ -80,7 +80,7 @@ mkdir build
 cd build
 
 echo ------------- cmake ---------------
-cmake .. \
+$CMAKE .. \
 	-DCMAKE_SYSTEM_NAME=Generic \
 	-DCMAKE_SYSTEM_PROCESSOR=wasm \
 	-DCMAKE_C_COMPILER_WORKS=ON \
@@ -132,7 +132,7 @@ mkdir build
 cd build
 
 echo ------------- cmake ---------------
-cmake .. \
+$CMAKE .. \
 	-DCMAKE_SYSTEM_NAME=Generic \
 	-DCMAKE_SYSTEM_PROCESSOR=wasm \
 	-DCMAKE_C_COMPILER_WORKS=ON \
@@ -156,7 +156,7 @@ echo -------------- test ---------------
 \rm -rf $WASABI_ROOT_DIR/src/test/sqlite/build
 mkdir $WASABI_ROOT_DIR/src/test/sqlite/build
 cd $WASABI_ROOT_DIR/src/test/sqlite/build
-cmake .. &> $outfile
+$CMAKE .. &> $outfile
 make &> $outfile
 make test
 
