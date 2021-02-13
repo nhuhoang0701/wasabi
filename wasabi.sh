@@ -5,12 +5,9 @@
 # exit on error
 set -e
 
-./scripts/check_env.sh
-
+source ./scripts/check_env.sh
 ./scripts/wasabi_external.sh
-
 ./scripts/wasabi_src.sh
-
 
 echo
 echo "-----------------------------------"
