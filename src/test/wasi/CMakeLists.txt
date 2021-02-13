@@ -1,4 +1,17 @@
 # CMake simple example
+get_cmake_property(_variableNames VARIABLES)
+list (SORT _variableNames)
+foreach (_variableName ${_variableNames})
+    message(STATUS "${_variableName}=${${_variableName}}")
+endforeach()
+
+execute_process(COMMAND "${CMAKE_COMMAND}" "-E" "environment")
+
+message("ENV{WASABI_ROOT_DIR}= $ENV{WASABI_ROOT_DIR}    WASABI_ROOT_DIR=${WASABI_ROOT_DIR}")
+if (DEFINED ENV{WASABI_ROOT_DIR})
+    set (WASABI_ROOT_DIR "$ENV{WASABI_ROOT_DIR}" CACHE PATH "project root" FORCE)
+else()
+endif(DEFINED ENV{WASABI_ROOT_DIR})
 include ($ENV{WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
 ## [main]
