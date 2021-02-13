@@ -3,8 +3,7 @@
 export PYTHON=${PYTHON:-python3}
 echo -----------------------------------
 echo ----- check $PYTHON install  ------
-dpkg -s $PYTHON &> /dev/null 
-if [ $? -ne 0 ] 
+if ! command -v $PYTHON &> /dev/null
 then
 	echo "Error: $PYTHON not installed. Please install it:"  
 	echo sudo apt-get update
@@ -17,8 +16,7 @@ fi
 export MAKE=${MAKE:-make}
 echo -----------------------------------
 echo ------ check $MAKE install  -------
-dpkg -s $MAKE &> /dev/null 
-if [ $? -ne 0 ]
+if ! command -v $MAKE &> /dev/null
 then
 	echo "Error: $MAKE not installed. Please install it:"  
 	echo sudo apt-get update
@@ -31,8 +29,7 @@ fi
 export CMAKE=${CMAKE:-cmake}
 echo -----------------------------------
 echo ------ check $CMAKE install  ------
-dpkg -s $CMAKE &> /dev/null 
-if [ $? -ne 0 ]
+if ! command -v $CMAKE &> /dev/null
 then
 	echo "Error: $CMAKE not installed. Please install it:"  
 	echo sudo apt-get update
