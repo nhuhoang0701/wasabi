@@ -6,8 +6,6 @@ echo ----- check $PYTHON install  ------
 if ! command -v $PYTHON &> /dev/null
 then
 	echo "Error: $PYTHON not installed. Please install it:"  
-	echo sudo apt-get update
-	echo sudo apt-get install $PYTHON
 	return 1
 else
 	echo    "$PYTHON installed."
@@ -19,8 +17,6 @@ echo ------ check $MAKE install  -------
 if ! command -v $MAKE &> /dev/null
 then
 	echo "Error: $MAKE not installed. Please install it:"  
-	echo sudo apt-get update
-	echo sudo apt-get install $MAKE
 	return 1
 else
 	echo    "$MAKE installed."
@@ -32,8 +28,6 @@ echo ------ check $CMAKE install  ------
 if ! command -v $CMAKE &> /dev/null
 then
 	echo "Error: $CMAKE not installed. Please install it:"  
-	echo sudo apt-get update
-	echo sudo apt-get install $CMAKE
 	return 1
 else
 	echo    "$CMAKE installed."
