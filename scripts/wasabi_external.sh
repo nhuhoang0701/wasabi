@@ -26,26 +26,30 @@ export LLVM_VERSION=${LLVM_VERSION:-11.0.0}
 export LLVM_ARCH=${LLVM_ARCH:-x86_64}
 export LLVM_OS=${LLVM_OS:-linux-gnu-ubuntu-20.04}
 export LLVMFile=clang+llvm-$LLVM_VERSION-$LLVM_ARCH-$LLVM_OS
-echo "LLVMFile: $LLVMFile"
-if [ ! -d "$LLVM_DIR" ]
+echo "LLVM version: $LLVMFile"
+if [ ! -f "$LLVM_DIR/$LLVMFile.flag" ]
 then
+	rm -rf $LLVM_DIR
+	rm -rf $WASABI_EXTERNAL_DIR/$LLVMFile
     wget -qO - https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVM_VERSION/$LLVMFile.tar.xz | tar xfJ - -C $WASABI_EXTERNAL_DIR/ && \rm -rf $LLVM_DIR && mv $WASABI_EXTERNAL_DIR/$LLVMFile $LLVM_DIR
+	touch $LLVM_DIR/$LLVMFile.flag
 else
 	echo "Clang already installed in '$LLVM_DIR'"
 fi
 
-echo -----------------------------------
-echo ---- install clang wasm librt  ----
-echo " $(date +"%T")"
-wget -qO - https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-12/libclang_rt.builtins-wasm32-wasi-12.0.tar.gz | tar xfz - -C $WASABI_EXTERNAL_DIR/llvm/lib/clang/$LLVM_VERSION
 
 echo
 echo -----------------------------------
 echo ------ install wasm sysroot  ------
 echo " $(date +"%T")"
-if [ ! -d "$WASI_SDK_DIR" ]
+export WASISDK_VERSION=${WASISDK_VERSION:-12}
+echo "WASISDK version: $WASISDK_VERSION"
+if [ ! -f "$WASI_SDK_DIR/wasisdk_$WASISDK_VERSION.flag" ]
 then
-	wget -qO - https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-12/wasi-sysroot-12.0.tar.gz | tar xfz - -C $WASI_SDK_DIR
+	mkdir -p $WASI_SDK_DIR
+	wget -qO - https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$WASISDK_VERSION/wasi-sysroot-$WASISDK_VERSION.0.tar.gz | tar xfz - -C $WASI_SDK_DIR
+	wget -qO - https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$WASISDK_VERSION/libclang_rt.builtins-wasm32-wasi-$WASISDK_VERSION.0.tar.gz | tar xfz - -C $WASABI_EXTERNAL_DIR/llvm/lib/clang/$LLVM_VERSION
+	touch $WASI_SDK_DIR/wasisdk_$WASISDK_VERSION.flag
 else
 	echo "sysroot already installed in '$WASI_SDK_DIR'"
 fi
@@ -54,10 +58,13 @@ echo
 echo -----------------------------------
 echo ------- install wasmtime runtime --
 echo " $(date +"%T")"
+export WASMTIME_VERSION=${WASMTIME_VERSION:-v0.22.0}
+echo "WASMTIME version: $WASMTIME_VERSION"
 # see packages on https://github.com/bytecodealliance/wasmtime/releases
-if [ ! -d "$WASMTIME_DIR" ]
+if [ ! -f "$WASMTIME_DIR/wasmtime_$WASMTIME_VERSION.flag" ]
 then
-	wget -qO - https://github.com/bytecodealliance/wasmtime/releases/download/v0.22.0/wasmtime-v0.22.0-x86_64-linux.tar.xz | tar xfJ -  -C $WASABI_EXTERNAL_DIR/ && mv $WASMTIME_LINUX_DIR $WASMTIME_DIR
+	wget -qO - https://github.com/bytecodealliance/wasmtime/releases/download/$WASMTIME_VERSION/wasmtime-$WASMTIME_VERSION-x86_64-linux.tar.xz | tar xfJ -  -C $WASABI_EXTERNAL_DIR/ && mv $WASMTIME_LINUX_DIR $WASMTIME_DIR
+	touch $WASMTIME_DIR/wasmtime_$WASMTIME_VERSION.flag
 else
 	echo "wasmtime already installed in '$WASMTIME_DIR'"
 fi
@@ -78,11 +85,12 @@ echo
 echo -----------------------------------
 echo -------------- cJSON --------------
 echo " $(date +"%T")"
-if [ ! -d "$CJSON_DIR" ]
+if [ ! -f "$CJSON_DIR/cjson.flag" ]
 then
 	cd $WASABI_EXTERNAL_DIR/
 	echo --------------- git ---------------
-	git clone https://github.com/DaveGamble/cJSON.git &> $outfile
+	rm -rf cJSON
+	git clone https://github.com/DaveGamble/cJSON.git  &> $outfile
 	cd cJSON
 	mkdir build
 	cd build
@@ -104,6 +112,7 @@ then
 	echo -------------- make ---------------
 	$MAKE cjson  &> $outfile
 	$MAKE cJSON_test &> $outfile
+	touch $CJSON_DIR/cjson.flag
 else
 	echo "cjson already installed in '$CJSON_DIR'"
 fi
@@ -123,10 +132,11 @@ echo
 echo -----------------------------------
 echo ------------- sqlite --------------
 echo " $(date +"%T")"
-if [ ! -d "$SQLITE_DIR" ]
+if [ ! -f "$SQLITE_DIR/sqlite.flag" ]
 then
 	cd $WASABI_EXTERNAL_DIR/
 	echo --------------- git ---------------
+	rm -rf sqlite
 	git clone https://github.com/wapm-packages/sqlite.git  &> $outfile
 	cd sqlite
 	mkdir build
@@ -141,6 +151,7 @@ then
 
 	echo -------------- make ---------------
 	$MAKE &> $outfile
+	touch $SQLITE_DIR/sqlite.flag
 else
 	echo "sqlite already installed in '$SQLITE_DIR'"
 fi
