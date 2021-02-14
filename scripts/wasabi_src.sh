@@ -42,7 +42,7 @@ mkdir build
 cd build
 $CMAKE .. > $outfile
 $CMAKE --build . > $outfile
-ctest
+$CTEST
 
 echo
 echo -----------------------------------
@@ -54,7 +54,7 @@ mkdir build
 cd build
 $CMAKE .. > $outfile
 $CMAKE --build . > $outfile
-ctest
+$CTEST
 
 echo
 echo -----------------------------------
@@ -67,7 +67,7 @@ cd build
 $CMAKE .. > $outfile
 $CMAKE --build . > $outfile
 $CMAKE --install . > $outfile
-ctest
+$CTEST
 
 
 echo "End $(date +"%T")"
