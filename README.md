@@ -15,7 +15,7 @@ The technical stacks are :
 This [Jenkins](https://gkelucjenkins3.jaas-gcp.cloud.sap.corp/view/experiments/job/wasabi_cmake_test/) under construction.  
 
 # WindowsSubsystemLinux
-The dev. env. is tested on Ubuntu in WSL1
+The dev. env. is tested on Ubuntu 20 in WSL1
   - Install unbuntu on windows :
      https://ubuntu.com/wsl  
      Scroll down on this page until: "Install Ubuntu on Windows Subsystem for Linux (WSL)"
