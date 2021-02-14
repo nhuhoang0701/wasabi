@@ -32,7 +32,6 @@ then
 	rm -rf $LLVM_DIR
 	rm -rf $WASABI_EXTERNAL_DIR/$LLVMFile
     wget -qO - https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVM_VERSION/$LLVMFile.tar.xz | tar xfJ - -C $WASABI_EXTERNAL_DIR/ && \rm -rf $LLVM_DIR && mv $WASABI_EXTERNAL_DIR/$LLVMFile $LLVM_DIR
-	wget -qO - https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$WASISDK_VERSION/libclang_rt.builtins-wasm32-wasi-$WASISDK_VERSION.0.tar.gz | tar xfz - -C $WASABI_EXTERNAL_DIR/llvm/lib/clang/$LLVM_VERSION
 	touch $LLVM_DIR/$LLVMFile.flag
 else
 	echo "Clang already installed in '$LLVM_DIR'"
@@ -49,8 +48,14 @@ if [ ! -f "$WASI_SDK_DIR/wasisdk_$WASISDK_VERSION.flag" ]
 then
 	mkdir -p $WASI_SDK_DIR
 	wget -qO - https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$WASISDK_VERSION/wasi-sysroot-$WASISDK_VERSION.0.tar.gz | tar xfz - -C $WASI_SDK_DIR
-	wget -qO - https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$WASISDK_VERSION/libclang_rt.builtins-wasm32-wasi-$WASISDK_VERSION.0.tar.gz | tar xfz - -C $WASABI_EXTERNAL_DIR/llvm/lib/clang/$LLVM_VERSION
 	touch $WASI_SDK_DIR/wasisdk_$WASISDK_VERSION.flag
+else
+	echo "sysroot already installed in '$WASI_SDK_DIR'"
+fi
+if [ ! -f "$WASI_SDK_DIR/wasisdk_librt_$WASISDK_VERSION.flag" ]
+then
+	wget -qO - https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$WASISDK_VERSION/libclang_rt.builtins-wasm32-wasi-$WASISDK_VERSION.0.tar.gz | tar xfz - -C $WASABI_EXTERNAL_DIR/llvm/lib/clang/$LLVM_VERSION
+	touch $WASI_SDK_DIR/wasisdk_librt_$WASISDK_VERSION.flag
 else
 	echo "sysroot already installed in '$WASI_SDK_DIR'"
 fi
