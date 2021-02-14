@@ -22,10 +22,12 @@ include_directories(${SQLITE_DIR})
 
 add_library(sqlite.wasm ${SQLITE_DIR}/sqlite3.c ${SQLITE_DIR}/os.c ${SQLITE_DIR}/vfs.c )
 
-add_executable(sqlite_example.wasm sqlite_example.cpp )
+add_executable(sqlite_example sqlite_example.cpp )
 
-target_link_libraries(sqlite_example.wasm PRIVATE sqlite.wasm)
+target_link_libraries(sqlite_example PRIVATE sqlite.wasm)
 
 enable_testing()
-add_test(NAME sqlite_example COMMAND sqlite_example.wasm)
+add_test(NAME sqlite_example COMMAND sqlite_example)
+
+include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
 

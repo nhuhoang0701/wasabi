@@ -12,9 +12,11 @@ project(
   LANGUAGES CXX)
 
 add_library(MyLibExample.wasm simple_lib.cpp simple_lib.hpp)
-add_executable(MyExample.wasm simple_example.cpp)
-target_link_libraries(MyExample.wasm PRIVATE MyLibExample.wasm)
+add_executable(MyExample simple_example.cpp)
+target_link_libraries(MyExample PRIVATE MyLibExample.wasm)
 
 enable_testing()
-add_test(NAME MyExample COMMAND MyExample.wasm)
+add_test(NAME MyExample COMMAND MyExample)
+
+include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
 

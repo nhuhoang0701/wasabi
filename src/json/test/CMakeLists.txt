@@ -12,9 +12,11 @@ link_directories(${WASABI_ROOT_DIR}/src/build/lib)
 set(SRCS test_json.cpp)
 set(HEADERS test_data.h)
 
-add_executable(TestJson.wasm ${SRCS} ${HEADERS})
-target_link_libraries(TestJson.wasm PRIVATE cjson jsonUtils.wasm exceptions.wasm)
+add_executable(TestJson ${SRCS} ${HEADERS})
+target_link_libraries(TestJson PRIVATE cjson jsonUtils.wasm exceptions.wasm)
 
 ## [test]
 # run with ctest -V
-add_test(NAME TestJson COMMAND TestJson.wasm)
+add_test(NAME TestJson COMMAND TestJson)
+
+include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)

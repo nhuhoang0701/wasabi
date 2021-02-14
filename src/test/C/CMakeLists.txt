@@ -19,9 +19,9 @@ link_directories(${WASABI_ROOT_DIR}/src/build/lib)
 # Link each target with other targets or add options, etc.
 
 # Adding something we can run - Output name matches target name
-add_executable(C_libc.wasm C_libc.c)
-add_executable(C_nolib.wasm C_nolib.c)
-#add_executable(C_libc_dl.wasm C_libc_dl.c)
+add_executable(C_libc C_libc.c)
+add_executable(C_nolib C_nolib.c)
+#add_executable(C_libc_dl C_libc_dl.c)
 
 
 
@@ -31,5 +31,7 @@ add_executable(C_nolib.wasm C_nolib.c)
 #target_link_libraries(C_libc_dl.wasm PRIVATE )
 
 enable_testing()
-add_test(NAME C_nolib COMMAND C_nolib.wasm)
-add_test(NAME C_libc COMMAND C_libc.wasm --dir=../resources/)
+add_test(NAME C_nolib COMMAND C_nolib)
+add_test(NAME C_libc COMMAND C_libc --dir=../resources/)
+
+include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)

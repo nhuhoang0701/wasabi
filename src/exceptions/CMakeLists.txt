@@ -14,3 +14,5 @@ project(
 add_library(exceptions.wasm cxa_exception.cpp)
 
 install(TARGETS exceptions.wasm DESTINATION ${WASABI_ROOT_DIR}/src/build/lib)
+
+include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)

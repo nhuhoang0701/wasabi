@@ -22,7 +22,7 @@ link_directories(${WASABI_ROOT_DIR}/src/build/lib)
 
 # add_library(CPP_libcxx.wasm CPP_libcxx.cpp )
 
-add_executable(MyTest.wasm test.cpp)
+add_executable(MyTest test.cpp)
 
 
 target_link_libraries(MyTest.wasm )
@@ -30,4 +30,6 @@ target_link_libraries(MyTest.wasm )
 ## [main]
 
 enable_testing()
-add_test(NAME MyTest COMMAND MyTest.wasm)
+add_test(NAME MyTest COMMAND MyTest)
+
+include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
