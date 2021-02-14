@@ -36,6 +36,8 @@ export MAKE=${MAKE:-make}
 echo -e "MAKE: "  "\t\t\t'"$MAKE"'";
 export NINJA=${NINJA:-ninja}
 echo -e "NINJA: "  "\t\t'"$NINJA"'";
+export CTEST=${CTEST:-ninja}
+echo -e "CTEST: "  "\t\t'"$CTEST"'";
 
 export HTTP_SERVER="python3 -m http.server 8080"
 echo -e "HTTP_SERVER: " "\t\t'"$HTTP_SERVER"'";
