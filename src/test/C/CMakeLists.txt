@@ -1,38 +1,17 @@
-## [main]
-set(CMAKE_SYSTEM_NAME Generic)
-set(CMAKE_SYSTEM_PROCESSOR wasm)
-set(CMAKE_CROSSCOMPILING 1)
-set(CMAKE_C_COMPILER_WORKS 1)
-set(CMAKE_CXX_COMPILER_WORKS 1)
-
-set(CLANG_TARGET_TRIPLE wasm32-unknown-wasi)
-set(CMAKE_SYSROOT $ENV{SYSROOT_DIR})
-
-set(CMAKE_C_COMPILER $ENV{C_COMPILER})
-set(CMAKE_C_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
-
-set(CMAKE_CXX_COMPILER $ENV{CXX_COMPILER})
-set(CMAKE_CXX_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
-
-set(CMAKE_AR $ENV{LLVM_AR})
-set(CMAKE_SPLIT $ENV{LLVM_SPLIT})
-
-
-# Almost all CMake files should start with this
-# You should always specify a range with the newest
-# and oldest tested versions of CMake. This will ensure
-# you pick up the best policies.
 cmake_minimum_required(VERSION 3.1...3.19)
 
-# This is your project statement. You should always list languages;
-# Listing the version is nice here since it sets lots of useful variables
+if (NOT DEFINED WASABI_ROOT_DIR AND DEFINED ENV{WASABI_ROOT_DIR})
+    set (WASABI_ROOT_DIR "$ENV{WASABI_ROOT_DIR}" CACHE PATH "project root" FORCE)
+endif()
+include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
+
 project(
   Wasabi_ValidationC_Support
   VERSION 1.0
   LANGUAGES C)
 
-include_directories($ENV{WASABI_ROOT_DIR}/src/test_tools/include)
-link_directories($ENV{WASABI_ROOT_DIR}/src/build/lib)
+include_directories(${WASABI_ROOT_DIR}/src/test_tools/include)
+link_directories(${WASABI_ROOT_DIR}/src/build/lib)
 
 #add_library(MyLibExample simple_lib.cpp simple_lib.hpp)
 #add_library(C_libc_dl C_libc_dl.c)
@@ -51,14 +30,6 @@ add_executable(C_nolib.wasm C_nolib.c)
 #target_link_libraries(C_libc.wasm PRIVATE )
 #target_link_libraries(C_libc_dl.wasm PRIVATE )
 
-
-## [main]
-
-# This part is so the Modern CMake book can verify this example builds. For your code,
-# you'll probably want tests too
 enable_testing()
-add_test(NAME C_nolib COMMAND $ENV{WASMTIME} C_nolib.wasm)
-## check --dir if usable or not, it's for open file
-add_test(NAME C_libc COMMAND $ENV{WASMTIME} --dir=../resources/ C_libc.wasm)
-
-
+add_test(NAME C_nolib COMMAND C_nolib.wasm)
+add_test(NAME C_libc COMMAND C_libc.wasm --dir=../resources/)

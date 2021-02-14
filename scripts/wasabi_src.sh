@@ -40,9 +40,9 @@ cd $WASABI_ROOT_DIR/src/json
 \rm -rf build
 mkdir build
 cd build
-$CMAKE .. &> $outfile
-$CMAKE --build .  &> $outfile
-$MAKE install &> $outfile
+$CMAKE ..
+$CMAKE --build . 
+$MAKE install
 ctest
 
 

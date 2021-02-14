@@ -22,9 +22,9 @@ echo
 echo -----------------------------------
 echo ---------- install clang ----------
 echo " $(date +"%T")"
-export LLVM_VERSION=${LLVM_VERSION:-11.0.1}
+export LLVM_VERSION=${LLVM_VERSION:-11.0.0}
 export LLVM_ARCH=${LLVM_ARCH:-x86_64}
-export LLVM_OS=${LLVM_OS:-linux-gnu-ubuntu-16.04}
+export LLVM_OS=${LLVM_OS:-linux-gnu-ubuntu-20.04}
 export LLVMFile=clang+llvm-$LLVM_VERSION-$LLVM_ARCH-$LLVM_OS
 echo "LLVMFile: $LLVMFile"
 if [ ! -d "$LLVM_DIR" ]
@@ -66,8 +66,8 @@ echo " $(date +"%T")"
 mkdir $WASABI_ROOT_DIR/src/test/wasi/build
 cd $WASABI_ROOT_DIR/src/test/wasi/build
 $CMAKE .. &> $outfile
-make &> $outfile
-make test
+$MAKE &> $outfile
+$MAKE test
 
 
 echo
@@ -84,7 +84,7 @@ cd build
 
 echo ------------- cmake ---------------
 $CMAKE .. \
-	-C $WASABI_ROOT_DIR/scripts/cmake/wasabi.cmake \
+	-DCMAKE_TOOLCHAIN_FILE=$WASABI_ROOT_DIR/scripts/cmake/wasabi.cmake \
 	-DCMAKE_C_FLAGS=-fno-stack-protector \
 	\
 	-DCMAKE_INSTALL_PREFIX=$CJSON_DIR/install \
@@ -97,8 +97,8 @@ $CMAKE .. \
 	-DENABLE_CUSTOM_COMPILER_FLAGS=off &> $outfile
 
 echo -------------- make ---------------
-make cjson  &> $outfile
-make cJSON_test &> $outfile
+$MAKE cjson  &> $outfile
+$MAKE cJSON_test &> $outfile
 
 echo -------------- test ---------------
 $WASMTIME $CJSON_DIR/build/cJSON_test &> $outfile
@@ -126,21 +126,21 @@ cd build
 
 echo ------------- cmake ---------------
 $CMAKE .. \
-	-C $WASABI_ROOT_DIR/scripts/cmake/wasabi.cmake \
+	-DCMAKE_TOOLCHAIN_FILE=$WASABI_ROOT_DIR/scripts/cmake/wasabi.cmake \
 	-DCMAKE_C_FLAGS=-fno-stack-protector \
 	\
 	-DCMAKE_INSTALL_PREFIX=$SQLITE_DIR/install &> $outfile
 
 echo -------------- make ---------------
-make &> $outfile
+$MAKE &> $outfile
 
 echo -------------- test ---------------
 \rm -rf $WASABI_ROOT_DIR/src/test/sqlite/build
 mkdir $WASABI_ROOT_DIR/src/test/sqlite/build
 cd $WASABI_ROOT_DIR/src/test/sqlite/build
 $CMAKE .. &> $outfile
-make &> $outfile
-make test
+$MAKE &> $outfile
+$MAKE test
 
 
 echo "End $(date +"%T")"
