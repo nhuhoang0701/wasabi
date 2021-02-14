@@ -78,8 +78,8 @@ echo " $(date +"%T")"
 mkdir $WASABI_ROOT_DIR/src/test/wasi/build
 cd $WASABI_ROOT_DIR/src/test/wasi/build
 $CMAKE .. &> $outfile
-$MAKE &> $outfile
-$MAKE test
+$CMAKE --build . &> $outfile &> $outfile
+ctest
 
 
 echo
@@ -110,9 +110,8 @@ then
 		-DENABLE_SANITIZERS=off \
 		-DENABLE_CUSTOM_COMPILER_FLAGS=off &> $outfile
 
-	echo -------------- make ---------------
-	$MAKE cjson  &> $outfile
-	$MAKE cJSON_test &> $outfile
+	echo ------------- build ---------------
+	$CMAKE --build . --target cJSON_test &> $outfile
 	touch $CJSON_DIR/cjson.flag
 else
 	echo "cjson already installed in '$CJSON_DIR'"
@@ -150,8 +149,8 @@ then
 		\
 		-DCMAKE_INSTALL_PREFIX=$SQLITE_DIR/install &> $outfile
 
-	echo -------------- make ---------------
-	$MAKE &> $outfile
+	echo ------------- build ---------------
+	$CMAKE --build . &> $outfile
 	touch $SQLITE_DIR/sqlite.flag
 else
 	echo "sqlite already installed in '$SQLITE_DIR'"
@@ -161,8 +160,8 @@ echo -------------- test ---------------
 mkdir $WASABI_ROOT_DIR/src/test/sqlite/build
 cd $WASABI_ROOT_DIR/src/test/sqlite/build
 $CMAKE .. &> $outfile
-$MAKE &> $outfile
-$MAKE test
+$CMAKE --build . &> $outfile
+ctest
 
 
 echo "End $(date +"%T")"
