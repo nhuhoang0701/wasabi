@@ -20,11 +20,11 @@ add_definitions(
 include_directories(${SQLITE_DIR})
 
 
-add_library(sqlite.wasm ${SQLITE_DIR}/sqlite3.c ${SQLITE_DIR}/os.c ${SQLITE_DIR}/vfs.c )
+add_library(sqlite ${SQLITE_DIR}/sqlite3.c ${SQLITE_DIR}/os.c ${SQLITE_DIR}/vfs.c )
 
 add_executable(sqlite_example sqlite_example.cpp )
 
-target_link_libraries(sqlite_example PRIVATE sqlite.wasm)
+target_link_libraries(sqlite_example PRIVATE sqlite)
 
 enable_testing()
 add_test(NAME sqlite_example COMMAND sqlite_example)
