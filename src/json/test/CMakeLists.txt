@@ -1,3 +1,10 @@
+cmake_minimum_required(VERSION 3.1...3.19)
+
+if (NOT DEFINED WASABI_ROOT_DIR AND DEFINED ENV{WASABI_ROOT_DIR})
+    set (WASABI_ROOT_DIR "$ENV{WASABI_ROOT_DIR}" CACHE PATH "project root" FORCE)
+endif()
+include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
+
 # CMake json/test
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
@@ -13,7 +20,7 @@ set(SRCS test_json.cpp)
 set(HEADERS test_data.h)
 
 add_executable(TestJson ${SRCS} ${HEADERS})
-target_link_libraries(TestJson PRIVATE cjson jsonUtils.wasm exceptions.wasm)
+target_link_libraries(TestJson PRIVATE cjson jsonUtils exceptions.wasm)
 
 ## [test]
 # run with ctest -V

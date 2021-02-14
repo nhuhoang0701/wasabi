@@ -20,12 +20,12 @@ project(
 include_directories(${WASABI_ROOT_DIR}/src/test_tools/include)
 link_directories(${WASABI_ROOT_DIR}/src/build/lib)
 
-# add_library(CPP_libcxx.wasm CPP_libcxx.cpp )
+# add_library(CPP_libcxx CPP_libcxx.cpp )
 
 add_executable(MyTest test.cpp)
 
 
-target_link_libraries(MyTest.wasm )
+target_link_libraries(MyTest )
 
 ## [main]
 

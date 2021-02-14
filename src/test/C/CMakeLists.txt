@@ -27,8 +27,8 @@ add_executable(C_nolib C_nolib.c)
 
 # Make sure you link your targets with this command. It can also link libraries and
 # even flags, so linking a target that does not exist will not give a configure-time error.
-#target_link_libraries(C_libc.wasm PRIVATE )
-#target_link_libraries(C_libc_dl.wasm PRIVATE )
+#target_link_libraries(C_libc PRIVATE )
+#target_link_libraries(C_libc_dl PRIVATE )
 
 enable_testing()
 add_test(NAME C_nolib COMMAND C_nolib)

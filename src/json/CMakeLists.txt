@@ -19,3 +19,5 @@ enable_testing()
 add_subdirectory(src)
 
 add_subdirectory(test)
+
+include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
