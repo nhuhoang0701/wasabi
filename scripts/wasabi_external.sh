@@ -43,20 +43,24 @@ echo
 echo -----------------------------------
 echo ------ install wasm sysroot  ------
 echo " $(date +"%T")"
-\rm -rf $WASI_SDK_DIR
-mkdir -p $WASI_SDK_DIR
-wget -qO - https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-12/wasi-sysroot-12.0.tar.gz | tar xfz - -C $WASI_SDK_DIR
+if [ ! -d "$WASI_SDK_DIR" ]
+then
+	wget -qO - https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-12/wasi-sysroot-12.0.tar.gz | tar xfz - -C $WASI_SDK_DIR
+else
+	echo "sysroot already installed in '$WASI_SDK_DIR'"
+fi
 
 echo
 echo -----------------------------------
 echo ------- install wasmtime runtime --
 echo " $(date +"%T")"
 # see packages on https://github.com/bytecodealliance/wasmtime/releases
-
-\rm -rf $WASMTIME_DIR
-\rm -rf $WASMTIME_LINUX_DIR
-wget -qO - https://github.com/bytecodealliance/wasmtime/releases/download/v0.22.0/wasmtime-v0.22.0-x86_64-linux.tar.xz | tar xfJ -  -C $WASABI_EXTERNAL_DIR/ && mv $WASMTIME_LINUX_DIR $WASMTIME_DIR
-
+if [ ! -d "$WASMTIME_DIR" ]
+then
+	wget -qO - https://github.com/bytecodealliance/wasmtime/releases/download/v0.22.0/wasmtime-v0.22.0-x86_64-linux.tar.xz | tar xfJ -  -C $WASABI_EXTERNAL_DIR/ && mv $WASMTIME_LINUX_DIR $WASMTIME_DIR
+else
+	echo "wasmtime already installed in '$WASMTIME_DIR'"
+fi
 
 echo
 echo -----------------------------------
@@ -74,32 +78,35 @@ echo
 echo -----------------------------------
 echo -------------- cJSON --------------
 echo " $(date +"%T")"
-\rm -rf $CJSON_DIR
-cd $WASABI_EXTERNAL_DIR/
-echo --------------- git ---------------
-git clone https://github.com/DaveGamble/cJSON.git &> $outfile
-cd cJSON
-mkdir build
-cd build
+if [ ! -d "$CJSON_DIR" ]
+then
+	cd $WASABI_EXTERNAL_DIR/
+	echo --------------- git ---------------
+	git clone https://github.com/DaveGamble/cJSON.git &> $outfile
+	cd cJSON
+	mkdir build
+	cd build
 
-echo ------------- cmake ---------------
-$CMAKE .. \
-	-DCMAKE_TOOLCHAIN_FILE=$WASABI_ROOT_DIR/scripts/cmake/wasabi.cmake \
-	-DCMAKE_C_FLAGS=-fno-stack-protector \
-	\
-	-DCMAKE_INSTALL_PREFIX=$CJSON_DIR/install \
-	\
-	-DENABLE_CJSON_TEST=on \
-	-DENABLE_CJSON_UTILS=off \
-	-DBUILD_SHARED_LIBS=off \
-	-DENABLE_VALGRIND=off \
-	-DENABLE_SANITIZERS=off \
-	-DENABLE_CUSTOM_COMPILER_FLAGS=off &> $outfile
+	echo ------------- cmake ---------------
+	$CMAKE .. \
+		-DCMAKE_TOOLCHAIN_FILE=$WASABI_ROOT_DIR/scripts/cmake/wasabi.cmake \
+		-DCMAKE_C_FLAGS=-fno-stack-protector \
+		\
+		-DCMAKE_INSTALL_PREFIX=$CJSON_DIR/install \
+		\
+		-DENABLE_CJSON_TEST=on \
+		-DENABLE_CJSON_UTILS=off \
+		-DBUILD_SHARED_LIBS=off \
+		-DENABLE_VALGRIND=off \
+		-DENABLE_SANITIZERS=off \
+		-DENABLE_CUSTOM_COMPILER_FLAGS=off &> $outfile
 
-echo -------------- make ---------------
-$MAKE cjson  &> $outfile
-$MAKE cJSON_test &> $outfile
-
+	echo -------------- make ---------------
+	$MAKE cjson  &> $outfile
+	$MAKE cJSON_test &> $outfile
+else
+	echo "cjson already installed in '$CJSON_DIR'"
+fi
 echo -------------- test ---------------
 $WASMTIME $CJSON_DIR/build/cJSON_test &> $outfile
 if [ $? -ne 0 ]
@@ -116,24 +123,27 @@ echo
 echo -----------------------------------
 echo ------------- sqlite --------------
 echo " $(date +"%T")"
-\rm -rf $SQLITE_DIR
-cd $WASABI_EXTERNAL_DIR/
-echo --------------- git ---------------
-git clone https://github.com/wapm-packages/sqlite.git  &> $outfile
-cd sqlite
-mkdir build
-cd build
+if [ ! -d "$SQLITE_DIR" ]
+then
+	cd $WASABI_EXTERNAL_DIR/
+	echo --------------- git ---------------
+	git clone https://github.com/wapm-packages/sqlite.git  &> $outfile
+	cd sqlite
+	mkdir build
+	cd build
 
-echo ------------- cmake ---------------
-$CMAKE .. \
-	-DCMAKE_TOOLCHAIN_FILE=$WASABI_ROOT_DIR/scripts/cmake/wasabi.cmake \
-	-DCMAKE_C_FLAGS=-fno-stack-protector \
-	\
-	-DCMAKE_INSTALL_PREFIX=$SQLITE_DIR/install &> $outfile
+	echo ------------- cmake ---------------
+	$CMAKE .. \
+		-DCMAKE_TOOLCHAIN_FILE=$WASABI_ROOT_DIR/scripts/cmake/wasabi.cmake \
+		-DCMAKE_C_FLAGS=-fno-stack-protector \
+		\
+		-DCMAKE_INSTALL_PREFIX=$SQLITE_DIR/install &> $outfile
 
-echo -------------- make ---------------
-$MAKE &> $outfile
-
+	echo -------------- make ---------------
+	$MAKE &> $outfile
+else
+	echo "sqlite already installed in '$SQLITE_DIR'"
+fi
 echo -------------- test ---------------
 \rm -rf $WASABI_ROOT_DIR/src/test/sqlite/build
 mkdir $WASABI_ROOT_DIR/src/test/sqlite/build
