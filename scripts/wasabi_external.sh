@@ -57,7 +57,7 @@ then
 	wget -qO - https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$WASISDK_VERSION/libclang_rt.builtins-wasm32-wasi-$WASISDK_VERSION.0.tar.gz | tar xfz - -C $WASABI_EXTERNAL_DIR/llvm/lib/clang/$LLVM_VERSION
 	touch $WASI_SDK_DIR/wasisdk_librt_$WASISDK_VERSION.flag
 else
-	echo "sysroot already installed in '$WASI_SDK_DIR'"
+	echo "wasisdk_librt already installed in '$WASABI_EXTERNAL_DIR/llvm/lib/clang/$LLVM_VERSION'"
 fi
 
 echo
@@ -82,9 +82,9 @@ echo " $(date +"%T")"
 \rm -rf $WASABI_ROOT_DIR/src/test/wasi/build
 mkdir $WASABI_ROOT_DIR/src/test/wasi/build
 cd $WASABI_ROOT_DIR/src/test/wasi/build
-$CMAKE .. &> $outfile
-$CMAKE --build . &> $outfile &> $outfile
-ctest
+$CMAKE .. > $outfile
+$CMAKE --build . > $outfile
+$CTEST
 
 
 echo
@@ -96,7 +96,7 @@ then
 	cd $WASABI_EXTERNAL_DIR/
 	echo --------------- git ---------------
 	rm -rf cJSON
-	git clone https://github.com/DaveGamble/cJSON.git  &> $outfile
+	git clone https://github.com/DaveGamble/cJSON.git  > $outfile
 	cd cJSON
 	mkdir build
 	cd build
@@ -113,16 +113,16 @@ then
 		-DBUILD_SHARED_LIBS=off \
 		-DENABLE_VALGRIND=off \
 		-DENABLE_SANITIZERS=off \
-		-DENABLE_CUSTOM_COMPILER_FLAGS=off &> $outfile
+		-DENABLE_CUSTOM_COMPILER_FLAGS=off > $outfile
 
 	echo ------------- build ---------------
-	$CMAKE --build . --target cJSON_test &> $outfile
+	$CMAKE --build . --target cJSON_test > $outfile
 	touch $CJSON_DIR/cjson.flag
 else
 	echo "cjson already installed in '$CJSON_DIR'"
 fi
 echo -------------- test ---------------
-$WASMTIME $CJSON_DIR/build/cJSON_test &> $outfile
+$WASMTIME $CJSON_DIR/build/cJSON_test > $outfile
 if [ $? -ne 0 ]
 then
 	echo "Error: cJSON test didn't works" 
@@ -142,7 +142,7 @@ then
 	cd $WASABI_EXTERNAL_DIR/
 	echo --------------- git ---------------
 	rm -rf sqlite
-	git clone https://github.com/wapm-packages/sqlite.git  &> $outfile
+	git clone https://github.com/wapm-packages/sqlite.git  > $outfile
 	cd sqlite
 	mkdir build
 	cd build
@@ -152,10 +152,10 @@ then
 		-DCMAKE_TOOLCHAIN_FILE=$WASABI_ROOT_DIR/scripts/cmake/wasabi.cmake \
 		-DCMAKE_C_FLAGS=-fno-stack-protector \
 		\
-		-DCMAKE_INSTALL_PREFIX=$SQLITE_DIR/install &> $outfile
+		-DCMAKE_INSTALL_PREFIX=$SQLITE_DIR/install > $outfile
 
 	echo ------------- build ---------------
-	$CMAKE --build . &> $outfile
+	$CMAKE --build . > $outfile
 	touch $SQLITE_DIR/sqlite.flag
 else
 	echo "sqlite already installed in '$SQLITE_DIR'"
@@ -164,9 +164,9 @@ echo -------------- test ---------------
 \rm -rf $WASABI_ROOT_DIR/src/test/sqlite/build
 mkdir $WASABI_ROOT_DIR/src/test/sqlite/build
 cd $WASABI_ROOT_DIR/src/test/sqlite/build
-$CMAKE .. &> $outfile
-$CMAKE --build . &> $outfile
-ctest
+$CMAKE .. > $outfile
+$CMAKE --build . > $outfile
+$CTEST
 
 
 echo "End $(date +"%T")"
