@@ -26,5 +26,9 @@ target_link_libraries(CPP_Withlibcxx.wasm PRIVATE CPP_libcxx.wasm exceptions.was
 ## [main]
 enable_testing()
 add_test(NAME CPP_nolib_class COMMAND CPP_nolib_class.wasm)
-add_test(NAME CPP_nolib_exception COMMAND CPP_nolib_exception.wasm)
+add_test(NAME CPP_nolib_exception_failed COMMAND CPP_nolib_exception.wasm)
 add_test(NAME CPP_Withlibcxx COMMAND CPP_Withlibcxx.wasm)
+
+set_tests_properties(CPP_nolib_exception_failed PROPERTIES WILL_FAIL TRUE)
+
+#include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
