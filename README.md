@@ -12,7 +12,7 @@ The technical stacks are :
   - [clang](https://clang.llvm.org/) compiler (No Emscripten !)  
   - [CMake](https://cmake.org/) for compilation process
 
-This [Jenkins](https://gkelucjenkins3.jaas-gcp.cloud.sap.corp/view/experiments/job/wasabi_cmake_test/).  
+This is the [Jenkins](https://gkelucjenkins3.jaas-gcp.cloud.sap.corp/view/experiments/job/wasabi_cmake_test/) for compilation and tests.  
 
 ![plot](./doc/sac_sql.png)
 
