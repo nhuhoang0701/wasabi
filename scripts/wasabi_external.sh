@@ -31,8 +31,9 @@ if [ ! -f "$LLVM_DIR/$LLVMFile.flag" ]
 then
 	rm -rf $LLVM_DIR
 	rm -rf $WASABI_EXTERNAL_DIR/$LLVMFile
-    wget -qO - https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVM_VERSION/$LLVMFile.tar.xz | tar xfJ - -C $WASABI_EXTERNAL_DIR/ && \rm -rf $LLVM_DIR && cp -rf $WASABI_EXTERNAL_DIR/$LLVMFile $LLVM_DIR
+	wget -qO - https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVM_VERSION/$LLVMFile.tar.xz | tar xfJ - -C $WASABI_EXTERNAL_DIR/ && \rm -rf $LLVM_DIR && cp -rf $WASABI_EXTERNAL_DIR/$LLVMFile $LLVM_DIR
 	touch $LLVM_DIR/$LLVMFile.flag
+	rm -rf $WASABI_EXTERNAL_DIR/$LLVMFile
 else
 	echo "Clang already installed in '$LLVM_DIR'"
 fi
