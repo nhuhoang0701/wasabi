@@ -14,8 +14,6 @@ The technical stacks are :
 
 This is the [Jenkins](https://gkelucjenkins3.jaas-gcp.cloud.sap.corp/view/experiments/job/wasabi_cmake_test/) for compilation and tests.  
 
-![plot](./doc/sac_sql.png)
-
 # WindowsSubsystemLinux
 The dev. env. is tested on Ubuntu 20 in WSL1
   - Install unbuntu on windows :
@@ -68,11 +66,11 @@ The dev. env. is tested on Ubuntu 20 in WSL1
 *'wsl --list -v'  
   if you see something like:   
 '&nbsp;&nbsp;NAME&nbsp;&nbsp;&nbsp;&nbsp;STATE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VERSION'  
-    '* Ubuntu&nbsp;&nbsp;Stopped&nbsp;&nbsp;**2**'    
+    '* Ubuntu&nbsp;&nbsp;Stopped&nbsp;&nbsp;&nbsp;**2**'    
   Then you need to set your version back to 1 with the following command:  
 *'wsl --set-version Ubuntu 1'  
-    you now have :
+    Now you should have :  
     '&nbsp;&nbsp;NAME&nbsp;&nbsp;&nbsp;&nbsp;STATE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VERSION  '  
-    '* Ubuntu&nbsp;&nbsp;Stopped&nbsp;&nbsp;**1**  '  
+    '* Ubuntu&nbsp;&nbsp;Stopped&nbsp;&nbsp;&nbsp;**1**  '  
 To set wsl to 1 by default :
 *'wsl --set-default-version 1'  
