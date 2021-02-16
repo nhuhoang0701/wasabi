@@ -1,4 +1,4 @@
-
+// All the API is describe here: https://github.com/WebAssembly/WASI/blob/main/phases/snapshot/docs.md
 	var WASI_API = {
 		// Members
 		moduleInstanceExports: moduleInstanceExports = null,

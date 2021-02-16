@@ -32,8 +32,9 @@ if [ ! -f "$LLVM_DIR/$LLVMFile.flag" ]
 then
 	rm -rf $LLVM_DIR
 	rm -rf $WASABI_EXTERNAL_DIR/$LLVMFile
-    wget -qO - https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVM_VERSION/$LLVMFile.tar.xz | tar xfJ - -C $WASABI_EXTERNAL_DIR/ && \rm -rf $LLVM_DIR && mv $WASABI_EXTERNAL_DIR/$LLVMFile $LLVM_DIR
+	wget -qO - https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVM_VERSION/$LLVMFile.tar.xz | tar xfJ - -C $WASABI_EXTERNAL_DIR/ && \rm -rf $LLVM_DIR && cp -rf $WASABI_EXTERNAL_DIR/$LLVMFile $LLVM_DIR
 	touch $LLVM_DIR/$LLVMFile.flag
+	rm -rf $WASABI_EXTERNAL_DIR/$LLVMFile
 else
 	echo "Clang already installed in '$LLVM_DIR'"
 fi
@@ -70,7 +71,7 @@ echo "WASMTIME version: $WASMTIME_VERSION"
 # see packages on https://github.com/bytecodealliance/wasmtime/releases
 if [ ! -f "$WASMTIME_DIR/wasmtime_$WASMTIME_VERSION.flag" ]
 then
-	wget -qO - https://github.com/bytecodealliance/wasmtime/releases/download/$WASMTIME_VERSION/wasmtime-$WASMTIME_VERSION-x86_64-linux.tar.xz | tar xfJ -  -C $WASABI_EXTERNAL_DIR/ && mv $WASMTIME_LINUX_DIR $WASMTIME_DIR
+	wget -qO - https://github.com/bytecodealliance/wasmtime/releases/download/$WASMTIME_VERSION/wasmtime-$WASMTIME_VERSION-x86_64-linux.tar.xz | tar xfJ -  -C $WASABI_EXTERNAL_DIR/ && cp -rf $WASMTIME_LINUX_DIR $WASMTIME_DIR
 	touch $WASMTIME_DIR/wasmtime_$WASMTIME_VERSION.flag
 else
 	echo "wasmtime already installed in '$WASMTIME_DIR'"
