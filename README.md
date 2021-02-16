@@ -36,7 +36,16 @@ The dev. env. is tested on Ubuntu 20 in WSL1
  Once the env. is ready, to just get the necessaries var. env., from the ~/wasabi root folder (the folder which contains this README.md file):  
       `source ./scripts/set_env.sh`  
  
- # Execute wasm/WASI file on your browser:
+ # Compile a wasm/WASI binary and launch his test:
+ 'cd ~/wasabi/src/test/wasi/'  
+ 'rm -rf ./build'  
+ 'mkdir build'  
+ 'cd build'  
+ 'cmake ..'  
+ 'cmake --build .'  
+ 'ctest'  
+ 
+ # Execute wasm/WASI binary on your browser:
   - From the folder '~/wasabi/src/wasi_browser' start the http server  by typing `$HTTP_SERVER`  
   - Open your browser at http://localhost:8080 and select your wasm file  
       for example \\wsl$\Ubuntu\home\ghislain\wasabi5\wasabi\src\test\wasi\build\MyExample.wasm  
@@ -48,9 +57,10 @@ The dev. env. is tested on Ubuntu 20 in WSL1
       - Enable WebAssemblyDebugging in Canary: https://developers.google.com/web/updates/2020/12/webassembly
       - Now use Canary browser and his debugger to debug the c++ code :)
  
- # Execute wasm/WASI file locally on your machine:  
+ # Execute wasm/WASI binary locally on your machine:  
    - `$WASMTIME ~/wasabi/src/test/wasi/build/MyExample.wasm`
- 
+
+
 # Troubleshooting
   - explorer.exe cannot open WSL directories: https://github.com/microsoft/WSL/issues/4027#issuecomment-496628274
   - WSL must be in version 1.
