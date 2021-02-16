@@ -9,11 +9,12 @@ warning() {
 
 source ./scripts/set_env.sh
 
-export outfile=./output_src.log
+export outfile=$WASABI_EXTERNAL_DIR/output_src.log
 
 echo
 echo -----------------------------------
 echo " Compiling/installing wasabi/src"
+echo " Compiling/installing wasabi/src" > $outfile
 
 echo
 echo -----------------------------------
@@ -28,9 +29,9 @@ cd $WASABI_ROOT_DIR/src/exceptions
 \rm -rf build
 mkdir build
 cd build
-$CMAKE .. > $outfile
-$CMAKE --build . > $outfile
-$CMAKE --install . > $outfile
+$CMAKE .. >> $outfile
+$CMAKE --build . >> $outfile
+$CMAKE --install . >> $outfile
 
 echo
 echo -----------------------------------
@@ -40,8 +41,8 @@ cd $WASABI_ROOT_DIR/src/test/C
 \rm -rf build
 mkdir build
 cd build
-$CMAKE .. > $outfile
-$CMAKE --build . > $outfile
+$CMAKE .. >> $outfile
+$CMAKE --build . >> $outfile
 $CTEST
 
 echo
@@ -52,8 +53,8 @@ cd $WASABI_ROOT_DIR/src/test/CPP
 \rm -rf build
 mkdir build
 cd build
-$CMAKE .. > $outfile
-$CMAKE --build . > $outfile
+$CMAKE .. >> $outfile
+$CMAKE --build . >> $outfile
 $CTEST
 
 echo
@@ -64,9 +65,9 @@ cd $WASABI_ROOT_DIR/src/json
 \rm -rf build
 mkdir build
 cd build
-$CMAKE .. > $outfile
-$CMAKE --build . > $outfile
-$CMAKE --install . > $outfile
+$CMAKE .. >> $outfile
+$CMAKE --build . >> $outfile
+$CMAKE --install . >> $outfile
 $CTEST
 
 
