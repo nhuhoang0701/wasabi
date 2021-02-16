@@ -50,3 +50,13 @@ The dev. env. is tested on Ubuntu 20 in WSL1
  
 # Troubleshooting
   - explorer.exe cannot open WSL directories: https://github.com/microsoft/WSL/issues/4027#issuecomment-496628274
+  - WSL must be in version 1.
+  You can check it with the following commands:
+    wsl --set-default-version 1
+    wsl --list -v
+  if you see something like
+      NAME            STATE           VERSION
+    * Ubuntu          Stopped         2
+  Then you need to set your version back to 1 with the following command
+    wsl --set-version Ubuntu 1
+    
