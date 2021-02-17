@@ -52,7 +52,7 @@ Install_Steps()
 
 
 set +e
-echo "$OS_RELEASE" | grep -E "Microsoft|microsoft-standard"  # > /dev/null 2>&1
+echo "$OS_RELEASE" | grep -E "Microsoft|microsoft-standard"  > /dev/null 2>&1
 if [ $? -eq 0 ]
 then
 	# We are using WindowsSubsystemLinux
