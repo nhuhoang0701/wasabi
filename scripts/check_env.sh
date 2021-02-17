@@ -49,7 +49,7 @@ Install_Steps()
 }
 
 
-uname -r | egrep "Microsoft|microsoft-standard" > /dev/null
+uname -r | egrep "Microsoft|microsoft-standard" &> /dev/null
 if [ $? -eq 0 ]
 then
 	# We are using WindowsSubsystemLinux
@@ -57,12 +57,15 @@ then
 	if [ $? -eq 0 ]
 	then
 		# Only WSL 1 supported
+		echo "--------- Installing for WSL 1 ----------"
 		Install_Steps
 	else
 		echo -e "Project Wasabi, 2021\n"
 		echo -e "Sorry, this version of WindowsSubsystemLinux (WSL) is not supported yet.\n"
+		return 1
 	fi
 else
 	# Other OS : Linux, IOS, ...
+	echo "--------- Installing for Other OS ----------"
 	Install_Steps
 fi
