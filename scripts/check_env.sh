@@ -53,7 +53,7 @@ Install_Steps()
 
 echo "Test OS version .... [$OS_RELEASE]"
 
-echo "$OS_RELEASE" | grep -E "Microsoft|microsoft-standard"  # > /dev/null 2>&1
+# echo "$OS_RELEASE" | grep -E "Microsoft|microsoft-standard"  # > /dev/null 2>&1
 echo "After GREP ...."
 if [ $? -eq 0 ]
 then
