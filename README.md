@@ -14,8 +14,6 @@ The technical stacks are :
 
 This is the [Jenkins](https://gkelucjenkins3.jaas-gcp.cloud.sap.corp/view/experiments/job/wasabi_cmake_test/) for compilation and tests.  
 
-![plot](./doc/sac_sql.png)
-
 # WindowsSubsystemLinux
 The dev. env. is tested on Ubuntu 20 in WSL1
   - Install unbuntu on windows :
@@ -36,7 +34,16 @@ The dev. env. is tested on Ubuntu 20 in WSL1
  Once the env. is ready, to just get the necessaries var. env., from the ~/wasabi root folder (the folder which contains this README.md file):  
       `source ./scripts/set_env.sh`  
  
- # Execute wasm/WASI file on your browser:
+ # Compile a wasm/WASI binary and launch his test:
+ 'cd ~/wasabi/src/test/wasi/'  
+ 'rm -rf ./build'  
+ 'mkdir build'  
+ 'cd build'  
+ 'cmake ..'  
+ 'cmake --build .'  
+ 'ctest'  
+ 
+ # Execute wasm/WASI binary on your browser:
   - From the folder '~/wasabi/src/wasi_browser' start the http server  by typing `$HTTP_SERVER`  
   - Open your browser at http://localhost:8080 and select your wasm file  
       for example \\wsl$\Ubuntu\home\ghislain\wasabi5\wasabi\src\test\wasi\build\MyExample.wasm  
@@ -48,9 +55,10 @@ The dev. env. is tested on Ubuntu 20 in WSL1
       - Enable WebAssemblyDebugging in Canary: https://developers.google.com/web/updates/2020/12/webassembly
       - Now use Canary browser and his debugger to debug the c++ code :)
  
- # Execute wasm/WASI file locally on your machine:  
+ # Execute wasm/WASI binary locally on your machine:  
    - `$WASMTIME ~/wasabi/src/test/wasi/build/MyExample.wasm`
- 
+
+
 # Troubleshooting
   - explorer.exe cannot open WSL directories: https://github.com/microsoft/WSL/issues/4027#issuecomment-496628274
   - WSL must be in version 1.
@@ -58,11 +66,11 @@ The dev. env. is tested on Ubuntu 20 in WSL1
 *'wsl --list -v'  
   if you see something like:   
 '&nbsp;&nbsp;NAME&nbsp;&nbsp;&nbsp;&nbsp;STATE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VERSION'  
-    '* Ubuntu&nbsp;&nbsp;Stopped&nbsp;&nbsp;**2**'    
+    '* Ubuntu&nbsp;&nbsp;Stopped&nbsp;&nbsp;&nbsp;**2**'    
   Then you need to set your version back to 1 with the following command:  
 *'wsl --set-version Ubuntu 1'  
-    you now have :
+    Now you should have :  
     '&nbsp;&nbsp;NAME&nbsp;&nbsp;&nbsp;&nbsp;STATE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VERSION  '  
-    '* Ubuntu&nbsp;&nbsp;Stopped&nbsp;&nbsp;**1**  '  
+    '* Ubuntu&nbsp;&nbsp;Stopped&nbsp;&nbsp;&nbsp;**1**  '  
 To set wsl to 1 by default :
 *'wsl --set-default-version 1'  
