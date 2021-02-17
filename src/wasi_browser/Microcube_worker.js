@@ -8,6 +8,8 @@ const WorkerEvent = {
 
 importScripts('./WASI_API.js');
 
+moduleG = null;
+
 onmessage = function(e) {
 	var message = e.data;
 	console.log("******************************************");
@@ -27,7 +29,6 @@ onmessage = function(e) {
 			postMessage({error: "Already loaded"});
 			return;
 		}
-		isLoaded = true;
 
 		const importObject =
 		{
@@ -35,48 +36,61 @@ onmessage = function(e) {
 			env: {},
 			js : {mem: new WebAssembly.Memory({initial: 2,maximum: 10})}
 		};
-		WebAssembly.instantiateStreaming(fetch("MyExample.wasm"), importObject).then(module =>
+		WebAssembly.instantiateStreaming(fetch("InA_Interpreter.wasm"), importObject).then(module =>
 		{
 			console.log('Worker: Library well loaded');
-			WASI_API.setModuleInstance(module.instance);
+			moduleG = module;
+			setModuleInstance(module.instance);
 			
-			if(module.instance.exports._start) {
+			if(getModuleInstance()._start) {
 				console.log('Worker: execute _start');
-				module.instance.exports._start();
+				getModuleInstance()._start();
 			} else {
 				console.log('Worker: no _start entry point');
 			}
-			postMessage("Worker: Library well loaded");
+			postMessage([WorkerEvent.eLoad, "Worker: Library well loaded"]);
+			isLoaded = true;
 		}).catch(error=>{
-			console.log('Worker: Library not well loaded: ', error)
+			console.log('Worker: Library not well loaded: ', error),
+			postMessage([WorkerEvent.eLoad, error])
 		});
 
 		return;
     case WorkerEvent.eGetServerInfo:
 		if(isLoaded == false){
 			console.error("Worker: Not loaded");
-			postMessage({error: "Not loaded"});
+			postMessage([WorkerEvent.eGetServerInfo, {error: "Not loaded"}]);
 			return;
 		}
 
-		var res = moduleLib.executeFct("json_getServerInfo");
+		try {
+			var res = getJSStringFromWAsmAt(moduleG.instance.exports.json_getServerInfo(), moduleG.instance.exports.memory);
 
-		console.log('Worker: GetServerInfo executed');
-		postMessage(res);
+			console.log([WorkerEvent.eGetServerInfo, 'Worker: GetServerInfo executed']);
+			postMessage([WorkerEvent.eGetServerInfo, res]);
+		} catch(error) {
+			console.log('Worker: eGetServerInfo error: ', error);
+			postMessage([WorkerEvent.eGetServerInfo, error]);
+		}
 		
 		return;
     case WorkerEvent.eGetResponse:
 		if(isLoaded == false){
 			console.error("Worker: Not loaded");
-			postMessage({error: "Not loaded"});
+			postMessage([WorkerEvent.eGetResponse, {error: "Not loaded"}]);
 			return;
 		}
 
-		var query = message[1];
-		var res = moduleLib.executeFct("json_getResponse_json", query);
+		try {
+			var query = message[1];
+			var res = getJSStringFromWAsmAt(moduleG.instance.exports.json_getResponse_json(query), moduleG.instance.exports.memory);
 
-		console.log('Worker: GetServerInfo executed');
-		postMessage(res);
+			console.log([WorkerEvent.eGetResponse, 'Worker: GetServerInfo executed']);
+			postMessage([WorkerEvent.eGetResponse, res]);
+		} catch(error) {
+			console.log('Worker: eGetResponse error: ', error);
+			postMessage([WorkerEvent.eGetResponse, error]);
+		}
 		
 		return;
 	}
