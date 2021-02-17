@@ -5,9 +5,9 @@ if (NOT DEFINED WASABI_ROOT_DIR AND DEFINED ENV{WASABI_ROOT_DIR})
 endif()
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
-
 project(InA_Interpreter VERSION 1.0 LANGUAGES CXX)
 
+add_link_options(LINKER:--export=json_getServerInfo,--export=json_getResponse_json)
 add_executable(InA_Interpreter main.cpp)
 
 enable_testing()
