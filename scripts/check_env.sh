@@ -53,12 +53,12 @@ Install_Steps()
 
 echo "Test OS version .... [$OS_RELEASE]"
 
-echo "$OS_RELEASE+" | grep -E "Microsoft|microsoft-standard"  # > /dev/null 2>&1
+echo "$OS_RELEASE" | grep -E "Microsoft|microsoft-standard"  # > /dev/null 2>&1
 if [ $? -eq 0 ]
 then
 	# We are using WindowsSubsystemLinux
 	echo "We are using WindowsSubsystemLinux ... [$OS_RELEASE]"
-	echo "$OS_RELEASE+" | grep "Microsoft" # > /dev/null 2>&1
+	echo "$OS_RELEASE" | grep "Microsoft" # > /dev/null 2>&1
 	if [ $? -eq 0 ]
 	then
 		# Only WSL 1 supported
