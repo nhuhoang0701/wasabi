@@ -51,7 +51,7 @@ The dev. env. is tested on Ubuntu 20 in WSL1
   - If you want to debug c++ in your browser :
       - Install [canary](https://www.google.com/chrome/canary/)
       - Inside Canary install this [extension](https://chrome.google.com/webstore/detail/cc%20%20-devtools-support-dwa/pdcpmagijalfljmkmjngeonclgbbannb), in extension option add a path subtitution rule :  
-          "/home/$user" -> "\\wsl$\Ubuntu\home\\$user" (replace $user by your Linux user) 
+          "/home/$user" -> "\\\wsl$\Ubuntu\home\\$user" (replace $user by your Linux user) 
       - Enable WebAssemblyDebugging in Canary: https://developers.google.com/web/updates/2020/12/webassembly
       - Now use Canary browser and his debugger to debug the c++ code :)
  
