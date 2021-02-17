@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-[[ "${BASH_SOURCE[0]}" != "${0}" ]] && echo "*** ERROR *** source does not work with wasabi.sh" && return 0
+[[ "${BASH_SOURCE[0]}" != "${0}" ]] && echo "*** ERROR *** source does not work with wasabi.sh" && return 1
 
 
 # exit on error
