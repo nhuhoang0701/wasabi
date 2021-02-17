@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+export OS_RELEASE=`uname -r`
+
 # Install procedure
 Install_Steps()
 {
@@ -49,11 +51,12 @@ Install_Steps()
 }
 
 
-uname -r | egrep "Microsoft|microsoft-standard" &> /dev/null
+echo $OS_RELEASE | egrep "Microsoft|microsoft-standard" > /dev/null 2>&1
 if [ $? -eq 0 ]
 then
 	# We are using WindowsSubsystemLinux
-	uname -r | egrep "Microsoft" > /dev/null
+	echo "We are using WindowsSubsystemLinux ... [$OS_RELEASE]"
+	echo $OS_RELEASE | grep "Microsoft" > /dev/null 2>&1
 	if [ $? -eq 0 ]
 	then
 		# Only WSL 1 supported
@@ -66,6 +69,6 @@ then
 	fi
 else
 	# Other OS : Linux, IOS, ...
-	echo "--------- Installing for Other OS ----------"
+	echo "--------- Installing for Other OS [$OS_RELEASE] ----------"
 	Install_Steps
 fi
