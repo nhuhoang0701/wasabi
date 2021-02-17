@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo "Begin executing check_env.sh ...."
+
 export OS_RELEASE=`uname -r`
 
 # Install procedure
@@ -50,6 +52,8 @@ Install_Steps()
 	fi
 }
 
+
+echo "Test OS version ...."
 
 echo $OS_RELEASE | egrep "Microsoft|microsoft-standard" > /dev/null 2>&1
 if [ $? -eq 0 ]
