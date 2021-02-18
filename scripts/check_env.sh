@@ -51,7 +51,7 @@ Install_Steps()
 }
 
 
-set +e
+set +e # Disable error
 echo "$OS_RELEASE" | grep -E "Microsoft|microsoft-standard"  > /dev/null 2>&1
 if [ $? -eq 0 ]
 then
@@ -61,16 +61,17 @@ then
 	then
 		# Only WSL 1 supported
 		echo "--------- Installing for WSL 1 ----------"
+		set -e # Enable error
 		Install_Steps
 	else
 		echo -e "Project Wasabi, 2021\n"
 		echo -e "Sorry, this version of WindowsSubsystemLinux (WSL) is not supported yet.\n"
-		set -e
+		set -e # Enable error
 		return 1
 	fi
 else
 	# Other OS : Linux, IOS, ...
 	echo "--------- Installing for Other OS [$OS_RELEASE] ----------"
+	set -e # Enable error
 	Install_Steps
 fi
-set -e
