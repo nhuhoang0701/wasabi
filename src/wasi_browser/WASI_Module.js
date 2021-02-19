@@ -1,3 +1,4 @@
+moduleWASI = null;
 
 function _handleFiles(fileInput) {
 	if (fileInput.length == 0) {
@@ -25,7 +26,8 @@ function start(response) {
 
 	WebAssembly.instantiateStreaming(response, importObject).then(module =>
 	{
-		WASI_API.setModuleInstance(module.instance);
+		moduleWASI = module;
+		setModuleInstance(module.instance);
 		try {module.instance.exports._start();}
 		catch (e)
 		{

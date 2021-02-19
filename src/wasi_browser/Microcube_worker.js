@@ -7,8 +7,7 @@ const WorkerEvent = {
 }
 
 importScripts('./WASI_API.js');
-
-moduleG = null;
+moduleWASI = null;
 
 onmessage = function(e) {
 	var message = e.data;
@@ -39,7 +38,7 @@ onmessage = function(e) {
 		WebAssembly.instantiateStreaming(fetch("InA_Interpreter.wasm"), importObject).then(module =>
 		{
 			console.log('Worker: Library well loaded');
-			moduleG = module;
+			moduleWASI = module;
 			setModuleInstance(module.instance);
 			
 			if(getModuleInstance()._start) {
@@ -64,7 +63,7 @@ onmessage = function(e) {
 		}
 
 		try {
-			var res = getJSStringFromWAsmAt(moduleG.instance.exports.json_getServerInfo(), moduleG.instance.exports.memory);
+			var res = getJSStringFromWAsmAt(moduleWASI.instance.exports.json_getServerInfo(), moduleWASI.instance.exports.memory);
 
 			console.log([WorkerEvent.eGetServerInfo, 'Worker: GetServerInfo executed']);
 			postMessage([WorkerEvent.eGetServerInfo, res]);
@@ -83,7 +82,7 @@ onmessage = function(e) {
 
 		try {
 			var query = message[1];
-			var res = getJSStringFromWAsmAt(moduleG.instance.exports.json_getResponse_json(query), moduleG.instance.exports.memory);
+			var res = getJSStringFromWAsmAt(moduleWASI.instance.exports.json_getResponse_json(query), moduleWASI.instance.exports.memory);
 
 			console.log([WorkerEvent.eGetResponse, 'Worker: GetServerInfo executed']);
 			postMessage([WorkerEvent.eGetResponse, res]);
