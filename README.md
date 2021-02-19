@@ -41,7 +41,7 @@ The dev. env. is tested on Ubuntu 20 in WSL1
  'cd build'  
  'cmake ..'  
  'cmake --build .'  
- 'ctest'  
+ 'ctest -V'  
  
  # Execute wasm/WASI binary on your browser:
   - From the folder '~/wasabi/src/wasi_browser' start the http server  by typing `$HTTP_SERVER`  
