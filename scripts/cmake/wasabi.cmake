@@ -70,7 +70,9 @@ set(CMAKE_CXX_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
 
 set(CMAKE_AR ${LLVM_DIR}/bin/llvm-ar)
 set(CMAKE_RANLIB ${LLVM_DIR}/bin/llvm-ranlib)
-set(CMAKE_SPLIT ${LLVM_DIR}/bin/llvm-split)	
+set(CMAKE_SPLIT ${LLVM_DIR}/bin/llvm-split)
+
+#add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-fwasm-exceptions>)
 
 
 message (TRACE "--------------------------------------------------------------")
