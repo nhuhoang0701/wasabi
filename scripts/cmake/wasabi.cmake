@@ -36,7 +36,7 @@ elseif (DEFINED ENV{NINJA})
 	message(TRACE "- NINJA=ENV'$ENV{NINJA}' instead NINJA='${NINJA}'")
     set (NINJA "$ENV{NINJA}" CACHE PATH "project root" FORCE)
 else()
-	message(FATAL_ERROR "Missing 'NINJA' definition")
+	message("Missing 'NINJA' definition")
 endif()
 
 
