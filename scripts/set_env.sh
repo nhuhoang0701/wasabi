@@ -8,8 +8,6 @@ echo -e "WASABI_ROOT_DIR: " "\t'"$WASABI_ROOT_DIR"'";
 export WASABI_EXTERNAL_DIR=$WASABI_ROOT_DIR/external
 echo -e "WASABI_EXTERNAL_DIR: " "\t'"$WASABI_EXTERNAL_DIR"'";
 
-export WASABI_CMAKE_DIR=${WASABI_CMAKE_DIR:-$WASABI_EXTERNAL_DIR/cmake}
-
 export LLVM_DIR=${LLVM_DIR:-$WASABI_EXTERNAL_DIR/llvm}
 export LLVM_AR=$LLVM_DIR/bin/llvm-ar
 export LLVM_SPLIT=$LLVM_DIR/bin/llvm-split
@@ -32,6 +30,7 @@ echo -e "WASMTIME: " "\t\t'"$WASMTIME"'";
 export CJSON_DIR=$WASABI_EXTERNAL_DIR/cJSON
 export SQLITE_DIR=$WASABI_EXTERNAL_DIR/sqlite
 
+export WASABI_CMAKE_DIR=${WASABI_CMAKE_DIR:-$WASABI_EXTERNAL_DIR/cmake}
 export CMAKE=${CMAKE:-$WASABI_CMAKE_DIR/bin/cmake}
 echo -e "CMAKE: "  "\t\t'"$CMAKE"'";
 export CTEST=${CTEST:-$WASABI_CMAKE_DIR/bin/ctest}
@@ -40,7 +39,8 @@ echo -e "CTEST: "  "\t\t'"$CTEST"'";
 export MAKE=${MAKE:-make}
 echo -e "MAKE: "  "\t\t\t'"$MAKE"'";
 
-export NINJA=${NINJA:-ninja}
+export WASABI_NINJA_DIR=${WASABI_NINJA_DIR:-$WASABI_EXTERNAL_DIR/ninja}
+export NINJA=${NINJA:-$WASABI_NINJA_DIR/ninja}
 echo -e "NINJA: "  "\t\t'"$NINJA"'";
 
 
