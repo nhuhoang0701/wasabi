@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Simple template</title>
+</head>
+
+<body>
+  <script>
+    const memory = new WebAssembly.Memory({ initial: 2, maximum: 2 });
+    const heap = new Uint8Array(memory.buffer);
+
+    function getStringAt(str_ptr) {
+      var str = "";
+      for (var i = str_ptr; heap[i] != 0; ++i)
+        str += String.fromCharCode(heap[i]);
+      return str;
+    }
+    function console_from_wasm_str(str_ptr) {
+      console.log(getStringAt(str_ptr));
+    };
+
+
+    const importObject = {
+
+      env: {
+        console_log_int: console.log,
+        console_log_str: console_from_wasm_str,
+        memory: memory,
+      }
+    };
+
+    WebAssembly.instantiateStreaming(
+      fetch("MyTest.wasm"),
+      importObject
+    ).then(result => {
+      const Sum = result.instance.exports.Sum;
+      const Hello = result.instance.exports.Hello;
+      console.log("Hello from JS.");
+      Hello();
+      Sum(4, 5);
+      Sum(10, 10);
+    });
+  </script>
+</body>
+
+</html>
