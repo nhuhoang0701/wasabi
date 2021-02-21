@@ -30,4 +30,16 @@ int main() {
 	CPPUNIT_ASSERT_EQUAL(cols[2].getDataType(),"numeric");
 	CPPUNIT_ASSERT_EQUAL(cols[3].getName(),"ColumnName3");
 	CPPUNIT_ASSERT_EQUAL(cols[3].getDataType(),"numeric");
+		
+	std::function<void(const Row&)> lambda = [&cols](const Row& row)
+	{
+		CPPUNIT_ASSERT_EQUAL(row.size(),cols.size());
+		CPPUNIT_ASSERT_EQUAL_STR(row[0].m_str.c_str(),"IH");
+		CPPUNIT_ASSERT_EQUAL_STR(row[1].m_str.c_str(),"GH");
+		CPPUNIT_ASSERT_EQUAL(row[2].m_double,84);
+		CPPUNIT_ASSERT_EQUAL(row[3].m_double,77);
+		
+		std::cout << row[0].m_double << " " << row[1].m_double << " " << row[2].m_str << " " << row[3].m_str << std::endl;
+	};
+	dbProxy.executeSQL("select * from " + tableNameStr, lambda);
 }

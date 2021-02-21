@@ -34,6 +34,17 @@ const TableDescr& DBProxy::getTableDescr(const std::string& name) const
 	throw std::runtime_error("table didn't exist: '" + name + "'");
 }
 
+void  DBProxy::executeSQL(const std::string& SQL, std::function<void (Row const&)> calback)const
+{
+	Row row1;
+	row1.push_back(Value("IH"));
+	row1.push_back(Value("GH"));
+	row1.push_back(Value(84));
+	row1.push_back(Value(77));
+	
+	calback(row1);
+}
+
 bool TableDescr::operator == (const TableDescr& rhs) const
 {
 	if(m_name == rhs.getName() && getColumnsDescr() == rhs.getColumnsDescr())

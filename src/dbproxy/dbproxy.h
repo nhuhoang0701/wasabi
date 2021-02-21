@@ -3,6 +3,9 @@
 #include <string>
 #include <vector>
 #include <variant>
+#include <functional>
+
+#include <cmath>
 
 
 class ColumnDescr
@@ -38,16 +41,19 @@ private:
 	std::vector<ColumnDescr>  m_columns;
 };
 
-class Cell
+class Value
 {
 public:
-	std::string m_cell;
+	Value(const std::string& str) : m_str(str) {}
+	Value(float dble) : m_double(dble) {}
+	
+	std::string m_str = "-";
+	double      m_double = std::nan("0");
 };
 
-class Row
+class Row : public std::vector<Value>
 {
-	public:
-	std::vector<Cell>  m_cells;
+public:
 };
 
 class DBProxy
@@ -57,6 +63,8 @@ public:
 
 	const std::vector<TableDescr>& getTables() const;
 	const TableDescr& getTableDescr(const std::string& name) const;
+
+	void  executeSQL(const std::string& SQL, std::function<void (Row const&)> calback)const;
 
 private:
 	DBProxy(const std::string& cnxString);
