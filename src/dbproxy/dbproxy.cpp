@@ -36,13 +36,37 @@ const TableDescr& DBProxy::getTableDescr(const std::string& name) const
 
 void  DBProxy::executeSQL(const std::string& SQL, std::function<void (Row const&)> calback)const
 {
-	Row row1;
-	row1.push_back(Value("IH"));
-	row1.push_back(Value("GH"));
-	row1.push_back(Value(84));
-	row1.push_back(Value(77));
-	
-	calback(row1);
+	if(SQL.find('*') != std::string::npos)
+	{
+		{
+			Row row;
+			row.push_back(Value("FR"));
+			row.push_back(Value("Paris"));
+			row.push_back(Value(12));
+			row.push_back(Value(2));
+			
+			calback(row);
+		}
+		{
+			Row row;
+			row.push_back(Value("FR"));
+			row.push_back(Value("Bordeaux"));
+			row.push_back(Value(7));
+			row.push_back(Value(3));
+			
+			calback(row);
+		}
+	}
+	else
+	{
+		{
+			Row row;
+			row.push_back(Value("FR"));
+			row.push_back(Value(5));
+			
+			calback(row);
+		}
+	}
 }
 
 bool TableDescr::operator == (const TableDescr& rhs) const

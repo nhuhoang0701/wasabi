@@ -30,16 +30,44 @@ int main() {
 	CPPUNIT_ASSERT_EQUAL(cols[2].getDataType(),"numeric");
 	CPPUNIT_ASSERT_EQUAL(cols[3].getName(),"ColumnName3");
 	CPPUNIT_ASSERT_EQUAL(cols[3].getDataType(),"numeric");
-		
-	std::function<void(const Row&)> lambda = [&cols](const Row& row)
+	
 	{
-		CPPUNIT_ASSERT_EQUAL(row.size(),cols.size());
-		CPPUNIT_ASSERT_EQUAL_STR(row[0].m_str.c_str(),"IH");
-		CPPUNIT_ASSERT_EQUAL_STR(row[1].m_str.c_str(),"GH");
-		CPPUNIT_ASSERT_EQUAL(row[2].m_double,84);
-		CPPUNIT_ASSERT_EQUAL(row[3].m_double,77);
-		
-		std::cout << row[0].m_double << " " << row[1].m_double << " " << row[2].m_str << " " << row[3].m_str << std::endl;
-	};
-	dbProxy.executeSQL("select * from " + tableNameStr, lambda);
+		size_t line = 0;
+		std::function<void(const Row&)> lambda = [&cols, &line](const Row& row)
+		{
+			if(line == 0)
+			{
+				CPPUNIT_ASSERT_EQUAL(row.size(),cols.size());
+				CPPUNIT_ASSERT_EQUAL_STR(row[0].m_str.c_str(),"FR");
+				CPPUNIT_ASSERT_EQUAL_STR(row[1].m_str.c_str(),"Paris");
+				CPPUNIT_ASSERT_EQUAL(row[2].m_double,12);
+				CPPUNIT_ASSERT_EQUAL(row[3].m_double,2);
+			}
+			else if(line == 1)
+			{
+				CPPUNIT_ASSERT_EQUAL(row.size(),cols.size());
+				CPPUNIT_ASSERT_EQUAL_STR(row[0].m_str.c_str(),"FR");
+				CPPUNIT_ASSERT_EQUAL_STR(row[1].m_str.c_str(),"Bordeaux");
+				CPPUNIT_ASSERT_EQUAL(row[2].m_double,7);
+				CPPUNIT_ASSERT_EQUAL(row[3].m_double,3);
+			}
+			
+			line++;
+		};
+		dbProxy.executeSQL("SELECT * FROM " + tableNameStr, lambda);
+		CPPUNIT_ASSERT_EQUAL(line,2);
+	}
+	
+	{
+		size_t line = 0;
+		std::function<void(const Row&)> lambda = [&cols, &line](const Row& row)
+		{
+			CPPUNIT_ASSERT_EQUAL(row.size(), 2);
+			CPPUNIT_ASSERT_EQUAL_STR(row[0].m_str.c_str(),"FR");
+			CPPUNIT_ASSERT_EQUAL(row[1].m_double,5);
+			line++;
+		};
+		dbProxy.executeSQL("SELECT ColumnName0,sum(ColumnName3) FROM " + tableNameStr, lambda);
+		CPPUNIT_ASSERT_EQUAL(line,1);
+	}
 }
