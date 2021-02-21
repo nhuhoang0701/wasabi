@@ -30,18 +30,22 @@ else()
 	message(FATAL_ERROR "Missing 'LLVM_DIR' definition")
 endif()
 
+if(DEFINED NINJA)
+	message(TRACE "- NINJA='${NINJA}'")
+elseif (DEFINED ENV{NINJA})
+	message(TRACE "- NINJA=ENV'$ENV{NINJA}' instead NINJA='${NINJA}'")
+    set (NINJA "$ENV{NINJA}" CACHE PATH "project root" FORCE)
+else()
+	message(FATAL_ERROR "Missing 'NINJA' definition")
+endif()
+
 
 ###########################################
+# tools chain / xcompilation
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR wasm)
 set(CLANG_TARGET_TRIPLE wasm32-unknown-wasi)
 message(TRACE "- CLANG_TARGET_TRIPLE='${CLANG_TARGET_TRIPLE}'")
-
-set(CMAKE_BUILD_TYPE Debug)
-message(TRACE "- CMAKE_BUILD_TYPE='${CMAKE_BUILD_TYPE}'")
-
-#For none debug
-#set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
 
 set(CMAKE_CROSSCOMPILING TRUE)
 set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS FALSE)
@@ -72,6 +76,14 @@ set(CMAKE_AR ${LLVM_DIR}/bin/llvm-ar)
 set(CMAKE_RANLIB ${LLVM_DIR}/bin/llvm-ranlib)
 set(CMAKE_SPLIT ${LLVM_DIR}/bin/llvm-split)
 
+
+###########################################
+# compilation option
+set(CMAKE_BUILD_TYPE Debug)
+message(TRACE "- CMAKE_BUILD_TYPE='${CMAKE_BUILD_TYPE}'")
+
+#For none debug
+#set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
 #add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-fwasm-exceptions>)
 
 
