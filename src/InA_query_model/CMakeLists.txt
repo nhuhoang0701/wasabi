@@ -10,13 +10,6 @@ project(
   VERSION 1.0)
   
 ################################################
-# SQLITE
-set(SQLITE_DIR ${WASABI_ROOT_DIR}/external/sqlite/src)
-add_definitions(-DNDEBUG -DSQLITE_OS_OTHER)
-add_library(sqlite ${SQLITE_DIR}/sqlite3.c ${SQLITE_DIR}/os.c ${SQLITE_DIR}/vfs.c )
-target_include_directories(sqlite PUBLIC ${SQLITE_DIR})
-
-################################################
 # InA_query_model
 add_library(InA_query_model InA_query_model.cpp)
 target_link_libraries(InA_query_model PUBLIC exceptions.wasm)

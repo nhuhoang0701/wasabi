@@ -8,25 +8,23 @@ include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 project(
   query_generator
   VERSION 1.0)
-  
-################################################
-# SQLITE
-set(SQLITE_DIR ${WASABI_ROOT_DIR}/external/sqlite/src)
-add_definitions(-DNDEBUG -DSQLITE_OS_OTHER)
-add_library(sqlite ${SQLITE_DIR}/sqlite3.c ${SQLITE_DIR}/os.c ${SQLITE_DIR}/vfs.c )
-target_include_directories(sqlite PUBLIC ${SQLITE_DIR})
+
 
 ################################################
 # query_generator
+set(QUERY_MODEL_LIB ${WASABI_ROOT_DIR}/src/InA_query_model)
+set(QUERY_MODEL_LIB_BUILD ${QUERY_MODEL_LIB}/build)
 add_library(query_generator query_generator.cpp)
-target_link_libraries(query_generator PUBLIC exceptions.wasm)
-target_link_directories(query_generator PUBLIC ${WASABI_ROOT_DIR}/src/build/lib/)
+target_include_directories(query_generator PUBLIC ${QUERY_MODEL_LIB})
+target_link_libraries(query_generator PUBLIC exceptions.wasm InA_query_model.wasm)
+target_link_directories(query_generator PUBLIC ${WASABI_ROOT_DIR}/src/build/lib/ ${QUERY_MODEL_LIB_BUILD})
 
 ################################################
 # test
 add_executable(query_generator_test query_generator_test.cpp)
-target_link_libraries(query_generator_test query_generator)
-target_include_directories(query_generator_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
+target_include_directories(query_generator_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include ${QUERY_MODEL_LIB})
+target_link_libraries(query_generator_test PUBLIC query_generator InA_query_model.wasm)
+target_link_directories(query_generator_test PUBLIC ${QUERY_MODEL_LIB_BUILD})
 
 ## [main]
 enable_testing()

@@ -2,15 +2,23 @@
 
 #include <string>
 
-class InA_query_model;
-class Cube;
+#include "InA_query_model.h"
 
-class query_generator
+
+namespace query_generator
 {
-public:
-	query_generator(const InA_query_model& qryModel);
+	class Cube;
 
-	void prepareCube(Cube& cube);
+	class query_generator
+	{
+	public:
+		query_generator(const query_model::InA_query_model& qryModel) : m_qryModel(qryModel) {};
 
-	std::string   getSQL();
-};
+		void prepareCube(Cube& cube);
+
+		std::string getSQL() const;
+
+	private:
+		const query_model::InA_query_model& m_qryModel;
+	};
+} // query_generator
