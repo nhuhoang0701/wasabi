@@ -1,7 +1,7 @@
 #pragma once
 #include <stdio.h>
 
-static bool wasabi_cppunit_haveerror = 0;
+static int wasabi_cppunit_haveerror = 0;
 #define TEST_INIT() {wasabi_cppunit_haveerror = 0;}
 #define TEST_HAVEERROR() (wasabi_cppunit_haveerror)
 #define TEST_SETERROR() { wasabi_cppunit_haveerror = 1;}
