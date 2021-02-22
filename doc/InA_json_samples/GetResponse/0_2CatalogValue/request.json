@@ -1,0 +1,106 @@
+{
+    "Analytics": {
+        "Capabilities": [
+            "AggregationNOPNULL",
+            "AggregationNOPNULLZERO",
+            "AttributeHierarchy",
+            "AttributeValueLookup",
+            "AverageCountIgnoreNullZero",
+            "CalculatedDimension",
+            "ClientCapabilities",
+            "Conditions",
+            "DatasourceAtService",
+            "DimensionValuehelpProperty",
+            "ExceptionAggregationDimsAndFormulas",
+            "ExceptionSettings",
+            "Exceptions",
+            "ExtendedDimensions",
+            "ExtendedDimensionsFieldMapping",
+            "ExtendedDimensionsJoinColumns",
+            "ExtendedDimensionsOuterJoin",
+            "HierarchyKeyTextName",
+            "HierarchyLevelOffsetFilter",
+            "HierarchyPath",
+            "HierarchyPathUniqueName",
+            "MaxResultRecords",
+            "MetadataCubeQuery",
+            "MetadataDataCategory",
+            "MetadataHierarchyLevels",
+            "MetadataHierarchyStructure",
+            "MetadataIsDisplayAttribute",
+            "Obtainability",
+            "OrderBy",
+            "ResultSetAxisType",
+            "ResultSetInterval",
+            "ResultSetState",
+            "ReturnedDataSelection",
+            "SupportsCalculatedKeyFigures",
+            "SupportsComplexFilters",
+            "SupportsEncodedResultSet",
+            "SupportsEncodedResultSet2",
+            "SupportsExtendedSort",
+            "SupportsIgnoreExternalDimensions",
+            "SupportsMemberValueExceptions",
+            "SupportsMemberVisibility",
+            "SupportsRestrictedKeyFigures",
+            "SupportsSetOperand",
+            "TechnicalAxis",
+            "Totals",
+            "TotalsAfterVisibilityFilter",
+            "Variables",
+            "VisibilityFilter"
+        ],
+        "DataSource": {
+            "InstanceId": "204ed3d4-c0db-41e8-901d-01894d2b11eb",
+            "ObjectName": "$$DataSource$$",
+            "PackageName": "Universes",
+            "SchemaName": "Universes",
+            "Type": "CatalogView"
+        },
+        "Definition": {
+            "Dimensions": [
+                {
+                    "Attributes": [
+                        {
+                            "Name": "KeyPackageName",
+                            "Obtainability": "Always"
+                        },
+                        {
+                            "Name": "TextPackageName",
+                            "Obtainability": "Always"
+                        }
+                    ],
+                    "Axis": "Rows",
+                    "Name": "PackageName",
+                    "ReadMode": "Master"
+                }
+            ],
+            "DynamicFilter": {
+                "Selection": {
+                    "SetOperand": {
+                        "Elements": [
+                            {
+                                "Comparison": "=",
+                                "Low": "Model"
+                            }
+                        ],
+                        "FieldName": "KeyType"
+                    }
+                }
+            },
+            "ResultSetFeatureRequest": {
+                "ResultEncoding": "None",
+                "ResultFormat": "Version2",
+                "ReturnedDataSelection": {},
+                "SubSetDescription": {
+                    "ColumnFrom": 0,
+                    "ColumnTo": -1,
+                    "RowFrom": 0,
+                    "RowTo": -1
+                },
+                "UseDefaultAttributeKey": false
+            }
+        },
+        "Language": "EN"
+    }
+}
