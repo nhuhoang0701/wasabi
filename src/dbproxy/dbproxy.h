@@ -63,7 +63,7 @@ public:
 	virtual ~DBProxy();
 
 	const std::vector<TableDescr>& getTables() const;
-	const TableDescr& getTableDescr(const std::string& name) const;
+	const TableDescr&              getTableDescr(const std::string& name) const;
 
 	void  executeSQL(const std::string& SQL, std::function<void (Row const&)> calback)const;
 

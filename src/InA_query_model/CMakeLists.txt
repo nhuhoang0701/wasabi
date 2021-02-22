@@ -6,7 +6,7 @@ endif()
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
 project(
-  dbproxy
+  InA_query_model
   VERSION 1.0)
   
 ################################################
@@ -17,19 +17,19 @@ add_library(sqlite ${SQLITE_DIR}/sqlite3.c ${SQLITE_DIR}/os.c ${SQLITE_DIR}/vfs.
 target_include_directories(sqlite PUBLIC ${SQLITE_DIR})
 
 ################################################
-# dbproxy
-add_library(dbproxy dbproxy.cpp)
-target_link_libraries(dbproxy PUBLIC sqlite exceptions.wasm)
-target_link_directories(dbproxy PUBLIC ${WASABI_ROOT_DIR}/src/build/lib/)
+# InA_query_model
+add_library(InA_query_model InA_query_model.cpp)
+target_link_libraries(InA_query_model PUBLIC exceptions.wasm)
+target_link_directories(InA_query_model PUBLIC ${WASABI_ROOT_DIR}/src/build/lib/)
 
 ################################################
 # test
-add_executable(dbproxy_test dbproxy_test.cpp)
-target_link_libraries(dbproxy_test dbproxy)
-target_include_directories(dbproxy_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
+add_executable(InA_query_model_test InA_query_model_test.cpp)
+target_link_libraries(InA_query_model_test InA_query_model)
+target_include_directories(InA_query_model_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
 
 ## [main]
 enable_testing()
-add_test(NAME dbproxy_test COMMAND dbproxy_test)
+add_test(NAME InA_query_model_test COMMAND InA_query_model_test)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)

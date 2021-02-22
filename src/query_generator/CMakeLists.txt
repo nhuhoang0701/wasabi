@@ -6,7 +6,7 @@ endif()
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
 project(
-  dbproxy
+  query_generator
   VERSION 1.0)
   
 ################################################
@@ -17,19 +17,19 @@ add_library(sqlite ${SQLITE_DIR}/sqlite3.c ${SQLITE_DIR}/os.c ${SQLITE_DIR}/vfs.
 target_include_directories(sqlite PUBLIC ${SQLITE_DIR})
 
 ################################################
-# dbproxy
-add_library(dbproxy dbproxy.cpp)
-target_link_libraries(dbproxy PUBLIC sqlite exceptions.wasm)
-target_link_directories(dbproxy PUBLIC ${WASABI_ROOT_DIR}/src/build/lib/)
+# query_generator
+add_library(query_generator query_generator.cpp)
+target_link_libraries(query_generator PUBLIC exceptions.wasm)
+target_link_directories(query_generator PUBLIC ${WASABI_ROOT_DIR}/src/build/lib/)
 
 ################################################
 # test
-add_executable(dbproxy_test dbproxy_test.cpp)
-target_link_libraries(dbproxy_test dbproxy)
-target_include_directories(dbproxy_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
+add_executable(query_generator_test query_generator_test.cpp)
+target_link_libraries(query_generator_test query_generator)
+target_include_directories(query_generator_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
 
 ## [main]
 enable_testing()
-add_test(NAME dbproxy_test COMMAND dbproxy_test)
+add_test(NAME query_generator_test COMMAND query_generator_test)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
