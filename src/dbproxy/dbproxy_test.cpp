@@ -38,18 +38,18 @@ int main() {
 			if(line == 0)
 			{
 				CPPUNIT_ASSERT_EQUAL(row.size(),cols.size());
-				CPPUNIT_ASSERT_EQUAL_STR(row[0].m_str.c_str(),"FR");
-				CPPUNIT_ASSERT_EQUAL_STR(row[1].m_str.c_str(),"Paris");
-				CPPUNIT_ASSERT_EQUAL(row[2].m_double,12);
-				CPPUNIT_ASSERT_EQUAL(row[3].m_double,2);
+				CPPUNIT_ASSERT_EQUAL_STR(row[0].getString().c_str(),"FR");
+				CPPUNIT_ASSERT_EQUAL_STR(row[1].getString().c_str(),"Paris");
+				CPPUNIT_ASSERT_EQUAL(row[2].getDouble(),12);
+				CPPUNIT_ASSERT_EQUAL(row[3].getDouble(),2);
 			}
 			else if(line == 1)
 			{
 				CPPUNIT_ASSERT_EQUAL(row.size(),cols.size());
-				CPPUNIT_ASSERT_EQUAL_STR(row[0].m_str.c_str(),"FR");
-				CPPUNIT_ASSERT_EQUAL_STR(row[1].m_str.c_str(),"Bordeaux");
-				CPPUNIT_ASSERT_EQUAL(row[2].m_double,7);
-				CPPUNIT_ASSERT_EQUAL(row[3].m_double,3);
+				CPPUNIT_ASSERT_EQUAL_STR(row[0].getString().c_str(),"FR");
+				CPPUNIT_ASSERT_EQUAL_STR(row[1].getString().c_str(),"Bordeaux");
+				CPPUNIT_ASSERT_EQUAL(row[2].getDouble(),7);
+				CPPUNIT_ASSERT_EQUAL(row[3].getDouble(),3);
 			}
 			
 			line++;
@@ -63,8 +63,8 @@ int main() {
 		std::function<void(const Row&)> lambda = [&cols, &line](const Row& row)
 		{
 			CPPUNIT_ASSERT_EQUAL(row.size(), 2);
-			CPPUNIT_ASSERT_EQUAL_STR(row[0].m_str.c_str(),"FR");
-			CPPUNIT_ASSERT_EQUAL(row[1].m_double,5);
+			CPPUNIT_ASSERT_EQUAL_STR(row[0].getString().c_str(),"FR");
+			CPPUNIT_ASSERT_EQUAL(row[1].getDouble(),5);
 			line++;
 		};
 		dbProxy.executeSQL("SELECT ColumnName0,sum(ColumnName3) FROM " + tableNameStr, lambda);

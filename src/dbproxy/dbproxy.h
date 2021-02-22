@@ -41,14 +41,14 @@ private:
 	std::vector<ColumnDescr>  m_columns;
 };
 
-class Value
+class Value : public std::variant<std::string, double>
 {
 public:
-	Value(const std::string& str) : m_str(str) {}
-	Value(float dble) : m_double(dble) {}
+	Value(const std::string& str) : std::variant<std::string, double>(str) {}
+	Value(double dble) : std::variant<std::string, double>(dble) {}
 	
-	std::string m_str = "-";
-	double      m_double = std::nan("0");
+	const std::string& getString() const {return std::get<std::string>(*this);};
+	const double&      getDouble() const {return std::get<double>(*this);};
 };
 
 class Row : public std::vector<Value>
