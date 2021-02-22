@@ -7,16 +7,26 @@ include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
 project(
   dbproxy
-  VERSION 1.0
-  LANGUAGES CXX)
+  VERSION 1.0)
+  
+################################################
+# SQLITE
+set(SQLITE_DIR ${WASABI_ROOT_DIR}/external/sqlite/src)
+add_definitions(-DNDEBUG -DSQLITE_OS_OTHER)
+add_library(sqlite ${SQLITE_DIR}/sqlite3.c ${SQLITE_DIR}/os.c ${SQLITE_DIR}/vfs.c )
+target_include_directories(sqlite PUBLIC ${SQLITE_DIR})
 
-include_directories(${WASABI_ROOT_DIR}/src/test_tools/include)
-link_directories(${WASABI_ROOT_DIR}/src/build/lib)
-
+################################################
+# dbproxy
 add_library(dbproxy dbproxy.cpp)
+target_link_libraries(dbproxy PUBLIC sqlite)
+target_link_directories(dbproxy PUBLIC ${WASABI_ROOT_DIR}/src/build/lib/)
 
+################################################
+# test
 add_executable(dbproxy_test dbproxy_test.cpp)
 target_link_libraries(dbproxy_test dbproxy exceptions.wasm)
+target_include_directories(dbproxy_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
 
 ## [main]
 enable_testing()

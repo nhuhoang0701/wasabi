@@ -60,6 +60,7 @@ class DBProxy
 {
 public:
 	static DBProxy getDBProxy(const std::string& cnxString);
+	virtual ~DBProxy();
 
 	const std::vector<TableDescr>& getTables() const;
 	const TableDescr& getTableDescr(const std::string& name) const;
