@@ -7,22 +7,25 @@ include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
 project(InA_Interpreter VERSION 1.0 LANGUAGES CXX)
 
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${WASABI_ROOT_DIR}/src/json/include)
-include_directories(${WASABI_ROOT_DIR}/src/build/lib)
-include_directories(${WASABI_ROOT_DIR}/src/test_tools/include)
 
-link_directories(${WASABI_ROOT_DIR}/external/cJSON/build)
-link_directories(${WASABI_ROOT_DIR}/src/build/lib)
+################################################
+# InA_Interpreter
 
-
+# External entries points
 add_link_options(LINKER:--export=json_getServerInfo,--export=json_getResponse_json)
-add_library(InA_Interpreter main.cpp)
-target_compile_options(InA_Interpreter PUBLIC $<$<COMPILE_LANGUAGE:CXX>:-mexec-model=reactor>)
-target_link_libraries(InA_Interpreter cjson jsonUtils.wasm exceptions.wasm)
 
+add_library(InA_Interpreter main.cpp)
+target_include_directories(InA_Interpreter PUBLIC ${WASABI_ROOT_DIR}/src/json/include)
+target_include_directories(InA_Interpreter PUBLIC ${PROJECT_SOURCE_DIR}/include)
+
+target_link_directories(InA_Interpreter PUBLIC ${WASABI_ROOT_DIR}/external/cJSON/build ${WASABI_ROOT_DIR}/src/build/lib)
+target_link_libraries(InA_Interpreter PUBLIC cjson jsonUtils.wasm exceptions.wasm)
+
+################################################
+# test
 add_executable(InA_Interpreter_test main.cpp)
-target_link_libraries(InA_Interpreter_test cjson InA_Interpreter jsonUtils.wasm exceptions.wasm)
+target_link_libraries(InA_Interpreter_test InA_Interpreter)
+target_include_directories(InA_Interpreter_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
 
 enable_testing()
 add_test(NAME InA_Interpreter_test COMMAND InA_Interpreter_test)
