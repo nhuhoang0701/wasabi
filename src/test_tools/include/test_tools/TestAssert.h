@@ -1,10 +1,10 @@
 #pragma once
 #include <stdio.h>
 
-static bool wasabi_cppunit_haveerror = false;
-#define TEST_INIT() {wasabi_cppunit_haveerror = false;}
+static bool wasabi_cppunit_haveerror = 0;
+#define TEST_INIT() {wasabi_cppunit_haveerror = 0;}
 #define TEST_HAVEERROR() (wasabi_cppunit_haveerror)
-#define TEST_SETERROR() { wasabi_cppunit_haveerror = true;}
+#define TEST_SETERROR() { wasabi_cppunit_haveerror = 1;}
 
 
 #define WASABI_xstr(s) WASABI_str(s)
