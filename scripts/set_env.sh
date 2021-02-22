@@ -22,7 +22,7 @@ export WASI_SDK_DIR=$WASABI_EXTERNAL_DIR/wasi-sdk-12
 export SYSROOT_DIR=$WASI_SDK_DIR/wasi-sysroot
 echo -e "SYSROOT_DIR: " "\t\t'"$SYSROOT_DIR"'";
 
-export WASMTIME_DIR=$WASABI_EXTERNAL_DIR/wasmtime-v0.22.0
+export WASMTIME_DIR=${WASMTIME_DIR:-$WASABI_EXTERNAL_DIR/wasmtime-v0.22.0}
 export WASMTIME_LINUX_DIR=$WASMTIME_DIR-x86_64-linux
 export WASMTIME=$WASMTIME_DIR/wasmtime
 echo -e "WASMTIME: " "\t\t'"$WASMTIME"'";
