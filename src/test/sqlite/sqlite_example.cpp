@@ -18,7 +18,7 @@ int main(void) {
         return 1;
     }
     
-    char *sql = "CREATE TABLE Friends(Id INTEGER PRIMARY KEY, Name TEXT);"
+    const char *sql = "CREATE TABLE Friends(Id INTEGER PRIMARY KEY, Name TEXT);"
     "INSERT INTO Friends(Name) VALUES ('Tom');"
     "INSERT INTO Friends(Name) VALUES ('Rebecca');"
     "INSERT INTO Friends(Name) VALUES ('Jim');"
