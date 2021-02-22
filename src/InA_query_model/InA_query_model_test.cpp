@@ -4,7 +4,9 @@
 
 int main()
 {
+	TEST_INIT();
+
 	CPPUNIT_ASSERT_EQUAL(0,1);
 
-	return 0;
+	return TEST_HAVEERROR();
 }

@@ -1,6 +1,11 @@
 #pragma once
 #include <stdio.h>
 
+static bool wasabi_cppunit_haveerror = false;
+#define TEST_INIT() {wasabi_cppunit_haveerror = false;}
+#define TEST_HAVEERROR() (wasabi_cppunit_haveerror)
+#define TEST_SETERROR() { wasabi_cppunit_haveerror = true;}
+
 
 #define WASABI_xstr(s) WASABI_str(s)
 
@@ -13,6 +18,7 @@
 	if (!(x))\
 	{\
 		ASSERT_MESSAGE(msg);\
+		TEST_SETERROR();\
 	}\
 	else\
 	{\
@@ -41,40 +47,16 @@
 
 
 
-
+// Not htread safe!!!!!
 
 // Usage:
 // int test_func()
 // {
-//   int res = 0;
-//   TestResultPrinter tr("test_func", res)
+//   TEST_INIT();
+//
 //   //... the tests
-//   return res;
+//	 CPPUNIT_ASSERT_EQUAL(.....);	
+//
+//   eturn TEST_HAVEERROR();
 // }
 //
-#ifdef __cplusplus
-#include <string>	
-#include <iostream>
-
-class TestScopePrinter
-{
-public:
-	TestScopePrinter(const std::string& testName, int& res)
-		: m_name(testName), m_testStatus(res)
-	{
-		std::cout << "Testing " << m_name << "..." << std::endl;
-	}
-
-	~TestScopePrinter()
-	{
-		if (m_testStatus == 0)
-			std::cout << "Test ok: " << m_name << std::endl;
-		else
-			std::cout << "Test FAILED: " << m_name << std::endl;
-	}
-
-private:
-	std::string m_name;
-	int&        m_testStatus;
-};
-#endif // __cplusplus

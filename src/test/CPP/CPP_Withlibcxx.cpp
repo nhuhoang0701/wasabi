@@ -5,8 +5,7 @@
 
 int main()
 {	
-	int res = 0;
-	TestScopePrinter scoped("CPP_Withlibcxx", res);
+	TEST_INIT();
 
 	CPPUNIT_ASSERT_EQUAL(d_STDSQRT_d(4),2);
 
@@ -20,7 +19,7 @@ int main()
 	std::cout << "Call v_DELETE_pv \n";
 	v_DELETE_pv(pRes);
 
-	return 0;
+	return TEST_HAVEERROR();
 }
 
 

@@ -115,10 +115,10 @@ EXPORT double d_TRYCATCHDIV_d(double d)
 	return i;
 }
 
-int main() {
-	int res = 0;
-	TestScopePrinter scoped("CPP_nolib_exception", res);
-	
+int main()
+{
+	TEST_INIT();
+
 	CPPUNIT_ASSERT_EQUAL(d_TRYCATCHDIV_d(1),1);
 	CPPUNIT_ASSERT_EQUAL(d_TRYCATCHDIV_d(0),-1);
 		
@@ -131,6 +131,6 @@ int main() {
 	
 	CPPUNIT_ASSERT_EQUAL(i_TrycatchObjDesc_i(1977), 1977);
 
-	return res;
+	return TEST_HAVEERROR();
 }
 

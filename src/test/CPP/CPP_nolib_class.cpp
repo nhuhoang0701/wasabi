@@ -154,10 +154,9 @@ EXPORT int i_DYNCATS_v()
 }
 
 int main()
-{	
-	int res = 0;
-	TestScopePrinter scoped("CPP_nolib_class", res);
-	
+{
+	TEST_INIT();
+
 	CPPUNIT_ASSERT_EQUAL(i_DYNCATS_v(),0);
 	
 	CPPUNIT_ASSERT_EQUAL_STR(str_CALL_VIRTUAL_METHOD_c('a'),"TypeA");
@@ -168,5 +167,5 @@ int main()
 	
 	CPPUNIT_ASSERT_EQUAL_STR(str_VDESTRUCTOR_v(),"0 A:A 1 2 B:A B:B 3 B:~B B:~A 4 A:~A 5");
 
-	return res;
+	return TEST_HAVEERROR();
 }

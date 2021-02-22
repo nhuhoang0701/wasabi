@@ -2,7 +2,10 @@
 
 #include "test_tools/TestAssert.h"
 
-int main() {
+int main()
+{
+	TEST_INIT();
+
 	static const std::string cnxStr("local:sqlite:efashion.db");
 	static const std::string tableNameStr("Table1");
 	
@@ -70,4 +73,5 @@ int main() {
 		dbProxy.executeSQL("SELECT ColumnName0,sum(ColumnName3) FROM " + tableNameStr, lambda);
 		CPPUNIT_ASSERT_EQUAL(line,1);
 	}
+	return TEST_HAVEERROR();
 }

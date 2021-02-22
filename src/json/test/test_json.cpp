@@ -10,11 +10,8 @@
 
 
 
-static int Test_reader()
+static void Test_reader()
 {
-	int res = 0;
-	TestScopePrinter scoped("Json reader", res);
-
 	JSONReader reader;
 	JSONGenericObject root = reader.parse(Json_test_reader0);
 
@@ -123,13 +120,14 @@ static int Test_reader()
 	CPPUNIT_ASSERT_EQUAL((size_t)1, map0Obj.getArray("[0]").size());
 	CPPUNIT_ASSERT(map0Obj.getArray("[0]").isInteger(0));
 	CPPUNIT_ASSERT_EQUAL((int64_t)0, map0Obj.getArray("[0]").getInteger(0));
-
-	return res;
 }
 
 
 int main()
 {
-	int res = Test_reader();
-	return res;
+	TEST_INIT();
+	
+	Test_reader();
+	
+	return TEST_HAVEERROR();
 }
