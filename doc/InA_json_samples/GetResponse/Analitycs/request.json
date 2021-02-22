@@ -1,0 +1,258 @@
+{
+    "Analytics": {
+        "Capabilities": [
+            "AggregationNOPNULL",
+            "AggregationNOPNULLZERO",
+            "AttributeHierarchy",
+            "AttributeValueLookup",
+            "AverageCountIgnoreNullZero",
+            "CalculatedDimension",
+            "ClientCapabilities",
+            "Conditions",
+            "DatasourceAtService",
+            "DimensionValuehelpProperty",
+            "ExceptionAggregationDimsAndFormulas",
+            "ExceptionSettings",
+            "Exceptions",
+            "ExtendedDimensions",
+            "ExtendedDimensionsFieldMapping",
+            "ExtendedDimensionsJoinColumns",
+            "ExtendedDimensionsOuterJoin",
+            "HierarchyKeyTextName",
+            "HierarchyLevelOffsetFilter",
+            "HierarchyPath",
+            "HierarchyPathUniqueName",
+            "MaxResultRecords",
+            "MetadataCubeQuery",
+            "MetadataDataCategory",
+            "MetadataHierarchyLevels",
+            "MetadataHierarchyStructure",
+            "MetadataIsDisplayAttribute",
+            "Obtainability",
+            "OrderBy",
+            "ResultSetAxisType",
+            "ResultSetInterval",
+            "ResultSetState",
+            "ReturnedDataSelection",
+            "SupportsCalculatedKeyFigures",
+            "SupportsComplexFilters",
+            "SupportsEncodedResultSet",
+            "SupportsEncodedResultSet2",
+            "SupportsExtendedSort",
+            "SupportsIgnoreExternalDimensions",
+            "SupportsMemberValueExceptions",
+            "SupportsMemberVisibility",
+            "SupportsRestrictedKeyFigures",
+            "SupportsSetOperand",
+            "TechnicalAxis",
+            "Totals",
+            "TotalsAfterVisibilityFilter",
+            "Variables",
+            "VisibilityFilter"
+        ],
+        "DataSource": {
+            "CustomProperties": {
+                "sourceQuery": "{\"testInfo\":\"test.sap.sl.ina.workflows.PromptsTest.lov_rawValues_unx\",\"selectedObjects\":[{\"identifier\":\"_IBo8ObIhEeCk0Ylv-tlF2Q\",\"name\":\"Customer Id\"},{\"identifier\":\"_IBo8OrIhEeCk0Ylv-tlF2Q\",\"name\":\"Customer\"},{\"identifier\":\"_IBo8MrIhEeCk0Ylv-tlF2Q\",\"name\":\"Continent Id\"},{\"identifier\":\"_IBo8M7IhEeCk0Ylv-tlF2Q\",\"name\":\"Continent\"},{\"identifier\":\"_IBo8NbIhEeCk0Ylv-tlF2Q\",\"name\":\"Country Id\"},{\"identifier\":\"_IBo8NrIhEeCk0Ylv-tlF2Q\",\"name\":\"Country\"},{\"identifier\":\"_IBo8LrIhEeCk0Ylv-tlF2Q\",\"name\":\"City Id\"},{\"identifier\":\"_IBo8L7IhEeCk0Ylv-tlF2Q\",\"name\":\"City\"},{\"identifier\":\"_IBo8EbIhEeCk0Ylv-tlF2Q\",\"name\":\"Time Key\"},{\"identifier\":\"_IBo8ErIhEeCk0Ylv-tlF2Q\",\"name\":\"The Date\"},{\"identifier\":\"_IBo8E7IhEeCk0Ylv-tlF2Q\",\"name\":\"Weekday Name\"},{\"identifier\":\"_IBo8FLIhEeCk0Ylv-tlF2Q\",\"name\":\"Calendar Year\"},{\"identifier\":\"_IBo8FbIhEeCk0Ylv-tlF2Q\",\"name\":\"Calendar Year Name\"},{\"identifier\":\"_IBo8FrIhEeCk0Ylv-tlF2Q\",\"name\":\"Calendar Quarter\"},{\"identifier\":\"_IBo8F7IhEeCk0Ylv-tlF2Q\",\"name\":\"Calendar Quarter Name\"},{\"identifier\":\"_IBo8GLIhEeCk0Ylv-tlF2Q\",\"name\":\"Calendar Year Quarter\"},{\"identifier\":\"_IBo8GbIhEeCk0Ylv-tlF2Q\",\"name\":\"Calendar Month\"},{\"identifier\":\"_IBo8GrIhEeCk0Ylv-tlF2Q\",\"name\":\"Calendar Month Name\"},{\"identifier\":\"_IBo8G7IhEeCk0Ylv-tlF2Q\",\"name\":\"Calendar Year Month\"},{\"identifier\":\"_IBo8HLIhEeCk0Ylv-tlF2Q\",\"name\":\"Calendar Week\"},{\"identifier\":\"_IBo8HbIhEeCk0Ylv-tlF2Q\",\"name\":\"Calendar Week Name\"},{\"identifier\":\"_IBo8HrIhEeCk0Ylv-tlF2Q\",\"name\":\"Calendar Year Week\"},{\"identifier\":\"__lKF0IcaEeeSu4gZnI8jTQ\",\"name\":\"Fractional Week\"},{\"identifier\":\"_IBo8H7IhEeCk0Ylv-tlF2Q\",\"name\":\"Fiscal Year\"},{\"identifier\":\"_IBo8ILIhEeCk0Ylv-tlF2Q\",\"name\":\"Fiscal Year Name\"},{\"identifier\":\"_IBo8IbIhEeCk0Ylv-tlF2Q\",\"name\":\"Fiscal Quarter\"},{\"identifier\":\"_IBo8IrIhEeCk0Ylv-tlF2Q\",\"name\":\"Fiscal Quarter Name\"},{\"identifier\":\"_IBo8I7IhEeCk0Ylv-tlF2Q\",\"name\":\"Fiscal Year Quarter\"},{\"identifier\":\"_IBo8JLIhEeCk0Ylv-tlF2Q\",\"name\":\"Fiscal Month\"},{\"identifier\":\"_IBo8JbIhEeCk0Ylv-tlF2Q\",\"name\":\"Fiscal Month Name\"},{\"identifier\":\"_IBo8JrIhEeCk0Ylv-tlF2Q\",\"name\":\"Fiscal Year Month\"},{\"identifier\":\"_IBo8J7IhEeCk0Ylv-tlF2Q\",\"name\":\"Fiscal Week\"},{\"identifier\":\"_IBo8KLIhEeCk0Ylv-tlF2Q\",\"name\":\"Fiscal Week Name\"},{\"identifier\":\"_IBo8KbIhEeCk0Ylv-tlF2Q\",\"name\":\"Fiscal Year Week\"},{\"identifier\":\"_IB8eUbIhEeCk0Ylv-tlF2Q\",\"name\":\"Window Name\"},{\"identifier\":\"_IB8eUrIhEeCk0Ylv-tlF2Q\",\"name\":\"Start date\"},{\"identifier\":\"_IB8eU7IhEeCk0Ylv-tlF2Q\",\"name\":\"End Date\"},{\"identifier\":\"_IB8eVrIhEeCk0Ylv-tlF2Q\",\"name\":\"Sales Order Id\"},{\"identifier\":\"_IB8eWbIhEeCk0Ylv-tlF2Q\",\"name\":\"Required Date\"},{\"identifier\":\"_IB8eWrIhEeCk0Ylv-tlF2Q\",\"name\":\"Shipped Date\"},{\"identifier\":\"_oFdHDDH-EeqQU8yr4WOxaA\",\"name\":\"string_nolov_mono\"},{\"identifier\":\"_oFdHDjH-EeqQU8yr4WOxaA\",\"name\":\"date_nolov_mono\"},{\"identifier\":\"_oFdHEjH-EeqQU8yr4WOxaA\",\"name\":\"string_nolov_multi\"},{\"identifier\":\"_oFdHFDH-EeqQU8yr4WOxaA\",\"name\":\"date_nolov_multi\"},{\"identifier\":\"_UDL6YJecEee4iaVfzt7lIg\",\"name\":\"City with 'Customer' prompt\"},{\"identifier\":\"_nIBxUJOLEeedc-Fl6jmCzg\",\"name\":\"City with 'Customer Details Country' prompt\"},{\"identifier\":\"_CLgNdiWpEeeY0c9XXy_QfA\",\"name\":\"Customer with 'Customer Details' prompt\"},{\"identifier\":\"_w6cwNnkJEee6NuJtYlROHg\",\"name\":\"Customer with 'Customer Late Orders' prompt\"},{\"identifier\":\"_9Ep0wIcWEeeSu4gZnI8jTQ\",\"name\":\"Quarter with static lov\"},{\"identifier\":\"_UQfz1IcYEeeSu4gZnI8jTQ\",\"name\":\"Quarter with inline lov\"},{\"identifier\":\"_DBhCgIccEeeSu4gZnI8jTQ\",\"name\":\"Quarter with 'Fractional Week' prompt\"},{\"identifier\":\"_YLJeUSXaEeeY0c9XXy_QfA\",\"name\":\"The Date with 'The Date' prompt\"},{\"identifier\":\"_Zk8HAYZqEeeSu4gZnI8jTQ\",\"name\":\"The Date with 'Week' and 'Quarter' prompt\"},{\"identifier\":\"_IB8eVbIhEeCk0Ylv-tlF2Q\",\"name\":\"Number of Sales Orders\"},{\"identifier\":\"_7Y7VwLLpEeCro4qqyiTccg\",\"name\":\"Late Orders\"},{\"identifier\":\"_Dr5RgLLqEeCro4qqyiTccg\",\"name\":\"% Late Orders\"},{\"identifier\":\"_oFdHCjH-EeqQU8yr4WOxaA\",\"name\":\"numeric_nolov_mono\"},{\"identifier\":\"_oFdHEDH-EeqQU8yr4WOxaA\",\"name\":\"numeric_nolov_multi\"},{\"identifier\":\"_4DC_0SXhEeeY0c9XXy_QfA\",\"name\":\"Number of Sales Orders with inline prompt\"}],\"ldcVersion\":\"2.3.0.0\",\"columns\":[\"_IBo8ObIhEeCk0Ylv-tlF2Q\",\"_IBo8OrIhEeCk0Ylv-tlF2Q\",\"_IBo8MrIhEeCk0Ylv-tlF2Q\",\"_IBo8M7IhEeCk0Ylv-tlF2Q\",\"_IBo8NbIhEeCk0Ylv-tlF2Q\",\"_IBo8NrIhEeCk0Ylv-tlF2Q\",\"_IBo8LrIhEeCk0Ylv-tlF2Q\",\"_IBo8L7IhEeCk0Ylv-tlF2Q\",\"_IBo8EbIhEeCk0Ylv-tlF2Q\",\"_IBo8ErIhEeCk0Ylv-tlF2Q\",\"_IBo8E7IhEeCk0Ylv-tlF2Q\",\"_IBo8FLIhEeCk0Ylv-tlF2Q\",\"_IBo8FbIhEeCk0Ylv-tlF2Q\",\"_IBo8FrIhEeCk0Ylv-tlF2Q\",\"_IBo8F7IhEeCk0Ylv-tlF2Q\",\"_IBo8GLIhEeCk0Ylv-tlF2Q\",\"_IBo8GbIhEeCk0Ylv-tlF2Q\",\"_IBo8GrIhEeCk0Ylv-tlF2Q\",\"_IBo8G7IhEeCk0Ylv-tlF2Q\",\"_IBo8HLIhEeCk0Ylv-tlF2Q\",\"_IBo8HbIhEeCk0Ylv-tlF2Q\",\"_IBo8HrIhEeCk0Ylv-tlF2Q\",\"__lKF0IcaEeeSu4gZnI8jTQ\",\"_IBo8H7IhEeCk0Ylv-tlF2Q\",\"_IBo8ILIhEeCk0Ylv-tlF2Q\",\"_IBo8IbIhEeCk0Ylv-tlF2Q\",\"_IBo8IrIhEeCk0Ylv-tlF2Q\",\"_IBo8I7IhEeCk0Ylv-tlF2Q\",\"_IBo8JLIhEeCk0Ylv-tlF2Q\",\"_IBo8JbIhEeCk0Ylv-tlF2Q\",\"_IBo8JrIhEeCk0Ylv-tlF2Q\",\"_IBo8J7IhEeCk0Ylv-tlF2Q\",\"_IBo8KLIhEeCk0Ylv-tlF2Q\",\"_IBo8KbIhEeCk0Ylv-tlF2Q\",\"_IB8eUbIhEeCk0Ylv-tlF2Q\",\"_IB8eUrIhEeCk0Ylv-tlF2Q\",\"_IB8eU7IhEeCk0Ylv-tlF2Q\",\"_IB8eVrIhEeCk0Ylv-tlF2Q\",\"_IB8eWbIhEeCk0Ylv-tlF2Q\",\"_IB8eWrIhEeCk0Ylv-tlF2Q\",\"_oFdHDDH-EeqQU8yr4WOxaA\",\"_oFdHDjH-EeqQU8yr4WOxaA\",\"_oFdHEjH-EeqQU8yr4WOxaA\",\"_oFdHFDH-EeqQU8yr4WOxaA\",\"_UDL6YJecEee4iaVfzt7lIg\",\"_nIBxUJOLEeedc-Fl6jmCzg\",\"_CLgNdiWpEeeY0c9XXy_QfA\",\"_w6cwNnkJEee6NuJtYlROHg\",\"_9Ep0wIcWEeeSu4gZnI8jTQ\",\"_UQfz1IcYEeeSu4gZnI8jTQ\",\"_DBhCgIccEeeSu4gZnI8jTQ\",\"_YLJeUSXaEeeY0c9XXy_QfA\",\"_Zk8HAYZqEeeSu4gZnI8jTQ\",\"_IB8eVbIhEeCk0Ylv-tlF2Q\",\"_7Y7VwLLpEeCro4qqyiTccg\",\"_Dr5RgLLqEeCro4qqyiTccg\",\"_oFdHCjH-EeqQU8yr4WOxaA\",\"_oFdHEDH-EeqQU8yr4WOxaA\",\"_4DC_0SXhEeeY0c9XXy_QfA\"],\"queryProperties\":{\"retrieveDuplicateRows\":false},\"language\":\"en\",\"dataSourceCuid\":\"AZB6jpr_3P9LrcUcZQ6fVaw\",\"universeCuid\":\"AZB6jpr_3P9LrcUcZQ6fVaw\",\"filters\":{\"operands\":[],\"treeOperator\":\"AND\"},\"dataSourceType\":\"UNX\"}"
+            },
+            "InstanceId": "a600874e-3e82-4027-a602-0ccaabb9b6ec",
+            "ObjectName": "SPL_Warehouse_prompts.unx",
+            "PackageName": "Universes/InA Provider/Test Resources/PromptsTest",
+            "Type": "Unx"
+        },
+        "Definition": {
+            "Dimensions": [
+                {
+                    "Attributes": [
+                        {
+                            "Name": "Week ?.3",
+                            "Obtainability": "UserInterface"
+                        }
+                    ],
+                    "Axis": "Rows",
+                    "Name": "Week ?",
+                    "ReadMode": "Booked"
+                }
+            ],
+            "ResultSetFeatureRequest": {
+                "ResultEncoding": "None",
+                "ResultFormat": "Version2",
+                "ReturnedDataSelection": {
+                    "Actions": false,
+                    "CellDataType": false,
+                    "CellFormat": false,
+                    "CellMeasure": false,
+                    "CellValueTypes": false,
+                    "ExceptionAlertLevel": false,
+                    "ExceptionName": false,
+                    "ExceptionSettings": false,
+                    "Exceptions": false,
+                    "InputEnabled": false,
+                    "NumericRounding": false,
+                    "NumericShift": false,
+                    "TupleDisplayLevel": false,
+                    "TupleDrillState": false,
+                    "TupleElementIds": true,
+                    "TupleElementIndexes": false,
+                    "TupleLevel": false,
+                    "TupleParentIndexes": false,
+                    "UnitDescriptions": false,
+                    "UnitTypes": false,
+                    "Units": false,
+                    "Values": false,
+                    "ValuesFormatted": false,
+                    "ValuesRounded": false
+                },
+                "SubSetDescription": {
+                    "RowFrom": 0,
+                    "RowTo": -1
+                },
+                "UseDefaultAttributeKey": false
+            },
+            "Sort": [
+                {
+                    "Dimension": "Week ?",
+                    "Direction": "None",
+                    "SortType": "MemberKey"
+                }
+            ],
+            "ValuehelpForVariable": "Week ?",
+            "Variables": [
+                {
+                    "Name": "Period Type",
+                    "Values": {
+                        "Selection": {
+                            "SetOperand": {
+                                "Elements": [
+                                    {
+                                        "Comparison": "=",
+                                        "Low": "Calendar"
+                                    }
+                                ],
+                                "FieldName": "Period Type.0"
+                            }
+                        }
+                    }
+                },
+                {
+                    "Name": "Time Window",
+                    "Values": {
+                        "Selection": {
+                            "SetOperand": {
+                                "Elements": [
+                                    {
+                                        "Comparison": "=",
+                                        "Low": "Year-to-date"
+                                    }
+                                ],
+                                "FieldName": "Time Window.0"
+                            }
+                        }
+                    }
+                },
+                {
+                    "Name": "Reference Date",
+                    "SimpleStringValues": [
+                        ""
+                    ]
+                },
+                {
+                    "Name": "string_nolov_mono",
+                    "SimpleStringValues": [
+                        ""
+                    ]
+                },
+                {
+                    "Name": "date_nolov_mono",
+                    "SimpleStringValues": [
+                        ""
+                    ]
+                },
+                {
+                    "Name": "string_nolov_multi",
+                    "SimpleStringValues": []
+                },
+                {
+                    "Name": "date_nolov_multi",
+                    "SimpleStringValues": []
+                },
+                {
+                    "Name": "Enter Customer"
+                },
+                {
+                    "Name": "Customer country ?"
+                },
+                {
+                    "Name": "Customer details ?"
+                },
+                {
+                    "Name": "Customer late orders ?",
+                    "Values": {
+                        "Selection": {
+                            "SetOperand": {
+                                "Elements": [
+                                    {
+                                        "Comparison": "=",
+                                        "Low": "Everything"
+                                    }
+                                ],
+                                "FieldName": "Customer late orders ?.1"
+                            }
+                        }
+                    }
+                },
+                {
+                    "Name": "Static Quarter Number ?"
+                },
+                {
+                    "Name": "Inline Quarter Number ?"
+                },
+                {
+                    "Name": "Fractional Week ?"
+                },
+                {
+                    "Name": "Enter Date",
+                    "Values": {
+                        "Selection": {
+                            "SetOperand": {
+                                "Elements": [
+                                    {
+                                        "Comparison": "=",
+                                        "Low": "2008-01-10T00:00:00"
+                                    },
+                                    {
+                                        "Comparison": "=",
+                                        "Low": "2010-06-02T00:00:00"
+                                    }
+                                ],
+                                "FieldName": "Enter Date.0"
+                            }
+                        }
+                    }
+                },
+                {
+                    "Name": "Week ?"
+                },
+                {
+                    "Name": "Quarter ?"
+                },
+                {
+                    "Name": "numeric_nolov_mono",
+                    "SimpleNumericValues": [
+                        0
+                    ]
+                },
+                {
+                    "Name": "Enter Number",
+                    "SimpleNumericValues": [
+                        0
+                    ]
+                },
+                {
+                    "Name": "numeric_nolov_multi",
+                    "SimpleNumericValues": []
+                }
+            ]
+        },
+        "Language": "EN"
+    }
+}
