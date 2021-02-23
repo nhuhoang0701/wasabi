@@ -8,7 +8,9 @@ namespace query_model
 	enum {eUninitialize = -1, eDim = 1, eMeas = 2} eQualification;
 	typedef std::string Datatype;
 	typedef std::string Aggregation;
-	typedef std::tuple<const std::string& /*name*/, const Datatype&, const Aggregation& > Object;
+	typedef std::tuple<const std::string /*name*/, const Datatype, const Aggregation > Object;
+
+	const Aggregation NO_AGG = "";
 
 	class Grid;
 
@@ -18,7 +20,9 @@ namespace query_model
 		InA_query_model() {};
 		
 		void setTable(const std::string& table) {m_table = table;};
+
 		void addDim(const std::string& name, const Datatype& datatype);
+
 		void addMeas(const std::string& name, const Datatype& datatype, const Aggregation& agg);
 
 		const std::vector<Object>& getObjects() const { return m_objs;};
