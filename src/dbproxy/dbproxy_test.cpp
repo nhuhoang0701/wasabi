@@ -10,19 +10,19 @@ int main()
 	static const std::string cnxStr("local:sqlite:efashion.db");
 	static const std::string tableNameStr("Table1");
 	
-    DBProxy dbProxy = DBProxy::getDBProxy(cnxStr);
+    std::shared_ptr<DBProxy> dbProxy = DBProxy::getDBProxy(cnxStr);
 	
-	const std::vector<TableDescr>& tables = dbProxy.getTables();
+	const std::vector<TableDescr>& tables = dbProxy->getTables();
 	
-	CPPUNIT_ASSERT_EQUAL(tables.size(),2);
+	CPPUNIT_ASSERT_EQUAL(tables.size(),3);
 	for(const auto& tableDescr : tables)
 	{
 		const std::string& tableName = tableDescr.getName();		
-		CPPUNIT_ASSERT_EQUAL(tableDescr,dbProxy.getTableDescr(tableName));
+		CPPUNIT_ASSERT_EQUAL(tableDescr,dbProxy->getTableDescr(tableName));
 	}
 	
 	
-	const TableDescr& tableDescr = dbProxy.getTableDescr(tableNameStr);
+	const TableDescr& tableDescr = dbProxy->getTableDescr(tableNameStr);
 	const std::vector<ColumnDescr>& cols = tableDescr.getColumnsDescr();
 	CPPUNIT_ASSERT_EQUAL(cols.size(),4);
 	CPPUNIT_ASSERT_EQUAL(cols[0].getName(),"ColumnName0");
@@ -57,7 +57,7 @@ int main()
 			
 			line++;
 		};
-		dbProxy.executeSQL("SELECT * FROM " + tableNameStr, lambda);
+		dbProxy->executeSQL("SELECT * FROM " + tableNameStr, lambda);
 		CPPUNIT_ASSERT_EQUAL(line,2);
 	}
 	
@@ -70,7 +70,7 @@ int main()
 			CPPUNIT_ASSERT_EQUAL(std::stod(row[1].getString()),5);
 			line++;
 		};
-		dbProxy.executeSQL("SELECT ColumnName0,sum(ColumnName3) FROM " + tableNameStr, lambda);
+		dbProxy->executeSQL("SELECT ColumnName0,sum(ColumnName3) FROM " + tableNameStr, lambda);
 		CPPUNIT_ASSERT_EQUAL(line,1);
 	}
 	return TEST_HAVEERROR();
