@@ -5,6 +5,8 @@
 #include <variant>
 #include <functional>
 
+#include <memory>
+
 #include <cmath>
 
 
@@ -26,19 +28,20 @@ private:
 	const std::string  m_datatype;
 };
 
-class TableDescr
+class TableDescr : public std::vector<ColumnDescr> 
 {
 	friend class DBProxy;
 
 public:
 	bool operator == (const TableDescr& rhs) const;
 
+	void setName(const std::string& name) {m_name = name;};
+
 	const std::string&               getName() const {return m_name;};
-	const std::vector<ColumnDescr>&  getColumnsDescr() const {return m_columns;};
+	const std::vector<ColumnDescr>&  getColumnsDescr() const {return *this;};
 
 private:
 	std::string               m_name;
-	std::vector<ColumnDescr>  m_columns;
 };
 
 class Value : public std::variant<std::string, double>
@@ -59,16 +62,17 @@ public:
 class DBProxy
 {
 public:
-	static DBProxy getDBProxy(const std::string& cnxString);
+	static std::shared_ptr<DBProxy> getDBProxy(const std::string& cnxString);
 	virtual ~DBProxy();
 
+	std::vector<TableDescr>&       getTables();
 	const std::vector<TableDescr>& getTables() const;
 	const TableDescr&              getTableDescr(const std::string& name) const;
 
-	void  executeSQL(const std::string& SQL, std::function<void (Row const&)> calback)const;
+	virtual void  executeSQL(const std::string& SQL, std::function<void (Row const&)> calback) const = 0;
 
-private:
-	DBProxy(const std::string& cnxString);
+protected:
+	DBProxy();
 
 private:
 	std::vector<TableDescr>  m_tablesDescr;
