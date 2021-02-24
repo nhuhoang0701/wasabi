@@ -16,7 +16,7 @@ link_directories(${WASABI_ROOT_DIR}/src/build/lib)
 
 ## [main]
 
-set(SRCS test_json.cpp)
+set(SRCS test_json.cpp test_writer.cpp)
 set(HEADERS test_data.h)
 
 add_executable(TestJson ${SRCS} ${HEADERS})

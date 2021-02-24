@@ -128,6 +128,6 @@ int main()
 	TEST_INIT();
 	
 	Test_reader();
-	
+        Test_writer();
 	return TEST_HAVEERROR();
 }
