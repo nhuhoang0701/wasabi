@@ -10,6 +10,7 @@ int main()
 	static const std::string cnxStr("local:sqlite:efashion.db");
 	static const std::string tableNameStr("Table1");
 	
+	using namespace dbproxy;
     std::shared_ptr<DBProxy> dbProxy = DBProxy::getDBProxy(cnxStr);
 	
 	const std::vector<TableDescr>& tables = dbProxy->getTables();
