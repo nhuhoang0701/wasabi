@@ -10,70 +10,73 @@
 #include <cmath>
 
 
-class ColumnDescr
+
+namespace dbproxy
 {
-public:
-	ColumnDescr(const std::string& name, const std::string& datatype) :
-		m_name(name),
-		m_datatype(datatype)
+	class ColumnDescr
 	{
+	public:
+		ColumnDescr(const std::string& name, const std::string& datatype) :
+			m_name(name),
+			m_datatype(datatype)
+		{
+		};
+		bool operator == (const ColumnDescr& rhs) const;
+
+		const std::string&  getName() const {return m_name;};
+		const std::string&  getDataType() const {return m_datatype;};
+
+	private:
+		const std::string  m_name;
+		const std::string  m_datatype;
 	};
-	bool operator == (const ColumnDescr& rhs) const;
 
-	const std::string&  getName() const {return m_name;};
-	const std::string&  getDataType() const {return m_datatype;};
+	class TableDescr : public std::vector<ColumnDescr> 
+	{
+		friend class DBProxy;
 
-private:
-	const std::string  m_name;
-	const std::string  m_datatype;
-};
+	public:
+		bool operator == (const TableDescr& rhs) const;
 
-class TableDescr : public std::vector<ColumnDescr> 
-{
-	friend class DBProxy;
+		void setName(const std::string& name) {m_name = name;};
 
-public:
-	bool operator == (const TableDescr& rhs) const;
+		const std::string&               getName() const {return m_name;};
+		const std::vector<ColumnDescr>&  getColumnsDescr() const {return *this;};
 
-	void setName(const std::string& name) {m_name = name;};
+	private:
+		std::string               m_name;
+	};
 
-	const std::string&               getName() const {return m_name;};
-	const std::vector<ColumnDescr>&  getColumnsDescr() const {return *this;};
+	class Value : public std::string
+	{
+	public:
+		Value(const std::string& str) : std::string(str) {}
+		
+		const std::string& getString() const {return (*this);};
+	};
 
-private:
-	std::string               m_name;
-};
+	class Row : public std::vector<Value>
+	{
+	public:
+	};
 
-class Value : public std::variant<std::string, double>
-{
-public:
-	Value(const std::string& str) : std::variant<std::string, double>(str) {}
-	Value(double dble) : std::variant<std::string, double>(dble) {}
-	
-	const std::string& getString() const {return std::get<std::string>(*this);};
-	const double&      getDouble() const {return std::get<double>(*this);};
-};
+	class DBProxy
+	{
+	public:
+		static std::shared_ptr<DBProxy> getDBProxy(const std::string& cnxString);
+		virtual ~DBProxy();
 
-class Row : public std::vector<Value>
-{
-public:
-};
+		std::vector<TableDescr>&       getTables();
+		const std::vector<TableDescr>& getTables() const;
+		const TableDescr&              getTableDescr(const std::string& name) const;
 
-class DBProxy
-{
-public:
-	static std::shared_ptr<DBProxy> getDBProxy(const std::string& cnxString);
-	virtual ~DBProxy();
+		virtual void  executeSQL(const std::string& SQL, std::function<void (Row const&)> calback) const = 0;
 
-	std::vector<TableDescr>&       getTables();
-	const std::vector<TableDescr>& getTables() const;
-	const TableDescr&              getTableDescr(const std::string& name) const;
+	protected:
+		DBProxy();
 
-	virtual void  executeSQL(const std::string& SQL, std::function<void (Row const&)> calback) const = 0;
+	private:
+		std::vector<TableDescr>  m_tablesDescr;
+	};
 
-protected:
-	DBProxy();
-
-private:
-	std::vector<TableDescr>  m_tablesDescr;
-};
+} // dbproxy
