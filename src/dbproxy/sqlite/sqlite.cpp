@@ -10,6 +10,7 @@ DBSQLite::DBSQLite()
 : DBProxy()
 {
     if (sqlite3_open(":memory:", &m_sqlite_db) != SQLITE_OK)
+	//if (sqlite3_open_v2(":memory:", &m_sqlite_db, SQLITE_OPEN_READONLY, nullptr) != SQLITE_OK)
 	{    
         fprintf(stderr, "Cannot open database: %s\n", sqlite3_errmsg(m_sqlite_db));
         sqlite3_close(m_sqlite_db);
