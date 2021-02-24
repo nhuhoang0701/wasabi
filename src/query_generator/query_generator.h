@@ -3,11 +3,11 @@
 #include <string>
 
 #include "InA_query_model.h"
+#include "cube.h"
 
 
 namespace query_generator
 {
-	class Cube;
 
 	class query_generator
 	{

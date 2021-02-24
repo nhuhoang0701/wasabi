@@ -17,15 +17,19 @@ namespace query_generator
 
         for (const auto& object : objects)
         {
-	        //std::cout << "query_generator::getSQL object= " << std::get<0>(object) << " " << std::get<1>(object) << " " << std::get<2>(object) << std::endl;
-            query_model::Aggregation agg = std::get<2>(object);
+            sql << delim;
+            
+            const query_model::Aggregation& agg = std::get<2>(object);
+            const std::string& name = std::get<0>(object);
+            // const query_model::Datatype& datatype = std::get<1>(object);
+	        // std::cout << "query_generator::getSQL object= " << name << " " << datatype << " " << agg << std::endl;
             if(agg.empty())
             {
-                sql << delim << std::get<0>(object);
+                sql << name;
             }
             else
             {
-                sql << delim << agg << "(" << std::get<0>(object) << ")";
+                sql << agg << "(" << name << ")";
             }
             delim = ", ";
         }

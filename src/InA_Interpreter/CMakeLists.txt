@@ -14,7 +14,7 @@ project(InA_Interpreter VERSION 1.0 LANGUAGES CXX)
 # External entries points
 add_link_options(LINKER:--export=json_getServerInfo,--export=json_getResponse_json)
 
-add_library(InA_Interpreter main.cpp)
+add_library(InA_Interpreter InA_Interpreter.cpp)
 target_include_directories(InA_Interpreter PUBLIC ${WASABI_ROOT_DIR}/src/json/include)
 target_include_directories(InA_Interpreter PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
@@ -23,7 +23,7 @@ target_link_libraries(InA_Interpreter PUBLIC cjson jsonUtils.wasm exceptions.was
 
 ################################################
 # test
-add_executable(InA_Interpreter_test main.cpp)
+add_executable(InA_Interpreter_test InA_Interpreter_test.cpp)
 target_link_libraries(InA_Interpreter_test InA_Interpreter)
 target_include_directories(InA_Interpreter_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
 

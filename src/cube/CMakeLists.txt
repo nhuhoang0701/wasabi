@@ -9,24 +9,22 @@ project(
   cube
   VERSION 1.0)
   
-################################################
-# SQLITE
-set(SQLITE_DIR ${WASABI_ROOT_DIR}/external/sqlite/src)
-add_definitions(-DNDEBUG -DSQLITE_OS_OTHER)
-add_library(sqlite ${SQLITE_DIR}/sqlite3.c ${SQLITE_DIR}/os.c ${SQLITE_DIR}/vfs.c )
-target_include_directories(sqlite PUBLIC ${SQLITE_DIR})
+set(DB_PROXY_LIB ${WASABI_ROOT_DIR}/src/dbproxy)
+#set(DB_PROXY_LIB_BUILD ${DB_PROXY_LIB}/build)
 
 ################################################
 # cube
 add_library(cube cube.cpp)
+target_include_directories(cube PUBLIC ${DB_PROXY_LIB})
 target_link_libraries(cube PUBLIC exceptions.wasm)
 target_link_directories(cube PUBLIC ${WASABI_ROOT_DIR}/src/build/lib/)
 
 ################################################
 # test
 add_executable(cube_test cube_test.cpp)
+target_include_directories(cube_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include ${DB_PROXY_LIB})
 target_link_libraries(cube_test cube)
-target_include_directories(cube_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
+target_link_directories(cube_test PUBLIC)
 
 ## [main]
 enable_testing()
