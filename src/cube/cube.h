@@ -1,11 +1,30 @@
 #pragma once
 
-#include "dbproxy.h"
+#include <tuple>
+#include <string>
+#include <vector>
 
-class Cube
+namespace dbproxy {class Row;};
+
+namespace cube
 {
-public:
-	Cube();
+	class Cube
+	{
+	public:
+	typedef std::vector<std::vector<std::string>> Body;
 
-	void insertRow(const Row& row);
-};
+		Cube();
+
+		const Body&  getBody() const {return m_body;};
+		
+		void addColumnDim(const std::string& name);
+		void addColumnMeas(const std::string& name);
+
+		void insertRow(const dbproxy::Row& row);
+
+	private:
+		std::vector<std::string /*name*/>  m_columns;
+		
+		Body   m_body;
+	};
+} // cube
