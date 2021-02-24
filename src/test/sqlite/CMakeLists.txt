@@ -26,7 +26,6 @@ add_executable(sqlite_example sqlite_example.cpp )
 
 target_link_libraries(sqlite_example PRIVATE sqlite)
 
-enable_testing()
 add_test(NAME sqlite_example COMMAND sqlite_example)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)

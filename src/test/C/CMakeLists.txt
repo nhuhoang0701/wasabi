@@ -30,7 +30,6 @@ add_executable(C_nolib C_nolib.c)
 #target_link_libraries(C_libc PRIVATE )
 #target_link_libraries(C_libc_dl PRIVATE )
 
-enable_testing()
 add_test(NAME C_nolib COMMAND C_nolib)
 add_test(NAME C_libc COMMAND C_libc --dir=../resources/  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources)
 
