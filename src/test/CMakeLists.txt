@@ -5,23 +5,14 @@ if (NOT DEFINED WASABI_ROOT_DIR AND DEFINED ENV{WASABI_ROOT_DIR})
 endif()
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
-project(wasabi_src VERSION 1.0)
+project(wasabi_src_test VERSION 1.0)
 
 
-add_subdirectory(exceptions)
-
-add_subdirectory(json)
-
-add_subdirectory(dbproxy)
-add_subdirectory(InA_query_model)
-#add_subdirectory(query_generator)
-add_subdirectory(cube)
-add_subdirectory(grid)
-add_subdirectory(metadata_enrichment)
-add_subdirectory(InA_Interpreter)
-
-
-add_subdirectory(test)
+add_subdirectory(C)
+add_subdirectory(CPP)
+#add_subdirectory(sqlite)
+add_subdirectory(wasi)
+#add_subdirectory(basic_wasm_jsapi)
 
 
 ################################################
