@@ -3,8 +3,6 @@
 #include <sstream>
 #include <iostream>
 
-#include "json/jsonReader.h"
-#include "json/jsonWriter.h"
 #include "server_info_response.h"
 
 #define WASM_EXPORT extern "C"
@@ -33,12 +31,32 @@ const char* json_getResponse_json(const char* InA)
 		JSON_MAP(writer);
 		writer.key("message");
 
-		if(root.haveValue("Metadata"))
+		processRequest(root, writer);
+	}
+	static_str = osstream.str();
+	
+	return static_str.c_str();
+}
+
+void processRequest(const JSONGenericObject& object, JSONWriter& writer)
+{
+		std::cout << "InA_Interpreter => processRequest" << std::endl;
+		if(object.haveValue("Batch"))
+		{
+			std::cout << "InA_Interpreter => Process 'Batch' InA request" << std::endl;
+			auto& batch = object.getArray("Batch");
+			JSON_LIST(writer);
+			for(int i = 0;i < batch.size();i++)
+			{
+				processRequest(batch[i], writer);
+			}
+		}
+		else if(object.haveValue("Metadata"))
 		{
 			std::cout << "InA_Interpreter => Process 'Metadata' InA request" << std::endl;
 			writer.value("Process 'Metadata' InA request");
 		}
-		else if(root.haveValue("Analytics"))
+		else if(object.haveValue("Analytics"))
 		{
 			std::cout << "InA_Interpreter => Process 'Analytics' InA request" << std::endl;
 			writer.value("Process 'Analytics' InA request");
@@ -48,8 +66,4 @@ const char* json_getResponse_json(const char* InA)
 			std::cerr << "InA_Interpreter => Unsupported InA request" << std::endl;
 			writer.value("Unsupported InA request");
 		}
-	}
-	static_str = osstream.str();
-	
-	return static_str.c_str();
 }
