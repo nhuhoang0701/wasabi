@@ -37,3 +37,6 @@ static const std::string Json_test_reader0 =
 	"        }   "
 	"    }   "
 	"}   ";
+
+///Declare writer
+extern  void Test_writer();
