@@ -1,5 +1,8 @@
 #include "query_generator.h"
 
+
+#inlude "../cube/cube.h"
+
 #include <sstream>
 #include <iostream>
 
@@ -39,4 +42,18 @@ namespace query_generator
         return sql.str();
 
     }
+	
+	void query_generator::prepareCube(cube::Cube& cube)
+	{
+        const std::vector<query_model::Object>& objects = m_qryModel.getObjects();
+        for (const auto& object : objects)
+		{
+            const query_model::Aggregation& agg = std::get<2>(object);
+            const std::string& name = std::get<0>(object);
+			if(agg.empty())
+				cube.addColumnDim(name);
+			else
+				cube.addColumnMeas(name);
+		}
+	}
 } //query_generator
