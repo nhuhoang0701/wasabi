@@ -10,6 +10,21 @@ function getJSStringFromWAsmAt(str_ptr, memory)
 	return str;
 }
 
+function getWASmStringFromJS(js_str, module)
+{
+	var uint8array = new TextEncoder("utf-8").encode("Plain Text");
+
+	let size = uint8array.length;
+	ptr = module.instance.exports.malloc(size);
+	const heap = new Uint8Array(module.instance.exports.memory);
+	
+	for (var i = 0; i < size; i++) {
+		heap[ptr+i] = uint8array[i];
+	}
+	heap[ptr+size] = 0;
+	return ptr;
+}
+
 function getModuleMemoryDataView() {
 	return new DataView(moduleInstanceExports.memory.buffer);
 }
