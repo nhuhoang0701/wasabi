@@ -32,6 +32,6 @@ add_executable(C_nolib C_nolib.c)
 
 enable_testing()
 add_test(NAME C_nolib COMMAND C_nolib)
-add_test(NAME C_libc COMMAND C_libc --dir=../resources/)
+add_test(NAME C_libc COMMAND C_libc --dir=../resources/  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
