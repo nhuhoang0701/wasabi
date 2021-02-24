@@ -12,10 +12,6 @@ project(
   VERSION 1.0
   LANGUAGES CXX)
 
-
-# generate a "test" target (this command must be issued at project's root)
-enable_testing()
-
 add_subdirectory(src)
 
 add_subdirectory(test)
