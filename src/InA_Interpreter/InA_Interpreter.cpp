@@ -4,7 +4,18 @@
 #define WASM_EXPORT extern "C"
 
 	std::string static_str;
-	
+
+	// Keep a main as InA_Interpreter
+	int main()
+	{
+		std::cout << "main executed:"
+				  << __FILE__ << ':'
+				  << __LINE__ << '\n';
+		return 0;
+	}
+
+
+
 	WASM_EXPORT
 	const char* json_getServerInfo()
 	{

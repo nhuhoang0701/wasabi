@@ -11,10 +11,12 @@ project(InA_Interpreter VERSION 1.0 LANGUAGES CXX)
 ################################################
 # InA_Interpreter
 
+# InA_Interpreter as executable to be sure of C/C++ init staff is well done
+add_executable(InA_Interpreter InA_Interpreter.cpp)
 # External entries points
-add_link_options(LINKER:--export=json_getServerInfo,--export=json_getResponse_json)
-
-add_library(InA_Interpreter InA_Interpreter.cpp)
+target_link_options( InA_Interpreter PRIVATE LINKER:--export=json_getServerInfo,--export=json_getResponse_json,--export=malloc,--export=free)
+# To allow to link with InA_Interpreter executable
+set_property(TARGET InA_Interpreter PROPERTY ENABLE_EXPORTS 1)
 target_include_directories(InA_Interpreter PUBLIC ${WASABI_ROOT_DIR}/src/json/include)
 target_include_directories(InA_Interpreter PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
