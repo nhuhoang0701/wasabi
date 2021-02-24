@@ -1,0 +1,15 @@
+
+USe DB Proxy to acces to the DB and provide metadata :
+
+1 provde the catalog with all the tables in the DB
+
+2 provide metadat for a single table from the DB
+For exemple a table in the DB with :
+
+Col0 (TEXT)  | Col1 (REAL)
+
+This metadata enrichelent can provide :
+Col0 with a name, with a Qualification (measures, dimenson) and aggregation ....
+
+
+3 Write the metadata instance into the stream with InA compliants format
