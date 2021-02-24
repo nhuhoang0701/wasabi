@@ -12,7 +12,8 @@ include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 include_directories(${WASABI_ROOT_DIR}/external)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
-set(SRCS jsonReader.cpp)
+set(SRCS jsonReader.cpp
+         jsonWriter.cpp)
 set(HEADERS ${PROJECT_SOURCE_DIR}/include/json/jsonReader.h)
 
 add_library(jsonUtils ${SRCS} ${HEADERS})

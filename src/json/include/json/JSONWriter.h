@@ -1,102 +1,120 @@
 #pragma once
-
-#ifdef __LED_TOOLS_JSON_
-#error "pragma once not supported"
-#endif
-#define __LED_TOOLS_JSON_
-
-#include <Tools/Tools.h>
-#include <boost/shared_ptr.hpp>
-
 #include <string>
 #include <ostream>
+#include <vector>
 #include <stdint.h>     // For unit_32/64 and co
 
-class bo_utf8string; // From #include <srvtools/kcputf8string.h>
-
+#define LDE_TOOLS_API
 class JSONPrecision;
 class JSONContainer;
-class JSONWriterImpl;
-typedef boost::shared_ptr<JSONWriterImpl> JSONWriterImpl_SharedPtr;
 
-class LDE_TOOLS_API JSONWriter
-{
-	friend class JSONPrecision;
-private:
-	friend class JSONContainer;
 
-	JSONWriter();
-public:
-	JSONWriter(std::ostream& stream);
-	~JSONWriter();
 
-	void key(const std::string & name);
+class LDE_TOOLS_API JSONWriter{
+  friend class JSONPrecision;
+  typedef JSONWriter JSONWriterImpl;
+ private:
 
-	void valueNull();
-	void value(const std::string& s);
-	void value(const bo_utf8string& s);
-	void value(const char* s);
-	void value(bool val);
-	void value(double val);
-	void value(int64_t val);
-	void value(int val);
-	void value(unsigned val);
-	void value(uint64_t val);
-#if defined(__clang) && defined(_WIN32)
-	void value(long val);
-#endif
+ friend class JSONContainer;
+ friend class JSONContainerList;
+ friend class JSONContainerMap;
+ JSONWriter();
+ public:
+ JSONWriter(std::ostream& theStream);
+ ~JSONWriter();
 
-	template<typename T>
-	inline void pair(const std::string & name, const T & val)
-	{
-		key(name);
-		value(val);
-	}
+  void key(const std::string & theName);
 
-	inline JSONWriterImpl & Impl() { return *m_writer; }
+  void valueNull();
+  void value(const std::string& theString);
+  void value(const char* s);
+  void value(bool theValue);
+  void value(double val);
+  void value(int64_t val);
+  void value(int val);
+  void value(unsigned val);
+  void value(uint64_t val);
 
-private:
-	JSONWriterImpl_SharedPtr m_writer;
-};
+  template<typename T> void pair(const std::string & name, const T & val){
+    key(name);
+    value(val);
+  }
+
+  inline JSONWriterImpl & Impl() { return *this; }
+
+  private:
+  void startList(){
+    itsOpenTags.push_back(false);
+    itsStream << "[";
+  };
+  void endList(){
+    itsOpenTags.pop_back();
+    itsStream<<"]";
+  };
+  void startMap(){
+    itsOpenTags.push_back(0);
+    itsStream<<"{";
+  };
+  void endMap(){
+    itsOpenTags.pop_back();
+    itsStream<<"}";
+  };
+  void separator(){
+    itsStream<<",";
+  };
+  std::ostream& itsStream;
+  bool itsWroteKey;
+  std::vector<bool> itsOpenTags;
+  };
 
 class LDE_TOOLS_API JSONContainerList
-{
-private:
-	JSONContainerList();
+  {
+  private:
+  JSONContainerList();
 
-public:
-	JSONContainerList(JSONWriter& writer);
-	~JSONContainerList();
+  public:
+  JSONContainerList(JSONWriter& theWriter):itsWriter(theWriter){
+    itsWriter.startList();
+  };
+  ~JSONContainerList(){
+    itsWriter.endList();
+  };
 
-private:
-	JSONWriter&    m_writer;
-};
+  private:
+  JSONWriter& itsWriter;
+  };
 #define JSON_LIST(writer) JSONContainerList openLIST##__LINE__(writer)
 
 class LDE_TOOLS_API JSONContainerMap
-{
-private:
-	JSONContainerMap();
+  {
+  private:
+  JSONContainerMap();
 
-public:
-	JSONContainerMap(JSONWriter& writer);
-	~JSONContainerMap();
+  public:
+  JSONContainerMap(JSONWriter& theWriter):itsWriter(theWriter){
+    itsWriter.startMap();
+  };
+  ~JSONContainerMap(){
+    itsWriter.endMap();
+  };
 
-private:
-	JSONWriter&    m_writer;
-};
+  private:
+  JSONWriter& itsWriter;
+  };
 #define JSON_MAP(writer) JSONContainerMap openMAP##__LINE__(writer)
 
 
 class LDE_TOOLS_API JSONPrecision
-{
-	JSONPrecision();
-public:
-	JSONPrecision(JSONWriter& writer, std::streamsize prec);
-	~JSONPrecision();
+  {
+    JSONPrecision();
+  public:
+  JSONPrecision(JSONWriter& theWriter, std::streamsize prec):itsWriter(theWriter){};
+  ~JSONPrecision(){};
 
-private:
-	JSONWriter&      m_writer;
-	int				 m_previousPrecision;
-};
+  private:
+  JSONWriter&      itsWriter;
+  int m_previousPrecision;
+  };
 #define WRITER_PRECISION(writer, value) JSONPrecision precision##__LINE__(writer, value)
+typedef JSONWriter JSONWriterImpl;
+typedef std::shared_ptr<JSONWriterImpl> JSONWriterImpl_SharedPtr;
