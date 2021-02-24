@@ -11,22 +11,29 @@ project(InA_Interpreter VERSION 1.0 LANGUAGES CXX)
 ################################################
 # InA_Interpreter
 
+# InA_Interpreter as library
+add_library(InA_Interpreter_lib InA_Interpreter.cpp)
+target_include_directories(InA_Interpreter_lib PUBLIC  ${PROJECT_SOURCE_DIR}/include ${WASABI_ROOT_DIR}/src/json/include)
+target_link_libraries(InA_Interpreter_lib PUBLIC cjson jsonUtils.wasm exceptions.wasm)
+target_link_directories(InA_Interpreter_lib PUBLIC ${WASABI_ROOT_DIR}/external/cJSON/build ${WASABI_ROOT_DIR}/src/build/lib)
+
+
 # InA_Interpreter as executable to be sure of C/C++ init staff is well done
-add_executable(InA_Interpreter InA_Interpreter.cpp)
+add_executable(InA_Interpreter InA_Interpreter_main.cpp)
 # External entries points
 target_link_options( InA_Interpreter PRIVATE LINKER:--export=json_getServerInfo,--export=json_getResponse_json,--export=malloc,--export=free)
 # To allow to link with InA_Interpreter executable
 set_property(TARGET InA_Interpreter PROPERTY ENABLE_EXPORTS 1)
-target_include_directories(InA_Interpreter PUBLIC ${WASABI_ROOT_DIR}/src/json/include)
-target_include_directories(InA_Interpreter PUBLIC ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(InA_Interpreter PUBLIC ${PROJECT_SOURCE_DIR}/include ${WASABI_ROOT_DIR}/src/json/include)
 
 target_link_directories(InA_Interpreter PUBLIC ${WASABI_ROOT_DIR}/external/cJSON/build ${WASABI_ROOT_DIR}/src/build/lib)
-target_link_libraries(InA_Interpreter PUBLIC cjson jsonUtils.wasm exceptions.wasm)
+target_link_libraries(InA_Interpreter PUBLIC InA_Interpreter_lib cjson jsonUtils.wasm exceptions.wasm)
+
 
 ################################################
 # test
 add_executable(InA_Interpreter_test InA_Interpreter_test.cpp)
-target_link_libraries(InA_Interpreter_test InA_Interpreter)
+target_link_libraries(InA_Interpreter_test InA_Interpreter_lib)
 target_include_directories(InA_Interpreter_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
 
 enable_testing()
