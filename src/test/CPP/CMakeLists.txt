@@ -24,7 +24,6 @@ target_link_libraries(CPP_nolib_exception PRIVATE exceptions.wasm )
 target_link_libraries(CPP_Withlibcxx PRIVATE CPP_libcxx exceptions.wasm )
 
 ## [main]
-enable_testing()
 add_test(NAME CPP_nolib_class COMMAND CPP_nolib_class)
 add_test(NAME CPP_nolib_exception_failed COMMAND CPP_nolib_exception)
 add_test(NAME CPP_Withlibcxx COMMAND CPP_Withlibcxx)

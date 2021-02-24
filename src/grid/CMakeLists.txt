@@ -22,7 +22,6 @@ target_link_libraries(grid_test grid)
 target_include_directories(grid_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
 
 ## [main]
-enable_testing()
 add_test(NAME grid_test COMMAND grid_test)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)

@@ -27,7 +27,6 @@ target_link_libraries(cube_test cube)
 target_link_directories(cube_test PUBLIC)
 
 ## [main]
-enable_testing()
 add_test(NAME cube_test COMMAND cube_test)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
