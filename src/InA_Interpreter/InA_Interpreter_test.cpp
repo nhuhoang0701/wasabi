@@ -51,5 +51,16 @@ void getResponse()
 
     std::cout << "InA_Interpreter_test => response: " << response << std::endl;
 
+    std::cout << "------------------------" << std::endl << std::endl;
+
+    request = "{\"Batch\": [{\"Metadata\": {  }},{\"Analytics\": {  }},{\"Analytics\": {  }}]}";
+
+    std::cout << "InA_Interpreter_test => request: json_getResponse_json " << request << std::endl;
+
+    response = json_getResponse_json(request.c_str());
+
+    std::cout << "InA_Interpreter_test => response: " << response << std::endl;
+
+
     std::cout << "-------------------------------------------------------" << std::endl << std::endl;
 }
