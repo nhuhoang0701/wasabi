@@ -35,7 +35,7 @@ onmessage = function(e) {
 			env: {},
 			js : {mem: new WebAssembly.Memory({initial: 2,maximum: 10})}
 		};
-		WebAssembly.instantiateStreaming(fetch("InA_Interpreter.wasm"), importObject).then(module =>
+		WebAssembly.instantiateStreaming(fetch("./InA_Interpreter.wasm"), importObject).then(module =>
 		{
 			console.log('Worker: Library well loaded');
 			moduleWASI = module;
@@ -63,7 +63,8 @@ onmessage = function(e) {
 		}
 
 		try {
-			var res = getJSStringFromWAsmAt(moduleWASI.instance.exports.json_getServerInfo(), moduleWASI.instance.exports.memory);
+			var wasmRes = moduleWASI.instance.exports.json_getServerInfo();
+			var res = convertWAsmStr2JSStr(wasmRes, moduleWASI.instance.exports.memory);
 
 			console.log([WorkerEvent.eGetServerInfo, 'Worker: GetServerInfo executed']);
 			postMessage([WorkerEvent.eGetServerInfo, res]);
@@ -81,8 +82,13 @@ onmessage = function(e) {
 		}
 
 		try {
-			var query = message[1];
-			var res = getJSStringFromWAsmAt(moduleWASI.instance.exports.json_getResponse_json(query), moduleWASI.instance.exports.memory);
+			var queryJS = message[1];
+			
+			var queryWAsm = convertJSStr2WAsm(queryJS, moduleWASI);
+			var wasmRes = moduleWASI.instance.exports.json_getResponse_json(queryWAsm);
+			moduleWASI.instance.exports.free(queryWAsm);
+			
+			var res = getJSStringFromWAsmAt(wasmRes, moduleWASI.instance.exports.memory);
 
 			console.log([WorkerEvent.eGetResponse, 'Worker: GetServerInfo executed']);
 			postMessage([WorkerEvent.eGetResponse, res]);

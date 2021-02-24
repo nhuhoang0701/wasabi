@@ -8,7 +8,7 @@ worker.onmessage = function(msg) {
 	} else if(msg.data[0]=="load")
 		worker.postMessage(["GetServerInfo"]);
 	else if(msg.data[0]=="GetServerInfo")
-		worker.postMessage(["GetResponse", ["{'not an InA':0}"]]);
+		worker.postMessage(["GetResponse", ["{\"not an InA\":0}"]]);
 	else if(msg.data[0]=="GetResponse") {
 	}
 };

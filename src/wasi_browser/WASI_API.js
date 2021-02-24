@@ -1,7 +1,7 @@
 // Members
 moduleInstanceExports = null;
 
-function getJSStringFromWAsmAt(str_ptr, memory)
+function convertWAsmStr2JSStr(str_ptr, memory)
 {
 	const heap = new Uint8Array(memory.buffer);
 	var str = "";
@@ -10,19 +10,21 @@ function getJSStringFromWAsmAt(str_ptr, memory)
 	return str;
 }
 
-function getWASmStringFromJS(js_str, module)
+function convertJSStr2WAsm(js_str, module)
 {
-	var uint8array = new TextEncoder("utf-8").encode("Plain Text");
+	const heap = new Uint8Array(module.instance.exports.memory.buffer);
 
+	var uint8array = new TextEncoder("utf-8").encode(js_str);
 	let size = uint8array.length;
-	ptr = module.instance.exports.malloc(size);
-	const heap = new Uint8Array(module.instance.exports.memory);
+	
+	var wasm_str = module.instance.exports.malloc(size+1);
 	
 	for (var i = 0; i < size; i++) {
-		heap[ptr+i] = uint8array[i];
+		heap[wasm_str+i] = uint8array[i];
 	}
-	heap[ptr+size] = 0;
-	return ptr;
+	heap[wasm_str+size] = 0;
+	
+	return wasm_str;
 }
 
 function getModuleMemoryDataView() {
