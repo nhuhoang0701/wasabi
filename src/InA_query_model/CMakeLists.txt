@@ -8,18 +8,23 @@ include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 project(
   InA_query_model
   VERSION 1.0)
+
+set(GRID_LIB ${WASABI_ROOT_DIR}/src/grid)
+#set(GRID_LIB_BUILD ${GRID_LIB}/build)
   
 ################################################
 # InA_query_model
 add_library(InA_query_model InA_query_model.cpp)
+target_include_directories(InA_query_model PUBLIC ${GRID_LIB})
 target_link_libraries(InA_query_model PUBLIC exceptions.wasm)
 target_link_directories(InA_query_model PUBLIC ${WASABI_ROOT_DIR}/src/build/lib/)
 
 ################################################
 # test
 add_executable(InA_query_model_test InA_query_model_test.cpp)
+target_include_directories(InA_query_model_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include ${GRID_LIB})
 target_link_libraries(InA_query_model_test InA_query_model)
-target_include_directories(InA_query_model_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
+target_link_directories(InA_query_model_test PUBLIC)
 
 ## [main]
 enable_testing()

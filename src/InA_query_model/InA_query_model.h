@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "grid.h"
+
 namespace query_model
 {
 	enum {eUninitialize = -1, eDim = 1, eMeas = 2} eQualification;
@@ -11,8 +13,6 @@ namespace query_model
 	typedef std::tuple<const std::string /*name*/, const Datatype, const Aggregation > Object;
 
 	const Aggregation NO_AGG = "";
-
-	class Grid;
 
 	class InA_query_model
 	{
@@ -29,7 +29,7 @@ namespace query_model
 
 		const std::string& getTable() const { return m_table;};
 
-		void prepareGrid(Grid& grid);
+		void prepareGrid(grid::Grid& grid);
 
 	private:
 		std::vector<Object> m_objs;
