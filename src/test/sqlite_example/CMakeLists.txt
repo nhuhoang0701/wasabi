@@ -20,13 +20,12 @@ add_definitions(
 include_directories(${SQLITE_DIR})
 
 
-add_library(sqlite ${SQLITE_DIR}/sqlite3.c ${SQLITE_DIR}/os.c ${SQLITE_DIR}/vfs.c )
+add_library(sqliteDB ${SQLITE_DIR}/sqlite3.c ${SQLITE_DIR}/os.c ${SQLITE_DIR}/vfs.c )
 
 add_executable(sqlite_example sqlite_example.cpp )
 
-target_link_libraries(sqlite_example PRIVATE sqlite)
+target_link_libraries(sqlite_example PRIVATE sqliteDB)
 
-enable_testing()
 add_test(NAME sqlite_example COMMAND sqlite_example)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)

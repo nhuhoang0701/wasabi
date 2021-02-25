@@ -29,7 +29,6 @@ target_link_libraries(dbproxy_test dbproxy)
 target_include_directories(dbproxy_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
 
 ## [main]
-enable_testing()
-add_test(NAME dbproxy_test COMMAND dbproxy_test)
+add_test(NAME dbproxy_test COMMAND dbproxy_test --dir=../sqlite/ WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/sqlite)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)

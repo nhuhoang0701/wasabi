@@ -3,8 +3,8 @@
 #include <string>
 
 #include "InA_query_model.h"
-#include "cube.h"
 
+namespace cube {class Cube;}
 
 namespace query_generator
 {
@@ -14,7 +14,7 @@ namespace query_generator
 	public:
 		query_generator(const query_model::InA_query_model& qryModel) : m_qryModel(qryModel) {};
 
-		void prepareCube(Cube& cube);
+		void prepareCube(cube::Cube& cube);
 
 		std::string getSQL() const;
 
