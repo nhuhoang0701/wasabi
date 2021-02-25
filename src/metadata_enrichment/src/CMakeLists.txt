@@ -12,14 +12,14 @@ include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 include_directories(${WASABI_ROOT_DIR}/external)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
+
 set(SRCS ServerInfo.cpp)
-set(
-  HEADERS
-    ${WASABI_ROOT_DIR}/src/json/include/json/jsonReader.h
-    ${PROJECT_SOURCE_DIR}/include/metadata_enrichment/ServerInfo.h
-)
 
 add_library(metadata_enrichment ${SRCS} ${HEADERS})
+target_include_directories(
+        metadata_enrichment PRIVATE
+        ${WASABI_ROOT_DIR}/src/json/include
+)
 target_link_libraries(metadata_enrichment PUBLIC exceptions.wasm)
 target_link_directories(metadata_enrichment PUBLIC ${WASABI_ROOT_DIR}/src/build/lib/)
 ## [installation]
