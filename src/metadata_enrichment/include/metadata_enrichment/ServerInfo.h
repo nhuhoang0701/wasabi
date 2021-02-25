@@ -11,7 +11,6 @@ namespace wasabi{
       const string& getClient()const;
       const string& getDataBaseManagementSystem()const;
       const string& getReentranceTicket()const;
-      const string& getClient()const;
       const string& getSystemId()const;
       const string& getUserLanguageCode()const;
       ServerInfo(const ServerInfo&)=delete;

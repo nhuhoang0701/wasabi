@@ -32,6 +32,48 @@ namespace wasabiUtils{
 }
 JSONWriter::JSONWriter(ostream& theStream):itsStream(theStream),itsWroteKey(false){}
 JSONWriter::~JSONWriter(){};
+void JSONWriter::startList(){
+   if(itsWroteKey){
+     itsStream << ":";
+     itsWroteKey = false;
+   }
+   if(itsOpenTags.size()>0){
+     if(
+        itsOpenTags.at(itsOpenTags.size()-1)
+        ){
+       itsStream<< ",";
+     } else{
+       itsOpenTags.at(itsOpenTags.size()-1) = true;
+     }
+   }
+   itsOpenTags.push_back(false);
+   itsStream << "[";
+ }
+void JSONWriter::endList(){
+  itsOpenTags.pop_back();
+  itsStream<<"]";
+};
+void JSONWriter::endMap(){
+  itsOpenTags.pop_back();
+  itsStream<<"}";
+}
+void JSONWriter::startMap(){
+  if(itsWroteKey){
+    itsStream << ":";
+    itsWroteKey = false;
+  }
+  if(itsOpenTags.size()>0){
+    if(
+       itsOpenTags.at(itsOpenTags.size()-1)
+       ){
+      itsStream<< ",";
+    } else{
+      itsOpenTags.at(itsOpenTags.size()-1) = true;
+    }
+  }
+  itsOpenTags.push_back(false);
+  itsStream<<"{";
+}
 void JSONWriter::key(const string& theKey){
   if(itsOpenTags.size()>0 && itsOpenTags.at(itsOpenTags.size()-1)){
     itsOpenTags.at(itsOpenTags.size()-1)=false;
