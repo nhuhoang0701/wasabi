@@ -48,5 +48,8 @@ target_include_directories(InA_Interpreter_test PRIVATE ${WASABI_ROOT_DIR}/src/t
 
 add_test(NAME InA_Interpreter_test COMMAND InA_Interpreter_test)
 
+## [installation]
+install(TARGETS InA_Interpreter DESTINATION ${WASABI_ROOT_DIR}/src/wasi_browser)
+
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
 
