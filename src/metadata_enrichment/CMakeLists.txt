@@ -22,7 +22,6 @@ target_link_libraries(metadata_enrichment_test metadata_enrichment)
 target_include_directories(metadata_enrichment_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
 
 ## [main]
-enable_testing()
 add_test(NAME metadata_enrichment_test COMMAND metadata_enrichment_test)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)

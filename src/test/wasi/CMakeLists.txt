@@ -15,7 +15,6 @@ add_library(MyLibExample simple_lib.cpp simple_lib.hpp)
 add_executable(MyExample simple_example.cpp)
 target_link_libraries(MyExample PRIVATE MyLibExample)
 
-enable_testing()
 add_test(NAME MyExample COMMAND MyExample)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)

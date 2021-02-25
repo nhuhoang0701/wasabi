@@ -10,6 +10,7 @@ int main()
 	static const std::string cnxStr("local:sqlite:efashion.db");
 	static const std::string tableNameStr("Table1");
 	
+	using namespace dbproxy;
     std::shared_ptr<DBProxy> dbProxy = DBProxy::getDBProxy(cnxStr);
 	
 	const std::vector<TableDescr>& tables = dbProxy->getTables();
@@ -44,7 +45,7 @@ int main()
 				CPPUNIT_ASSERT_EQUAL_STR(row[0].getString().c_str(),"FR");
 				CPPUNIT_ASSERT_EQUAL_STR(row[1].getString().c_str(),"Paris");
 				CPPUNIT_ASSERT_EQUAL(std::stod(row[2].getString()),12);
-				CPPUNIT_ASSERT_EQUAL(std::stod(row[3].getString()),2);
+				CPPUNIT_ASSERT_EQUAL(std::stod(row[3].getString()),2000000);
 			}
 			else if(line == 1)
 			{
@@ -52,7 +53,7 @@ int main()
 				CPPUNIT_ASSERT_EQUAL_STR(row[0].getString().c_str(),"FR");
 				CPPUNIT_ASSERT_EQUAL_STR(row[1].getString().c_str(),"Bordeaux");
 				CPPUNIT_ASSERT_EQUAL(std::stod(row[2].getString()),7);
-				CPPUNIT_ASSERT_EQUAL(std::stod(row[3].getString()),3);
+				CPPUNIT_ASSERT_EQUAL(std::stod(row[3].getString()),3000000);
 			}
 			
 			line++;
@@ -67,10 +68,10 @@ int main()
 		{
 			CPPUNIT_ASSERT_EQUAL(row.size(), 2);
 			CPPUNIT_ASSERT_EQUAL_STR(row[0].getString().c_str(),"FR");
-			CPPUNIT_ASSERT_EQUAL(std::stod(row[1].getString()),5);
+			CPPUNIT_ASSERT_EQUAL(std::stod(row[1].getString()),1666666.66666667);
 			line++;
 		};
-		dbProxy->executeSQL("SELECT ColumnName0,sum(ColumnName3) FROM " + tableNameStr, lambda);
+		dbProxy->executeSQL("SELECT ColumnName0,sum(ColumnName3)/3 FROM " + tableNameStr, lambda);
 		CPPUNIT_ASSERT_EQUAL(line,1);
 	}
 	return TEST_HAVEERROR();

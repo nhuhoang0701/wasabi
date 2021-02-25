@@ -1,11 +1,11 @@
 #pragma once
 
-namespace grid
+namespace metadata_enrichment
 {
-	class Grid
+	class metadata_enrichment
 	{
 	public:
-		Grid() {};
+		metadata_enrichment() {};
 		
 	};
-} // grid
+} // metadata_enrichment

@@ -82,9 +82,16 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 #For none debug
 #set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
 #add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-fwasm-exceptions>)
 
+
+
+###########################################
+# cmake option
+enable_testing()
 
 message (TRACE "--------------------------------------------------------------")

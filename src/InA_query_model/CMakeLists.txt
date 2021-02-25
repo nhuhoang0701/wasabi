@@ -27,7 +27,9 @@ target_link_libraries(InA_query_model_test InA_query_model)
 target_link_directories(InA_query_model_test PUBLIC)
 
 ## [main]
-enable_testing()
 add_test(NAME InA_query_model_test COMMAND InA_query_model_test)
+
+## [installation]
+install(TARGETS InA_query_model DESTINATION ${WASABI_ROOT_DIR}/src/build/lib)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
