@@ -1,7 +1,7 @@
 #include "query_generator.h"
 
 
-#inlude "../cube/cube.h"
+#include "../cube/cube.h"
 
 #include <sstream>
 #include <iostream>
