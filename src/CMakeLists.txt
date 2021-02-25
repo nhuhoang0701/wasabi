@@ -14,11 +14,11 @@ add_subdirectory(json)
 
 add_subdirectory(dbproxy)
 add_subdirectory(InA_query_model)
-#add_subdirectory(query_generator)
+add_subdirectory(query_generator)
 add_subdirectory(cube)
 add_subdirectory(grid)
 add_subdirectory(metadata_enrichment)
-#add_subdirectory(InA_Interpreter)
+add_subdirectory(InA_Interpreter)
 
 
 add_subdirectory(test)

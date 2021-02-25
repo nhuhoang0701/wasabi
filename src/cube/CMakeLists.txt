@@ -16,7 +16,7 @@ set(DB_PROXY_LIB ${WASABI_ROOT_DIR}/src/dbproxy)
 # cube
 add_library(cube cube.cpp)
 target_include_directories(cube PUBLIC ${DB_PROXY_LIB})
-target_link_libraries(cube PUBLIC exceptions.wasm)
+target_link_libraries(cube PUBLIC exceptions)
 target_link_directories(cube PUBLIC ${WASABI_ROOT_DIR}/src/build/lib/)
 
 ################################################

@@ -12,7 +12,7 @@ project(
 ################################################
 # metadata_enrichment
 add_library(metadata_enrichment metadata_enrichment.cpp)
-target_link_libraries(metadata_enrichment PUBLIC exceptions.wasm)
+target_link_libraries(metadata_enrichment PUBLIC exceptions)
 target_link_directories(metadata_enrichment PUBLIC ${WASABI_ROOT_DIR}/src/build/lib/)
 
 ################################################
