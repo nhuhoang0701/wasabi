@@ -51,15 +51,32 @@ void getResponse()
 
     std::cout << "InA_Interpreter_test => response: " << response << std::endl;
 
+
     std::cout << "------------------------" << std::endl << std::endl;
 
-    request = "{\"Batch\": [{\"Metadata\": {  }},{\"Analytics\": {  }},{\"Analytics\": {  }}]}";
+    request = "{\"Batch\": [{\"Metadata\": {  }},{\"Analytics\": {\"Definition\":{\"Dimensions\":[{\"Name\":\"Dim_A\"},{\"Name\":\"Dim_B\"}]}}},{\"Analytics\": {\"Definition\":{\"Dimensions\":[{\"Name\":\"Dim_C\"},{\"Name\":\"Dim_D\"}]}}}]}";
 
     std::cout << "InA_Interpreter_test => request: json_getResponse_json " << request << std::endl;
 
     response = json_getResponse_json(request.c_str());
 
     std::cout << "InA_Interpreter_test => response: " << response << std::endl;
+
+
+    std::cout << "------------------------" << std::endl << std::endl;
+
+    request = "{\"Analytics\":{\"Definition\":{\"Description\":\"Order count by company and year\","
+            "\"Dimensions\":[{\"Name\":\"COMPANY_NAME\",\"Axis\":\"Rows\"},{\"Name\":\"YEAR\",\"Axis\":\"Rows\"}],"
+            "\"DataSource\":{\"PackageName\":\"liquid-sqe\",\"ObjectName\":\"LIQUID_SALES_AV1\"},\"Name\":\"Query35\","
+            "\"ReadMode\":\"BookedAndSpaceAndState\"}},\"Description\":\"Order count by company and year\",\"Name\":\"QMDS0035\","
+            "\"TestNumber\":66}";
+
+    std::cout << "InA_Interpreter_test => request: json_getResponse_json " << request << std::endl;
+
+    response = json_getResponse_json(request.c_str());
+
+    std::cout << "InA_Interpreter_test => response: " << response << std::endl;
+
 
 
     std::cout << "-------------------------------------------------------" << std::endl << std::endl;
