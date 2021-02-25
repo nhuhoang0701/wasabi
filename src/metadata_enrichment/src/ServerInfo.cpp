@@ -28,11 +28,11 @@ namespace wasabi{
     ostream& operator<<(ostream& theStream, const ServerInfo& theServerInfo){
       JSONWriter aWriter(theStream);
       JSON_MAP(aWriter);
-      aWriter.pair("",theServerInfo.getClient());
-      aWriter.pair("",theServerInfo.getSystemId());
-      aWriter.pair("",theServerInfo.getDataBaseManagementSystem());
-      aWriter.pair("",theServerInfo.getUserLanguageCode());
-      aWriter.pair("",theServerInfo.getReentranceTicket());
+      aWriter.pair("Client",theServerInfo.getClient());
+      aWriter.pair("SystemId",theServerInfo.getSystemId());
+      aWriter.pair("DataBaseManagementSystem",theServerInfo.getDataBaseManagementSystem());
+      aWriter.pair("UserLanguageCode",theServerInfo.getUserLanguageCode());
+      aWriter.pair("ReentranceTicket",theServerInfo.getReentranceTicket());
       return theStream;
     }
   }

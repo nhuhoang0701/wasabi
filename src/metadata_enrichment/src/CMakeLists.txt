@@ -9,13 +9,15 @@ include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 # CMake json/src
 
 # [Build the library]
-include_directories(${WASABI_ROOT_DIR}/external)
-include_directories(${PROJECT_SOURCE_DIR}/include)
 
 
-set(SRCS ServerInfo.cpp)
+
+set(SRCS ServerInfo.cpp Table.cpp)
+
 
 add_library(metadata_enrichment ${SRCS} ${HEADERS})
+include_directories(${WASABI_ROOT_DIR}/external)
+include_directories(${PROJECT_SOURCE_DIR}/include)
 target_include_directories(
         metadata_enrichment PRIVATE
         ${WASABI_ROOT_DIR}/src/json/include
