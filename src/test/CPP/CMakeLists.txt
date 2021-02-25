@@ -20,8 +20,8 @@ add_executable(CPP_nolib_exception CPP_nolib_exception.cpp)
 add_executable(CPP_Withlibcxx CPP_Withlibcxx.cpp )
 
 
-target_link_libraries(CPP_nolib_exception PRIVATE exceptions.wasm )
-target_link_libraries(CPP_Withlibcxx PRIVATE CPP_libcxx exceptions.wasm )
+target_link_libraries(CPP_nolib_exception PRIVATE exceptions )
+target_link_libraries(CPP_Withlibcxx PRIVATE CPP_libcxx exceptions )
 
 ## [main]
 add_test(NAME CPP_nolib_class COMMAND CPP_nolib_class)

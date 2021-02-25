@@ -20,7 +20,7 @@ set(SRCS test_json.cpp test_writer.cpp)
 set(HEADERS test_data.h)
 
 add_executable(TestJson ${SRCS} ${HEADERS})
-target_link_libraries(TestJson PRIVATE cjson jsonUtils exceptions.wasm)
+target_link_libraries(TestJson PRIVATE cjson jsonUtils exceptions)
 
 ## [test]
 # run with ctest -V

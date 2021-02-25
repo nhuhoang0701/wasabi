@@ -16,7 +16,7 @@ set(GRID_LIB ${WASABI_ROOT_DIR}/src/grid)
 # InA_query_model
 add_library(InA_query_model InA_query_model.cpp)
 target_include_directories(InA_query_model PUBLIC ${GRID_LIB})
-target_link_libraries(InA_query_model PUBLIC exceptions.wasm)
+target_link_libraries(InA_query_model PUBLIC exceptions)
 target_link_directories(InA_query_model PUBLIC ${WASABI_ROOT_DIR}/src/build/lib/)
 
 ################################################
