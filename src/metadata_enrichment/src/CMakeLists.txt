@@ -22,7 +22,7 @@ target_include_directories(
         metadata_enrichment PRIVATE
         ${WASABI_ROOT_DIR}/src/json/include
 )
-target_link_libraries(metadata_enrichment PUBLIC exceptions.wasm)
+target_link_libraries(metadata_enrichment PUBLIC exceptions)
 target_link_directories(metadata_enrichment PUBLIC ${WASABI_ROOT_DIR}/src/build/lib/)
 ## [installation]
 install(TARGETS metadata_enrichment DESTINATION ${WASABI_ROOT_DIR}/src/build/lib)
