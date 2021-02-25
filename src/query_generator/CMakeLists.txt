@@ -17,14 +17,14 @@ set(QUERY_MODEL_LIB_BUILD ${QUERY_MODEL_LIB}/build)
 set(GRID_LIB ${WASABI_ROOT_DIR}/src/grid)
 add_library(query_generator query_generator.cpp)
 target_include_directories(query_generator PUBLIC ${QUERY_MODEL_LIB} ${GRID_LIB})
-target_link_libraries(query_generator PUBLIC exceptions.wasm InA_query_model.wasm)
+target_link_libraries(query_generator PUBLIC exceptions InA_query_model)
 target_link_directories(query_generator PUBLIC ${WASABI_ROOT_DIR}/src/build/lib/ ${QUERY_MODEL_LIB_BUILD})
 
 ################################################
 # test
 add_executable(query_generator_test query_generator_test.cpp)
 target_include_directories(query_generator_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include ${QUERY_MODEL_LIB} ${GRID_LIB})
-target_link_libraries(query_generator_test PUBLIC query_generator InA_query_model.wasm)
+target_link_libraries(query_generator_test PUBLIC query_generator InA_query_model)
 target_link_directories(query_generator_test PUBLIC ${QUERY_MODEL_LIB_BUILD})
 
 ## [main]
