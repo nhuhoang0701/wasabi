@@ -24,7 +24,7 @@ set(GRID_LIB ${WASABI_ROOT_DIR}/src/grid)
 # InA_Interpreter as library
 add_library(InA_Interpreter_lib InA_Interpreter.cpp)
 target_include_directories(InA_Interpreter_lib PUBLIC  ${PROJECT_SOURCE_DIR}/include ${WASABI_ROOT_DIR}/src/json/include ${QUERY_MODEL_LIB} ${QUERY_GENERATOR_LIB} ${GRID_LIB} ${CUBE_LIB})
-target_link_libraries(InA_Interpreter_lib PUBLIC cjson jsonUtils.wasm exceptions.wasm InA_query_model.wasm query_generator.wasm)
+target_link_libraries(InA_Interpreter_lib PUBLIC cjson jsonUtils exceptions InA_query_model query_generator)
 target_link_directories(InA_Interpreter_lib PUBLIC ${WASABI_ROOT_DIR}/external/cJSON/build ${WASABI_ROOT_DIR}/src/build/lib ${QUERY_MODEL_LIB_BUILD} ${QUERY_GENERATOR_LIB_BUILD})
 
 
@@ -37,7 +37,7 @@ set_property(TARGET InA_Interpreter PROPERTY ENABLE_EXPORTS 1)
 target_include_directories(InA_Interpreter PUBLIC ${PROJECT_SOURCE_DIR}/include ${WASABI_ROOT_DIR}/src/json/include)
 
 target_link_directories(InA_Interpreter PUBLIC ${WASABI_ROOT_DIR}/external/cJSON/build ${WASABI_ROOT_DIR}/src/build/lib)
-target_link_libraries(InA_Interpreter PUBLIC InA_Interpreter_lib cjson jsonUtils.wasm exceptions.wasm)
+target_link_libraries(InA_Interpreter PUBLIC InA_Interpreter_lib cjson jsonUtils exceptions)
 
 
 ################################################
