@@ -121,17 +121,6 @@ else
 	echo "wasmtime already installed in '$WASMTIME_DIR'"
 fi
 
-echo
-echo -----------------------------------
-echo ---- test with wasmtime runtime ---
-echo " $(date +"%T")"
-\rm -rf $WASABI_ROOT_DIR/src/test/wasi/build
-mkdir $WASABI_ROOT_DIR/src/test/wasi/build
-cd $WASABI_ROOT_DIR/src/test/wasi/build
-$CMAKE .. >> $outfile
-$CMAKE --build . >> $outfile
-$CTEST
-
 
 echo
 echo -----------------------------------
@@ -206,13 +195,6 @@ then
 else
 	echo "sqlite already installed in '$SQLITE_DIR'"
 fi
-echo -------------- test ---------------
-\rm -rf $WASABI_ROOT_DIR/src/test/sqlite/build
-mkdir $WASABI_ROOT_DIR/src/test/sqlite/build
-cd $WASABI_ROOT_DIR/src/test/sqlite/build
-$CMAKE .. >> $outfile
-$CMAKE --build . >> $outfile
-$CTEST
 
 
 echo "End $(date +"%T")"

@@ -33,29 +33,6 @@ $CMAKE .. >> $outfile
 $CMAKE --build . >> $outfile
 $CMAKE --install . >> $outfile
 
-echo
-echo -----------------------------------
-echo ---------- test C -----------------
-echo " $(date +"%T")"
-cd $WASABI_ROOT_DIR/src/test/C
-\rm -rf build
-mkdir build
-cd build
-$CMAKE .. >> $outfile
-$CMAKE --build . >> $outfile
-$CTEST
-
-echo
-echo -----------------------------------
-echo --------- test CPP ----------------
-echo " $(date +"%T")"
-cd $WASABI_ROOT_DIR/src/test/CPP
-\rm -rf build
-mkdir build
-cd build
-$CMAKE .. >> $outfile
-$CMAKE --build . >> $outfile
-$CTEST
 
 echo
 echo -----------------------------------
