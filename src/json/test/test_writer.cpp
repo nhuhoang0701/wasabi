@@ -30,12 +30,34 @@ void Test_writer()
   }
   {
      std::stringstream aStream;
-    JSONWriter aWriter(aStream);
+     JSONWriter aWriter(aStream);
     {
       JSON_LIST(aWriter);
       aWriter.value("test1");
       aWriter.value(2);
       aWriter.valueNull();
+    }
+    std::cout << aStream.str() << std::endl;
+    {
+      JSONReader aReader;
+      auto root = aReader.parse(aStream.str());
+    }
+  }
+  {
+     std::stringstream aStream;
+     JSONWriter aWriter(aStream);
+    {
+      JSON_LIST(aWriter);
+      aWriter.value("test1");
+      aWriter.value(2);
+      aWriter.valueNull();{
+        JSON_MAP( aWriter );
+        aWriter.pair( "test","3");
+        aWriter.key("test2");
+        {
+          JSON_LIST(aWriter);
+        }
+      }
     }
     std::cout << aStream.str() << std::endl;
     {
