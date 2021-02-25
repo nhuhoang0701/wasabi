@@ -66,7 +66,7 @@ void getResponse()
     std::cout << "------------------------" << std::endl << std::endl;
 
     request = "{\"Analytics\":{\"Definition\":{\"Description\":\"Order count by company and year\","
-            "\"Dimensions\":[{\"Name\":\"COMPANY_NAME\",\"Axis\":\"Rows\"},{\"Name\":\"YEAR\",\"Axis\":\"Rows\"}],"
+            "\"Dimensions\":[{\"Name\":\"CompanyName\",\"Axis\":\"Rows\"},{\"Name\":\"Year\",\"Axis\":\"Rows\"}],"
             "\"DataSource\":{\"PackageName\":\"liquid-sqe\",\"ObjectName\":\"LIQUID_SALES_AV1\"},\"Name\":\"Query35\","
             "\"ReadMode\":\"BookedAndSpaceAndState\"}},\"Description\":\"Order count by company and year\",\"Name\":\"QMDS0035\","
             "\"TestNumber\":66}";

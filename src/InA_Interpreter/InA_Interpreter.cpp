@@ -64,6 +64,7 @@ void processRequest(const JSONGenericObject& topElement, JSONWriter& writer)
 		}
 		else if(topElement.haveValue("Analytics"))
 		{
+			JSON_LIST(writer);
 			// std::cout << "InA_Interpreter => Process 'Analytics' InA request" << std::endl;
 			writer.value("Process 'Analytics' InA request");
 
@@ -85,6 +86,7 @@ void processRequest(const JSONGenericObject& topElement, JSONWriter& writer)
 			const query_generator::query_generator& queryGen = query_generator::query_generator(queryModel);
 			const std::string sql = queryGen.getSQL();
 			std::cout << "InA_Interpreter => Generated SQL: " << sql << std::endl;
+			writer.value("SQL = " + sql);
 		}
 		else
 		{

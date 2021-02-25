@@ -88,7 +88,7 @@ onmessage = function(e) {
 			var wasmRes = moduleWASI.instance.exports.json_getResponse_json(queryWAsm);
 			moduleWASI.instance.exports.free(queryWAsm);
 			
-			var res = getJSStringFromWAsmAt(wasmRes, moduleWASI.instance.exports.memory);
+			var res = convertWAsmStr2JSStr(wasmRes, moduleWASI.instance.exports.memory);
 
 			console.log([WorkerEvent.eGetResponse, 'Worker: GetServerInfo executed']);
 			postMessage([WorkerEvent.eGetResponse, res]);
