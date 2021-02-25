@@ -3,7 +3,7 @@
 
 echo -----------------------------------
 echo --------- set variables  ----------
-export WASABI_ROOT_DIR=$(pwd)
+export WASABI_ROOT_DIR=${WASABI_ROOT_DIR:-$(pwd)}
 echo -e "WASABI_ROOT_DIR: " "\t'"$WASABI_ROOT_DIR"'";
 export WASABI_EXTERNAL_DIR=$WASABI_ROOT_DIR/external
 echo -e "WASABI_EXTERNAL_DIR: " "\t'"$WASABI_EXTERNAL_DIR"'";
