@@ -15,12 +15,24 @@ link_directories(${WASABI_ROOT_DIR}/src/build/lib)
 
 ## [main]
 
-set(SRCS ${PROJECT_SOURCE_DIR}/test/metadata_enrichment_test.cpp
-         )
+set(SRCS metadata_enrichment_test.cpp
+         ServerInfo_test.cpp
+   )
 set(HEADERS metadata_enrichtment_test.h)
 
 add_executable(TestMetaData ${SRCS} ${HEADERS})
-target_link_libraries(TestMetaData PRIVATE cjson jsonUtils exceptions.wasm)
+target_include_directories(
+  TestMetaData PRIVATE
+    ${WASABI_ROOT_DIR}/src/metadata_enrichment/include
+    ${WASABI_ROOT_DIR}/src/json/include
+)
+target_link_libraries(
+   TestMetaData PRIVATE
+        metadata_enrichment
+        cjson
+        jsonUtils
+        exceptions.wasm
+ )
 
 ## [test]
 # run with ctest -V
