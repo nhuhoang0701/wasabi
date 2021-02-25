@@ -9,10 +9,11 @@ namespace wasabi{
     public:
       ServerInfo(string_view theLanguage);
       const string& getClient()const;
-      const string& DataBaseManagementSystem()const;
-      const string& ReentranceTicket()const;
-      const string& SystemId()const;
-      const string& UserLanguageCode()const;
+      const string& getDataBaseManagementSystem()const;
+      const string& getReentranceTicket()const;
+      const string& getClient()const;
+      const string& getSystemId()const;
+      const string& getUserLanguageCode()const;
       ServerInfo(const ServerInfo&)=delete;
       ServerInfo& operator=(const ServerInfo&) = delete;
     private:
@@ -20,6 +21,7 @@ namespace wasabi{
       const string itsDBMS;
       const string itsSystemId;
       const string itsReentranceTicket;
+      const string itsClient;
     };
     ostream& operator<<(ostream& theStream, const ServerInfo& theServerInfo);
   }
