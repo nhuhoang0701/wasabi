@@ -4,6 +4,8 @@
 #include <iostream>
 
 #include "server_info_response.h"
+#include "InA_query_model.h"
+#include "query_generator.h"
 
 #define WASM_EXPORT extern "C"
 
@@ -12,14 +14,14 @@ std::string static_str;
 WASM_EXPORT
 const char* json_getServerInfo()
 {
-	std::cout << "InA_Interpreter => getServerInfo call received" << std::endl;
+	// std::cout << "InA_Interpreter => getServerInfo call received" << std::endl;
 	return server_info_json_response.c_str();
 }
 
 WASM_EXPORT
 const char* json_getResponse_json(const char* InA)
 {
-	std::cout << "InA_Interpreter => getResponse call received: " << InA << std::endl;
+	// std::cout << "InA_Interpreter => getResponse call received: " << InA << std::endl;
 	
 	JSONReader reader;
 	JSONGenericObject root = reader.parse(InA);
@@ -38,32 +40,55 @@ const char* json_getResponse_json(const char* InA)
 	return static_str.c_str();
 }
 
-void processRequest(const JSONGenericObject& object, JSONWriter& writer)
+void processRequest(const JSONGenericObject& topElement, JSONWriter& writer)
 {
-		std::cout << "InA_Interpreter => processRequest" << std::endl;
-		if(object.haveValue("Batch"))
+		// std::cout << "InA_Interpreter => processRequest" << std::endl;
+
+		query_model::InA_query_model queryModel;
+		queryModel.setTable("Table1");
+
+		if(topElement.haveValue("Batch"))
 		{
-			std::cout << "InA_Interpreter => Process 'Batch' InA request" << std::endl;
-			auto& batch = object.getArray("Batch");
+			// std::cout << "InA_Interpreter => Process 'Batch' InA request" << std::endl;
+			auto& batch = topElement.getArray("Batch");
 			JSON_LIST(writer);
 			for(int i = 0;i < batch.size();i++)
 			{
 				processRequest(batch[i], writer);
 			}
 		}
-		else if(object.haveValue("Metadata"))
+		else if(topElement.haveValue("Metadata"))
 		{
-			std::cout << "InA_Interpreter => Process 'Metadata' InA request" << std::endl;
+			// std::cout << "InA_Interpreter => Process 'Metadata' InA request" << std::endl;
 			writer.value("Process 'Metadata' InA request");
 		}
-		else if(object.haveValue("Analytics"))
+		else if(topElement.haveValue("Analytics"))
 		{
-			std::cout << "InA_Interpreter => Process 'Analytics' InA request" << std::endl;
+			// std::cout << "InA_Interpreter => Process 'Analytics' InA request" << std::endl;
 			writer.value("Process 'Analytics' InA request");
+
+			auto& analytics = topElement.getObject("Analytics");
+			if(analytics.haveValue("Definition"))
+			{
+				auto& definition = analytics.getObject("Definition");
+				if(definition.haveValue("Dimensions"))
+				{
+					auto& dims = definition.getArray("Dimensions");
+					for(int i = 0;i < dims.size();i++)
+					{
+						const std::string& dim = dims[i].getString("Name");
+						// std::cout << "InA_Interpreter => requested dimension " << dim << std::endl;
+						queryModel.addDim(dim, "String");
+					}
+				}
+			}
+			const query_generator::query_generator& queryGen = query_generator::query_generator(queryModel);
+			const std::string sql = queryGen.getSQL();
+			std::cout << "InA_Interpreter => Generated SQL: " << sql << std::endl;
 		}
 		else
 		{
 			std::cerr << "InA_Interpreter => Unsupported InA request" << std::endl;
-			writer.value("Unsupported InA request");
+			writer.value("Error: unsupported InA request");
 		}
 }
