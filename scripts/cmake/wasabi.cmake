@@ -73,11 +73,6 @@ set(CMAKE_RANLIB ${LLVM_DIR}/bin/llvm-ranlib)
 set(CMAKE_SPLIT ${LLVM_DIR}/bin/llvm-split)
 
 
-set(CMAKE_EXECUTABLE_SUFFIX ".wasm")
-message(TRACE "- CMAKE_EXECUTABLE_SUFFIX='${CMAKE_EXECUTABLE_SUFFIX}'")
-set(CMAKE_STATIC_LIBRARY_SUFFIX ".wasm.a")
-
-
 ###########################################
 # compilation option
 set(CMAKE_BUILD_TYPE Debug)
