@@ -48,6 +48,15 @@ class LDE_TOOLS_API JSONWriter{
      itsStream << ":";
      itsWroteKey = false;
    }
+   if(itsOpenTags.size()>0){
+     if(
+        itsOpenTags.at(itsOpenTags.size()-1)
+        ){
+       itsStream<< ",";
+     } else{
+       itsOpenTags.at(itsOpenTags.size()-1) = true;
+     }
+   }
    itsOpenTags.push_back(false);
    itsStream << "[";
  };
@@ -60,7 +69,16 @@ class LDE_TOOLS_API JSONWriter{
      itsStream << ":";
      itsWroteKey = false;
    }
-   itsOpenTags.push_back(0);
+   if(itsOpenTags.size()>0){
+     if(
+        itsOpenTags.at(itsOpenTags.size()-1)
+        ){
+       itsStream<< ",";
+     } else{
+       itsOpenTags.at(itsOpenTags.size()-1) = true;
+     }
+   }
+   itsOpenTags.push_back(false);
    itsStream<<"{";
  };
  void endMap(){
