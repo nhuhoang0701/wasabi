@@ -43,48 +43,10 @@ class LDE_TOOLS_API JSONWriter{
  inline JSONWriterImpl & Impl() { return *this; }
 
  private:
- void startList(){
-   if(itsWroteKey){
-     itsStream << ":";
-     itsWroteKey = false;
-   }
-   if(itsOpenTags.size()>0){
-     if(
-        itsOpenTags.at(itsOpenTags.size()-1)
-        ){
-       itsStream<< ",";
-     } else{
-       itsOpenTags.at(itsOpenTags.size()-1) = true;
-     }
-   }
-   itsOpenTags.push_back(false);
-   itsStream << "[";
- };
- void endList(){
-   itsOpenTags.pop_back();
-   itsStream<<"]";
- };
- void startMap(){
-   if(itsWroteKey){
-     itsStream << ":";
-     itsWroteKey = false;
-   }
-   if(itsOpenTags.size()>0){
-     if(
-        itsOpenTags.at(itsOpenTags.size()-1)
-        ){
-       itsStream<< ",";
-     } else{
-       itsOpenTags.at(itsOpenTags.size()-1) = true;
-     }
-   }
-   itsOpenTags.push_back(false);
-   itsStream<<"{";
- };
- void endMap(){
-   itsOpenTags.pop_back();
-   itsStream<<"}";
- };
+ void startList();
+ void endList();
+ void startMap();
+ void endMap();
  void separator(){
    itsStream<<",";
  };
