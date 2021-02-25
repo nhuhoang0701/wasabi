@@ -23,55 +23,61 @@ class LDE_TOOLS_API JSONWriter{
  JSONWriter(std::ostream& theStream);
  ~JSONWriter();
 
-  void key(const std::string & theName);
+ void key(const std::string & theName);
 
-  void valueNull();
-  void value(const std::string& theString);
-  void value(const char* s);
-  void value(bool theValue);
-  void value(double val);
-  void value(int64_t val);
-  void value(int val);
-  void value(unsigned val);
-  void value(uint64_t val);
+ void valueNull();
+ void value(const std::string& theString);
+ void value(const char* s);
+ void value(bool theValue);
+ void value(double val);
+ void value(int64_t val);
+ void value(int val);
+ void value(unsigned val);
+ void value(uint64_t val);
 
-  template<typename T> void pair(const std::string & name, const T & val){
-    key(name);
-    value(val);
-  }
+ template<typename T> void pair(const std::string & name, const T & val){
+   key(name);
+   value(val);
+ }
 
-  inline JSONWriterImpl & Impl() { return *this; }
+ inline JSONWriterImpl & Impl() { return *this; }
 
-  private:
-  void startList(){
-    itsOpenTags.push_back(false);
-    itsStream << "[";
-  };
-  void endList(){
-    itsOpenTags.pop_back();
-    itsStream<<"]";
-  };
-  void startMap(){
-    itsOpenTags.push_back(0);
-    itsStream<<"{";
-  };
-  void endMap(){
-    itsOpenTags.pop_back();
-    itsStream<<"}";
-  };
-  void separator(){
-    itsStream<<",";
-  };
-  std::ostream& itsStream;
-  bool itsWroteKey;
-  std::vector<bool> itsOpenTags;
-  };
-
+ private:
+ void startList(){
+   if(itsWroteKey){
+     itsStream << ":";
+     itsWroteKey = false;
+   }
+   itsOpenTags.push_back(false);
+   itsStream << "[";
+ };
+ void endList(){
+   itsOpenTags.pop_back();
+   itsStream<<"]";
+ };
+ void startMap(){
+   if(itsWroteKey){
+     itsStream << ":";
+     itsWroteKey = false;
+   }
+   itsOpenTags.push_back(0);
+   itsStream<<"{";
+ };
+ void endMap(){
+   itsOpenTags.pop_back();
+   itsStream<<"}";
+ };
+ void separator(){
+   itsStream<<",";
+ };
+ std::ostream& itsStream;
+ bool itsWroteKey;
+ std::vector<bool> itsOpenTags;
+};
 class LDE_TOOLS_API JSONContainerList
   {
   private:
   JSONContainerList();
-
   public:
   JSONContainerList(JSONWriter& theWriter):itsWriter(theWriter){
     itsWriter.startList();
@@ -79,17 +85,14 @@ class LDE_TOOLS_API JSONContainerList
   ~JSONContainerList(){
     itsWriter.endList();
   };
-
   private:
   JSONWriter& itsWriter;
   };
 #define JSON_LIST(writer) JSONContainerList openLIST##__LINE__(writer)
-
 class LDE_TOOLS_API JSONContainerMap
   {
   private:
   JSONContainerMap();
-
   public:
   JSONContainerMap(JSONWriter& theWriter):itsWriter(theWriter){
     itsWriter.startMap();
@@ -97,20 +100,16 @@ class LDE_TOOLS_API JSONContainerMap
   ~JSONContainerMap(){
     itsWriter.endMap();
   };
-
   private:
   JSONWriter& itsWriter;
   };
 #define JSON_MAP(writer) JSONContainerMap openMAP##__LINE__(writer)
-
-
 class LDE_TOOLS_API JSONPrecision
   {
     JSONPrecision();
   public:
   JSONPrecision(JSONWriter& theWriter, std::streamsize prec):itsWriter(theWriter){};
   ~JSONPrecision(){};
-
   private:
   JSONWriter&      itsWriter;
   int m_previousPrecision;
