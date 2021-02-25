@@ -31,7 +31,7 @@ target_link_libraries(
         metadata_enrichment
         cjson
         jsonUtils
-        exceptions.wasm
+        exceptions
  )
 
 ## [test]
