@@ -7,11 +7,8 @@ include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
 project(wasabi VERSION 1.0)
 
-
-
+#add_subdirectory(external)
 add_subdirectory(src)
-
-
 
 
 ################################################
