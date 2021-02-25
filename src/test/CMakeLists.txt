@@ -10,7 +10,7 @@ project(wasabi_src_test VERSION 1.0)
 
 add_subdirectory(C)
 add_subdirectory(CPP)
-#add_subdirectory(sqlite)
+add_subdirectory(sqlite_example)
 add_subdirectory(wasi)
 #add_subdirectory(basic_wasm_jsapi)
 
