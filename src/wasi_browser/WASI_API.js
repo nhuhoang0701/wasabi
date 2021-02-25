@@ -64,6 +64,10 @@ var WASI_API = {
 	WASI_STDOUT_FILENO : WASI_STDOUT_FILENO = 1,
 	WASI_STDERR_FILENO : WASI_STDERR_FILENO = 2,
 	
+	WASI_SEEK_SET : WASI_SEEK_SET = 0,
+	WASI_SEEK_CUR : WASI_SEEK_CUR = 1,
+	WASI_SEEK_END : WASI_SEEK_END = 2,
+	
 	WASI_PREOPENTYPE_DIR : WASI_PREOPENTYPE_DIR = 0,
 
 	// WASI API
@@ -73,8 +77,8 @@ var WASI_API = {
 	},
 	path_open: function(dirfd, dirflags, path_ptr, path_len, oflags, fs_rights_base, fs_rights_inheriting, fs_flags, fd) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
-		pathjs  = convertWAsmStr2JSStr(path_ptr, moduleInstanceExports.memory);
-		console.log("vpath:'" + pathjs +"'");
+		vpath  = convertWAsmStr2JSStr(path_ptr, moduleInstanceExports.memory);
+		console.log("vpath:'" + vpath +"'");
 		
 		const entry = fds[dirfd];
 		if (!entry) {
@@ -82,14 +86,15 @@ var WASI_API = {
 			return WASI_EBADF;
 		} else if (!entry.vpath) {
 			console.error('No vpath for dirfd='+dirfd);
-			return ERRNO_INVAL;
+			return WASI_EINVAL;
 		}
 
 		const text = new TextDecoder();
 		const data = new Uint8Array(moduleInstanceExports.memory.buffer, path_ptr, path_len);
 
 		size = fds.length;
-		const opened_fd = fds.push({size,pathjs,}) - 1;
+		offset = BigInt(0);
+		const opened_fd = fds.push({vpath, offset}) - 1;
 		const view = new DataView(moduleInstanceExports.memory.buffer);
 		view.setUint32(fd, opened_fd, true);
 			
@@ -116,9 +121,27 @@ var WASI_API = {
 	},
 	fd_seek: function(fd, offset, whence, newoffset) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
-		return WASI_ENOSYS;
+		const entry = fds[fd];
+		if (!entry) {
+			console.error('Invalid fd');
+			return WASI_EBADF;
+		}
+		if(whence == WASI_SEEK_SET)
+		    entry.offset = offset;
+		else if(whence == WASI_SEEK_CUR) {
+		    entry.offset += offset;
+			if(entry.offset < 0)
+				entry.offset = 0;
+		} else 
+			console.error("NYI");
+		
+		const view = new DataView(moduleInstanceExports.memory.buffer);
+		
+		view.setBigUint64(newoffset, BigInt(entry.offset), true);
+
+		return WASI_ESUCCESS;
 	},
-	fd_write: function(fd, iovs, iovs_len, nwritten) {
+	fd_write: function(fd, iovs_ptr, iovs_len, nwritten) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
 		const entry = fds[fd];
 		if (!entry) {
@@ -126,7 +149,7 @@ var WASI_API = {
 			return WASI_EBADF;
 		} else if (!entry.vpath) {
 			console.error('No vpath for fd='+fd);
-			return ERRNO_INVAL;
+			return WASI_EINVAL;
 		}
 		
 		var view = getModuleMemoryDataView();
@@ -134,14 +157,14 @@ var WASI_API = {
 		var written = 0;
 		var bufferBytes = [];                   
 
-		function getiovs(iovs, iovs_len) {
-			// iovs* -> [iov, iov, ...]
+		function getiovs(iovs_ptr, iovs_len) {
+			// iovs_ptr* -> [iov, iov, ...]
 			// __wasi_ciovec_t {
 			//   void* buf,
 			//   size_t buf_len,
 			// }
 			var buffers = Array.from({ length: iovs_len }, function (_, i) {
-				   var ptr = iovs + i * 8;
+				   var ptr = iovs_ptr + i * 8;
 				   var buf = view.getUint32(ptr, !0);
 				   var bufLen = view.getUint32(ptr + 4, !0);
 
@@ -151,7 +174,7 @@ var WASI_API = {
 			return buffers;
 		}
 
-		var buffers = getiovs(iovs, iovs_len);
+		var buffers = getiovs(iovs_ptr, iovs_len);
 		function writev(iov) {
 			for (var b = 0; b < iov.byteLength; b++) {
 			   bufferBytes.push(iov[b]);
@@ -168,12 +191,55 @@ var WASI_API = {
 
 		return WASI_ESUCCESS;
 	},
-	fd_read: function(fd, iovs, iovs_len, nread) {
+	fd_read: async  function(fd, iovs_ptr, iovs_len, nread_out) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
+		const entry = fds[fd];
+		if (!entry) {
+			console.error('Invalid fd');
+			return WASI_EBADF;
+		} else if (!entry.vpath) {
+			console.error('No vpath for fd='+fd);
+			return WASI_EINVAL;
+		}
+		
+		if(!entry.data) {
+			const response = await fetch(entry.vpath);
+			arrayBuffer = response.arrayBuffer();
+			var uint8View = new Uint8Array(arrayBuffer);
+			entry.data = uint8View;
+			entry.offset = 0;
+		}
+
+		const view = new DataView(moduleInstanceExports.memory.buffer);
+
+		let nread = 0;
+		for (let i = 0; i < iovs_len; i++) {
+			const data_ptr = view.getUint32(iovs_ptr, true);
+			iovs_ptr += 4;
+
+			const data_len = view.getUint32(iovs_ptr, true);
+			iovs_ptr += 4;
+
+			const data = new Uint8Array(moduleInstanceExports.memory.buffer, data_ptr, data_len);
+			for(let j =0; j < data_len && entry.offset < entry.data.length; j++) {
+				entry.data[entry.offset] = data[j];
+				nread++;
+			}
+		}
+
+		view.setUint32(nread_out, nread, true);
+
+		return WASI_ESUCCESS;
 	},
 	fd_close: function(fd) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
-		return WASI_ENOSYS;
+		const entry = fds[fd];
+		if (!entry) {
+			console.error('Invalid fd');
+			return WASI_EBADF;
+		}
+		fds.splice(fd);
+		return WASI_ESUCCESS;
 	},
 	fd_filestat_get: function(fd, buf) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
