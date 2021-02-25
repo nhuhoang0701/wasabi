@@ -1,3 +1,5 @@
+// https://docs.rs/wasi/0.10.2+wasi-snapshot-preview1/wasi/wasi_snapshot_preview1/index.html
+
 // Members
 moduleInstanceExports = null;
 
@@ -69,19 +71,38 @@ var WASI_API = {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
 		return WASI_ENOSYS;
 	},
-	path_open: function(dirfd, dirflags, path, path_len, oflags, fs_rights_base, fs_rights_inheriting, fs_flags, fd) {
+	path_open: function(dirfd, dirflags, path_ptr, path_len, oflags, fs_rights_base, fs_rights_inheriting, fs_flags, fd) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
-		console.log("vpath:'" + convertWAsmStr2JSStr(path, moduleInstanceExports.memory) +"'");
+		pathjs  = convertWAsmStr2JSStr(path_ptr, moduleInstanceExports.memory);
+		console.log("vpath:'" + pathjs +"'");
+		
+		const entry = fds[dirfd];
+		if (!entry) {
+			console.error('Invalid dirfd');
+			return WASI_EBADF;
+		} else if (!entry.vpath) {
+			console.error('No vpath for dirfd='+dirfd);
+			return ERRNO_INVAL;
+		}
+
+		const text = new TextDecoder();
+		const data = new Uint8Array(moduleInstanceExports.memory.buffer, path_ptr, path_len);
+
+		size = fds.length;
+		const opened_fd = fds.push({size,pathjs,}) - 1;
+		const view = new DataView(moduleInstanceExports.memory.buffer);
+		view.setUint32(fd, opened_fd, true);
+			
+		return WASI_ESUCCESS;
+	},
+	path_filestat_get: function(fd, path_ptr, path_len, buf) {
+		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
+		console.log("vpath:'" + convertWAsmStr2JSStr(path_ptr, moduleInstanceExports.memory) +"'");
 		return WASI_ENOSYS;
 	},
-	path_filestat_get: function(fd, path, path_len, buf) {
+	path_unlink_file: function(fd, path_ptr, path_len, flags) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
-		console.log("vpath:'" + convertWAsmStr2JSStr(path, moduleInstanceExports.memory) +"'");
-		return WASI_ENOSYS;
-	},
-	path_unlink_file: function(fd, path, path_len, flags) {
-		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
-		console.log("vpath:'" + convertWAsmStr2JSStr(path, moduleInstanceExports.memory) +"'");
+		console.log("vpath:'" + convertWAsmStr2JSStr(path_ptr, moduleInstanceExports.memory) +"'");
 		return WASI_ENOSYS;
 	},
 	poll_oneoff: function(in_, out, nsubscriptions, nevents) {
@@ -199,7 +220,7 @@ var WASI_API = {
 		view.setUint32(buf_out + 4, new TextEncoder().encode(entry.vpath).byteLength, true);
 		return WASI_ESUCCESS;
 	},
-	fd_prestat_dir_name: function(fd, path, path_len) {
+	fd_prestat_dir_name: function(fd, path_ptr, path_len) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
 		const entry = fds[fd];
 		if (!entry) {
@@ -208,9 +229,9 @@ var WASI_API = {
 		if (!entry.vpath) {
 			return WASI_EBADF;
 		}
-		console.log("vpath:'" + convertWAsmStr2JSStr(path, moduleInstanceExports.memory) +"'");
+		console.log("vpath:'" + convertWAsmStr2JSStr(path_ptr, moduleInstanceExports.memory) +"'");
 
-		const data = new Uint8Array(moduleInstanceExports.memory.buffer, path, path_len);
+		const data = new Uint8Array(moduleInstanceExports.memory.buffer, path_ptr, path_len);
 		data.set(new TextEncoder().encode(entry.vpath));
 
 		return WASI_ESUCCESS;
