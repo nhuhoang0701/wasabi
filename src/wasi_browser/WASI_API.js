@@ -3,6 +3,32 @@
 // Members
 moduleInstanceExports = null;
 
+function clock_res_realtime () {
+			return BigInt(1e6);
+};
+
+function clock_res_monotonic() {
+			return BigInt(1e3);
+};
+
+const clock_res_process = clock_res_monotonic;
+const clock_res_thread = clock_res_monotonic;
+
+function clock_time_realtime () {
+			return BigInt(Date.now()) * BigInt(1e6);
+};
+
+function clock_time_monotonic () {
+			const t = performance.now();
+			const s = Math.trunc(t);
+			const ms = Math.floor((t - s) * 1e3);
+
+			return (BigInt(s) * BigInt(1e9)) + (BigInt(ms) * BigInt(1e6));
+};
+
+const clock_time_process = clock_time_monotonic;
+const clock_time_thread = clock_time_monotonic;
+
 fds = [
 		{
 			vpath:"/dev/stdin",
@@ -316,6 +342,28 @@ var WASI_API = {
 	},
 	clock_time_get: function(clock_id, precision, time) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
-		return WASI_EINVAL;
+		var view = getModuleMemoryDataView();
+		switch (clock_id) {
+			case WASI_CLOCKID_REALTIME:
+				view.setBigUint64(time, clock_time_realtime(), true);
+				break;
+
+			case WASI_CLOCKID_MONOTONIC:
+				view.setBigUint64(time, clock_time_monotonic(), true);
+				break;
+
+			case WASI_CLOCKID_PROCESS_CPUTIME_ID:
+				view.setBigUint64(time, clock_time_process(), true);
+				break;
+
+			case WASI_CLOCKID_THREAD_CPUTIME_ID:
+				view.setBigUint64(time, clock_time_thread(), true);
+				break;
+
+			default:
+				return WASI_INVAL;
+
+		}
+		return WASI_ESUCCESS;
 	},
 };
