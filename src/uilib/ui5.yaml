@@ -1,0 +1,13 @@
+specVersion: "1.0"
+type: library
+metadata:
+  name: sap.wasabi
+  copyright: |-
+    SAPUI5
+     * (c) Copyright 2009-${currentYear} SAP SE. All rights reserved.
+framework:
+  name: SAPUI5
+  libraries:
+    - name: sap.ui.core
+    - name: themelib_sap_fiori_3
+      optional: true
