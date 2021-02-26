@@ -24,7 +24,7 @@ class LDE_TOOLS_API JSONWriter{
  ~JSONWriter();
 
  void key(const std::string & theName);
-
+ void writeColon(); /*MU: usefull if umanaged object is written to stream*/
  void valueNull();
  void value(const std::string& theString);
  void value(const char* s);
