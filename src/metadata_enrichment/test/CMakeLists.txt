@@ -33,7 +33,7 @@ target_link_libraries(
         cjson
         jsonUtils
         dbproxy
-        exceptions.wasm
+        exceptions
  )
 
 ## [test]
