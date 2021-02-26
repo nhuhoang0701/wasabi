@@ -6,12 +6,14 @@
 #include <unordered_map>
 namespace dbproxy
 {
-  class DBProxy;
+  class DBProxy; class ColumnDescr;
 }
 namespace wasabi{
   namespace metadata{
     using namespace dbproxy;
+
     class Column{
+      friend class Table;
     public:
       enum DataType{
         String=1,
@@ -25,21 +27,29 @@ namespace wasabi{
         Min=3,
         Count=4,
       };
+      //MU: tbd Column(const Column&)=delete;
+      //MU: tbd Column& operator=(const Column&) = delete;
       const std::string& getName()const{return itsName;};
       Aggregation getAggregation()const{return itsAggregation;};
       const std::string& getSQLName()const{return itsSQLName;};
       DataType getDataType()const{return itsDataType;};
     private:
+      explicit Column(const dbproxy::ColumnDescr& theColumnDesc);
       DataType itsDataType;
+      Aggregation itsAggregation;
       std::string itsName;
       std::string itsSQLName;
-      Aggregation itsAggregation;
+
     };
     std::ostream& operator<<(std::ostream& theStream, const Column& theColumn);
+
     class Table{
+      friend class Catalog;
     public:
-      Table(const Table&)=delete;
-      Table& operator=(const Table&) = delete;
+      /*MU: make private later*/ void addColumn(const dbproxy::ColumnDescr& theColumnDesc);
+      /*MU:make private later*/ explicit Table( std::string_view theName);
+      //MU: tbd Table(const Table&)=delete;
+      //MU: tbd Table& operator=(const Table&) = delete;
       const std::string& getName()const{return itsName;};
       const std::string& getSQLName()const{return itsSQLName;};
       const std::vector<Column>& getColumns()const{return itsColumns;};
@@ -53,7 +63,7 @@ namespace wasabi{
     public:
       Catalog( DBProxy& theConnection);
       const std::vector<std::string>& getTableNames()const;
-      const Table& getTable(const std::string& theName)const;
+      const Table& getTable(std::string_view theName)const;
       Catalog(const Catalog&)=delete;
       Catalog& operator=(const Catalog&) = delete;
     private:
