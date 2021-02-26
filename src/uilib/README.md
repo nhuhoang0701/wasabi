@@ -1,6 +1,6 @@
 ![SAPUI5](https://ui5.sap.com/resources/sap/ui/documentation/sdk/images/Logo_B_SAPUI5_H.png)
 
-# @sapui5/sap.firefly.fiori
+# @sapui5/sap.wasabi
 Runtime resources of the [SAPUI5](https://sapui5.hana.ondemand.com) Library **sap.firefly.fiori**.
 
 ## Usage
