@@ -12,7 +12,7 @@ include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
 
 
-set(SRCS ServerInfo.cpp Table.cpp)
+set(SRCS ServerInfo.cpp Tables.cpp)
 
 
 add_library(metadata_enrichment ${SRCS} ${HEADERS})
