@@ -21,6 +21,7 @@ link_directories(${WASABI_ROOT_DIR}/src/build/lib)
 # Adding something we can run - Output name matches target name
 add_executable(C_libc C_libc.c)
 add_executable(C_read C_read.c)
+add_executable(C_write C_write.c)
 add_executable(C_nolib C_nolib.c)
 #add_executable(C_libc_dl C_libc_dl.c)
 
@@ -34,5 +35,6 @@ add_executable(C_nolib C_nolib.c)
 add_test(NAME C_nolib COMMAND C_nolib)
 add_test(NAME C_libc COMMAND C_libc --dir=../resources/  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources)
 add_test(NAME C_read COMMAND C_read --dir=../resources/  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources)
+add_test(NAME C_write COMMAND C_write --dir=../resources/  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
