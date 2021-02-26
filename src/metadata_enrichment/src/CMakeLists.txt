@@ -12,7 +12,7 @@ include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
 
 
-set(SRCS ServerInfo.cpp Table.cpp)
+set(SRCS ServerInfo.cpp Tables.cpp)
 
 
 add_library(metadata_enrichment ${SRCS} ${HEADERS})
@@ -21,6 +21,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 target_include_directories(
         metadata_enrichment PRIVATE
         ${WASABI_ROOT_DIR}/src/json/include
+        ${WASABI_ROOT_DIR}/src/dbproxy
 )
 target_link_libraries(metadata_enrichment PUBLIC exceptions)
 target_link_directories(metadata_enrichment PUBLIC ${WASABI_ROOT_DIR}/src/build/lib/)
