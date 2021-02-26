@@ -32,6 +32,10 @@ namespace wasabiUtils{
 }
 JSONWriter::JSONWriter(ostream& theStream):itsStream(theStream),itsWroteKey(false){}
 JSONWriter::~JSONWriter(){};
+void JSONWriter::writeColon(){
+  itsStream << ":";
+  itsWroteKey = false;
+}
 void JSONWriter::startList(){
    if(itsWroteKey){
      itsStream << ":";
