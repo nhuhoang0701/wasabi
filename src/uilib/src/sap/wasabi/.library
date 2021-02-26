@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<library xmlns="http://www.sap.com/sap.ui.library.xsd">
+  <name>sap.wasabi</name>
+  <vendor>SAP SE</vendor>
+  <version>${version}</version>
+  <copyright>SAPUI5
+  (c) Copyright 2009-2020 SAP SE. All rights reserved</copyright>
+  <title>{{title}}</title>
+  <documentation>{{sap.wasabi}}</documentation>
+  <appData>
+    <jsdoc xmlns="http://www.sap.com/ui5/buildext/jsdoc">
+      <exclude name="sap/wasabi/thirdparty/**" />
+    </jsdoc>
+    <documentation xmlns="http://www.sap.com/ui5/buildext/documentation"
+                   indexUrl="../../../../test-resources/sap/wasabi/demokit/docuindex.json"
+                   resolve="lib" />
+    <manifest xmlns="http://www.sap.com/ui5/buildext/manifest">
+      <i18n>sap/wasabi/i18n/i18n.properties</i18n>
+      <offline>false</offline>
+      <deviceTypes desktop="true"
+                   phone="true"
+                   tablet="true" />
+      <contentDensities cozy="false"
+                        compact="true" />
+    </manifest>
+    <ownership xmlns="http://www.sap.com/ui5/buildext/ownership">
+      <component>BI-RA-AD-EA</component>
+    </ownership>
+  </appData>
+  <dependencies>
+    <dependency>
+      <libraryName>sap.ui.core</libraryName>
+      <lazy>false</lazy>
+    </dependency>
+  </dependencies>
+</library>
