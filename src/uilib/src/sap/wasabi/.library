@@ -1,21 +1,21 @@
 <?xml version="1.0"?>
 <library xmlns="http://www.sap.com/sap.ui.library.xsd">
-  <name>sap.firefly.fiori</name>
+  <name>sap.wasabi</name>
   <vendor>SAP SE</vendor>
   <version>${version}</version>
   <copyright>SAPUI5
   (c) Copyright 2009-2020 SAP SE. All rights reserved</copyright>
   <title>{{title}}</title>
-  <documentation>{{sap.firefly.fiori}}</documentation>
+  <documentation>{{sap.wasabi}}</documentation>
   <appData>
     <jsdoc xmlns="http://www.sap.com/ui5/buildext/jsdoc">
-      <exclude name="sap/firefly/fiori/thirdparty/**" />
+      <exclude name="sap/wasabi/thirdparty/**" />
     </jsdoc>
     <documentation xmlns="http://www.sap.com/ui5/buildext/documentation"
-                   indexUrl="../../../../test-resources/sap/firefly/fiori/demokit/docuindex.json"
+                   indexUrl="../../../../test-resources/sap/wasabi/demokit/docuindex.json"
                    resolve="lib" />
     <manifest xmlns="http://www.sap.com/ui5/buildext/manifest">
-      <i18n>sap/firefly/fiori/i18n/i18n.properties</i18n>
+      <i18n>sap/wasabi/i18n/i18n.properties</i18n>
       <offline>false</offline>
       <deviceTypes desktop="true"
                    phone="true"
@@ -29,78 +29,7 @@
   </appData>
   <dependencies>
     <dependency>
-      <libraryName>sap.collaboration</libraryName>
-      <lazy>false</lazy>
-    </dependency>
-    <dependency>
-      <libraryName>sap.f</libraryName>
-      <lazy>false</lazy>
-    </dependency>
-    <dependency>
-      <libraryName>sap.m</libraryName>
-      <lazy>false</lazy>
-    </dependency>
-    <dependency>
-      <libraryName>sap.ovp</libraryName>
-      <lazy>false</lazy>
-    </dependency>
-    <dependency>
-      <libraryName>sap.tnt</libraryName>
-      <lazy>false</lazy>
-    </dependency>
-    <dependency>
-      <libraryName>sap.ui.commons</libraryName>
-    </dependency>
-    <dependency>
-      <libraryName>sap.ui.comp</libraryName>
-      <lazy>false</lazy>
-    </dependency>
-    <dependency>
       <libraryName>sap.ui.core</libraryName>
-      <lazy>false</lazy>
-    </dependency>
-    <dependency>
-      <libraryName>sap.ui.generic.app</libraryName>
-      <lazy>false</lazy>
-    </dependency>
-    <dependency>
-      <libraryName>sap.ui.layout</libraryName>
-      <lazy>false</lazy>
-    </dependency>
-    <dependency>
-      <libraryName>sap.ui.codeeditor</libraryName>
-      <lazy>false</lazy>
-    </dependency>
-    <dependency>
-      <libraryName>sap.suite.ui.commons</libraryName>
-      <lazy>false</lazy>
-    </dependency>
-    <dependency>
-      <libraryName>sap.ui.fl</libraryName>
-      <lazy>false</lazy>
-    </dependency>
-    <dependency>
-      <libraryName>sap.ui.integration</libraryName>
-      <lazy>false</lazy>
-    </dependency>
-    <dependency>
-      <libraryName>sap.ui.rta</libraryName>
-      <lazy>false</lazy>
-    </dependency>
-    <dependency>
-      <libraryName>sap.ui.table</libraryName>
-      <lazy>false</lazy>
-    </dependency>
-    <dependency>
-      <libraryName>sap.ui.vbm</libraryName>
-      <lazy>false</lazy>
-    </dependency>
-    <dependency>
-      <libraryName>sap.ushell</libraryName>
-      <lazy>false</lazy>
-    </dependency>
-    <dependency>
-      <libraryName>sap.viz</libraryName>
       <lazy>false</lazy>
     </dependency>
   </dependencies>

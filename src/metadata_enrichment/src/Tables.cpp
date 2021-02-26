@@ -8,7 +8,7 @@ namespace wasabi{
   namespace metadata{
     using namespace std;
     void retrieveTables(
-      dbproxy::DBProxy& theProxy,
+      const dbproxy::DBProxy& theProxy,
       vector<string>& theNames,
       unordered_map<string,Table>& theTables
       )
@@ -38,7 +38,7 @@ namespace wasabi{
         );
       sort(theNames.begin(), theNames.end());
     }
-    Catalog::Catalog(dbproxy::DBProxy& theProxy){
+    Catalog::Catalog(const dbproxy::DBProxy& theProxy){
       retrieveTables(theProxy, itsTableNames,itsTables);
     }
     const vector<string>& Catalog::getTableNames()const{
@@ -52,64 +52,57 @@ namespace wasabi{
       }
       throw out_of_range("table not found");
     };
-    ostream& operator<<(ostream& theStream, const Catalog& theCatalog){
-      JSONWriter aWriter(theStream);
-      JSON_MAP(aWriter);
+    void Catalog::write(JSONWriter& theWriter)const{
+      JSON_MAP(theWriter);
       {
-        aWriter.key("tableNames");
-        JSON_LIST(aWriter);
+        theWriter.key("tableNames");
+        JSON_LIST(theWriter);
         for_each(
-          theCatalog.getTableNames().begin(), theCatalog.getTableNames().end(),
-          [ &aWriter](const string& theString) -> void {
-            aWriter.value(theString);
+          getTableNames().begin(), getTableNames().end(),
+          [ &theWriter](const string& theString) -> void {
+            theWriter.value(theString);
           }
           );
       }
       {
-        aWriter.key("tables");
-        JSON_MAP(aWriter);
-        bool bFirst = true;
+        theWriter.key("tables");
+        JSON_MAP(theWriter);
         for_each(
-          theCatalog.getTableNames().begin(), theCatalog.getTableNames().end(),
-          [ &theCatalog, &aWriter, &theStream, &bFirst](
+          getTableNames().begin(), getTableNames().end(),
+          [ this, &theWriter](
             const string& theName
             ) -> void {
-            if(bFirst){
-              bFirst = false;
-            }else{
-              theStream<<",";
-            }
-            aWriter.key(theName);
-            aWriter.writeColon();
-            const auto & aTable =theCatalog.getTable(theName);
-            theStream << aTable;
+            theWriter.key(theName);
+            const auto & aTable =getTable(theName);
+            aTable.write(theWriter);
           }
           );
       }
+    }
+    ostream& operator<<(ostream& theStream, const Catalog& theCatalog){
+      JSONWriter aWriter(theStream);
+      theCatalog.write(aWriter);
       return theStream;
     };
     Table::Table(string_view theName):itsName(theName),itsSQLName(theName){};
     void Table::addColumn( const dbproxy::ColumnDescr& theDesc){
       itsColumns.push_back(Column(theDesc));
     }
+    void Table::write(JSONWriter& theWriter)const{
+      JSON_MAP(theWriter);
+      theWriter.pair("Name", getName());
+      theWriter.pair("SQLName", getSQLName());
+      theWriter.key("Columns");
+      JSON_LIST(theWriter);
+      for_each(
+        getColumns().begin(), getColumns().end(),
+        [ &theWriter](const Column& theCol)->void{
+          theCol.write(theWriter);
+        });
+    }
     ostream& operator<<(ostream& theStream, const Table& theTable){
       JSONWriter aWriter(theStream);
-      JSON_MAP(aWriter);
-      aWriter.pair("Name", theTable.getName());
-      aWriter.pair("SQLName", theTable.getSQLName());
-      aWriter.key("Columns");
-      bool bFirst = true;
-      JSON_LIST(aWriter);
-      for_each(
-        theTable.getColumns().begin(), theTable.getColumns().end(),
-        [&theStream, &aWriter, &bFirst](const Column& theCol)->void{
-          if(bFirst){
-            bFirst = false;
-          }else{
-            theStream<<",";
-          }
-          theStream << theCol;
-        });
+      theTable.write(aWriter);
       return theStream;
     }
     Column::Aggregation calcAggreation( Column::DataType theType){
@@ -137,13 +130,16 @@ namespace wasabi{
       itsName(theDesc.getName()),
         itsSQLName(theDesc.getName())
     {}
+    void Column::write(JSONWriter& theWriter)const{
+      JSON_MAP(theWriter);
+      theWriter.pair("Name", getName());
+      theWriter.pair("SQLName", getSQLName());
+      theWriter.pair("Aggregation", getAggregation());
+      theWriter.pair("DataType",getDataType());
+    }
     ostream& operator<<(ostream& theStream, const Column& theColumn){
       JSONWriter aWriter(theStream);
-      JSON_MAP(aWriter);
-      aWriter.pair("Name", theColumn.getName());
-      aWriter.pair("SQLName", theColumn.getSQLName());
-      aWriter.pair("Aggregation", theColumn.getAggregation());
-      aWriter.pair("DataType",theColumn.getDataType());
+      theColumn.write(aWriter);
       return theStream;
     }
   }
