@@ -21,6 +21,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 target_include_directories(
         metadata_enrichment PRIVATE
         ${WASABI_ROOT_DIR}/src/json/include
+        ${WASABI_ROOT_DIR}/src/dbproxy
 )
 target_link_libraries(metadata_enrichment PUBLIC exceptions.wasm)
 target_link_directories(metadata_enrichment PUBLIC ${WASABI_ROOT_DIR}/src/build/lib/)
