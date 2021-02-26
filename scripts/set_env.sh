@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-
+echo
 echo -----------------------------------
-echo --------- set variables  ----------
-export WASABI_ROOT_DIR=$(pwd)
+echo --------- set variables -----------
+export WASABI_ROOT_DIR=${WASABI_ROOT_DIR:-$(pwd)}
 echo -e "WASABI_ROOT_DIR: " "\t'"$WASABI_ROOT_DIR"'";
 export WASABI_EXTERNAL_DIR=$WASABI_ROOT_DIR/external
 echo -e "WASABI_EXTERNAL_DIR: " "\t'"$WASABI_EXTERNAL_DIR"'";
@@ -47,6 +47,16 @@ echo -e "NINJA: "  "\t\t'"$NINJA"'";
 export HTTP_SERVER="python3 -m http.server 8080"
 echo -e "HTTP_SERVER: " "\t\t'"$HTTP_SERVER"'";
 
+# alias
+echo
+echo -----------------------------------
+echo ----------- set alias -------------
+echo -e  "run_wasabi_server    to execute the server";
+echo -e  "rebuild              to clean build test the current cmake folder";
+echo -e  "build                to build test the current folder";
+
 alias run_wasabi_server='cd $WASABI_ROOT_DIR/src/wasi_browser; $HTTP_SERVER;cd -'
+alias rebuild='rm -rf ./build && mkdir build && $CMAKE -B ./build . -G Ninja -DCMAKE_MAKE_PROGRAM=$NINJA && $CMAKE --build ./build --target install && (cd build && $CTEST)'
+alias build='$CMAKE -B ./build . -G Ninja -DCMAKE_MAKE_PROGRAM=$NINJA && $CMAKE --build ./build --target install && (cd build && $CTEST)'
 
 echo
