@@ -1,4 +1,4 @@
-#include "metadata_enrichment/Table.h"
+#include "metadata_enrichment/Tables.h"
 #include <algorithm>
 #include  <stdexcept>
 #include "dbproxy.h"

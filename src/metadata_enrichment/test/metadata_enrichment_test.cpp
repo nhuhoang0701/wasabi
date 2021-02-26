@@ -4,5 +4,6 @@ int main()
 {
   TEST_INIT();
   testServerInfo();
+  testTables();
   return TEST_HAVEERROR();
 }
