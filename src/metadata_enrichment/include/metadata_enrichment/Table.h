@@ -3,6 +3,7 @@
 #include <string_view>
 #include <ostream>
 #include <vector>
+#include <unordered_map>
 namespace dbproxy
 {
   class DBProxy;
@@ -24,29 +25,41 @@ namespace wasabi{
         Min=3,
         Count=4,
       };
-      const std::string& getName()const;
-      Aggregation getAggregation()const;
-      const std::string& getSQLName()const;
-      DataType getDataType()const;
+      const std::string& getName()const{return itsName;};
+      Aggregation getAggregation()const{return itsAggregation;};
+      const std::string& getSQLName()const{return itsSQLName;};
+      DataType getDataType()const{return itsDataType;};
+    private:
+      DataType itsDataType;
+      std::string itsName;
+      std::string itsSQLName;
+      Aggregation itsAggregation;
     };
+    std::ostream& operator<<(std::ostream& theStream, const Column& theColumn);
     class Table{
     public:
       Table(const Table&)=delete;
       Table& operator=(const Table&) = delete;
-      const std::string& getName();
-      const std::string& getSQLName()const;
-      const std::vector<Column>& getColumns()const;
+      const std::string& getName()const{return itsName;};
+      const std::string& getSQLName()const{return itsSQLName;};
+      const std::vector<Column>& getColumns()const{return itsColumns;};
+    private:
+      std::string itsName;
+      std::string itsSQLName;
+      std::vector<Column> itsColumns;
     };
-
+    std::ostream& operator<<(std::ostream& theStream, const Table& theTable);
     class Catalog{
     public:
       Catalog( DBProxy& theConnection);
       const std::vector<std::string>& getTableNames()const;
-      const Table& getTable(std::string_view theName)const;
+      const Table& getTable(const std::string& theName)const;
       Catalog(const Catalog&)=delete;
       Catalog& operator=(const Catalog&) = delete;
     private:
-      const std::vector<std::string> itsTableNames;
+      std::vector<std::string> itsTableNames;
+      std::unordered_map<std::string,Table> itsTables;
     };
+    std::ostream& operator<<(std::ostream& theStream, const Catalog& theCatalog);
   }
 }
