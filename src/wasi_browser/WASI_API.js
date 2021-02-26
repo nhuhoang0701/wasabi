@@ -217,7 +217,7 @@ var WASI_API = {
 
 		return WASI_ESUCCESS;
 	},
-	fd_read: async  function(fd, iovs_ptr, iovs_len, nread_out) {
+	fd_read: async  function(fd, iovs_ptr, iovs_len, nread_ptr) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
 		const entry = fds[fd];
 		if (!entry) {
@@ -248,12 +248,12 @@ var WASI_API = {
 
 			const data = new Uint8Array(moduleInstanceExports.memory.buffer, data_ptr, data_len);
 			for(let j =0; j < data_len && entry.offset < entry.data.length; j++) {
-				entry.data[entry.offset] = data[j];
+				data[j] = entry.data[entry.offset];
 				nread++;
 			}
 		}
 
-		view.setUint32(nread_out, nread, true);
+		view.setUint32(nread_ptr, nread, true);
 
 		return WASI_ESUCCESS;
 	},
