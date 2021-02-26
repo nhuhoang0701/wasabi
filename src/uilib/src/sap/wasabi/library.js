@@ -11,8 +11,7 @@ sap.ui.define(
     "sap/base/Log",
     "sap/m/library"
   ],
-  function(
-    jQuery, Log,) {
+  function( jQuery, Log) {
     "use strict";
     /**
      * Wasabi Library which implements a browser based InA server

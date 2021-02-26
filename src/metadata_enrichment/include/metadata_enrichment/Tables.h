@@ -4,10 +4,12 @@
 #include <ostream>
 #include <vector>
 #include <unordered_map>
+
 namespace dbproxy
 {
   class DBProxy; class ColumnDescr;
 }
+class JSONWriter;
 namespace wasabi{
   namespace metadata{
     using namespace dbproxy;
@@ -33,6 +35,7 @@ namespace wasabi{
       Aggregation getAggregation()const{return itsAggregation;};
       const std::string& getSQLName()const{return itsSQLName;};
       DataType getDataType()const{return itsDataType;};
+      void write(JSONWriter& theWriter)const;
     private:
       explicit Column(const dbproxy::ColumnDescr& theColumnDesc);
       DataType itsDataType;
@@ -53,6 +56,7 @@ namespace wasabi{
       const std::string& getName()const{return itsName;};
       const std::string& getSQLName()const{return itsSQLName;};
       const std::vector<Column>& getColumns()const{return itsColumns;};
+      void write(JSONWriter& theWriter)const;
     private:
       std::string itsName;
       std::string itsSQLName;
@@ -61,11 +65,12 @@ namespace wasabi{
     std::ostream& operator<<(std::ostream& theStream, const Table& theTable);
     class Catalog{
     public:
-      Catalog( DBProxy& theConnection);
+      Catalog( const DBProxy& theConnection);
       const std::vector<std::string>& getTableNames()const;
       const Table& getTable(std::string_view theName)const;
       Catalog(const Catalog&)=delete;
       Catalog& operator=(const Catalog&) = delete;
+      void write(JSONWriter& theWriter)const;
     private:
       std::vector<std::string> itsTableNames;
       std::unordered_map<std::string,Table> itsTables;
