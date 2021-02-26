@@ -17,7 +17,7 @@ set(GRID_LIB ${WASABI_ROOT_DIR}/src/grid)
 add_library(InA_query_model InA_query_model.cpp)
 target_include_directories(InA_query_model PUBLIC ${GRID_LIB})
 target_link_libraries(InA_query_model PUBLIC exceptions)
-target_link_directories(InA_query_model PUBLIC ${WASABI_ROOT_DIR}/src/build/lib/)
+target_link_directories(InA_query_model PUBLIC ${CMAKE_INSTALL_PREFIX}/lib/)
 
 ################################################
 # test
@@ -30,6 +30,6 @@ target_link_directories(InA_query_model_test PUBLIC)
 add_test(NAME InA_query_model_test COMMAND InA_query_model_test)
 
 ## [installation]
-install(TARGETS InA_query_model DESTINATION ${WASABI_ROOT_DIR}/src/build/lib)
+install(TARGETS InA_query_model DESTINATION lib)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)

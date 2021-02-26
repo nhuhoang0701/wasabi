@@ -20,7 +20,7 @@ target_include_directories(sqlite PUBLIC ${SQLITE_DIR})
 # dbproxy
 add_library(dbproxy dbproxy.cpp sqlite/sqlite.cpp)
 target_link_libraries(dbproxy PUBLIC sqlite exceptions)
-target_link_directories(dbproxy PUBLIC ${WASABI_ROOT_DIR}/src/build/lib/)
+target_link_directories(dbproxy PUBLIC ${CMAKE_INSTALL_PREFIX}/lib/)
 
 ################################################
 # test

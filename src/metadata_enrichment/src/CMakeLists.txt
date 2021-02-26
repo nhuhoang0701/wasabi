@@ -24,7 +24,7 @@ target_include_directories(
         ${WASABI_ROOT_DIR}/src/dbproxy
 )
 target_link_libraries(metadata_enrichment PUBLIC exceptions)
-target_link_directories(metadata_enrichment PUBLIC ${WASABI_ROOT_DIR}/src/build/lib/)
+target_link_directories(metadata_enrichment PUBLIC ${CMAKE_INSTALL_PREFIX}/lib/)
 ## [installation]
-install(TARGETS metadata_enrichment DESTINATION ${WASABI_ROOT_DIR}/src/build/lib)
+install(TARGETS metadata_enrichment DESTINATION lib)
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)

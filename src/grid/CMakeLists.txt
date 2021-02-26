@@ -13,7 +13,7 @@ project(
 # grid
 add_library(grid grid.cpp)
 target_link_libraries(grid PUBLIC exceptions)
-target_link_directories(grid PUBLIC ${WASABI_ROOT_DIR}/src/build/lib/)
+target_link_directories(grid PUBLIC ${CMAKE_INSTALL_PREFIX}/lib/)
 
 ################################################
 # test

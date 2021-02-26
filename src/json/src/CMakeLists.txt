@@ -6,19 +6,21 @@ endif()
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
 
+project(jsonUtils VERSION 1.0 LANGUAGES CXX)
+
 # CMake json/src
 
 # [Build the library]
 include_directories(${WASABI_ROOT_DIR}/external)
-include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/../include)
 
 set(SRCS jsonReader.cpp
          jsonWriter.cpp)
-set(HEADERS ${PROJECT_SOURCE_DIR}/include/json/jsonReader.h)
+set(HEADERS ${PROJECT_SOURCE_DIR}/../include/json/jsonReader.h)
 
 add_library(jsonUtils ${SRCS} ${HEADERS})
 
 ## [installation]
-install(TARGETS jsonUtils DESTINATION ${WASABI_ROOT_DIR}/src/build/lib)
+install(TARGETS jsonUtils DESTINATION lib)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
