@@ -6,7 +6,6 @@
 set -e
 
 ./scripts/wasabi_external.sh
-./scripts/wasabi_src.sh
 
 source ./scripts/check_env.sh
 
