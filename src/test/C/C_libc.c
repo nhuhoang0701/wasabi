@@ -100,31 +100,10 @@ EXPORT char* str_OPENFILE_READ_str(const char* file)
 	return buf;
 }
 
-EXPORT char* str_OPENFILE_SEEK_READ_str_i(const char* file, int offset, int whence)
-{
-	for(size_t i = 0; i < 1024; ++i)
-		buf[i] = 0;
-
-	FILE* fp = fopen (file, "r");
-	if(fp == 0)
-		return "Error during fopen call";
-
-	if(fseek(fp, offset, whence) < 0)
-		return "Error during fseek call";
-
-	if(fread(buf, 1, sizeof buf, fp) < 0)
-		return "Error during fread call";
-
-	if (ferror(fp))
-		return "Error during ferror call";
-
-	fclose(fp);
-
-	return buf;
-}
 
 int main()
 {
+	TEST_INIT();
 	CPPUNIT_ASSERT_EQUAL(i_PRINT_i(2),85);
 	CPPUNIT_ASSERT_EQUAL(d_SQRT_d(4),2);
 	CPPUNIT_ASSERT_EQUAL(d_FLOOR_d(4),4);
@@ -143,7 +122,5 @@ int main()
 	v_MEMCPY_vp_vp_i(pcharSrc,pcharDest,strlen(pcharSrc)+1);
 	CPPUNIT_ASSERT_EQUAL_STR(pcharDest, "Source");
 
-	CPPUNIT_ASSERT_EQUAL_STR(str_OPENFILE_READ_str("../resources/text.txt"), "Hello from text.txt");
-
-   return 0;
+   return TEST_HAVEERROR();
 }
