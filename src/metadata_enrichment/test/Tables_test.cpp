@@ -21,8 +21,9 @@ void testTables(){
   {
     stringstream aStream;
     aStream << aCatalog;
+    cout << "Catalog: " << std::endl << aStream.str() << std::endl;
     JSONReader aReader;
     aReader.parse(aStream.str());
-    cout << "Catalog: " << std::endl << aStream.str() << std::endl;
+
   }
 }
