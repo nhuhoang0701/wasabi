@@ -1,0 +1,18 @@
+{
+    "name": "@sapui5/sap.wasbis",
+    "version": "1.88.0-SNAPSHOT",
+    "description": "SAPUI5 Library sap.wasabi",
+    "homepage": "https://sap.github.io/ui5-tooling/pages/SAPUI5/",
+    "author": "SAP SE (https://www.sap.com)",
+    "license": "SEE LICENSE IN LICENSE.txt",
+    "scripts": {
+        "build": "ui5 build --exclude-task=generateLibraryPreload",
+        "build-all": "ui5 build --all",
+        "build-themes": "ui5 build --exclude-task=* --include-task=buildThemes",
+        "start": "ui5 serve --open test-resources/sap/wasabi/ui/Example.html"
+    },
+    "keywords": [
+        "sapui5",
+        "ui5"
+    ]
+}
