@@ -3,6 +3,7 @@
 // Members
 moduleInstanceExports = null;
 
+
 function clock_res_realtime () {
 			return BigInt(1e6);
 };
@@ -29,18 +30,24 @@ function clock_time_monotonic () {
 const clock_time_process = clock_time_monotonic;
 const clock_time_thread = clock_time_monotonic;
 
+fs_Path2Data = new Map();
+
 fds = [
 		{
 			vpath:"/dev/stdin",
+			offset:null,
 		},
 		{
 			vpath:"/dev/stdout",
+			offset:null,
 		},
 		{
 			vpath:"/dev/stderr",
+			offset:null,
 		},
 		{
 			vpath:".",
+			offset:null,
 		},
 	];
 
@@ -80,6 +87,8 @@ function getModuleInstance() {
 	return moduleInstanceExports;
 }
 
+
+
 var WASI_API = {
 	// WASI constants
 	WASI_ESUCCESS: WASI_ESUCCESS = 0,
@@ -90,17 +99,49 @@ var WASI_API = {
 	WASI_STDOUT_FILENO : WASI_STDOUT_FILENO = 1,
 	WASI_STDERR_FILENO : WASI_STDERR_FILENO = 2,
 	
-	WASI_SEEK_SET : WASI_SEEK_SET = 0,
+	WASI_SEEK_START : WASI_SEEK_START = 0,
 	WASI_SEEK_CUR : WASI_SEEK_CUR = 1,
 	WASI_SEEK_END : WASI_SEEK_END = 2,
 	
 	WASI_PREOPENTYPE_DIR : WASI_PREOPENTYPE_DIR = 0,
 
 	// WASI API
+	
+	//*************************************************************
+	// wasabi specific
+	wasabi_initFS : async function(path) {
+		const response = await fetch(path);
+		arrayBuffer = await response.arrayBuffer();
+		var uint8View = new Uint8Array(arrayBuffer);
+		
+		fs_Path2Data.set(path, uint8View);
+	},
+	wasabi_log : wasabi_log = function(msg) {
+		if(typeof document !== 'undefined') {
+			document.getElementById('log').innerHTML += msg.replace(/\n( *)/g, function (match, p1) {
+				return '<br>' + '&nbsp;'.repeat(p1.length);
+			});
+		}
+		console.log(msg);
+	},
+	wasabi_error : wasabi_error = function(msg) {
+		if(typeof document !== 'undefined') {
+			document.getElementById('log').innerHTML += msg.replace(/\n( *)/g, function (match, p1) {
+				return '<br>' + '&nbsp;'.repeat(p1.length);
+			});
+		}
+		console.error(msg);
+	},
+	
+	//*************************************************************
+	// process
 	proc_exit: function(rval) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
 		return WASI_ENOSYS;
 	},
+	
+	//*************************************************************
+	// path
 	path_open: function(dirfd, dirflags, path_ptr, path_len, oflags, fs_rights_base, fs_rights_inheriting, fs_flags, fd) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
 		vpath  = convertWAsmStr2JSStr(path_ptr, moduleInstanceExports.memory);
@@ -141,29 +182,36 @@ var WASI_API = {
 		return WASI_ENOSYS;
 	},
 	
+	
+	//*************************************************************
+	// file descriptor
 	fd_sync: function(fd) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
 		return WASI_ENOSYS;
 	},
-	fd_seek: function(fd, offset, whence, newoffset) {
+	fd_seek: function(fd, offset, whence, newoffset_ptr) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
 		const entry = fds[fd];
 		if (!entry) {
 			console.error('Invalid fd');
 			return WASI_EBADF;
 		}
-		if(whence == WASI_SEEK_SET)
+		if(whence == WASI_SEEK_START)
 		    entry.offset = offset;
 		else if(whence == WASI_SEEK_CUR) {
+		    entry.offset += offset;
+		} else if(whence == WASI_SEEK_END) {
 		    entry.offset += offset;
 			if(entry.offset < 0)
 				entry.offset = 0;
 		} else 
 			console.error("NYI");
 		
-		const view = new DataView(moduleInstanceExports.memory.buffer);
+		if(entry.offset < 0)
+			entry.offset = 0;
 		
-		view.setBigUint64(newoffset, BigInt(entry.offset), true);
+		const view = new DataView(moduleInstanceExports.memory.buffer);
+		view.setBigUint64(newoffset_ptr, BigInt(entry.offset), true);
 
 		return WASI_ESUCCESS;
 	},
@@ -210,14 +258,14 @@ var WASI_API = {
 
 		buffers.forEach(writev);
 
-		if (fd === WASI_STDOUT_FILENO) console.log(String.fromCharCode.apply(null, bufferBytes));    
-		else if (fd === WASI_STDERR_FILENO) console.error(String.fromCharCode.apply(null, bufferBytes));                            
+		if (fd === WASI_STDOUT_FILENO) wasabi_log(String.fromCharCode.apply(null, bufferBytes));    
+		else if (fd === WASI_STDERR_FILENO) wasabi_error(String.fromCharCode.apply(null, bufferBytes));                            
 
 		view.setUint32(nwritten, written, !0);
 
 		return WASI_ESUCCESS;
 	},
-	fd_read: async  function(fd, iovs_ptr, iovs_len, nread_ptr) {
+	fd_read: function(fd, iovs_ptr, iovs_len, nread_ptr) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
 		const entry = fds[fd];
 		if (!entry) {
@@ -229,10 +277,7 @@ var WASI_API = {
 		}
 		
 		if(!entry.data) {
-			const response = await fetch(entry.vpath);
-			arrayBuffer = response.arrayBuffer();
-			var uint8View = new Uint8Array(arrayBuffer);
-			entry.data = uint8View;
+			entry.data = fs_Path2Data.get(entry.vpath);
 			entry.offset = 0;
 		}
 
@@ -247,12 +292,13 @@ var WASI_API = {
 			iovs_ptr += 4;
 
 			const data = new Uint8Array(moduleInstanceExports.memory.buffer, data_ptr, data_len);
-			for(let j =0; j < data_len && entry.offset < entry.data.length; j++) {
-				data[j] = entry.data[entry.offset];
+			for(let j =0; j < data_len && entry.offset < entry.data.length ; j++) {
+				data[j] = entry.data[entry.offset++];
 				nread++;
 			}
 		}
 
+		console.log("char readed:" +nread);
 		view.setUint32(nread_ptr, nread, true);
 
 		return WASI_ESUCCESS;
@@ -328,6 +374,10 @@ var WASI_API = {
 
 		return WASI_ESUCCESS;
 	},
+	
+	
+	//*************************************************************
+	// var env
 	environ_sizes_get: function(environ_size, environ_buf_size) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
 		var view = getModuleMemoryDataView();
@@ -340,6 +390,9 @@ var WASI_API = {
 	environ_get: function(environ, environ_buf) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
 	},
+	
+	//*************************************************************
+	// Clock
 	clock_time_get: function(clock_id, precision, time) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
 		var view = getModuleMemoryDataView();
