@@ -70,7 +70,7 @@ namespace dbproxy
 		const std::vector<TableDescr>& getTables() const;
 		const TableDescr&              getTableDescr(const std::string& name) const;
 
-		virtual void  executeSQL(const std::string& SQL, std::function<void (Row const&)> calback) const = 0;
+		virtual void  executeSQL(const std::string& SQL, const std::function<void (Row const&)>* calback) const = 0;
 
 	protected:
 		DBProxy();

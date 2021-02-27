@@ -32,7 +32,7 @@ namespace dbproxy
 			const std::string err_msg(sqlite_err_msg);
 			sqlite3_free(sqlite_err_msg);
 			std::cerr << "Failed to create tables, SQL error: '" << err_msg << "'" << std::endl;
-			throw std::runtime_error("sqlite3_exec: " + std::string(err_msg));
+			//throw std::runtime_error("sqlite3_exec: " + std::string(err_msg));
 		}
 		else
 		{
@@ -44,7 +44,7 @@ namespace dbproxy
 			const std::string err_msg(sqlite_err_msg);
 			sqlite3_free(sqlite_err_msg);
 			std::cerr << "Failed to insert data, SQL error: '" << err_msg << "'" << std::endl;
-			throw std::runtime_error("sqlite3_exec: " + std::string(err_msg));
+			//throw std::runtime_error("sqlite3_exec: " + std::string(err_msg));
 		}
 		else
 		{
@@ -60,7 +60,7 @@ namespace dbproxy
 			
 			getTables().push_back(table);
 		};
-		executeSQL("SELECT * FROM sqlite_master WHERE type='table';", lambda);
+		executeSQL("SELECT * FROM sqlite_master WHERE type='table';", &lambda);
 
 		for(auto& table : getTables())
 		{
@@ -70,7 +70,7 @@ namespace dbproxy
 			{
 				table.push_back(ColumnDescr(row[1].getString(), row[2].getString()));
 			};
-			executeSQL("PRAGMA table_info("+table.getName()+");", lambda);
+			executeSQL("PRAGMA table_info("+table.getName()+");", &lambda);
 			//std::cout << "<<*******************************************************" << std::endl << std::endl;
 		}
 	}
@@ -82,10 +82,10 @@ namespace dbproxy
 		sqlite_err_msg = nullptr;
 	}
 
-	void DBSQLite::executeSQL(const std::string& SQL, std::function<void (Row const&)> calback) const
+	void DBSQLite::executeSQL(const std::string& SQL, const std::function<void (Row const&)>* calback) const
 	{
 		//std::cout << ">>" << __func__ << ": " << SQL << std::endl;
-		if (sqlite3_exec(m_sqlite_db, SQL.c_str(), sqlite_callback, reinterpret_cast<void*>(&calback), &sqlite_err_msg) != SQLITE_OK )
+		if (sqlite3_exec(m_sqlite_db, SQL.c_str(), sqlite_callback, const_cast<void*>(reinterpret_cast<const void*>(calback)), &sqlite_err_msg) != SQLITE_OK )
 		{ 
 			std::cerr <<  "Failed to execute SQL, SQL error: '" <<  sqlite_err_msg << "'" << std::endl;
 			const std::string err_msd(sqlite_err_msg);
