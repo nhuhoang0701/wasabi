@@ -61,7 +61,7 @@ int main()
 			
 			line++;
 		};
-		dbProxy->executeSQL("SELECT * FROM " + tableNameStr, lambda);
+		dbProxy->executeSQL("SELECT * FROM " + tableNameStr, &lambda);
 		std::cout << "line:" << line << std::endl;
 		CPPUNIT_ASSERT_EQUAL(line,3000);
 	}
@@ -75,7 +75,7 @@ int main()
 			CPPUNIT_ASSERT_EQUAL(std::stod(row[1].getString()),12129067.6);
 			line++;
 		};
-		dbProxy->executeSQL("SELECT Yr,sum(Sales_revenue)/3 FROM " + tableNameStr, lambda);
+		dbProxy->executeSQL("SELECT Yr,sum(Sales_revenue)/3 FROM " + tableNameStr, &lambda);
 		std::cout << "line:" << line << std::endl;
 		CPPUNIT_ASSERT_EQUAL(line,1);
 	}
