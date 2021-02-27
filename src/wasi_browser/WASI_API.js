@@ -36,18 +36,22 @@ fds = [
 		{
 			vpath:"/dev/stdin",
 			offset:null,
+			data:null,
 		},
 		{
 			vpath:"/dev/stdout",
 			offset:null,
+			data:null,
 		},
 		{
 			vpath:"/dev/stderr",
 			offset:null,
+			data:null,
 		},
 		{
 			vpath:".",
 			offset:null,
+			data:null,
 		},
 	];
 
