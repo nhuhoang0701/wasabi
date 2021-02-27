@@ -59,7 +59,7 @@ namespace dbproxy
 
 				table.push_back(ColumnDescr(row[1].getString(), row[2].getString()));
 			};
-			executeSQL("SELECT * FROM PRAGMA_TABLE_INFO('"+table.getName()+"');", lambda);
+			//executeSQL("SELECT * FROM PRAGMA_TABLE_INFO('"+table.getName()+"');", lambda);
 			executeSQL("PRAGMA table_info('"+table.getName()+"');", lambda);
 			std::cout << "<<*******************************************************" << std::endl << std::endl;
 		}
