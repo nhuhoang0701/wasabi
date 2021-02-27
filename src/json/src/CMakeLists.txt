@@ -16,11 +16,14 @@ include_directories(${PROJECT_SOURCE_DIR}/../include)
 
 set(SRCS jsonReader.cpp
          jsonWriter.cpp)
-set(HEADERS ${PROJECT_SOURCE_DIR}/../include/json/jsonReader.h)
+set(HEADERS ${PROJECT_SOURCE_DIR}/../include/json/jsonReader.h ${PROJECT_SOURCE_DIR}/../include/json/jsonWriter.h)
 
 add_library(jsonUtils ${SRCS} ${HEADERS})
+set_target_properties(jsonUtils PROPERTIES PUBLIC_HEADER "${HEADERS}")
 
 ## [installation]
-install(TARGETS jsonUtils DESTINATION lib)
+install(TARGETS jsonUtils 
+			LIBRARY DESTINATION lib
+			PUBLIC_HEADER DESTINATION include)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
