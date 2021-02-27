@@ -28,13 +28,13 @@ function start(response) {
 	{
 		moduleWASI = module;
 		setModuleInstance(module.instance);
-		WASI_API.wasabi_initFS("../resources/text.txt").then(() => {
-		try {module.instance.exports._start();}
-		catch (e)
-		{
-			console.log("Exception during execution:" + e);
-			console.log("stack" + e.stack);
-		}
+		WASI_API.wasabi_initFS(["../resources/text.txt", "../sqlite/efashion.db"]).then(() => {
+			try {module.instance.exports._start();}
+			catch (e)
+			{
+				console.log("Exception during execution:" + e);
+				console.log("stack" + e.stack);
+			}
 		});
 	});
 };

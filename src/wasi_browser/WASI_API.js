@@ -113,12 +113,14 @@ var WASI_API = {
 	
 	//*************************************************************
 	// wasabi specific
-	wasabi_initFS : async function(path) {
-		const response = await fetch(path);
-		arrayBuffer = await response.arrayBuffer();
-		var uint8View = new Uint8Array(arrayBuffer);
-		
-		fs_Path2Data.set(path, uint8View);
+	wasabi_initFS : async function(paths) {
+		for (let i=0; i<paths.length; i++)  {
+			const response = await fetch(paths[i]);
+			arrayBuffer = await response.arrayBuffer();
+			var uint8View = new Uint8Array(arrayBuffer);
+			
+			fs_Path2Data.set(paths[i], uint8View);
+		}
 	},
 	wasabi_log : wasabi_log = function(msg) {
 		if(typeof document !== 'undefined') {
@@ -171,12 +173,12 @@ var WASI_API = {
 			
 		return WASI_ESUCCESS;
 	},
-	path_filestat_get: function(fd, path_ptr, path_len, buf) {
+	path_filestat_get: function(fd, flags, path_ptr, path_len, buf) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
 		console.log("vpath:'" + convertWAsmStr2JSStr(path_ptr, moduleInstanceExports.memory) +"'");
 		return WASI_ENOSYS;
 	},
-	path_unlink_file: function(fd, path_ptr, path_len, flags) {
+	path_unlink_file: function(fd, path_ptr, path_len) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
 		console.log("vpath:'" + convertWAsmStr2JSStr(path_ptr, moduleInstanceExports.memory) +"'");
 		return WASI_ENOSYS;
@@ -206,8 +208,6 @@ var WASI_API = {
 		    entry.offset += offset;
 		} else if(whence == WASI_SEEK_END) {
 		    entry.offset += offset;
-			if(entry.offset < 0)
-				entry.offset = 0;
 		} else 
 			console.error("NYI");
 		
@@ -219,7 +219,7 @@ var WASI_API = {
 
 		return WASI_ESUCCESS;
 	},
-	fd_write: function(fd, iovs_ptr, iovs_len, nwritten) {
+	fd_write: function(fd, iovs_ptr, iovs_len, nwritten_ptr) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
 		const entry = fds[fd];
 		if (!entry) {
@@ -263,9 +263,10 @@ var WASI_API = {
 		buffers.forEach(writev);
 
 		if (fd === WASI_STDOUT_FILENO) wasabi_log(String.fromCharCode.apply(null, bufferBytes));    
-		else if (fd === WASI_STDERR_FILENO) wasabi_error(String.fromCharCode.apply(null, bufferBytes));                            
+		else if (fd === WASI_STDERR_FILENO) wasabi_error(String.fromCharCode.apply(null, bufferBytes));    
+		else console.error("fd_write NYI");
 
-		view.setUint32(nwritten, written, !0);
+		view.setUint32(nwritten_ptr, written, !0);
 
 		return WASI_ESUCCESS;
 	},
@@ -317,20 +318,20 @@ var WASI_API = {
 		fds.splice(fd);
 		return WASI_ESUCCESS;
 	},
-	fd_filestat_get: function(fd, buf) {
+	fd_filestat_get: function(fd, buf_ptr) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
 		return WASI_ENOSYS;
 	},
 	fd_fdstat_set_flags: function(fd, flags) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
 	},
-	fd_fdstat_get: function(fd, buf) {
+	fd_fdstat_get: function(fd, stat_ptr) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
 		var view = getModuleMemoryDataView();
 
-		view.setUint8(buf, fd);
-		view.setUint16(buf + 2, 0, !0);
-		view.setUint16(buf + 4, 0, !0);
+		view.setUint8(stat_ptr, fd);
+		view.setUint16(stat_ptr + 2, 0, !0);
+		view.setUint16(stat_ptr + 4, 0, !0);
 
 		function setBigUint64(byteOffset, value, littleEndian) {
 			var lowWord = value;
@@ -340,8 +341,8 @@ var WASI_API = {
 			view.setUint32(littleEndian ? 4 : 0, highWord, littleEndian);
 		}
 
-		setBigUint64(buf + 8, 0, !0);
-		setBigUint64(buf + 8 + 8, 0, !0);
+		setBigUint64(stat_ptr + 8, 0, !0);
+		setBigUint64(stat_ptr + 8 + 8, 0, !0);
 
 		return WASI_ESUCCESS;
 	},
