@@ -5,9 +5,7 @@ if (NOT DEFINED WASABI_ROOT_DIR AND DEFINED ENV{WASABI_ROOT_DIR})
 endif()
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
-project(
-  InA_query_model
-  VERSION 1.0)
+project(InA_query_model VERSION 1.0)
 
 set(GRID_LIB ${WASABI_ROOT_DIR}/src/grid)
 #set(GRID_LIB_BUILD ${GRID_LIB}/build)
