@@ -64,3 +64,12 @@ void Test_writer()
     }
   }
 }
+
+int main()
+{
+	TEST_INIT();
+	
+	Test_writer();
+
+	return TEST_HAVEERROR();
+}
