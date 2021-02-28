@@ -6,24 +6,21 @@ endif()
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
 # CMake json/test
-
 include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${WASABI_ROOT_DIR}/src/test_tools/include)
-
 link_directories(${WASABI_ROOT_DIR}/external/cJSON/build)
-link_directories(${WASABI_ROOT_DIR}/src/json/build)
-link_directories(${WASABI_ROOT_DIR}/src/build/lib)
 
 ## [main]
-
-set(SRCS test_json.cpp test_writer.cpp)
-set(HEADERS test_data.h)
-
-add_executable(TestJson ${SRCS} ${HEADERS})
+add_executable(TestJson test_json.cpp)
+target_include_directories(TestJson PRIVATE ${WASABI_INCLUDES} ${WASABI_ROOT_DIR}/src/test_tools/include)
 target_link_libraries(TestJson PRIVATE cjson jsonUtils exceptions)
+
+add_executable(test_writer test_writer.cpp)
+target_include_directories(test_writer PRIVATE ${WASABI_INCLUDES} ${WASABI_ROOT_DIR}/src/test_tools/include)
+target_link_libraries(test_writer PRIVATE cjson jsonUtils exceptions)
 
 ## [test]
 # run with ctest -V
 add_test(NAME TestJson COMMAND TestJson)
+add_test(NAME test_writer COMMAND test_writer)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)

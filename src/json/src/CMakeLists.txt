@@ -5,25 +5,18 @@ if (NOT DEFINED WASABI_ROOT_DIR AND DEFINED ENV{WASABI_ROOT_DIR})
 endif()
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
-
-project(jsonUtils VERSION 1.0 LANGUAGES CXX)
-
-# CMake json/src
-
 # [Build the library]
-include_directories(${WASABI_ROOT_DIR}/external)
-include_directories(${PROJECT_SOURCE_DIR}/../include)
-
-set(SRCS jsonReader.cpp
-         jsonWriter.cpp)
-set(HEADERS ${PROJECT_SOURCE_DIR}/../include/json/jsonReader.h ${PROJECT_SOURCE_DIR}/../include/json/jsonWriter.h)
-
-add_library(jsonUtils ${SRCS} ${HEADERS})
+set(HEADERS ${PROJECT_SOURCE_DIR}/include/json/jsonReader.h ${PROJECT_SOURCE_DIR}/include/json/jsonWriter.h)
+add_library(jsonUtils jsonReader.cpp jsonWriter.cpp)
 set_target_properties(jsonUtils PROPERTIES PUBLIC_HEADER "${HEADERS}")
+
+target_include_directories(jsonUtils PRIVATE ../include/ ${WASABI_ROOT_DIR}/external)
+target_link_directories(jsonUtils PUBLIC ${WASABI_ROOT_DIR}/external/cJSON/build)
+target_link_libraries(jsonUtils PRIVATE cjson exceptions)
 
 ## [installation]
 install(TARGETS jsonUtils 
-			LIBRARY DESTINATION lib
-			PUBLIC_HEADER DESTINATION include)
+		LIBRARY DESTINATION lib
+		PUBLIC_HEADER DESTINATION include/json)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
