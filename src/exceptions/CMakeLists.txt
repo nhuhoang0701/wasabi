@@ -7,7 +7,7 @@ include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
 
 project(
-  Exceptions
+  exceptions
   VERSION 1.0
   LANGUAGES CXX)
 
