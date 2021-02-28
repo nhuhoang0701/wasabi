@@ -20,7 +20,7 @@ target_include_directories(sqlite PUBLIC ${SQLITE_DIR})
 # dbproxy
 add_library(dbproxy dbproxy.cpp sqlite/sqlite.cpp)
 target_link_libraries(dbproxy PUBLIC sqlite exceptions)
-target_link_directories(dbproxy PUBLIC ${WASABI_ROOT_DIR}/src/build/lib/)
+target_link_directories(dbproxy PUBLIC ${CMAKE_INSTALL_PREFIX}/lib/)
 
 ################################################
 # test
@@ -28,7 +28,16 @@ add_executable(dbproxy_test dbproxy_test.cpp)
 target_link_libraries(dbproxy_test dbproxy)
 target_include_directories(dbproxy_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
 
+add_executable(dbproxy_metadat_test dbproxy_metadat_test.cpp)
+target_link_libraries(dbproxy_metadat_test dbproxy)
+target_include_directories(dbproxy_metadat_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
+
 ## [main]
 add_test(NAME dbproxy_test COMMAND dbproxy_test --dir=../sqlite/ WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/sqlite)
+add_test(NAME dbproxy_metadat_test COMMAND dbproxy_metadat_test --dir=../sqlite/ WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/sqlite)
+
+## [installation]
+install(TARGETS dbproxy DESTINATION lib)
+install(TARGETS sqlite DESTINATION lib)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)

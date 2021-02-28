@@ -116,9 +116,21 @@ namespace wasabi{
       throw out_of_range(aStream.str());
     }
     Column::DataType calcDataType( const string& theType){
-      if( theType == "TEXT" ){
+      if( theType == "TEXT"
+		|| theType.find("CHAR") != std::string::npos)
+	  {
         return Column::DataType::String;
-      } else if( theType == "REAL" ){
+      }
+	  else if( theType.find("TIME") != std::string::npos
+			|| theType.find("DATE") != std::string::npos )
+	  {
+        return Column::DataType::DateTime;
+      }
+	  else if( theType == "REAL"
+			|| theType == "DOUBLE"
+			|| theType.find("INT") != std::string::npos
+			|| theType.find("NUMERIC") != std::string::npos )
+	  {
         return Column::DataType::Numeric;
       }
       throw out_of_range("datatype " + theType +" not found");

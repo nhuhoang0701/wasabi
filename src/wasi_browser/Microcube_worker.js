@@ -51,6 +51,7 @@ onmessage = function(e) {
 			isLoaded = true;
 		}).catch(error=>{
 			console.log('Worker: Library not well loaded: ', error),
+			console.log("stack" + error.stack),
 			postMessage([WorkerEvent.eLoad, error])
 		});
 
@@ -70,6 +71,7 @@ onmessage = function(e) {
 			postMessage([WorkerEvent.eGetServerInfo, res]);
 		} catch(error) {
 			console.log('Worker: eGetServerInfo error: ', error);
+			console.log("stack" + error.stack),
 			postMessage([WorkerEvent.eGetServerInfo, error]);
 		}
 		
@@ -94,6 +96,7 @@ onmessage = function(e) {
 			postMessage([WorkerEvent.eGetResponse, res]);
 		} catch(error) {
 			console.log('Worker: eGetResponse error: ', error);
+			console.log("stack" + error.stack),
 			postMessage([WorkerEvent.eGetResponse, error]);
 		}
 		
