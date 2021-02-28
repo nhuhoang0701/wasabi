@@ -17,7 +17,7 @@ namespace dbproxy
 	{
 		int res = 0;
 		if(useDBFile)
-			res = sqlite3_open_v2("../sqlite/efashion.db", &m_sqlite_db, SQLITE_OPEN_READONLY, nullptr);
+			res = sqlite3_open_v2("../sqlite/efashion/efashion.db", &m_sqlite_db, SQLITE_OPEN_READONLY, nullptr);
 		else
 			res = sqlite3_open(":memory:", &m_sqlite_db);
 		if (res != SQLITE_OK)
