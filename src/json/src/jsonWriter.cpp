@@ -1,216 +1,243 @@
 #include "json/jsonWriter.h"
 #include <iomanip>
+#include <ostream>
 #include <string_view>
+#include <vector>
 using namespace std;
-
 namespace wasabiUtils{
-
+  struct JsonWriterImpl{
+    JsonWriterImpl(
+                   ostream& theStream
+                   ):itsStream(theStream),
+                     itsWroteKey(false)
+    {
+    };
+    bool itsWroteKey;
+    vector<bool> itsOpenTags;
+    ostream& itsStream;
+  };
   void escape_json(string_view theString, ostream& theStream) {
     theStream << "\"";
-    for(
-        auto c = theString.cbegin(); c != theString.cend(); c++
-        ) {
-      switch (*c) {
-      case '"': theStream << "\\\""; break;
-      case '\\': theStream << "\\\\"; break;
-      case '\b': theStream << "\\b"; break;
-      case '\f': theStream << "\\f"; break;
-      case '\n': theStream << "\\n"; break;
-      case '\r': theStream << "\\r"; break;
-      case '\t': theStream << "\\t"; break;
-      default:
-        if ('\x00' <= *c && *c <= '\x1f') {
-          theStream << "\\u"
-                    << hex << setw(4) << setfill('0') << (int)*c;
-        } else {
-          theStream << *c;
-        }
-      }
-    }
+    for_each(
+             theString.cbegin(),theString.cend(),
+             [&theStream](char c)  -> void {
+               switch (c) {
+               case '"': theStream << "\\\""; break;
+               case '\\': theStream << "\\\\"; break;
+               case '\b': theStream << "\\b"; break;
+               case '\f': theStream << "\\f"; break;
+               case '\n': theStream << "\\n"; break;
+               case '\r': theStream << "\\r"; break;
+               case '\t': theStream << "\\t"; break;
+               default:
+                 if ('\x00' <= c && c <= '\x1f') {
+                   theStream << "\\u"
+                             << hex << setw(4) << setfill('0') << (int)c;
+                 } else {
+                   theStream << c;
+                 }
+               }
+             }
+             );
     theStream << "\"";
   }
 }
-JSONWriter::JSONWriter(ostream& theStream):itsStream(theStream),itsWroteKey(false){}
-JSONWriter::~JSONWriter(){};
-void JSONWriter::writeColon(){
-  itsStream << ":";
-  itsWroteKey = false;
+JSONWriter::JSONWriter(
+                       ostream& theStream
+                       ):itsPimpl(
+                                  new wasabiUtils::JsonWriterImpl(theStream)
+                                  ){
 }
+JSONWriter::~JSONWriter(){};
 void JSONWriter::startList(){
-   if(itsWroteKey){
-     itsStream << ":";
-     itsWroteKey = false;
-   }
-   if(itsOpenTags.size()>0){
-     if(
-        itsOpenTags.at(itsOpenTags.size()-1)
-        ){
-       itsStream<< ",";
-     } else{
-       itsOpenTags.at(itsOpenTags.size()-1) = true;
-     }
-   }
-   itsOpenTags.push_back(false);
-   itsStream << "[";
- }
+  if(itsPimpl->itsWroteKey){
+    itsPimpl->itsStream << ":";
+    itsPimpl->itsWroteKey = false;
+  }
+  if(itsPimpl->itsOpenTags.size()>0){
+    if(
+       itsPimpl->itsOpenTags.at(itsPimpl->itsOpenTags.size()-1)
+       ){
+      itsPimpl->itsStream<< ",";
+    } else{
+      itsPimpl->itsOpenTags.at(itsPimpl->itsOpenTags.size()-1) = true;
+    }
+  }
+  itsPimpl->itsOpenTags.push_back(false);
+  itsPimpl->itsStream << "[";
+}
 void JSONWriter::endList(){
-  itsOpenTags.pop_back();
-  itsStream<<"]";
+  itsPimpl->itsOpenTags.pop_back();
+  itsPimpl->itsStream<<"]";
 };
 void JSONWriter::endMap(){
-  itsOpenTags.pop_back();
-  itsStream<<"}";
+  itsPimpl->itsOpenTags.pop_back();
+  itsPimpl->itsStream<<"}";
 }
 void JSONWriter::startMap(){
-  if(itsWroteKey){
-    itsStream << ":";
-    itsWroteKey = false;
+  wasabiUtils::JsonWriterImpl& aImpl = *itsPimpl;
+  if(aImpl.itsWroteKey){
+    aImpl.itsStream << ":";
+    aImpl.itsWroteKey = false;
   }
-  if(itsOpenTags.size()>0){
+  if(aImpl.itsOpenTags.size()>0){
     if(
-       itsOpenTags.at(itsOpenTags.size()-1)
+       aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1)
        ){
-      itsStream<< ",";
+      aImpl.itsStream<< ",";
     } else{
-      itsOpenTags.at(itsOpenTags.size()-1) = true;
+      aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1) = true;
     }
   }
-  itsOpenTags.push_back(false);
-  itsStream<<"{";
+  aImpl.itsOpenTags.push_back(false);
+  aImpl.itsStream<<"{";
 }
-void JSONWriter::key(const string& theKey){
-  if(itsOpenTags.size()>0 && itsOpenTags.at(itsOpenTags.size()-1)){
-    itsOpenTags.at(itsOpenTags.size()-1)=false;
-    itsStream<< ",";
+void JSONWriter::key(string_view theKey){
+  wasabiUtils::JsonWriterImpl& aImpl = *itsPimpl;
+  if(aImpl.itsOpenTags.size()>0 && aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1)){
+    aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1)=false;
+    aImpl.itsStream<< ",";
   }
-  wasabiUtils::escape_json(theKey, itsStream);
-  itsWroteKey=true;
+  wasabiUtils::escape_json(theKey, aImpl.itsStream);
+  aImpl.itsWroteKey=true;
 }
+void JSONWriter::separator(){
+  wasabiUtils::JsonWriterImpl& aImpl = *itsPimpl;
+  aImpl.itsStream<<",";
+};
 void JSONWriter::valueNull(){
-  if(itsWroteKey){
-    itsStream << ":";
-    itsWroteKey = false;
+  wasabiUtils::JsonWriterImpl& aImpl = *itsPimpl;
+  if(aImpl.itsWroteKey){
+    aImpl.itsStream << ":";
+    aImpl.itsWroteKey = false;
   }
-  if(itsOpenTags.size()>0){
+  if(aImpl.itsOpenTags.size()>0){
     if(
-       itsOpenTags.at(itsOpenTags.size()-1)
+       aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1)
        ){
-      itsStream<< ",";
+      aImpl.itsStream<< ",";
     } else{
-      itsOpenTags.at(itsOpenTags.size()-1) = true;
+      aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1) = true;
     }
   }
-  itsStream << "null";
+  aImpl.itsStream << "null";
 }
-void JSONWriter::value(const std::string& theString){
-  if(itsWroteKey){
-    itsStream << ":";
-    itsWroteKey = false;
+void JSONWriter::value(string_view theString){
+  wasabiUtils::JsonWriterImpl& aImpl = *itsPimpl;
+  if(aImpl.itsWroteKey){
+    aImpl.itsStream << ":";
+    aImpl.itsWroteKey = false;
   }
-  if(itsOpenTags.size()>0){
+  if(aImpl.itsOpenTags.size()>0){
     if(
-       itsOpenTags.at(itsOpenTags.size()-1)
+       aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1)
        ){
-      itsStream<< ",";
+      aImpl.itsStream<< ",";
     } else{
-      itsOpenTags.at(itsOpenTags.size()-1) = true;
+      aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1) = true;
     }
   }
-  wasabiUtils::escape_json(theString, itsStream);
+  wasabiUtils::escape_json(theString, aImpl.itsStream);
 };
 void JSONWriter::value(const char* theCharPointer){
-  if(itsWroteKey){
-    itsStream << ":";
-    itsWroteKey = false;
+  wasabiUtils::JsonWriterImpl& aImpl = *itsPimpl;
+  if(aImpl.itsWroteKey){
+    aImpl.itsStream << ":";
+    aImpl.itsWroteKey = false;
   }
-  if(itsOpenTags.size()>0){
+  if(aImpl.itsOpenTags.size()>0){
     if(
-       itsOpenTags.at(itsOpenTags.size()-1)
+       aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1)
        ){
-      itsStream<< ",";
+      aImpl.itsStream<< ",";
     } else{
-      itsOpenTags.at(itsOpenTags.size()-1) = true;
+      aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1) = true;
     }
   }
-  wasabiUtils::escape_json(theCharPointer,itsStream);
+  wasabiUtils::escape_json(theCharPointer,aImpl.itsStream);
 };
 void JSONWriter::value(bool theValue){
-  if(itsWroteKey){
-    itsStream << ":";
-    itsWroteKey = false;
+  wasabiUtils::JsonWriterImpl& aImpl = *itsPimpl;
+  if(aImpl.itsWroteKey){
+    aImpl.itsStream << ":";
+    aImpl.itsWroteKey = false;
   }
-  if(itsOpenTags.size()>0){
+  if(aImpl.itsOpenTags.size()>0){
     if(
-       itsOpenTags.at(itsOpenTags.size()-1)
+       aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1)
        ){
-      itsStream<< ",";
+      aImpl.itsStream<< ",";
     } else{
-      itsOpenTags.at(itsOpenTags.size()-1) = true;
+      aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1) = true;
     }
   }
-  itsStream << (theValue?"true":"false");
+  aImpl.itsStream << (theValue?"true":"false");
 };
 void JSONWriter::value(int64_t theValue){
-  if(itsWroteKey){
-    itsStream << ":";
-    itsWroteKey = false;
+  wasabiUtils::JsonWriterImpl& aImpl = *itsPimpl;
+  if(aImpl.itsWroteKey){
+    aImpl.itsStream << ":";
+    aImpl.itsWroteKey = false;
   }
-  if(itsOpenTags.size()>0){
+  if(aImpl.itsOpenTags.size()>0){
     if(
-       itsOpenTags.at(itsOpenTags.size()-1)
+       aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1)
        ){
-      itsStream<< ",";
+      aImpl.itsStream<< ",";
     } else{
-      itsOpenTags.at(itsOpenTags.size()-1) = true;
+      aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1) = true;
     }
   }
-  itsStream << theValue;
+  aImpl.itsStream << theValue;
 }
 void JSONWriter::value(int theValue){
-  if(itsWroteKey){
-    itsStream << ":";
-    itsWroteKey = false;
+  wasabiUtils::JsonWriterImpl& aImpl = *itsPimpl;
+  if(aImpl.itsWroteKey){
+    aImpl.itsStream << ":";
+    aImpl.itsWroteKey = false;
   }
-  if(itsOpenTags.size()>0){
+  if(aImpl.itsOpenTags.size()>0){
     if(
-       itsOpenTags.at(itsOpenTags.size()-1)
+       aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1)
        ){
-      itsStream<< ",";
+      aImpl.itsStream<< ",";
     } else{
-      itsOpenTags.at(itsOpenTags.size()-1) = true;
+      aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1) = true;
     }
   }
-  itsStream<<theValue;
+  aImpl.itsStream<<theValue;
 }
 void JSONWriter::value(unsigned theValue){
-  if(itsWroteKey){
-    itsStream << ":";
-    itsWroteKey = false;
+  wasabiUtils::JsonWriterImpl& aImpl = *itsPimpl;
+  if(aImpl.itsWroteKey){
+    aImpl.itsStream << ":";
+    aImpl.itsWroteKey = false;
   }
-  if(itsOpenTags.size()>0){
+  if(aImpl.itsOpenTags.size()>0){
     if(
-       itsOpenTags.at(itsOpenTags.size()-1)
+       aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1)
        ){
-      itsStream<< ",";
+      aImpl.itsStream<< ",";
     } else{
-      itsOpenTags.at(itsOpenTags.size()-1) = true;
+      aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1) = true;
     }
   }
-  itsStream << theValue;
+  aImpl.itsStream << theValue;
 }
 void JSONWriter::value(uint64_t theValue){
-  if(itsWroteKey){
-    itsStream << ":";
-    itsWroteKey = false;
+  wasabiUtils::JsonWriterImpl& aImpl = *itsPimpl;
+  if(aImpl.itsWroteKey){
+    aImpl.itsStream << ":";
+    aImpl.itsWroteKey = false;
   }
-  if(itsOpenTags.size()>0){
+  if(aImpl.itsOpenTags.size()>0){
     if(
-       itsOpenTags.at(itsOpenTags.size()-1)
+       aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1)
        ){
-      itsStream<< ",";
+      aImpl.itsStream<< ",";
     } else{
-      itsOpenTags.at(itsOpenTags.size()-1) = true;
+      aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1) = true;
     }
   }
-  itsStream<<theValue;
+  aImpl.itsStream<<theValue;
 }
