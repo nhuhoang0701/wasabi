@@ -14,7 +14,7 @@ namespace dbproxy
 		DBSQLite();
 		virtual ~DBSQLite();
 
-		virtual void  executeSQL(const std::string& SQL, std::function<void (Row const&)> calback) const;
+		virtual void  executeSQL(const std::string& SQL, const std::function<void (Row const&)>* calback) const;
 
 
 	private:

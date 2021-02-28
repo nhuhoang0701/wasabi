@@ -18,7 +18,7 @@ set(GRID_LIB ${WASABI_ROOT_DIR}/src/grid)
 add_library(query_generator query_generator.cpp)
 target_include_directories(query_generator PUBLIC ${QUERY_MODEL_LIB} ${GRID_LIB})
 target_link_libraries(query_generator PUBLIC exceptions InA_query_model)
-target_link_directories(query_generator PUBLIC ${WASABI_ROOT_DIR}/src/build/lib/ ${QUERY_MODEL_LIB_BUILD})
+target_link_directories(query_generator PUBLIC ${CMAKE_INSTALL_PREFIX}/lib/ ${QUERY_MODEL_LIB_BUILD})
 
 ################################################
 # test
@@ -31,6 +31,6 @@ target_link_directories(query_generator_test PUBLIC ${QUERY_MODEL_LIB_BUILD})
 add_test(NAME query_generator_test COMMAND query_generator_test)
 
 ## [installation]
-install(TARGETS query_generator DESTINATION ${WASABI_ROOT_DIR}/src/build/lib)
+install(TARGETS query_generator DESTINATION lib)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)

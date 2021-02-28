@@ -13,6 +13,6 @@ project(
 
 add_library(exceptions cxa_exception.cpp)
 
-install(TARGETS exceptions DESTINATION ${WASABI_ROOT_DIR}/src/build/lib)
+install(TARGETS exceptions DESTINATION lib)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
