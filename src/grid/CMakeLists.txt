@@ -5,15 +5,15 @@ if (NOT DEFINED WASABI_ROOT_DIR AND DEFINED ENV{WASABI_ROOT_DIR})
 endif()
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
-project(
-  grid
-  VERSION 1.0)
+project(grid VERSION 1.0)
 
 ################################################
 # grid
 add_library(grid grid.cpp)
+set_target_properties(grid PROPERTIES PUBLIC_HEADER grid.h)
+
 target_link_libraries(grid PUBLIC exceptions)
-target_link_directories(grid PUBLIC ${CMAKE_INSTALL_PREFIX}/lib/)
+target_link_directories(grid PUBLIC ${WASABI_LIBS})
 
 ################################################
 # test
@@ -23,5 +23,10 @@ target_include_directories(grid_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/i
 
 ## [main]
 add_test(NAME grid_test COMMAND grid_test)
+
+## [installation]
+install(TARGETS grid 
+		LIBRARY DESTINATION ${WASABI_LIBS}
+		PUBLIC_HEADER DESTINATION ${WASABI_INCLUDES})
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
