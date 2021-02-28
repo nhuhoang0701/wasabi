@@ -8,34 +8,34 @@ namespace wasabi{
   namespace metadata{
     using namespace std;
     void retrieveTables(
-      const dbproxy::DBProxy& theProxy,
-      vector<string>& theNames,
-      unordered_map<string,Table>& theTables
-      )
+                        const dbproxy::DBProxy& theProxy,
+                        vector<string>& theNames,
+                        unordered_map<string,Table>& theTables
+                        )
     {
       const auto& aTables = theProxy.getTables();
       transform(
-        aTables.begin(),aTables.end(),
-        back_inserter(theNames),
-        [](const auto& theTableDescr) -> const string& {
-          return theTableDescr.getName();
-        }
-        );
+                aTables.begin(),aTables.end(),
+                back_inserter(theNames),
+                [](const auto& theTableDescr) -> const string& {
+                  return theTableDescr.getName();
+                }
+                );
       for_each(
-        theNames.begin(), theNames.end(),
-        [&theProxy, &theNames, &theTables](const string& theName ) -> void {
-          const TableDescr& aTableDescr = theProxy.getTableDescr(theName);
-          const auto& aCols = aTableDescr.getColumnsDescr();
-          Table aTable(theName);
-          for_each(
-            aCols.begin(),aCols.end(),
-            [&aTable](const auto& theColumnDescr) -> void {
-              aTable.addColumn(theColumnDescr);
-            }
-            );
-          theTables.insert(make_pair(theName, aTable));
-        }
-        );
+               theNames.begin(), theNames.end(),
+               [&theProxy, &theNames, &theTables](const string& theName ) -> void {
+                 const TableDescr& aTableDescr = theProxy.getTableDescr(theName);
+                 const auto& aCols = aTableDescr.getColumnsDescr();
+                 Table aTable(theName);
+                 for_each(
+                          aCols.begin(),aCols.end(),
+                          [&aTable](const auto& theColumnDescr) -> void {
+                            aTable.addColumn(theColumnDescr);
+                          }
+                          );
+                 theTables.insert(make_pair(theName, aTable));
+               }
+               );
       sort(theNames.begin(), theNames.end());
     }
     Catalog::Catalog(const dbproxy::DBProxy& theProxy){
@@ -58,25 +58,25 @@ namespace wasabi{
         theWriter.key("tableNames");
         JSON_LIST(theWriter);
         for_each(
-          getTableNames().begin(), getTableNames().end(),
-          [ &theWriter](const string& theString) -> void {
-            theWriter.value(theString);
-          }
-          );
+                 getTableNames().begin(), getTableNames().end(),
+                 [ &theWriter](const string& theString) -> void {
+                   theWriter.value(theString);
+                 }
+                 );
       }
       {
         theWriter.key("tables");
         JSON_MAP(theWriter);
         for_each(
-          getTableNames().begin(), getTableNames().end(),
-          [ this, &theWriter](
-            const string& theName
-            ) -> void {
-            theWriter.key(theName);
-            const auto & aTable =getTable(theName);
-            aTable.write(theWriter);
-          }
-          );
+                 getTableNames().begin(), getTableNames().end(),
+                 [ this, &theWriter](
+                                     const string& theName
+                                     ) -> void {
+                   theWriter.key(theName);
+                   const auto & aTable =getTable(theName);
+                   aTable.write(theWriter);
+                 }
+                 );
       }
     }
     ostream& operator<<(ostream& theStream, const Catalog& theCatalog){
@@ -95,10 +95,10 @@ namespace wasabi{
       theWriter.key("Columns");
       JSON_LIST(theWriter);
       for_each(
-        getColumns().begin(), getColumns().end(),
-        [ &theWriter](const Column& theCol)->void{
-          theCol.write(theWriter);
-        });
+               getColumns().begin(), getColumns().end(),
+               [ &theWriter](const Column& theCol)->void{
+                 theCol.write(theWriter);
+               });
     }
     ostream& operator<<(ostream& theStream, const Table& theTable){
       JSONWriter aWriter(theStream);
@@ -117,30 +117,30 @@ namespace wasabi{
     }
     Column::DataType calcDataType( const string& theType){
       if( theType == "TEXT"
-		|| theType.find("CHAR") != std::string::npos)
-	  {
-        return Column::DataType::String;
-      }
-	  else if( theType.find("TIME") != std::string::npos
-			|| theType.find("DATE") != std::string::npos )
-	  {
-        return Column::DataType::DateTime;
-      }
-	  else if( theType == "REAL"
-			|| theType == "DOUBLE"
-			|| theType.find("INT") != std::string::npos
-			|| theType.find("NUMERIC") != std::string::npos )
-	  {
-        return Column::DataType::Numeric;
-      }
+          || theType.find("CHAR") != std::string::npos)
+        {
+          return Column::DataType::String;
+        }
+      else if( theType.find("TIME") != std::string::npos
+               || theType.find("DATE") != std::string::npos )
+        {
+          return Column::DataType::DateTime;
+        }
+      else if( theType == "REAL"
+               || theType == "DOUBLE"
+               || theType.find("INT") != std::string::npos
+               || theType.find("NUMERIC") != std::string::npos )
+        {
+          return Column::DataType::Numeric;
+        }
       throw out_of_range("datatype " + theType +" not found");
     }
     Column::Column(
-      const dbproxy::ColumnDescr& theDesc
-      ):itsDataType( calcDataType(theDesc.getDataType()) ),
-        itsAggregation( calcAggreation(itsDataType)),
-      itsName(theDesc.getName()),
-        itsSQLName(theDesc.getName())
+                   const dbproxy::ColumnDescr& theDesc
+                   ):itsDataType( calcDataType(theDesc.getDataType()) ),
+                     itsAggregation( calcAggreation(itsDataType)),
+                     itsName(theDesc.getName()),
+                     itsSQLName(theDesc.getName())
     {}
     void Column::write(JSONWriter& theWriter)const{
       JSON_MAP(theWriter);

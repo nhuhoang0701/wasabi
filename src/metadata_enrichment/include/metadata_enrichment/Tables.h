@@ -4,7 +4,6 @@
 #include <ostream>
 #include <vector>
 #include <unordered_map>
-
 namespace dbproxy
 {
   class DBProxy; class ColumnDescr;
@@ -13,7 +12,6 @@ class JSONWriter;
 namespace wasabi{
   namespace metadata{
     using namespace dbproxy;
-
     class Column{
       friend class Table;
     public:
@@ -42,10 +40,8 @@ namespace wasabi{
       Aggregation itsAggregation;
       std::string itsName;
       std::string itsSQLName;
-
     };
     std::ostream& operator<<(std::ostream& theStream, const Column& theColumn);
-
     class Table{
       friend class Catalog;
     public:
