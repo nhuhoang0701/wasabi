@@ -57,6 +57,7 @@ echo -e  "rebuild              to clean build test the current cmake folder";
 echo -e  "build                to build test the current cmake folder";
 echo -e  "test                 to build test the current cmake folder";
 
+alias setenv='unset WASABI_ROOT_DIR && source ./scripts/set_env.h'
 alias run_wasabi_server='cd $WASABI_ROOT_DIR/src/wasi_browser; $HTTP_SERVER;cd -'
 alias clean='$CMAKE --build ./build --target clean'
 alias test='(cd build && $CTEST -V)'
