@@ -51,3 +51,6 @@ _deps
 *.exe
 *.out
 *.app
+
+# Tests output
+*.out.txt
