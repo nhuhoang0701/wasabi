@@ -1,9 +1,10 @@
 #pragma once
 
+#include <grid/grid.h>
+
 #include <string>
 #include <vector>
 
-#include "grid.h"
 
 namespace query_model
 {

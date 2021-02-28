@@ -1,8 +1,8 @@
 #pragma once
 
-#include <string>
+#include <InA_query_model/InA_query_model.h>
 
-#include "InA_query_model.h"
+#include <string>
 
 namespace cube {class Cube;}
 

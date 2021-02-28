@@ -3,9 +3,10 @@
 #include <sstream>
 #include <iostream>
 
+#include <InA_query_model/InA_query_model.h>
+#include <query_generator/query_generator.h>
+
 #include "server_info_response.h"
-#include "InA_query_model.h"
-#include "query_generator.h"
 
 #define WASM_EXPORT extern "C"
 
