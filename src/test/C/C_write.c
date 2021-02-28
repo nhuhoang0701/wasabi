@@ -41,7 +41,7 @@ EXPORT char* str_OPENFILE_WRITE_READ_str(const char* file)
 int main()
 {
    TEST_INIT();
-   CPPUNIT_ASSERT_EQUAL_STR(str_OPENFILE_WRITE_READ_str("../resources/textout.txt"), "coucou");
+   CPPUNIT_ASSERT_EQUAL_STR(str_OPENFILE_WRITE_READ_str("../resources/text.out.txt"), "coucou");
 
    return TEST_HAVEERROR();
 }
