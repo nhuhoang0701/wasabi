@@ -2,7 +2,6 @@
 #include "metadata_enrichment/ServerInfo.h"
 #include "json/jsonReader.h"
 #include <iostream>
-
 using namespace wasabi::metadata;
 void testServerInfo(){
   const ServerInfo aSI("en");

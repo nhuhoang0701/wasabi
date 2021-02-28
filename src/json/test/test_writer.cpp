@@ -4,9 +4,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
-
 #include "test_data.h"
-
 void Test_writer()
 {
   {
@@ -29,8 +27,8 @@ void Test_writer()
     }
   }
   {
-     std::stringstream aStream;
-     JSONWriter aWriter(aStream);
+    std::stringstream aStream;
+    JSONWriter aWriter(aStream);
     {
       JSON_LIST(aWriter);
       aWriter.value("test1");
@@ -44,8 +42,8 @@ void Test_writer()
     }
   }
   {
-     std::stringstream aStream;
-     JSONWriter aWriter(aStream);
+    std::stringstream aStream;
+    JSONWriter aWriter(aStream);
     {
       JSON_LIST(aWriter);
       aWriter.value("test1");
