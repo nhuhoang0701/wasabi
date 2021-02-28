@@ -1,7 +1,9 @@
 #include "sqlite.h"
 
 #include "efashion/createtables.h"
-#include "efashion/insertdata.h"
+#include "efashion/table_Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma.h"
+#include "efashion/table_Article_Color_Lookup.h"
+#include "efashion/table_data_Agg_yr_qt_rn_st_ln_ca_sr.h"
 
 #include <sqlite3.h>
 
@@ -33,29 +35,11 @@ namespace dbproxy
 			// Create a DB on the fly with a SQL , waiting WASI read file
 			
 			// Create the tables
-			if (sqlite3_exec(m_sqlite_db, createFashionTablesSQL, 0, 0, &sqlite_err_msg) != SQLITE_OK )
-			{
-				const std::string err_msg(sqlite_err_msg);
-				sqlite3_free(sqlite_err_msg);
-				std::cerr << "Failed to create tables, SQL error: '" << err_msg << "'" << std::endl;
-				//throw std::runtime_error("sqlite3_exec: " + std::string(err_msg));
-			}
-			else
-			{
-				std::cout << "Tables created successfully" << std::endl;
-			}
+			executeSQL(createFashionTablesSQL, nullptr);
 			// insert data
-			if (sqlite3_exec(m_sqlite_db, eFashionInsertDataInto_table_Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma, 0, 0, &sqlite_err_msg) != SQLITE_OK )
-			{
-				const std::string err_msg(sqlite_err_msg);
-				sqlite3_free(sqlite_err_msg);
-				std::cerr << "Failed to insert data, SQL error: '" << err_msg << "'" << std::endl;
-				//throw std::runtime_error("sqlite3_exec: " + std::string(err_msg));
-			}
-			else
-			{
-				std::cout << "Table eFashionInsertDataInto_table_Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma data inserted successfully" << std::endl;
-			}
+			executeSQL(data_Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma, nullptr);
+			executeSQL(data_Agg_yr_qt_rn_st_ln_ca_sr, nullptr);
+			executeSQL(data_Article_Color_Lookup, nullptr);
 		}
 
 		//***********************************************************
