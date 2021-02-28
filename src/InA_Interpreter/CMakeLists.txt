@@ -14,7 +14,7 @@ project(InA_Interpreter VERSION 1.0 LANGUAGES CXX)
 # InA_Interpreter as library
 add_library(InA_Interpreter_lib InA_Interpreter.cpp)
 target_include_directories(InA_Interpreter_lib PUBLIC ${WASABI_INCLUDES}  ${PROJECT_SOURCE_DIR}/include)
-target_link_libraries(InA_Interpreter_lib PUBLIC cjson jsonUtils exceptions InA_query_model query_generator)
+target_link_libraries(InA_Interpreter_lib PUBLIC cjson json exceptions InA_query_model query_generator)
 target_link_directories(InA_Interpreter_lib PUBLIC ${WASABI_ROOT_DIR}/external/cJSON/build ${WASABI_LIBS})
 
 
@@ -27,7 +27,7 @@ set_property(TARGET InA_Interpreter PROPERTY ENABLE_EXPORTS 1)
 target_include_directories(InA_Interpreter PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
 target_link_directories(InA_Interpreter PUBLIC ${WASABI_ROOT_DIR}/external/cJSON/build ${WASABI_ROOT_DIR}/src/build/lib)
-target_link_libraries(InA_Interpreter PUBLIC InA_Interpreter_lib cjson jsonUtils exceptions)
+target_link_libraries(InA_Interpreter PUBLIC InA_Interpreter_lib cjson json exceptions)
 
 
 ################################################
