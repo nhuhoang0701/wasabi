@@ -3,7 +3,6 @@
 #include <string_view>
 #include <ostream>
 #include <vector>
-#include <unordered_map>
 #include <memory>
 namespace wasabi{
   namespace utils{
@@ -43,7 +42,6 @@ namespace wasabi{
     private:
       explicit Column(const dbproxy::ColumnDescr& theColumnDesc);
       std::unique_ptr<wasabi::utils::ColumnImpl> itsPimpl;
-
     };
     std::ostream& operator<<(std::ostream& theStream, const Column& theColumn);
     class Table{
@@ -60,7 +58,6 @@ namespace wasabi{
       void write(JSONWriter& theWriter)const;
     private:
       std::unique_ptr<utils::TableImpl> itsPimpl;
-
     };
     std::ostream& operator<<(std::ostream& theStream, const Table& theTable);
     class Catalog{
