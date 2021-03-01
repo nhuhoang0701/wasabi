@@ -9,9 +9,10 @@ sap.ui.define(
   "sap/wasabi/library", [
     "jquery.sap.global",
     "sap/base/Log",
+    "sap/wasabi/main",
     "sap/m/library"
   ],
-  function( jQuery, Log) {
+  function( jQuery, Log, Main) {
     "use strict";
     /**
      * Wasabi Library which implements a browser based InA server
