@@ -18,6 +18,7 @@ void testTables(){
       throw ios_base::failure("No database connection");
     }
   auto & aProxy = *aDbProxyPtr;
+
   const Catalog aCatalog(aProxy);
   {
     stringstream aStream;
