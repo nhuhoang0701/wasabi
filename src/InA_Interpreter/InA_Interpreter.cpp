@@ -91,7 +91,6 @@ void processAnalyticsRequest(const JSONGenericObject& analytics, JSONWriter& wri
 
 	std::shared_ptr<DBProxy> dbProxy;
 	std::shared_ptr<Catalog> catalog;
-	std::shared_ptr<Table> table;
 
 	// parse connectionString
 	if(analytics.haveValue("DataSource"))
@@ -115,9 +114,6 @@ void processAnalyticsRequest(const JSONGenericObject& analytics, JSONWriter& wri
 
 				if(dbProxy)
 					catalog = std::shared_ptr<Catalog>(new Catalog(*dbProxy));
-				
-				if(catalog)
-					table = std::make_shared<Table>(catalog->getTable(queryModel.getTable()));
 			}
 		}
 	}
@@ -134,19 +130,11 @@ void processAnalyticsRequest(const JSONGenericObject& analytics, JSONWriter& wri
 				// std::cout << "InA_Interpreter => requested dimension " << dim << std::endl;
 				query_model::Datatype datatype = "";
 				query_model::Aggregation aggregation = "";
-				if(table)
-				{
-					const auto& cols = table->getColumns();
-					for(auto& col : cols)
-					{
-						if(col.getName().compare(dim) == 0)
-						{
-							datatype = query_model::InA_query_model::getModelDatatype(col.getDataType());
-							aggregation = query_model::InA_query_model::getModelAggregation(col.getAggregation());
-							break;
-						}
-					}
-				}
+				
+				const Table& table = catalog->getTable(queryModel.getTable());
+				const auto& col = table.getColumn(dim);
+				datatype = query_model::InA_query_model::getModelDatatype(col.getDataType());
+				aggregation = query_model::InA_query_model::getModelAggregation(col.getAggregation());
 				if(aggregation.empty())
 				{
 					queryModel.addDim(dim, datatype);
