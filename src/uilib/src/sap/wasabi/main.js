@@ -6,7 +6,7 @@
 sap.ui.define(
   [
     "sap/base/Log",
-    "sap/wasabi/hyper/BridgedWorker"
+    "sap/wasabi/BridgedWorker"
   ],
   function(Log,BuildBridgedWorker){
     var DisplayResult = function (val, str) {
@@ -14,24 +14,23 @@ sap.ui.define(
       Log.error(val);
       Log.error(str);
     };
-    function workerCode(){
-      function CalculateSomething(a, b, c, d) {
-        var v = a + b + c + d; //trivial calculation
-        main.DisplayResult(v, "hello");
-      }
-      function CalculateSomethingBig(buff, d) {
-        var v = new window.Uint32Array(buff);
-        for (var i = 0; i <= v.length; i++) {
-          v[i] /= d;
-        }
-        main.DisplayResult("big","calculated");
-      }
-    }
     var Main = function(){
       var that = this;
       that.execute = function(){
         var oWorker = BuildBridgedWorker(
-          workerCode,
+          function (){
+            function CalculateSomething(a, b, c, d) {
+              var v = a + b + c + d; //trivial calculation
+              main.DisplayResult(v, "hello");
+            }
+            function CalculateSomethingBig(buff, d) {
+              var v = new Uint32Array(buff);
+              for (var i = 0; i <= v.length; i++) {
+                v[i] /= d;
+              }
+              main.DisplayResult("big","calculated");
+            }
+          },
           ["CalculateSomething", "CalculateSomethingBig*"], //note asterisk indicating ArrayBuffer transfer
           ["DisplayResult"], [DisplayResult]
         );
@@ -42,6 +41,7 @@ sap.ui.define(
         var v = new window.Uint32Array(100);
         oWorker.CalculateSomething(w, x, y, z);
         oWorker.CalculateSomethingBig(v.buffer, x, [v.buffer]);
+        return Promise.resolve(null);
       };
     };
     return Main;
