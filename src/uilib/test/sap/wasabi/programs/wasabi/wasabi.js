@@ -11,7 +11,7 @@ sap.ui.define(
     "sap/ui/codeeditor/CodeEditor",
     "sap/m/Button",
     "sap/m/Image",
-    "sap/wasabi/Main"
+    "sap/wasabi/main"
   ],
   function (
     Log, jQuery, TabContainer, TabContainerItem, CodeEditor, Button, Image, Main
