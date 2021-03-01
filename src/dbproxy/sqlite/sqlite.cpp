@@ -2,8 +2,15 @@
 
 #include "efashion/createtables.h"
 #include "efashion/table_Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma.h"
+#include "efashion/table_Agg_yr_qt_rn_st_ln_ca_sr.h"
 #include "efashion/table_Article_Color_Lookup.h"
-#include "efashion/table_data_Agg_yr_qt_rn_st_ln_ca_sr.h"
+#include "efashion/table_Article_lookup.h"
+#include "efashion/table_Article_Lookup_Criteria.h"
+#include "efashion/table_Calendar_year_lookup.h"
+#include "efashion/table_Outlet_Lookup.h"
+#include "efashion/table_product_promotion_facts.h"
+#include "efashion/table_promotion_lookup.h"
+#include "efashion/table_Shop_facts.h"
 
 #include <sqlite3.h>
 
@@ -40,6 +47,13 @@ namespace dbproxy
 			executeSQL(data_Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma, nullptr);
 			executeSQL(data_Agg_yr_qt_rn_st_ln_ca_sr, nullptr);
 			executeSQL(data_Article_Color_Lookup, nullptr);
+			executeSQL(data_Article_lookup, nullptr);
+			executeSQL(data_Article_Lookup_Criteria, nullptr);
+			executeSQL(data_Calendar_year_lookup, nullptr);
+			executeSQL(data_Outlet_Lookup, nullptr);
+			executeSQL(data_product_promotion_facts, nullptr);
+			executeSQL(data_promotion_lookup, nullptr);
+			executeSQL(data_Shop_facts, nullptr);
 		}
 
 		//***********************************************************
