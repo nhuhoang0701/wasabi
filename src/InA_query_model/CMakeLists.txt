@@ -21,7 +21,7 @@ target_link_directories(InA_query_model PUBLIC ${WASABI_LIBS})
 ################################################
 # test
 add_executable(InA_query_model_test InA_query_model_test.cpp)
-target_include_directories(InA_query_model_test PRIVATE ${WASABI_TEST_INCLUDES})
+target_include_directories(InA_query_model_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
 target_link_libraries(InA_query_model_test InA_query_model)
 target_link_directories(InA_query_model_test PUBLIC)
 
