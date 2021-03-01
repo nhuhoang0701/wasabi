@@ -6,7 +6,7 @@ metadata:
     SAPUI5
      * (c) Copyright 2009-${currentYear} SAP SE. All rights reserved.
 framework:
-  version: 1.88.0-SNAPSHOT
+  #version: 1.88.0-SNAPSHOT
   name: SAPUI5
   libraries:
     - name: sap.ui.core
