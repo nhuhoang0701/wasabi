@@ -6,14 +6,16 @@ endif()
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
 project(InA_query_model VERSION 1.0)
+
+set(METADATA_ENRICHMENT_LIB ${WASABI_ROOT_DIR}/src/metadata_enrichment/include)
   
 ################################################
 # InA_query_model
 add_library(InA_query_model InA_query_model.cpp)
 set_target_properties(InA_query_model PROPERTIES PUBLIC_HEADER InA_query_model.h)
 
-target_include_directories(InA_query_model PUBLIC ${WASABI_INCLUDES})
-target_link_libraries(InA_query_model PUBLIC exceptions)
+target_include_directories(InA_query_model PUBLIC ${WASABI_INCLUDES} ${METADATA_ENRICHMENT_LIB})
+target_link_libraries(InA_query_model PUBLIC exceptions json metadata_enrichment)
 target_link_directories(InA_query_model PUBLIC ${WASABI_LIBS})
 
 ################################################
@@ -28,7 +30,7 @@ add_test(NAME InA_query_model_test COMMAND InA_query_model_test)
 
 ## [installation]
 install(TARGETS InA_query_model 
-		LIBRARY DESTINATION ${WASABI_LIBS}
-		PUBLIC_HEADER DESTINATION ${WASABI_INCLUDES})
+        LIBRARY DESTINATION ${WASABI_LIBS}
+        PUBLIC_HEADER DESTINATION ${WASABI_INCLUDES})
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
