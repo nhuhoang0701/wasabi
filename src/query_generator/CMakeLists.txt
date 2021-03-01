@@ -20,7 +20,7 @@ target_link_directories(query_generator PUBLIC ${WASABI_LIBS})
 ################################################
 # test
 add_executable(query_generator_test query_generator_test.cpp)
-target_include_directories(query_generator_test PRIVATE ${WASABI_TEST_INCLUDES})
+target_include_directories(query_generator_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
 target_link_libraries(query_generator_test PUBLIC query_generator)
 target_link_directories(query_generator_test PUBLIC)
 
