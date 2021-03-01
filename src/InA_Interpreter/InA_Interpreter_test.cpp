@@ -54,7 +54,7 @@ void getResponse()
 
     std::cout << "------------------------" << std::endl << std::endl;
 
-    request = "{\"Batch\": [{\"Metadata\": {  }},{\"Analytics\": {\"Definition\":{\"Dimensions\":[{\"Name\":\"Dim_A\"},{\"Name\":\"Dim_B\"}]}}},{\"Analytics\": {\"Definition\":{\"Dimensions\":[{\"Name\":\"Dim_C\"},{\"Name\":\"Dim_D\"}]}}}]}";
+    request = "{\"Batch\": [{\"Metadata\": {  }},{\"Analytics\": {}},{\"Analytics\": {}}]}";
 
     std::cout << "InA_Interpreter_test => request: json_getResponse_json " << request << std::endl;
 
@@ -65,10 +65,11 @@ void getResponse()
 
     std::cout << "------------------------" << std::endl << std::endl;
 
-    request = "{\"Analytics\":{\"Definition\":{\"Description\":\"Order count by company and year\","
-            "\"Dimensions\":[{\"Name\":\"CompanyName\",\"Axis\":\"Rows\"},{\"Name\":\"Year\",\"Axis\":\"Rows\"}],"
+    request = "{\"Analytics\":{\"DataSource\":{\"CustomProperties\":{\"cnxString\":\"local:sqlite:efashion.db\"},"
+            "\"ObjectName\":\"Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma\",\"PackageName\":\"/\",\"Type\":\"sqlite\"},\"Definition\":{\"Description\":\"Order count\","
+            "\"Dimensions\":[{\"Name\":\"Yr\",\"Axis\":\"Rows\"},{\"Name\":\"Qtr\",\"Axis\":\"Rows\"},{\"Name\":\"agg1_id\",\"Axis\":\"Rows\"}],"
             "\"DataSource\":{\"PackageName\":\"liquid-sqe\",\"ObjectName\":\"LIQUID_SALES_AV1\"},\"Name\":\"Query35\","
-            "\"ReadMode\":\"BookedAndSpaceAndState\"}},\"Description\":\"Order count by company and year\",\"Name\":\"QMDS0035\","
+            "\"ReadMode\":\"BookedAndSpaceAndState\"}},\"Description\":\"Order count\",\"Name\":\"QMDS0035\","
             "\"TestNumber\":66}";
 
     std::cout << "InA_Interpreter_test => request: json_getResponse_json " << request << std::endl;
