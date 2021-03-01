@@ -21,15 +21,15 @@ target_link_directories(query_generator PUBLIC ${WASABI_LIBS})
 # test
 add_executable(query_generator_test query_generator_test.cpp)
 target_include_directories(query_generator_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
-target_link_libraries(query_generator_test PUBLIC query_generator InA_query_model)
-target_link_directories(query_generator_test PUBLIC ${WASABI_LIBS})
+target_link_libraries(query_generator_test PUBLIC query_generator)
+target_link_directories(query_generator_test PUBLIC)
 
 ## [main]
 add_test(NAME query_generator_test COMMAND query_generator_test)
 
 ## [installation]
-install(TARGETS query_generator 
-		LIBRARY DESTINATION ${WASABI_LIBS}
-		PUBLIC_HEADER DESTINATION ${WASABI_INCLUDES})
+install(TARGETS query_generator
+        LIBRARY DESTINATION ${WASABI_LIBS}
+        PUBLIC_HEADER DESTINATION ${WASABI_INCLUDES})
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
