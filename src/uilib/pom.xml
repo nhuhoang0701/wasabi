@@ -120,7 +120,7 @@
                       transcompiled files
                   -->
                   <filters>
-                    <filter>!**/ff*.js</filter>
+                    <filter>!**/*.js</filter>
                   </filters>
                 </resource>
               </resources>
