@@ -9,10 +9,13 @@
         "build": "ui5 build --exclude-task=generateLibraryPreload",
         "build-all": "ui5 build --all",
         "build-themes": "ui5 build --exclude-task=* --include-task=buildThemes",
-        "start": "ui5 serve --open test-resources/sap/wasabi/ui/Example.html"
+        "start": "ui5 serve --open test-resources/sap/wasabi/Example.html"
     },
     "keywords": [
         "sapui5",
         "ui5"
-    ]
+    ],
+    "devDependencies": {
+        "eslint": "^7.21.0"
+    }
 }
