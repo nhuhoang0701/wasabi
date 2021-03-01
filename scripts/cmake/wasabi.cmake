@@ -92,6 +92,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 ###########################################
 # wasabi var
 set(WASABI_INCLUDES ${CMAKE_INSTALL_PREFIX}/include)
+set(WASABI_TEST_INCLUDES ${WASABI_ROOT_DIR}/src/test_tools/include)
 set(WASABI_LIBS ${CMAKE_INSTALL_PREFIX}/lib)
 
 include_directories(${WASABI_ROOT_DIR}/src)
