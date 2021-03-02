@@ -5,15 +5,24 @@ if (NOT DEFINED WASABI_ROOT_DIR AND DEFINED ENV{WASABI_ROOT_DIR})
 endif()
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
-# This is your project statement. You should always list languages;
-# Listing the version is nice here since it sets lots of useful variables
-project(
-  MetaDataEnrichment
-  VERSION 1.0
-  LANGUAGES CXX)
+project(metadata_enrichment VERSION 1.0 LANGUAGES CXX)
 
+################################################
+# metadata_enrichment
+add_library(metadata_enrichment Tables.cpp)
+target_link_libraries(metadata_enrichment PUBLIC json cjson sqlite dbproxy exceptions)
+target_link_directories(metadata_enrichment PUBLIC ${WASABI_ROOT_DIR}/external/cJSON/build  ${WASABI_LIBS})
 
-add_subdirectory(src)
-add_subdirectory(test)
+################################################
+# test
+add_executable(metadata_enrichment_test metadata_enrichment_test.cpp Tables_test.cpp)
+target_include_directories(metadata_enrichment_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
+target_link_libraries(metadata_enrichment_test PRIVATE metadata_enrichment)
+
+# run with ctest -V
+add_test(NAME metadata_enrichment_test COMMAND metadata_enrichment_test)
+
+## [installation]
+install(TARGETS metadata_enrichment DESTINATION lib)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)

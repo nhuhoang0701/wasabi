@@ -27,10 +27,18 @@
             tooltip="{i18n>getResponse}"
             press="getResponse"
             />
+        <m:ToolbarSpacer/>
+        <m:Button
+            icon="sap-icon://text-formatting"
+            tooltip="{i18n>prettyPrint}"
+            press="prettyPrint"
+            />
+
       </m:OverflowToolbar>
     </m:headerToolbar>
     <m:content>
       <ce:CodeEditor
+          id="editorRequest"
           type="json"
           value="{/requestBody}"
           height="500px" />
@@ -45,6 +53,7 @@
       class="sapUiResponsiveMargin">
     <m:content>
       <ce:CodeEditor
+          id="editorResponse"
           type="json"
           value="{/responseBody}"
           height="500px" />
