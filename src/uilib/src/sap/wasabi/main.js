@@ -54,7 +54,7 @@ sap.ui.define(
           };
         }());
         oWorker.getServerInfo(nId);
-        return oPromHash[nId];
+        return oPromHash[nId].prom;
       };
       that.executeGetResponse = function(sBody){
         var nId = n;
@@ -73,7 +73,7 @@ sap.ui.define(
           };
         }());
         oWorker.getResponse(nId,sBody);
-        return oPromHash[nId];
+        return oPromHash[nId].prom;
       };
     };
     return Main;
