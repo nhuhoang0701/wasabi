@@ -11,11 +11,12 @@ sap.ui.define(
     "sap/ui/codeeditor/CodeEditor",
     "sap/m/Button",
     "sap/m/Image",
-    "sap/wasabi/Main"
+    "sap/wasabi/main"
   ],
   function (
     Log, jQuery, TabContainer, TabContainerItem, CodeEditor, Button, Image, Main
   ) {
+    var oMain = new Main();
     var getCount = (
       function () {
         var n = 0;
@@ -74,9 +75,18 @@ sap.ui.define(
                 null
               ).then(
                 function(){
-                  var oMain = new Main();
-                  return oMain.execute();
+                  return oMain.executeServerInfo();
                 }
+              ).then(
+                function(s){
+                  Log.error(s);
+                  return oMain.executeGetResponse(
+                    "RequestBody"
+                  );
+                }
+              ).then(function(s){
+                Log.error(s);
+              }
               ).then(
                 function () {
                   oVBox.setBusy(false);
