@@ -28,7 +28,7 @@ int main()
 	CPPUNIT_ASSERT_EQUAL("Sum", std::get<2>(queryModel.getObjects()[2]));
 
 	const std::string serialized = serialize(queryModel);
-	std::cout << "Serialized QueryModel : " << serialized << std::endl;
+	//std::cout << "Serialized QueryModel : " << serialized << std::endl;
 	query_model::InA_query_model deserialized = deserialize(serialized);
 
 	CPPUNIT_ASSERT_EQUAL("MyTable", deserialized.getTable());

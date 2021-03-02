@@ -1,3 +1,4 @@
+#include "test_tools/TestAssert.h"
 
 //TODO: Centralyze
 #define EXPORT 
@@ -136,100 +137,28 @@ EXPORT ptr_on_i_FCT_i pv_getFctPtr_str(const char* fctName)
 #include <string.h> // For strcmp
 
 
-int TestNumericalOperator()
+void TestNumericalOperator()
 {
-	printf("Call i_MULT_i \n");
-	int res = i_MULT_i(2);
-	printf("val : %d \n\n",res);
-	if (res != 4)
-	{
-		return -1;
-	}
-	
-	printf("Call i_DIV_i \n");
-	res = i_DIV_i(2);
-	printf("val : %d \n\n",res);
-	if (res != 1)
-	{
-		return -1;
-	}
-	
-	printf("Call i_ADD_i \n");
-	res = i_ADD_i (2);
-	printf("val : %d \n\n",res);
-	if (res != 4)
-	{
-		return -1;
-	}
-	
-	
-	printf("Call i_SUB_i \n");
-	res = i_SUB_i (2);
-	printf("val : %d \n\n",res);
-	if (res != 4)
-	{
-		return -1;
-	}
-	
-	
-	printf("Call i_DIV_i_i \n");
-	res = i_DIV_i_i(4,4);
-	printf("val : %d \n\n",res);
-	if (res != 1)
-	{
-		return -1;
-	}
-	
-	
-	printf("Call d_DIV_d_d \n");
-	res = d_DIV_d_d(4,4);
-	printf("val : %d \n\n",res);
-	if (res != 1)
-	{
-		return -1;
-	}
-	
-	return 0;
+	CPPUNIT_ASSERT_EQUAL(i_MULT_i(2), 4)
+	CPPUNIT_ASSERT_EQUAL(i_DIV_i(2), 1);
+	CPPUNIT_ASSERT_EQUAL(i_ADD_i (2),  4);
+	CPPUNIT_ASSERT_EQUAL(i_SUB_i (2), 4);
+	CPPUNIT_ASSERT_EQUAL(i_DIV_i_i(4,4), 1);
+	CPPUNIT_ASSERT_EQUAL(d_DIV_d_d(4,4), 1);
 }
 
-int TestChar_C()
+void TestChar_C()
 {
-	printf("Call str_STATICSTR_c \n");
-	const char* pRes = str_STATICSTR_c('c');
-	printf("val : %s \n\n",pRes);
-	if (strcmp( pRes, "cHIS IS A STATIC CHAR*"))
-		return -1;
-
-	printf("Call str_LOCALSTR_c \n");
-	pRes = str_LOCALSTR_c('c');
-	printf("val : %s \n\n",pRes);
-	if (strcmp( pRes, "cHIS IS A LOCAL CHAR*"))
-		return -1;
-
-	printf("Call c_ITOCHAR_i \n");
-	char c_Res = c_ITOCHAR_i(8);
-	printf("val : %c \n\n",c_Res);
-	if (c_Res != '8')
-		return -1;
-
-	printf("Call str_TOLOWER_str \n");
+	CPPUNIT_ASSERT_EQUAL_STR(str_STATICSTR_c('c'), "cHIS IS A STATIC CHAR*");
+	CPPUNIT_ASSERT_EQUAL_STR(str_LOCALSTR_c('c'), "cHIS IS A LOCAL CHAR*");
+	CPPUNIT_ASSERT_EQUAL(c_ITOCHAR_i(8), '8');
 	char* pC = "STRING TO LOWER";
-	pRes = str_TOLOWER_str(pC);
-	printf("val : %s \n\n",pRes);
-	if (strcmp( pRes, "string to lower"))
-		return -1;
-
-	printf("Call str_TOLOWER_pv \n");
+	CPPUNIT_ASSERT_EQUAL_STR(str_TOLOWER_str(pC), "string to lower");
 	void* pV = (void*)pC;
-	pRes = str_TOLOWER_pv(pV);
-	printf("val : %s \n\n",pRes);
-	if (strcmp( pRes, "string to lower"))
-		return -1;
-
-	return 0;
+	CPPUNIT_ASSERT_EQUAL_STR(str_TOLOWER_pv(pV), "string to lower");
 }
 
-int Test_CFunctionPointer()
+void Test_CFunctionPointer()
 {
 	/*
 	i_CALLFCT_pv_i
@@ -239,7 +168,7 @@ int Test_CFunctionPointer()
 	*/
 
 
-	printf("Call i_CALLFCT_pv_i \n");
+	//printf("Call i_CALLFCT_pv_i \n");
 	//ptr_on_i_FCT_i pFct;
 	//int res = i_CALLFCT_pv_i(pFct, 3);
 
@@ -247,16 +176,15 @@ int Test_CFunctionPointer()
 	//if (res == -1)
 	//if (strcmp( pRes, "string to lower"))
 	//	return -1;
-
-
-	return 0;
 }
 
 int main()
 {
-	int res = TestNumericalOperator();
-	res += TestChar_C();
-	res += Test_CFunctionPointer();
+	TEST_INIT();
+
+	TestNumericalOperator();
+	TestChar_C();
+	Test_CFunctionPointer();
 	
-	return res;
+	return TEST_HAVEERROR();
 }
