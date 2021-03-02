@@ -21,7 +21,7 @@ int main()
 
 	//std::cout << "Generated SQL: " << sql << std::endl;
 
-	CPPUNIT_ASSERT_EQUAL("SELECT col_A, col_B, SUM(col_C) FROM MyTable;", sql);
+	CPPUNIT_ASSERT_EQUAL("SELECT col_A, col_B, SUM(col_C) FROM MyTable GROUP BY col_A, col_B;", sql);
 	
 	return TEST_HAVEERROR();
 }
