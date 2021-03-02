@@ -42,7 +42,6 @@ void getResponse()
     std::cout << "--------------------- getResponse ---------------------" << std::endl;
 
     const char* response;
-
     std::string request = "{\"Metadata\":{\"Expand\":[\"Cubes\"]}}";
 
     std::cout << "InA_Interpreter_test => request: json_getResponse_json " << request << std::endl;
@@ -50,6 +49,16 @@ void getResponse()
     response = json_getResponse_json(request.c_str());
 
     std::cout << "InA_Interpreter_test => response: " << response << std::endl;
+
+
+    std::cout << "------------------------" << std::endl << std::endl;
+	request = R"({"Analytics":{"Definition":{"DynamicFilter":{"Selection":{"Operator":{"Code":"And","SubSelections":[{"SetOperand":{"Elements":[{"Comparison":"=","Low":"OBJ_147"},{"Comparison":"=","Low":"OBJ_191"}],"FieldName":"[Measures].[Measures]"}}]}}}}}})";
+
+	std::cout << "InA_Interpreter_test => request: json_getResponse_json " << request << std::endl;
+
+	response = json_getResponse_json(request.c_str());
+
+	std::cout << "InA_Interpreter_test => response: " << response << std::endl;
 
 
     std::cout << "------------------------" << std::endl << std::endl;

@@ -93,20 +93,17 @@ void processAnalyticsRequest(const JSONGenericObject& analytics, JSONWriter& wri
 	std::shared_ptr<Catalog> catalog;
 
 	// parse connectionString
-	if(analytics.haveValue("DataSource"))
+	if(const auto& datasource = analytics.getObject("DataSource"))
 	{
-		const auto& datasource = analytics.getObject("DataSource");
 		if(datasource.haveValue("ObjectName"))
 		{
 			queryModel.setTable(datasource.getString("ObjectName"));
 		}
-		if(datasource.haveValue("CustomProperties"))
+		if(const auto& props = datasource.getObject("CustomProperties"))
 		{
-			const auto& props = datasource.getObject("CustomProperties");
 			if(props.haveValue("cnxString"))
 			{
-				const std::string& cnxString = props.getString("cnxString");
-				dbProxy = DBProxy::getDBProxy(cnxString);
+				dbProxy = DBProxy::getDBProxy(props.getString("cnxString"));
 				if(!dbProxy.get())
 				{
 					throw std::ios_base::failure("No database connection");
@@ -118,12 +115,10 @@ void processAnalyticsRequest(const JSONGenericObject& analytics, JSONWriter& wri
 		}
 	}
 	// parse dimensions/measures
-	if(analytics.haveValue("Definition"))
+	if(const auto& definition = analytics.getObject("Definition"))
 	{
-		const auto& definition = analytics.getObject("Definition");
-		if(definition.haveValue("Dimensions"))
+		if(const auto& dims = definition.getArray("Dimensions"))
 		{
-			const auto& dims = definition.getArray("Dimensions");
 			for(int i = 0;i < dims.size();i++)
 			{
 				const std::string& dim = dims[i].getString("Name");
@@ -144,6 +139,10 @@ void processAnalyticsRequest(const JSONGenericObject& analytics, JSONWriter& wri
 					queryModel.addMeas(dim, datatype, aggregation);
 				}
 			}
+		}
+		if(const auto& operatorDynFilt = definition.getObject("DynamicFilter").getObject("Selection").getObject("Operator"))
+		{
+			std::cout << "InA_Interpreter => DynamicFilter :" << operatorDynFilt << std::endl;
 		}
 	}
 
