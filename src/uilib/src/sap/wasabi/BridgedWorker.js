@@ -19,6 +19,13 @@ sap.ui.define(
       var extraWorkerStr = [];
       // build a string for the worker end of the worker-calls-funciton-in-main-thread operation
       extraWorkerStr.push("var main = {};\n");
+      extraWorkerStr.push([
+        "main.PATH = \"",
+        window.location.protocol,
+        "//",
+        window.location.host,
+        sap.ui.require.toUrl("sap/wasabi"),"\";\n"
+      ].join(""));
       for(var i=0;i<mainExportNames.length;i++){
         var name = mainExportNames[i];
         if(name.charAt(name.length-1) == "*"){

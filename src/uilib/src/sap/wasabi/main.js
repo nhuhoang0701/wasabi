@@ -470,7 +470,7 @@ sap.ui.define(
           function ensureWasabi(){
             if(!oWasabi){
             oWasabi = fetch(
-              "http://localhost:8080/resources/sap/wasabi/InA_Interpreter.wasm"
+              main.PATH + "/InA_Interpreter.wasm"
             ).then(
               function(oRes){
                 var importObject = {
