@@ -1,0 +1,105 @@
+{
+    "sap.fiori": {
+        "archeType": "transactional",
+        "registrationIds": [
+            "F9999Z"
+        ],
+        "_version": "1.1.0"
+    },
+    "sap.app": {
+        "applicationVersion": {
+            "version": "${project.version}"
+        },
+        "ach": "BI-RA-AD-EA",
+        "description": "{{appDescription}}",
+        "dataSources": {
+            "main": {
+                "uri": "model/main.json",
+                "type": "JSON"
+            }
+        },
+        "resources": "resources.json",
+        "id": "sap.wasabi.rsbitt",
+        "crossNavigation": {
+            "inbounds": {}
+        },
+        "type": "application",
+        "title": "{{appTitle}}",
+        "_version": "1.3.0",
+        "i18n": "i18n/i18n.properties",
+        "tags": {
+            "keywords": []
+        }
+    },
+    "sap.ui5": {
+        "models": {
+            "i18n": {
+                "settings": {
+                    "bundleName": "sap.wasabi.rsbitt.i18n.i18n"
+                },
+                "type": "sap.ui.model.resource.ResourceModel"
+            },
+            "": {
+                "preload": true,
+                "type": "sap.ui.model.json.JSONModel",
+                "dataSource": "main"
+            }
+        },
+        "rootView": {
+            "async": true,
+            "viewName": "sap.wasabi.rsbitt.views.App",
+            "id": "rsbitt",
+            "type": "XML"
+        },
+        "resources": {
+            "css": []
+        },
+        "services": {
+            "ShellUIService": {
+                "factoryName": "sap.ushell.ui5service.ShellUIService"
+            }
+        },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        },
+        "_version": "1.2.0",
+        "config": {
+            "fullWidth": true
+        },
+        "dependencies": {
+            "components": {},
+            "minUI5Version": "1.54.3",
+            "libs": {
+              "sap.wasabi": {
+                "lazy": false
+              },
+              "sap.firefly.fiori": {
+                "lazy": false
+              },
+              "sap.m": {
+                "lazy": false
+              }
+            }
+        }
+    },
+    "sap.ui": {
+        "deviceTypes": {
+            "tablet": true,
+            "desktop": true,
+            "phone": true
+        },
+        "supportedThemes": [],
+        "technology": "UI5",
+        "icons": {
+            "phone@2": "",
+            "tablet": "",
+            "phone": "",
+            "favIcon": "",
+            "icon": "",
+            "tablet@2": ""
+        },
+        "_version": "1.3.0"
+    },
+    "_version": "1.8.0"
+}
