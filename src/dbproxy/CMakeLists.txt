@@ -5,9 +5,7 @@ if (NOT DEFINED WASABI_ROOT_DIR AND DEFINED ENV{WASABI_ROOT_DIR})
 endif()
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
-project(
-  dbproxy
-  VERSION 1.0)
+project(dbproxy VERSION 1.0)
   
 ################################################
 # SQLITE
@@ -19,8 +17,10 @@ target_include_directories(sqlite PUBLIC ${SQLITE_DIR})
 ################################################
 # dbproxy
 add_library(dbproxy dbproxy.cpp sqlite/sqlite.cpp)
+set_target_properties(dbproxy PROPERTIES PUBLIC_HEADER dbproxy.h)
+
 target_link_libraries(dbproxy PUBLIC sqlite exceptions)
-target_link_directories(dbproxy PUBLIC ${CMAKE_INSTALL_PREFIX}/lib/)
+target_link_directories(dbproxy PUBLIC ${WASABI_LIBS})
 
 ################################################
 # test
@@ -37,7 +37,8 @@ add_test(NAME dbproxy_test COMMAND dbproxy_test --dir=../sqlite/ WORKING_DIRECTO
 add_test(NAME dbproxy_metadat_test COMMAND dbproxy_metadat_test --dir=../sqlite/ WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/sqlite)
 
 ## [installation]
-install(TARGETS dbproxy DESTINATION lib)
-install(TARGETS sqlite DESTINATION lib)
+install(TARGETS dbproxy sqlite
+		LIBRARY DESTINATION ${WASABI_LIBS}
+		PUBLIC_HEADER DESTINATION ${WASABI_INCLUDES})
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)

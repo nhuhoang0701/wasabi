@@ -11,4 +11,6 @@ WASM_EXPORT
 const char* json_getResponse_json(const char* InA);
 
 void processRequest(const JSONGenericObject& object, JSONWriter& writer);
+
+void processAnalyticsRequest(const JSONGenericObject& object, JSONWriter& writer);
 	
