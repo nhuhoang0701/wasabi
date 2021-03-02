@@ -187,20 +187,26 @@ inline void JSONGenericObject::checkObjectT(const JSONGenericObject& obj, const 
 {
 	if (obj.m_jsonDocument->getJsonArray())
 		JSONThrow<std::logic_error>(obj, "key", key, "not available for an array", fct);
+	/*
+	// Commented to allow obj.getObject("key1").getObject("key2") when key1 don't exist
 	if (!obj.m_jsonDocument->getJsonObject())
 		JSONThrow<std::logic_error>(obj, "key", key, "current object is NULL", fct);
 	if (checkKey && !cJSON_GetObjectItemCaseSensitive(obj.m_jsonDocument->getJsonObject(), key.c_str()))
 		JSONThrow<std::invalid_argument>(obj, "key", key, "key not present", fct);
+	*/
 }
 
 inline void JSONGenericObject::checkArrayT(const JSONGenericObject& obj, size_t index, const char*const fct)
 {
 	if (obj.m_jsonDocument->getJsonObject())
 		JSONThrow<std::logic_error>(obj, "index", index, "not available for an object", fct);
+	/*
+	// Commented to allow obj.getObject("key1").getArray("key2") when key1 don't exist
 	if (!obj.m_jsonDocument->getJsonArray())
 		JSONThrow<std::logic_error>(obj, "index", index, "current array is NULL", fct);
 	if (index >= cJSON_GetArraySize(obj.m_jsonDocument->getJsonArray()))
 		JSONThrow<std::invalid_argument>(obj, "index", index, "out of bound", fct);
+	*/
 }
 
 JSONGenericObject::JSONGenericObject(const JSONGenericObject & other)
@@ -240,7 +246,8 @@ JSONGenericObject::operator bool() const
 }
 
 const JSONGenericObject JSONGenericObject::getObject(const std::string & key) const
-{	checkObject(*this, key);
+{
+	//checkObject(*this, key);
 
 	JsonObject* jsonObject = cJSON_GetObjectItemCaseSensitive(m_jsonDocument->Object(), key.c_str());
 	if(!jsonObject)
@@ -340,7 +347,7 @@ bool JSONGenericObject::getBool(const std::string & key) const
 
 const JSONGenericObject JSONGenericObject::getArray(const std::string & key) const
 {
-	checkObject(*this, key);
+	//checkObject(*this, key);
 	JsonObject* jsonObject = cJSON_GetObjectItemCaseSensitive(m_jsonDocument->Object(), key.c_str());
 	if (! cJSON_IsArray(jsonObject))
 		return JSONGenericObject();

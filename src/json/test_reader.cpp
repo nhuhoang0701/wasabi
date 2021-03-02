@@ -30,6 +30,8 @@ static void Test_reader()
 
 	CPPUNIT_ASSERT(!root.getObject("toto"));
 	CPPUNIT_ASSERT(!root.getArray("toto"));
+	
+	CPPUNIT_ASSERT(!root.getObject("dontexist").getArray("array"));
 
 	JSONGenericObject arrayObj = root.getObject("key").getArray("array");
 	CPPUNIT_ASSERT(arrayObj);
