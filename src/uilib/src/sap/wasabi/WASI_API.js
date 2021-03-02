@@ -84,16 +84,16 @@ sap.ui.define(
     }
     var WASI_API = {
       // WASI constants
-      WASI_ESUCCESS: WASI_API.WASI_ESUCCESS = 0,
-      WASI_EBADF : WASI_API.WASI_EBADF = 8,
-      WASI_EINVAL : WASI_API.WASI_EINVAL = 28,
-      WASI_ENOSYS : WASI_API.WASI_ENOSYS = 52,
-      WASI_STDOUT_FILENO : WASI_API.WASI_STDOUT_FILENO = 1,
-      WASI_STDERR_FILENO : WASI_API.WASI_STDERR_FILENO = 2,
-      WASI_SEEK_START : WASI_API.WASI_SEEK_START = 0,
-      WASI_SEEK_CUR : WASI_API.WASI_SEEK_CUR = 1,
-      WASI_SEEK_END : WASI_API.WASI_SEEK_END = 2,
-      WASI_PREOPENTYPE_DIR : WASI_API.WASI_PREOPENTYPE_DIR = 0,
+      WASI_ESUCCESS:  0,
+      WASI_EBADF :  8,
+      WASI_EINVAL :  28,
+      WASI_ENOSYS : 52,
+      WASI_STDOUT_FILENO :  1,
+      WASI_STDERR_FILENO : 2,
+      WASI_SEEK_START : 0,
+      WASI_SEEK_CUR : 1,
+      WASI_SEEK_END : 2,
+      WASI_PREOPENTYPE_DIR : 0,
       // WASI API
       //*************************************************************
       // wasabi specific
@@ -154,9 +154,9 @@ sap.ui.define(
           return WASI_API.WASI_EINVAL;
         }
         /*
-        var text = new window.TextDecoder();
-        var data = new Uint8Array(moduleInstanceExports.memory.buffer, path_ptr, path_len);
-        var size = fds.length;
+          var text = new window.TextDecoder();
+          var data = new Uint8Array(moduleInstanceExports.memory.buffer, path_ptr, path_len);
+          var size = fds.length;
         */
         var offset = window.BigInt(0);
         var opened_fd = fds.push([vpath, offset]) - 1;
