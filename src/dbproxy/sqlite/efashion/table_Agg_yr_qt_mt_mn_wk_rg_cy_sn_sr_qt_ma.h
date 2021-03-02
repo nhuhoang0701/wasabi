@@ -1,6 +1,6 @@
 #pragma once
 
-const char* eFashionInsertDataInto_table_Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma = 
+const char* data_Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma = 
 "INSERT INTO Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma VALUES(\"1\",\"2014\",\"3\",\"7\",\"July\",\"29\",\"Austin\",\"e-Fashion Austin\",\"20094\",\"120\",\"6937.6\");\n"
 "INSERT INTO Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma VALUES(\"2\",\"2014\",\"3\",\"7\",\"July\",\"29\",\"Chicago\",\"e-Fashion Chicago 33rd\",\"38985\",\"228\",\"15175.4\");\n"
 "INSERT INTO Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma VALUES(\"3\",\"2014\",\"3\",\"7\",\"July\",\"29\",\"Colorado Springs\",\"e-Fashion Colorado Springs\",\"16254\",\"98\",\"5799.3\");\n"

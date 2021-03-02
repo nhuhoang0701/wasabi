@@ -72,11 +72,12 @@
             <configuration>
               <target>
                 <mkdir dir="${project.build.directory}/build"/>
+                <mkdir dir="${project.build.directory}/install"/>
                 <exec
                     executable="cmake"
                     dir="${project.build.directory}"
                     failonerror="true">
-                  <arg line="-B ./build ../../.."/>
+                  <arg line="-B ./build ../../.. -DCMAKE_INSTALL_PREFIX:PATH=./install"/>
                 </exec>
                 <exec executable="cmake"
                       dir="${project.build.directory}"
@@ -120,7 +121,7 @@
                       transcompiled files
                   -->
                   <filters>
-                    <filter>!**/ff*.js</filter>
+                    <filter>!**/*.js</filter>
                   </filters>
                 </resource>
               </resources>

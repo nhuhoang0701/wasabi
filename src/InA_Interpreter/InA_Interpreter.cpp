@@ -1,12 +1,17 @@
 #include "InA_Interpreter.h"
 
-#include <sstream>
-#include <iostream>
-
 #include <InA_query_model/InA_query_model.h>
 #include <query_generator/query_generator.h>
+#include <dbproxy/dbproxy.h>
+#include <Tables.h>
+#include <cube/cube.h>
 
 #include "server_info_response.h"
+
+#include <sstream>
+#include <iostream>
+#include <ios>
+#include <iomanip>
 
 #define WASM_EXPORT extern "C"
 
@@ -45,9 +50,6 @@ void processRequest(const JSONGenericObject& topElement, JSONWriter& writer)
 {
 		// std::cout << "InA_Interpreter => processRequest" << std::endl;
 
-		query_model::InA_query_model queryModel;
-		queryModel.setTable("Table1");
-
 		if(topElement.haveValue("Batch"))
 		{
 			// std::cout << "InA_Interpreter => Process 'Batch' InA request" << std::endl;
@@ -70,24 +72,7 @@ void processRequest(const JSONGenericObject& topElement, JSONWriter& writer)
 			writer.value("Process 'Analytics' InA request");
 
 			auto& analytics = topElement.getObject("Analytics");
-			if(analytics.haveValue("Definition"))
-			{
-				auto& definition = analytics.getObject("Definition");
-				if(definition.haveValue("Dimensions"))
-				{
-					auto& dims = definition.getArray("Dimensions");
-					for(int i = 0;i < dims.size();i++)
-					{
-						const std::string& dim = dims[i].getString("Name");
-						// std::cout << "InA_Interpreter => requested dimension " << dim << std::endl;
-						queryModel.addDim(dim, "String");
-					}
-				}
-			}
-			const query_generator::query_generator& queryGen = query_generator::query_generator(queryModel);
-			const std::string sql = queryGen.getSQL();
-			std::cout << "InA_Interpreter => Generated SQL: " << sql << std::endl;
-			writer.value("SQL = " + sql);
+			processAnalyticsRequest(analytics, writer);
 		}
 		else
 		{
@@ -95,3 +80,101 @@ void processRequest(const JSONGenericObject& topElement, JSONWriter& writer)
 			writer.value("Error: unsupported InA request");
 		}
 }
+
+using namespace wasabi::metadata;
+using namespace dbproxy;
+
+void processAnalyticsRequest(const JSONGenericObject& analytics, JSONWriter& writer)
+{
+	query_model::InA_query_model queryModel;
+	cube::Cube cube;
+
+	std::shared_ptr<DBProxy> dbProxy;
+	std::shared_ptr<Catalog> catalog;
+
+	// parse connectionString
+	if(analytics.haveValue("DataSource"))
+	{
+		const auto& datasource = analytics.getObject("DataSource");
+		if(datasource.haveValue("ObjectName"))
+		{
+			queryModel.setTable(datasource.getString("ObjectName"));
+		}
+		if(datasource.haveValue("CustomProperties"))
+		{
+			const auto& props = datasource.getObject("CustomProperties");
+			if(props.haveValue("cnxString"))
+			{
+				const std::string& cnxString = props.getString("cnxString");
+				dbProxy = DBProxy::getDBProxy(cnxString);
+				if(!dbProxy.get())
+				{
+					throw std::ios_base::failure("No database connection");
+				}
+
+				if(dbProxy)
+					catalog = std::shared_ptr<Catalog>(new Catalog(*dbProxy));
+			}
+		}
+	}
+	// parse dimensions/measures
+	if(analytics.haveValue("Definition"))
+	{
+		const auto& definition = analytics.getObject("Definition");
+		if(definition.haveValue("Dimensions"))
+		{
+			const auto& dims = definition.getArray("Dimensions");
+			for(int i = 0;i < dims.size();i++)
+			{
+				const std::string& dim = dims[i].getString("Name");
+				// std::cout << "InA_Interpreter => requested dimension " << dim << std::endl;
+				query_model::Datatype datatype = "";
+				query_model::Aggregation aggregation = "";
+				
+				const Table& table = catalog->getTable(queryModel.getTable());
+				const auto& col = table.getColumn(dim);
+				datatype = query_model::InA_query_model::getModelDatatype(col.getDataType());
+				aggregation = query_model::InA_query_model::getModelAggregation(col.getAggregation());
+				if(aggregation.empty())
+				{
+					queryModel.addDim(dim, datatype);
+				}
+				else
+				{
+					queryModel.addMeas(dim, datatype, aggregation);
+				}
+			}
+		}
+	}
+
+	std::cout << "InA_Interpreter => QueryModel: " << queryModel << std::endl;
+
+	const query_generator::query_generator& queryGen = query_generator::query_generator(queryModel);
+	const std::string sql = queryGen.getSQL();
+	std::cout << "InA_Interpreter => Generated SQL: " << sql << std::endl;
+	writer.value("SQL = " + sql);
+
+	queryGen.prepareCube(cube);
+
+	if(dbProxy)
+	{
+		const TableDescr& tableDescr = dbProxy->getTableDescr(queryModel.getTable());
+		const std::vector<ColumnDescr>& cols = tableDescr.getColumnsDescr();
+		size_t line = 0;
+        std::ostringstream results;
+		std::function<void(const Row&)> lambda = [&cols, &line, &results, &cube](const Row& row)
+		{
+			cube.insertRow(row);
+			for(int i = 0;i < row.size(); i++)
+			{
+				results << "  " << std::setw(10) << row[i].getString() << "  |  ";
+			}
+			results << std::endl;
+			line++;
+		};
+		dbProxy->executeSQL(sql, &lambda);
+		std::cout << "InA_Interpreter => Results of SQL execution : " << std::endl  << results.str() << std::endl;
+		writer.value("Results = " + results.str());
+	}
+}
+

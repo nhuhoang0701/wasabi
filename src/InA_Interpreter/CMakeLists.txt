@@ -7,14 +7,15 @@ include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
 project(InA_Interpreter VERSION 1.0 LANGUAGES CXX)
 
+set(METADATA_ENRICHMENT_LIB ${WASABI_ROOT_DIR}/src/metadata_enrichment/include/metadata_enrichment)
 
 ################################################
 # InA_Interpreter
 
 # InA_Interpreter as library
 add_library(InA_Interpreter_lib InA_Interpreter.cpp)
-target_include_directories(InA_Interpreter_lib PUBLIC ${WASABI_INCLUDES}  ${PROJECT_SOURCE_DIR}/include)
-target_link_libraries(InA_Interpreter_lib PUBLIC cjson json exceptions InA_query_model query_generator)
+target_include_directories(InA_Interpreter_lib PUBLIC ${WASABI_INCLUDES} ${PROJECT_SOURCE_DIR}/include ${METADATA_ENRICHMENT_LIB})
+target_link_libraries(InA_Interpreter_lib PUBLIC cjson json exceptions InA_query_model query_generator dbproxy metadata_enrichment sqlite cube)
 target_link_directories(InA_Interpreter_lib PUBLIC ${WASABI_ROOT_DIR}/external/cJSON/build ${WASABI_LIBS})
 
 
@@ -27,7 +28,7 @@ set_property(TARGET InA_Interpreter PROPERTY ENABLE_EXPORTS 1)
 target_include_directories(InA_Interpreter PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
 target_link_directories(InA_Interpreter PUBLIC ${WASABI_ROOT_DIR}/external/cJSON/build ${WASABI_ROOT_DIR}/src/build/lib)
-target_link_libraries(InA_Interpreter PUBLIC InA_Interpreter_lib cjson json exceptions)
+target_link_libraries(InA_Interpreter PUBLIC InA_Interpreter_lib)
 
 
 ################################################

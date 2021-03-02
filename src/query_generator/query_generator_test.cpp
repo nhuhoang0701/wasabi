@@ -1,8 +1,9 @@
 #include "query_generator.h"
 
-#include <iostream>
+#include <InA_query_model/InA_query_model.h>
+#include <test_tools/TestAssert.h>
 
-#include "test_tools/TestAssert.h"
+#include <iostream>
 
 int main()
 {
