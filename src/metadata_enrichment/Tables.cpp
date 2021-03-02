@@ -1,10 +1,14 @@
 #include "metadata_enrichment/Tables.h"
+
+#include <dbproxy/dbproxy.h>
+
+#include "json/jsonWriter.h"
+
 #include <algorithm>
 #include  <stdexcept>
 #include <unordered_map>
 #include <sstream>
-#include "dbproxy.h"
-#include "json/jsonWriter.h"
+
 namespace wasabi{
   using namespace std;
   namespace utils{
