@@ -1,9 +1,12 @@
 #include <sstream>
-#include "metadata_enrichment/ServerInfo.h"
+#include "ServerInfo.h"
 #include "json/jsonReader.h"
 #include <iostream>
+
 using namespace wasabi::metadata;
-void testServerInfo(){
+
+void testServerInfo()
+{
   const ServerInfo aSI("en");
   std::stringstream aStream;
   aStream << aSI;
