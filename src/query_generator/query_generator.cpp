@@ -15,6 +15,7 @@ namespace query_generator
 
         std::string delim;
         std::ostringstream sql;
+        std::ostringstream group_by;
         
         sql << "SELECT ";
 
@@ -29,6 +30,7 @@ namespace query_generator
             if(agg.empty())
             {
                 sql << name;
+                group_by << delim << name;
             }
             else
             {
@@ -37,7 +39,14 @@ namespace query_generator
             delim = ", ";
         }
 
-        sql << " FROM " << table << ";";
+        sql << " FROM " << table;
+
+        if(!group_by.str().empty())
+        {
+            sql << " GROUP BY " << group_by.str();
+        }
+
+        sql << ";";
 
         return sql.str();
 
