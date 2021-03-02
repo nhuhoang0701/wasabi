@@ -40,5 +40,6 @@ add_test(NAME dbproxy_metadat_test COMMAND dbproxy_metadat_test --dir=../sqlite/
 install(TARGETS dbproxy sqlite
 		LIBRARY DESTINATION ${WASABI_LIBS}
 		PUBLIC_HEADER DESTINATION ${WASABI_INCLUDES})
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/sqlite/efashion/efashion.db DESTINATION ${WASABI_ROOT_DIR}/src/wasi_browser/sqlite/efashion)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
