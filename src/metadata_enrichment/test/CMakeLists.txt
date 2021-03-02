@@ -31,7 +31,7 @@ target_link_libraries(
    TestMetaData PRIVATE
         metadata_enrichment
         cjson
-        jsonUtils
+        json
         dbproxy
         sqlite
         exceptions

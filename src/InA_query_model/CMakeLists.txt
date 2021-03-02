@@ -7,20 +7,21 @@ include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
 project(InA_query_model VERSION 1.0)
 
-set(GRID_LIB ${WASABI_ROOT_DIR}/src/grid)
-#set(GRID_LIB_BUILD ${GRID_LIB}/build)
+set(METADATA_ENRICHMENT_LIB ${WASABI_ROOT_DIR}/src/metadata_enrichment/include)
   
 ################################################
 # InA_query_model
 add_library(InA_query_model InA_query_model.cpp)
-target_include_directories(InA_query_model PUBLIC ${GRID_LIB})
-target_link_libraries(InA_query_model PUBLIC exceptions)
-target_link_directories(InA_query_model PUBLIC ${CMAKE_INSTALL_PREFIX}/lib/)
+set_target_properties(InA_query_model PROPERTIES PUBLIC_HEADER InA_query_model.h)
+
+target_include_directories(InA_query_model PUBLIC ${WASABI_INCLUDES} ${METADATA_ENRICHMENT_LIB})
+target_link_libraries(InA_query_model PUBLIC exceptions json metadata_enrichment)
+target_link_directories(InA_query_model PUBLIC ${WASABI_LIBS})
 
 ################################################
 # test
 add_executable(InA_query_model_test InA_query_model_test.cpp)
-target_include_directories(InA_query_model_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include ${GRID_LIB})
+target_include_directories(InA_query_model_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
 target_link_libraries(InA_query_model_test InA_query_model)
 target_link_directories(InA_query_model_test PUBLIC)
 
@@ -28,6 +29,8 @@ target_link_directories(InA_query_model_test PUBLIC)
 add_test(NAME InA_query_model_test COMMAND InA_query_model_test)
 
 ## [installation]
-install(TARGETS InA_query_model DESTINATION lib)
+install(TARGETS InA_query_model 
+        LIBRARY DESTINATION ${WASABI_LIBS}
+        PUBLIC_HEADER DESTINATION ${WASABI_INCLUDES})
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)

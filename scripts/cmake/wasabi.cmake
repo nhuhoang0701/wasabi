@@ -89,6 +89,12 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 #add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-fwasm-exceptions>)
 
 
+###########################################
+# wasabi var
+set(WASABI_INCLUDES ${CMAKE_INSTALL_PREFIX}/include)
+set(WASABI_LIBS ${CMAKE_INSTALL_PREFIX}/lib)
+
+include_directories(${WASABI_ROOT_DIR}/src)
 
 ###########################################
 # cmake option
