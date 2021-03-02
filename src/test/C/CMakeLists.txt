@@ -25,6 +25,8 @@ add_executable(C_write C_write.c)
 add_executable(C_nolib C_nolib.c)
 #add_executable(C_libc_dl C_libc_dl.c)
 
+## [installation]
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/resources/text.txt DESTINATION ${WASABI_ROOT_DIR}/src/wasi_browser/resources/)
 
 
 # Make sure you link your targets with this command. It can also link libraries and
