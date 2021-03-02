@@ -59,16 +59,22 @@ namespace wasabi{
     private:
       std::unique_ptr<utils::TableImpl> itsPimpl;
     };
+
     std::ostream& operator<<(std::ostream& theStream, const Table& theTable);
-    class Catalog{
+    class Catalog
+	{
     public:
       Catalog( const DBProxy& theConnection);
-      ~Catalog();
-      const std::vector<std::string>& getTableNames()const;
-      const Table& getTable(std::string_view theName)const;
       Catalog(const Catalog&)=delete;
       Catalog& operator=(const Catalog&) = delete;
+
+      ~Catalog();
+
+      const std::vector<std::string>& getTableNames()const;
+      const Table&                    getTable(std::string_view theName)const;
+
       void write(JSONWriter& theWriter)const;
+
     private:
       wasabi::utils::CatalogImpl* itsPimpl;
     };
