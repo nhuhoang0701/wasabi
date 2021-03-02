@@ -1,0 +1,398 @@
+{
+    "ServerInfo": {
+        "Client": "000000000000000",
+        "ServerType": "SAP UNX LIVE",
+        "SystemId": "UNX",
+        "UserLanguageCode": "EN",
+        "Version": "3.3.0.0"
+    },
+    "Services": [
+        {
+            "Capabilities": [],
+            "Service": "Perspectives"
+        },
+        {
+            "Capabilities": [],
+            "Service": "MetaData"
+        },
+        {
+            "Capabilities": [],
+            "Service": "ModelPersistence"
+        },
+        {
+            "Capabilities": [
+                {
+                    "Capability": "SupportsBatch",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0,
+                    "Value": "/sap/boc/ina/BatchProcessing"
+                }
+            ],
+            "Service": "InA"
+        },
+        {
+            "Capabilities": [
+                {
+                    "Capability": "AttributeValueLookup",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "SupportsEncodedResultSet",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "CellsValueFormated",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "Filter",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "Hierarchies",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "MaxResultRecords",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "OrderBy",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "ResultSetState",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "MetadataIsDisplayAttribute",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "Variables",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "DimensionValuehelpProperty",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "ReturnedDataSelection",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "DatasourceAtService",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "Obtainability",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "ClientCapabilities",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "Complex",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "Measure",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "MetadataDataCategory",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "MetadataCubeQuery",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "FixedAndDynamicFilter",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "SupportsSetOperand",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "SupportsComplexFilters",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "MeasureOperand",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "FilterCapability",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "ActionClose",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "ResultSetAxisType",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "SupportsExtendedSort",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "TechnicalAxis",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "SupportsCalculatedKeyFigures",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "SupportsRestrictedKeyFigures",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "SupportsIgnoreExternalDimensions",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "Conditions",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "ExceptionAggregationDimsAndFormulas",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "Exceptions",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "ExceptionSettings",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "AggregationNOPNULL",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "AggregationNOPNULLZERO",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "SupportsMemberValueExceptions",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "AverageCountIgnoreNullZero",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "SupportsEncodedResultSet2",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "Totals",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "VisibilityFilter",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "SupportsMemberVisibility",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "TotalsAfterVisibilityFilter",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "ResultSetInterval",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "CalculatedDimension",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "ExtendedDimensionsFieldMapping",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "ExtendedDimensionsJoinColumns",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "ExtendedDimensions",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "ExtendedDimensionsOuterJoin",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "Hierarchies",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "AttributeHierarchy",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "MetadataHierarchyStructure",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "MetadataHierarchyLevels",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "HierarchyPath",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "HierarchyPathUniqueName",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "HierarchyLevelOffsetFilter",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "HierarchyKeyTextName",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                },
+                {
+                    "Capability": "AttributeHierarchyHierarchyField",
+                    "MaxVersion": 100,
+                    "MinVersion": 1,
+                    "DefaultSchemaVersion": 0
+                }
+            ],
+            "Service": "Analytics"
+        }
+    ],
+    "Settings": {
+        "CacheSessionTimeToLive": 3600,
+        "ReadTimeout": 1800
+    }
+}

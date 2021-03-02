@@ -7,14 +7,13 @@ include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
 project(InA_Interpreter VERSION 1.0 LANGUAGES CXX)
 
-set(METADATA_ENRICHMENT_LIB ${WASABI_ROOT_DIR}/src/metadata_enrichment/include/metadata_enrichment)
 
 ################################################
 # InA_Interpreter
 
 # InA_Interpreter as library
 add_library(InA_Interpreter_lib InA_Interpreter.cpp)
-target_include_directories(InA_Interpreter_lib PUBLIC ${WASABI_INCLUDES} ${PROJECT_SOURCE_DIR}/include ${METADATA_ENRICHMENT_LIB})
+target_include_directories(InA_Interpreter_lib PUBLIC ${WASABI_INCLUDES} ${PROJECT_SOURCE_DIR}/include)
 target_link_libraries(InA_Interpreter_lib PUBLIC cjson json exceptions InA_query_model query_generator dbproxy metadata_enrichment sqlite cube)
 target_link_directories(InA_Interpreter_lib PUBLIC ${WASABI_ROOT_DIR}/external/cJSON/build ${WASABI_LIBS})
 
@@ -33,7 +32,7 @@ target_link_libraries(InA_Interpreter PUBLIC InA_Interpreter_lib)
 
 ################################################
 # test
-add_executable(InA_Interpreter_test InA_Interpreter_test.cpp)
+add_executable(InA_Interpreter_test InA_Interpreter_test.cpp ServerInfo_test.cpp)
 target_link_libraries(InA_Interpreter_test InA_Interpreter_lib)
 target_include_directories(InA_Interpreter_test PRIVATE ${WASABI_INCLUDES} ${WASABI_ROOT_DIR}/src/test_tools/include)
 
@@ -41,6 +40,7 @@ add_test(NAME InA_Interpreter_test COMMAND InA_Interpreter_test)
 
 ## [installation]
 install(TARGETS InA_Interpreter DESTINATION ${WASABI_ROOT_DIR}/src/wasi_browser)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/resources/response_getSerververInfo.json DESTINATION ${WASABI_ROOT_DIR}/src/wasi_browser/resources/)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
 
