@@ -1,7 +1,7 @@
 #include "query_generator.h"
 
-
-#include "../cube/cube.h"
+#include <cube/cube.h>
+#include <InA_query_model/InA_query_model.h>
 
 #include <sstream>
 #include <iostream>
@@ -43,7 +43,7 @@ namespace query_generator
 
     }
 	
-	void query_generator::prepareCube(cube::Cube& cube)
+	void query_generator::prepareCube(cube::Cube& cube) const
 	{
         const std::vector<query_model::Object>& objects = m_qryModel.getObjects();
         for (const auto& object : objects)

@@ -1,0 +1,14 @@
+Client ID
+574804036865-g92o8f54au9f632mluprln6sp51n4m1q.apps.googleusercontent.com
+
+
+
+Client Secret
+MT8r0WE6Td-VNO1fG3xOW0r8
+
+
+Project Page
+https://console.developers.google.com/apis/credentials?authuser=0&project=ffsp-1608898642974
+
+API Key:
+AIzaSyCYDK3-XwnrElaUx0aU-io56XLPeJ2weV0

@@ -18,13 +18,13 @@ EXPORT char* str_OPENFILE_READ_str(const char* file)
 
 	FILE* fp = fopen (file, "r");
 	if(fp == 0)
-		return "Error during fopen call";
+		printf("Error during fopen call");
 	int res = fread(buf, 1, sizeof buf, fp);
 	if(res < 0)
-		return "Error during fread call";
+		printf("Error during fread call");
 
 	if (ferror(fp))
-		return "Error during ferror call";
+		printf("Error during ferror call");
 
 	fclose(fp);
 
