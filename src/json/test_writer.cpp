@@ -17,7 +17,7 @@ void Test_writer()
       aWriter.key("test3");
       aWriter.valueNull();
     }
-    std::cout << aStream.str() << std::endl;
+    //std::cout << aStream.str() << std::endl;
     {
       JSONReader aReader;
       auto root = aReader.parse(aStream.str());
@@ -35,7 +35,7 @@ void Test_writer()
       aWriter.value(2);
       aWriter.valueNull();
     }
-    std::cout << aStream.str() << std::endl;
+    //std::cout << aStream.str() << std::endl;
     {
       JSONReader aReader;
       auto root = aReader.parse(aStream.str());
@@ -57,7 +57,7 @@ void Test_writer()
         }
       }
     }
-    std::cout << aStream.str() << std::endl;
+    //std::cout << aStream.str() << std::endl;
     {
       JSONReader aReader;
       auto root = aReader.parse(aStream.str());
