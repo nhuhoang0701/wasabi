@@ -140,9 +140,21 @@ void processAnalyticsRequest(const JSONGenericObject& analytics, JSONWriter& wri
 				}
 			}
 		}
-		if(const auto& operatorDynFilt = definition.getObject("DynamicFilter").getObject("Selection").getObject("Operator"))
+		if(const auto& subSelections = definition.getObject("DynamicFilter").getObject("Selection").getObject("Operator").getArray("SubSelections"))
 		{
-			std::cout << "InA_Interpreter => DynamicFilter :" << operatorDynFilt << std::endl;
+			std::cout << "InA_Interpreter => DynamicFilter->Selection->Operator->SubSelections :" << subSelections << std::endl;
+			for(size_t i = 0; i < subSelections.size(); ++i)
+			{
+				std::cout << "	InA_Interpreter => subSelections[ :" << i << "]" <<std::endl;
+				if(const auto& elements = subSelections[i].getObject("SetOperand").getArray("Elements"))
+				{
+					std::cout << "InA_Interpreter => Elements :" << elements << std::endl;
+					for(size_t i = 0; i < elements.size(); ++i)
+					{
+						std::cout << "InA_Interpreter => Element :" << elements[i].getString("Low") << std::endl;
+					}
+				}
+			}
 		}
 	}
 
