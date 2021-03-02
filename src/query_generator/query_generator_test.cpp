@@ -19,7 +19,7 @@ int main()
 	const query_generator::query_generator& queryGen = query_generator::query_generator(queryModel);
 	std::string sql = queryGen.getSQL();
 
-	std::cout << "Generated SQL: " << sql << std::endl;
+	//std::cout << "Generated SQL: " << sql << std::endl;
 
 	CPPUNIT_ASSERT_EQUAL("SELECT col_A, col_B, SUM(col_C) FROM MyTable GROUP BY col_A, col_B;", sql);
 	
