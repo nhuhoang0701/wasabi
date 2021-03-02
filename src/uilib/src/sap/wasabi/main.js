@@ -9,39 +9,71 @@ sap.ui.define(
     "sap/wasabi/BridgedWorker"
   ],
   function(Log,BuildBridgedWorker){
-    var DisplayResult = function (val, str) {
-      // do something here
-      Log.error(val);
-      Log.error(str);
+    var n = 0;
+    var oPromHash = {};
+    var ResolvePromise = function (nId,mValue) {
+      var oResolver = oPromHash[nId];
+      delete oPromHash[nId];
+      if( mValue instanceof Error){
+        oResolver.rej(mValue);
+      }else{
+        oResolver.res(mValue);
+      }
     };
     var Main = function(){
       var that = this;
-      that.execute = function(){
-        var oWorker = BuildBridgedWorker(
-          function (){
-            function CalculateSomething(a, b, c, d) {
-              var v = a + b + c + d; //trivial calculation
-              main.DisplayResult(v, "hello");
-            }
-            function CalculateSomethingBig(buff, d) {
-              var v = new Uint32Array(buff);
-              for (var i = 0; i <= v.length; i++) {
-                v[i] /= d;
-              }
-              main.DisplayResult("big","calculated");
-            }
-          },
-          ["CalculateSomething", "CalculateSomethingBig*"], //note asterisk indicating ArrayBuffer transfer
-          ["DisplayResult"], [DisplayResult]
-        );
-        var w = 9,
-            x = 100,
-            y = 0,
-            z = 2;
-        var v = new window.Uint32Array(100);
-        oWorker.CalculateSomething(w, x, y, z);
-        oWorker.CalculateSomethingBig(v.buffer, x, [v.buffer]);
-        return Promise.resolve(null);
+      var oWorker = BuildBridgedWorker(
+        function (){
+          function getServerInfo(nId) {
+            main.ResolvePromise(nId, "ServerInfo");
+          }
+          function getResponse(nId, sBody) {
+            main.ResolvePromise(nId,"GetResponse:" + sBody);
+          }
+        },
+        [
+          "getServerInfo",
+          "getResponse"
+        ],
+        ["ResolvePromise"], [ResolvePromise]
+      );
+      that.executeServerInfo = function(){
+        var nId = n;
+        n=n+1;
+        oPromHash[nId] = (function(){
+          var fRes,fRej;
+          function handle(res,rej){
+            fRes = res;
+            fRej = rej;
+          }
+          var oProm = new Promise(handle);
+          return {
+            prom: oProm,
+            res: fRes,
+            rej: fRej
+          };
+        }());
+        oWorker.getServerInfo(nId);
+        return oPromHash[nId].prom;
+      };
+      that.executeGetResponse = function(sBody){
+        var nId = n;
+        n=n+1;
+        oPromHash[nId] = (function(){
+          var fRes,fRej;
+          function handle(res,rej){
+            fRes = res;
+            fRej = rej;
+          }
+          var oProm = new Promise(handle);
+          return {
+            prom: oProm,
+            res: fRes,
+            rej: fRej
+          };
+        }());
+        oWorker.getResponse(nId,sBody);
+        return oPromHash[nId].prom;
       };
     };
     return Main;
