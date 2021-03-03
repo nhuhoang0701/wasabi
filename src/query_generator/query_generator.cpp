@@ -10,8 +10,6 @@ namespace query_generator
 {
     std::string query_generator::getSQL() const
     {
-        const std::string& table = m_qryModel.getTable();
-        const std::vector<query_model::InA_dimension>& objects = m_qryModel.getObjects();
 
         std::string delim;
         std::ostringstream sql;
@@ -19,30 +17,26 @@ namespace query_generator
         
         sql << "SELECT ";
 
-        for (const auto& object : objects)
+        for (const auto& dim : m_qryModel.getDimensions())
         {
             sql << delim;
-            
-             switch(object.getType())
+
+			const std::string& nameDim = dim.getName();
+			if(nameDim == "CustomDimension1")
 			{
-				case query_model::InA_dimension::Type::ObjectsDimension:
-				case query_model::InA_dimension::Type::VariableDimension:
-				{
-					sql << object.getName();
-                    group_by << delim << object.getName();
-				}
-				break;
-				case query_model::InA_dimension::Type::MeasuresDimension:
-				{
-					sql << "SUM" << "(" << object.getName() << ")";
-				}
-				break;
-				default:
-				break;
+				for(const auto& member : dim.getMembers() )
+					sql << member.getAggregation() << "(" << member.getName() << ")";
 			}
+			else
+			{
+				sql << nameDim;
+				group_by << delim << nameDim;
+			}
+
             delim = ", ";
         }
 
+        const std::string& table = m_qryModel.getTable();
         sql << " FROM " << table;
 
         if(!group_by.str().empty())
@@ -58,25 +52,18 @@ namespace query_generator
 	
 	void query_generator::prepareCube(cube::Cube& cube) const
 	{
-        const std::vector<query_model::InA_dimension>& objects = m_qryModel.getObjects();
-        for (const auto& object : objects)
-		{
-			switch(object.getType())
+        for (const auto& dim : m_qryModel.getDimensions())
+        {
+			const std::string& nameDim = dim.getName();
+			if(nameDim == "CustomDimension1")
 			{
-				case query_model::InA_dimension::Type::ObjectsDimension:
-				case query_model::InA_dimension::Type::VariableDimension:
-				{
-					cube.addColumnDim(object.getName());
-				}
-				break;
-				case query_model::InA_dimension::Type::MeasuresDimension:
-				{
-					cube.addColumnMeas(object.getName());
-				}
-				break;
-				default:
-				break;
+				for(const auto& member : dim.getMembers() )
+					cube.addColumnMeas(dim.getName());
 			}
-		}
+			else
+			{
+				cube.addColumnDim(dim.getName());
+			}
+        }
 	}
 } //query_generator

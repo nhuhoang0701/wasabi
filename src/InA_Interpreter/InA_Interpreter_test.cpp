@@ -62,7 +62,7 @@ void getResponse()
     // std::cout << "InA_Interpreter_test => response: " << response << std::endl;
 
     std::cout << "------------------------" << std::endl << std::endl;
-    request = R"({"Analytics":{"Definition":{"Dimensions":[{"Members":[{"Description":"Calculated Measure 1","Formula":{"Function":{"Name":"**","Parameters":[{"Member":{"Name":"OBJ_147"}},{"Function":{"Name":"decfloat","Parameters":[{"Constant":{"Value":"2","ValueType":"String"}}]}}]}},"Name":"32160367-6930-4537-9181-755582731239"}],"Name":"CustomDimension1"}]}}})";;
+    request = R"({"Analytics":{"Definition":{"Dimensions":[{"Members":[{"Description":"Calculated Measure 1","Formula":{"Function":{"Name":"**","Parameters":[{"Member":{"Name":"OBJ_147"}},{"Function":{"Name":"decfloat","Parameters":[{"Constant":{"Value":"2","ValueType":"String"}}]}}]}},"Name":"32160367-6930-4537-9181-755582731239"}],"Axis":"Rows","Name":"CustomDimension1"}]}}})";;
 
     // std::cout << "InA_Interpreter_test => request: json_getResponse_json " << request << std::endl;
 
