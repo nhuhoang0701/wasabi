@@ -35,22 +35,22 @@ fs_Path2Data = new Map();
 fds = [
 		{
 			vpath:"/dev/stdin",
-			offset:null,
+			offset:BigInt(0),
 			data:null,
 		},
 		{
 			vpath:"/dev/stdout",
-			offset:null,
+			offset:BigInt(0),
 			data:null,
 		},
 		{
 			vpath:"/dev/stderr",
-			offset:null,
+			offset:BigInt(0),
 			data:null,
 		},
 		{
 			vpath:".",
-			offset:null,
+			offset:BigInt(0),
 			data:null,
 		},
 	];
@@ -212,7 +212,7 @@ var WASI_API = {
 			console.error("NYI");
 		
 		if(entry.offset < 0)
-			entry.offset = 0;
+			entry.offset = BigInt(0);
 		
 		const view = new DataView(moduleInstanceExports.memory.buffer);
 		view.setBigUint64(newoffset_ptr, BigInt(entry.offset), true);
@@ -283,7 +283,11 @@ var WASI_API = {
 		
 		if(!entry.data) {
 			entry.data = fs_Path2Data.get(entry.vpath);
-			entry.offset = 0;
+			if(!entry.data)
+			{
+				console.error("Please register your file '" + entry.vpath + "' by calling WASI_API::wasabi_initFS()");
+			}
+			entry.offset = BigInt(0);
 		}
 
 		const view = new DataView(moduleInstanceExports.memory.buffer);
