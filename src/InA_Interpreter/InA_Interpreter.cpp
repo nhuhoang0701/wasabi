@@ -36,7 +36,7 @@ const char* json_getServerInfo()
 WASM_EXPORT
 const char* json_getResponse_json(const char* InA)
 {
-	// std::cout << "InA_Interpreter => getResponse call received: " << InA << std::endl;
+	// std::cout << "InA_Interpreter => getResponse call received: '" << InA << "'" << std::endl;
 	
 	JSONReader reader;
 	JSONGenericObject root = reader.parse(InA);

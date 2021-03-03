@@ -41,12 +41,20 @@ onmessage = function(e) {
 			moduleWASI = module;
 			setModuleInstance(module.instance);
 			
-			if(getModuleInstance()._start) {
-				console.log('Worker: execute _start');
-				getModuleInstance()._start();
-			} else {
-				console.log('Worker: no _start entry point');
-			}
+			filesystem = ["../resources/response_getSerververInfo.json",
+						 "../resources/response_getResponse_Metadat_expand_cube_catalog.json",
+						 "../sqlite/efashion.db"];
+			WASI_API.wasabi_initFS(filesystem).then(() => 
+			{
+				if(getModuleInstance()._start)
+				{
+					console.log('Worker: execute _start');
+					getModuleInstance()._start();
+				} else
+				{
+					console.log('Worker: no _start entry point');
+				}
+			});
 			postMessage([WorkerEvent.eLoad, "Worker: Library well loaded"]);
 			isLoaded = true;
 		}).catch(error=>{

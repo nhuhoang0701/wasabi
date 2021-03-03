@@ -28,7 +28,11 @@ function start(response) {
 	{
 		moduleWASI = module;
 		setModuleInstance(module.instance);
-		WASI_API.wasabi_initFS(["../resources/text.txt", "../sqlite/efashion.db", "../resources/response_getResponse_Metadat_expand_cube_catalog.json", "../resources/response_getSerververInfo.json"]).then(() => {
+		filesystem = ["../resources/response_getSerververInfo.json",
+					 "../resources/response_getResponse_Metadat_expand_cube_catalog.json",
+					 "../resources/text.txt",
+					 "../sqlite/efashion.db"];
+		WASI_API.wasabi_initFS(filesystem).then(() => {
 			try {module.instance.exports._start();}
 			catch (e)
 			{
