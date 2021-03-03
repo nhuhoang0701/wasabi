@@ -26,6 +26,7 @@ export WASMTIME_DIR=${WASMTIME_DIR:-$WASABI_EXTERNAL_DIR/wasmtime-v0.22.0}
 export WASMTIME_LINUX_DIR=$WASMTIME_DIR-x86_64-linux
 export WASMTIME=$WASMTIME_DIR/wasmtime
 echo -e "WASMTIME: " "\t\t'"$WASMTIME"'";
+export WASMTIME_BACKTRACE_DETAILS=1
 
 export CJSON_DIR=$WASABI_EXTERNAL_DIR/cJSON
 export SQLITE_DIR=$WASABI_EXTERNAL_DIR/sqlite
@@ -46,6 +47,7 @@ echo -e "NINJA: "  "\t\t'"$NINJA"'";
 
 export HTTP_SERVER="python3 -m http.server 8080"
 echo -e "HTTP_SERVER: " "\t\t'"$HTTP_SERVER"'";
+
 
 # alias
 echo
