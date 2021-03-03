@@ -126,32 +126,32 @@ void processAnalyticsRequest(const JSONGenericObject& analytics, JSONWriter& wri
 				query_model::Datatype datatype = "";
 				query_model::Aggregation aggregation = "";
 				
-				const Table& table = catalog->getTable(queryModel.getTable());
-				const auto& col = table.getColumn(dim);
-				datatype = query_model::InA_query_model::getModelDatatype(col.getDataType());
-				aggregation = query_model::InA_query_model::getModelAggregation(col.getAggregation());
-				if(aggregation.empty())
+				if(catalog)
 				{
-					queryModel.addDim(dim, datatype);
-				}
-				else
-				{
-					queryModel.addMeas(dim, datatype, aggregation);
+					const Table& table = catalog->getTable(queryModel.getTable());
+					const auto& col = table.getColumn(dim);
+					datatype = query_model::InA_query_model::getModelDatatype(col.getDataType());
+					aggregation = query_model::InA_query_model::getModelAggregation(col.getAggregation());
+					if(aggregation.empty())
+					{
+						queryModel.addDim(dim, datatype);
+					}
+					else
+					{
+						queryModel.addMeas(dim, datatype, aggregation);
+					}
 				}
 			}
 		}
 		if(const auto& subSelections = definition.getObject("DynamicFilter").getObject("Selection").getObject("Operator").getArray("SubSelections"))
 		{
-			std::cout << "InA_Interpreter => DynamicFilter->Selection->Operator->SubSelections :" << subSelections << std::endl;
 			for(size_t i = 0; i < subSelections.size(); ++i)
 			{
-				std::cout << "	InA_Interpreter => subSelections[ :" << i << "]" <<std::endl;
 				if(const auto& elements = subSelections[i].getObject("SetOperand").getArray("Elements"))
 				{
-					std::cout << "InA_Interpreter => Elements :" << elements << std::endl;
 					for(size_t i = 0; i < elements.size(); ++i)
 					{
-						std::cout << "InA_Interpreter => Element :" << elements[i].getString("Low") << std::endl;
+						std::cout << "InA_Interpreter => DynamicFilter -> ... -> Low :" << elements[i].getString("Low") << std::endl;
 					}
 				}
 			}
