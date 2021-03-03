@@ -19,7 +19,7 @@
 const bool useDBFile = false;
 namespace dbproxy
 {
-	DBSQLite::DBSQLite()
+	DBSQLite::DBSQLite(const std::string& dbname)
 	: DBProxy()
 	{
 		int res = 0;

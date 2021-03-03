@@ -11,7 +11,7 @@ namespace dbproxy
 	class DBSQLite : public DBProxy
 	{
 	public:
-		DBSQLite();
+		DBSQLite(const std::string& dbname);
 		virtual ~DBSQLite();
 
 		virtual void  executeSQL(const std::string& SQL, const std::function<void (Row const&)>* calback) const;
