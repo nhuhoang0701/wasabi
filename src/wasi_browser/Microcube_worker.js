@@ -43,7 +43,7 @@ onmessage = function(e) {
 			
 			filesystem = ["../resources/response_getSerververInfo.json",
 						 "../resources/response_getResponse_Metadat_expand_cube_catalog.json",
-						 "../sqlite/efashion.db"];
+						 "../sqlite/efashion/efashion.db"];
 			WASI_API.wasabi_initFS(filesystem).then(() => 
 			{
 				if(getModuleInstance()._start)
