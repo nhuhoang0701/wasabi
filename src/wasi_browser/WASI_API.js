@@ -286,6 +286,7 @@ var WASI_API = {
 			if(!entry.data)
 			{
 				console.error("Please register your file '" + entry.vpath + "' by calling WASI_API::wasabi_initFS()");
+				return WASI_EBADF;
 			}
 			entry.offset = BigInt(0);
 		}
