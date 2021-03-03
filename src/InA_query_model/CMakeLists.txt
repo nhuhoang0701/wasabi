@@ -11,7 +11,7 @@ set(METADATA_ENRICHMENT_LIB ${WASABI_ROOT_DIR}/src/metadata_enrichment/include)
   
 ################################################
 # InA_query_model
-add_library(InA_query_model InA_query_model.cpp)
+add_library(InA_query_model InA_query_model.cpp InA_member.cpp InA_dimension.cpp)
 set_target_properties(InA_query_model PROPERTIES PUBLIC_HEADER InA_query_model.h)
 
 target_include_directories(InA_query_model PUBLIC ${WASABI_INCLUDES} ${METADATA_ENRICHMENT_LIB})

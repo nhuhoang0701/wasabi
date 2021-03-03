@@ -17,15 +17,20 @@ int main()
 	query_model::InA_query_model queryModel;
 
 	queryModel.setTable("MyTable");
-	queryModel.addDim("Dim_A", "String");
-	queryModel.addDim("Dim_B", "String");
-	queryModel.addMeas("Meas_1", "Numeric", "Sum");
+	query_model::InA_dimension dimensionA("Dim_A", query_model::InA_dimension::Type::ObjectsDimension, "String");
+	queryModel.addDimension(dimensionA);
+	query_model::InA_dimension dimensionB("Dim_B", query_model::InA_dimension::Type::ObjectsDimension, "String");
+	queryModel.addDimension(dimensionB);
+	query_model::InA_dimension dimensionMeasure("Meas_1", query_model::InA_dimension::Type::MeasuresDimension, "String");
+	query_model::InA_member measure1("Meas_1", "Numeric", "Sum");
+	dimensionMeasure.addMember(measure1);
+	queryModel.addDimension(dimensionMeasure);
 
 	CPPUNIT_ASSERT_EQUAL("MyTable", queryModel.getTable());
 	CPPUNIT_ASSERT_EQUAL(3, queryModel.getObjects().size());
-	CPPUNIT_ASSERT_EQUAL("Dim_A", std::get<0>(queryModel.getObjects()[0]));
-	CPPUNIT_ASSERT_EQUAL("String", std::get<1>(queryModel.getObjects()[1]));
-	CPPUNIT_ASSERT_EQUAL("Sum", std::get<2>(queryModel.getObjects()[2]));
+	CPPUNIT_ASSERT_EQUAL("Dim_A", queryModel.getObjects()[0].getName());
+	CPPUNIT_ASSERT_EQUAL("String", queryModel.getObjects()[1].getDatatype());
+	CPPUNIT_ASSERT_EQUAL("Sum", queryModel.getObjects()[2].getMembers()[0].getAggregation());
 
 	const std::string serialized = serialize(queryModel);
 	//std::cout << "Serialized QueryModel : " << serialized << std::endl;
@@ -33,9 +38,9 @@ int main()
 
 	CPPUNIT_ASSERT_EQUAL("MyTable", deserialized.getTable());
 	CPPUNIT_ASSERT_EQUAL(3, deserialized.getObjects().size());
-	CPPUNIT_ASSERT_EQUAL("Dim_A", std::get<0>(deserialized.getObjects()[0]));
-	CPPUNIT_ASSERT_EQUAL("String", std::get<1>(deserialized.getObjects()[1]));
-	CPPUNIT_ASSERT_EQUAL("Sum", std::get<2>(deserialized.getObjects()[2]));
+	CPPUNIT_ASSERT_EQUAL("Dim_A", queryModel.getObjects()[0].getName());
+	CPPUNIT_ASSERT_EQUAL("String", queryModel.getObjects()[1].getDatatype());
+	CPPUNIT_ASSERT_EQUAL("Sum", queryModel.getObjects()[2].getMembers()[0].getAggregation());
 
 	return TEST_HAVEERROR();
 }
