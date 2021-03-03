@@ -41,6 +41,7 @@ add_test(NAME InA_Interpreter_test COMMAND InA_Interpreter_test)
 ## [installation]
 install(TARGETS InA_Interpreter DESTINATION ${WASABI_ROOT_DIR}/src/wasi_browser)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/resources/response_getSerververInfo.json DESTINATION ${WASABI_ROOT_DIR}/src/wasi_browser/resources/)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/resources/response_getResponse_Metadat_expand_cube_catalog.json DESTINATION ${WASABI_ROOT_DIR}/src/wasi_browser/resources/)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
 
