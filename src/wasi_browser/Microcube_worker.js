@@ -33,7 +33,7 @@ onmessage = function(e) {
 		{
 			wasi_snapshot_preview1: WASI_API,
 			env: {},
-			js : {mem: new WebAssembly.Memory({initial: 2,maximum: 10})}
+			js : {mem: new WebAssembly.Memory({initial: 2,maximum: 100})}
 		};
 		WebAssembly.instantiateStreaming(fetch("./InA_Interpreter.wasm"), importObject).then(module =>
 		{
@@ -54,9 +54,9 @@ onmessage = function(e) {
 				{
 					console.log('Worker: no _start entry point');
 				}
+				postMessage([WorkerEvent.eLoad, "Worker: Library well loaded"]);
+				isLoaded = true;
 			});
-			postMessage([WorkerEvent.eLoad, "Worker: Library well loaded"]);
-			isLoaded = true;
 		}).catch(error=>{
 			console.log('Worker: Library not well loaded: ', error),
 			console.log("stack" + error.stack),

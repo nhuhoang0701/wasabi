@@ -115,10 +115,10 @@ var WASI_API = {
 	// wasabi specific
 	wasabi_initFS : async function(paths) {
 		for (let i=0; i<paths.length; i++)  {
+			console.log("4WASI FileSystem: loading... " + paths[i]);
 			const response = await fetch(paths[i]);
 			arrayBuffer = await response.arrayBuffer();
 			var uint8View = new Uint8Array(arrayBuffer);
-			
 			fs_Path2Data.set(paths[i], uint8View);
 		}
 	},
