@@ -28,7 +28,7 @@ function start(response) {
 	{
 		moduleWASI = module;
 		setModuleInstance(module.instance);
-		WASI_API.wasabi_initFS(["../resources/text.txt", "../sqlite/efashion.db"]).then(() => {
+		WASI_API.wasabi_initFS(["../resources/text.txt", "../sqlite/efashion.db", "../resources/response_getResponse_Metadat_expand_cube_catalog.json", "../resources/response_getSerververInfo.json"]).then(() => {
 			try {module.instance.exports._start();}
 			catch (e)
 			{
