@@ -1,6 +1,8 @@
 #include "InA_Interpreter.h"
 
 #include <InA_query_model/InA_query_model.h>
+#include <InA_query_model/InA_dimension.h>
+#include <InA_query_model/InA_member.h>
 #include <query_generator/query_generator.h>
 #include <dbproxy/dbproxy.h>
 #include <metadata_enrichment/Tables.h>
@@ -121,7 +123,7 @@ void processAnalyticsRequest(const JSONGenericObject& analytics, JSONWriter& wri
 		{
 			for(int i = 0;i < dims.size();i++)
 			{
-				const std::string& dim = dims[i].getString("Name");
+				const std::string& dimensionName = dims[i].getString("Name");
 				// std::cout << "InA_Interpreter => requested dimension " << dim << std::endl;
 				query_model::Datatype datatype = "";
 				query_model::Aggregation aggregation = "";
@@ -129,16 +131,20 @@ void processAnalyticsRequest(const JSONGenericObject& analytics, JSONWriter& wri
 				if(catalog)
 				{
 					const Table& table = catalog->getTable(queryModel.getTable());
-					const auto& col = table.getColumn(dim);
+					const auto& col = table.getColumn(dimensionName);
 					datatype = query_model::InA_query_model::getModelDatatype(col.getDataType());
 					aggregation = query_model::InA_query_model::getModelAggregation(col.getAggregation());
+
 					if(aggregation.empty())
 					{
-						queryModel.addDim(dim, datatype);
+						query_model::InA_dimension dimension(dimensionName, query_model::InA_dimension::Type::ObjectsDimension, datatype);
+						queryModel.addDimension(dimension);
 					}
 					else
 					{
-						queryModel.addMeas(dim, datatype, aggregation);
+						query_model::InA_dimension dimensionMeasure(dimensionName, query_model::InA_dimension::Type::MeasuresDimension, datatype);
+						query_model::InA_member measure1(dimensionName, datatype, aggregation);
+						queryModel.addDimension(dimensionMeasure);
 					}
 				}
 			}

@@ -1,5 +1,4 @@
 #include "InA_query_model.h"
-
 #include <json/jsonReader.h>
 #include <json/jsonWriter.h>
 
@@ -18,28 +17,23 @@ namespace query_model
             std::string aggregation = object.getString("aggregation");
             if(aggregation.empty())
             {
-                addDim(name, datatype);
+                InA_dimension dimension(name, InA_dimension::Type::ObjectsDimension, datatype);
+                addDimension(dimension);
             }
             else
             {
-                addMeas(name, datatype, aggregation);
-            }
+                InA_dimension dimension(name, InA_dimension::Type::MeasuresDimension, datatype);
+                // FIXME: aggregation are set on members, not the dimension itself
+                InA_member member(name, datatype, aggregation);
+                dimension.addMember(member);
+                addDimension(dimension);
+            }            
         }
     }
 
-    void InA_query_model::addDim(const std::string& name, const Datatype& datatype)
+    void InA_query_model::addDimension(const InA_dimension& dimension)
     {
-        Object dim = std::make_tuple(name, datatype, NO_AGG);
-	    //std::cout << "InA_query_model::addDim " << std::get<0>(dim) << " " << std::get<1>(dim) << " " <<  std::get<2>(dim) << std::endl;
-        m_objs.push_back(dim);
-    }
-
-
-	void InA_query_model::addMeas(const std::string& name, const Datatype& datatype, const Aggregation& agg)
-    {
-        Object meas = std::make_tuple(name, datatype, agg);
-	    //std::cout << "InA_query_model::addMeas " << std::get<0>(meas) << " " <<  std::get<1>(meas) << " " <<  std::get<2>(meas) << std::endl;
-        m_objs.push_back(meas);
+        m_objs.push_back(dimension);
     }
 
     void InA_query_model::write(JSONWriter& writer) const
@@ -48,12 +42,30 @@ namespace query_model
         writer.pair("table", getTable());
         writer.key("objects");
         JSON_LIST(writer);
-        for(const Object& object : getObjects())
+        for(const query_model::InA_dimension & object : getObjects())
         {
             JSON_MAP(writer);
-            writer.pair("name", std::get<0>(object));
-            writer.pair("datatype", std::get<1>(object));
-            writer.pair("aggregation", std::get<2>(object));
+            std::string aggregation;
+            switch(object.getType())
+			{
+				case query_model::InA_dimension::Type::ObjectsDimension:
+				case query_model::InA_dimension::Type::VariableDimension:
+				{
+					aggregation = NO_AGG;
+				}
+				break;
+				case query_model::InA_dimension::Type::MeasuresDimension:
+				{
+                    const InA_member member = *(object.getMembers().begin());
+					aggregation = member.getAggregation();
+				}
+				break;
+				default:
+				break;
+			}
+            writer.pair("name", object.getName());
+            writer.pair("datatype", object.getDatatype());
+            writer.pair("aggregation", aggregation);
         }
     }
 
