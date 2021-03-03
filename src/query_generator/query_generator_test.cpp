@@ -12,12 +12,14 @@ int main()
 	query_model::InA_query_model queryModel;
 
 	queryModel.setTable("MyTable");
-	query_model::InA_dimension dimensionA("col_A", query_model::InA_dimension::Type::ObjectsDimension, "String");
+	query_model::InA_dimension dimensionA("col_A", "Rows");
 	queryModel.addDimension(dimensionA);
-	query_model::InA_dimension dimensionB("col_B", query_model::InA_dimension::Type::ObjectsDimension, "String");
+	
+	query_model::InA_dimension dimensionB("col_B", "Rows");
 	queryModel.addDimension(dimensionB);
-	query_model::InA_dimension dimensionMeasure("col_C", query_model::InA_dimension::Type::MeasuresDimension, "String");
-	query_model::InA_member measure1("col_C", "Integer", "SUM");
+	
+	query_model::InA_dimension dimensionMeasure("CustomDimension1", "Rows");
+	query_model::InA_member measure1("col_C", "SUM");
 	dimensionMeasure.addMember(measure1);
 	queryModel.addDimension(dimensionMeasure);
 

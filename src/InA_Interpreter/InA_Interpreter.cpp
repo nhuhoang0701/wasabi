@@ -69,37 +69,57 @@ namespace ina_interpreter
 		if(topElement.haveValue("Batch"))
 		{
 			// std::cout << "InA_Interpreter => Process 'Batch' InA request" << std::endl;
-			auto& batch = topElement.getArray("Batch");
+			const auto& batch = topElement.getArray("Batch");
 			JSON_LIST(writer);
 			for(int i = 0;i < batch.size();i++)
 			{
 				processRequest(batch[i], writer);
 			}
 		}
-		else if(topElement.haveValue("Metadata"))
+		if(const auto& metadata = topElement.getObject("Metadata"))
 		{
-			// std::cout << "InA_Interpreter => Process 'Metadata' InA request" << std::endl;
-			writer.value("Process 'Metadata' InA request");
-			
-			static std::string static_str_response;
-			if(static_str_response.empty() )
-			{
-				std::ifstream ifs("../resources/response_getResponse_Metadat_expand_cube_catalog.json");
-				if(ifs.is_open() )
-					static_str_response = std::string((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
-				else
-					throw std::runtime_error("Could not open file ../resources/response_getResponse_Metadat_expand_cube_catalog.json");
-			}
-			return static_str_response.c_str();
+			return processMetadataRequest(topElement.getObject("Metadata"));
 		}
-		else if(topElement.haveValue("Analytics"))
+		if(const auto& analytics = topElement.getObject("Analytics"))
 		{
-			JSON_LIST(writer);
-			// std::cout << "InA_Interpreter => Process 'Analytics' InA request" << std::endl;
-			writer.value("Process 'Analytics' InA request");
+			query_model::InA_query_model queryModel;
+			parseAnalyticsRequest(topElement.getObject("Analytics"), queryModel);
 
-			auto& analytics = topElement.getObject("Analytics");
-			processAnalyticsRequest(analytics, writer);
+			const query_generator::query_generator& queryGen = query_generator::query_generator(queryModel);
+			
+			const std::string sql = queryGen.getSQL();
+			std::cout << "InA_Interpreter => Generated SQL: " << sql << std::endl;
+			writer.value("SQL = " + sql);
+
+			cube::Cube cube;
+			queryGen.prepareCube(cube);
+
+			if(!queryModel.getCnxString().empty() )
+			{
+				std::shared_ptr<dbproxy::DBProxy> dbProxy = dbproxy::DBProxy::getDBProxy(queryModel.getCnxString());
+				if(!dbProxy.get())
+					throw std::ios_base::failure("No database connection");
+
+				std::shared_ptr<metadata::Catalog> catalog = std::shared_ptr<metadata::Catalog>(new metadata::Catalog(*dbProxy));
+
+				const metadata::TableDescr& tableDescr = dbProxy->getTableDescr(queryModel.getTable());
+				const std::vector<metadata::ColumnDescr>& cols = tableDescr.getColumnsDescr();
+				size_t line = 0;
+				std::ostringstream results;
+				std::function<void(const dbproxy::Row&)> lambda = [&cols, &line, &results, &cube](const dbproxy::Row& row)
+				{
+					cube.insertRow(row);
+					for(int i = 0;i < row.size(); i++)
+					{
+						results << "  " << std::setw(10) << row[i].getString() << "  |  ";
+					}
+					results << std::endl;
+					line++;
+				};
+				dbProxy->executeSQL(sql, &lambda);
+				std::cout << "InA_Interpreter => Results of SQL execution : " << std::endl  << results.str() << std::endl;
+				writer.value("Results = " + results.str());
+			}			
 		}
 		else
 		{
@@ -109,35 +129,17 @@ namespace ina_interpreter
 		return nullptr;
 	}
 
-	void processAnalyticsRequest(const JSONGenericObject& analytics, JSONWriter& writer)
+	void parseAnalyticsRequest(const JSONGenericObject& analytics, query_model::InA_query_model& queryModel)
 	{
-		query_model::InA_query_model queryModel;
-		cube::Cube cube;
-
-		std::shared_ptr<dbproxy::DBProxy> dbProxy;
-		std::shared_ptr<Catalog> catalog;
-
 		// parse connectionString
 		if(const auto& datasource = analytics.getObject("DataSource"))
 		{
 			if(datasource.haveValue("ObjectName"))
-			{
 				queryModel.setTable(datasource.getString("ObjectName"));
-			}
-			if(const auto& props = datasource.getObject("CustomProperties"))
-			{
-				if(props.haveValue("cnxString"))
-				{
-					dbProxy = dbproxy::DBProxy::getDBProxy(props.getString("cnxString"));
-					if(!dbProxy.get())
-					{
-						throw std::ios_base::failure("No database connection");
-					}
 
-					if(dbProxy)
-						catalog = std::shared_ptr<Catalog>(new Catalog(*dbProxy));
-				}
-			}
+			if(const auto& props = datasource.getObject("CustomProperties"))
+				if(props.haveValue("cnxString"))
+					queryModel.setCnxString(props.getString("cnxString"));
 		}
 		// parse dimensions/measures
 		if(const auto& definition = analytics.getObject("Definition"))
@@ -146,27 +148,17 @@ namespace ina_interpreter
 			{
 				for(int i = 0;i < dims.size();i++)
 				{
-					const std::string& dimensionName = dims[i].getString("Name");
-					// std::cout << "InA_Interpreter => requested dimension " << dim << std::endl;
-					query_model::Datatype datatype = "";
-					query_model::Aggregation aggregation = "";
-					
-					if(catalog)
+					const auto& dim = dims[i];
+					query_model::InA_dimension dimensionObj(dim.getString("Name"), dim.getString("Axis"));
+
+					if(const auto& members = dim.getArray("Members"))
 					{
-						const Table& table = catalog->getTable(queryModel.getTable());
-						const auto& col = table.getColumn(dimensionName);
-						datatype = query_model::InA_query_model::getModelDatatype(col.getDataType());
-						aggregation = query_model::InA_query_model::getModelAggregation(col.getAggregation());
-						if(aggregation.empty())
+						for(int i = 0;i < members.size();i++)
 						{
-							query_model::InA_dimension dimension(dimensionName, query_model::InA_dimension::Type::ObjectsDimension, datatype);
-							queryModel.addDimension(dimension);
-						}
-						else
-						{
-							query_model::InA_dimension dimensionMeasure(dimensionName, query_model::InA_dimension::Type::MeasuresDimension, datatype);
-							query_model::InA_member measure1(dimensionName, datatype, aggregation);
-							queryModel.addDimension(dimensionMeasure);
+							const auto& member = members[i];
+							const std::string agg = member.haveValue("Aggregation")? member.getString("Aggregation") : "";
+							const std::string name = member.getObject("MemberOperand")? member.getObject("MemberOperand").getString("Name") : member.getString("Name");
+							dimensionObj.addMember(query_model::InA_member(name, agg));
 						}
 					}
 				}
@@ -186,34 +178,20 @@ namespace ina_interpreter
 			}
 		}
 
-		std::cout << "InA_Interpreter => QueryModel: " << queryModel << std::endl;
+	}
 
-		const query_generator::query_generator& queryGen = query_generator::query_generator(queryModel);
-		const std::string sql = queryGen.getSQL();
-		std::cout << "InA_Interpreter => Generated SQL: " << sql << std::endl;
-		writer.value("SQL = " + sql);
-
-		queryGen.prepareCube(cube);
-
-		if(dbProxy)
+	const char* processMetadataRequest(const JSONGenericObject& object)
+	{
+		// std::cout << "InA_Interpreter => Process 'Metadata' InA request" << std::endl;
+		static std::string static_str_response;
+		if(static_str_response.empty() )
 		{
-			const TableDescr& tableDescr = dbProxy->getTableDescr(queryModel.getTable());
-			const std::vector<ColumnDescr>& cols = tableDescr.getColumnsDescr();
-			size_t line = 0;
-			std::ostringstream results;
-			std::function<void(const Row&)> lambda = [&cols, &line, &results, &cube](const Row& row)
-			{
-				cube.insertRow(row);
-				for(int i = 0;i < row.size(); i++)
-				{
-					results << "  " << std::setw(10) << row[i].getString() << "  |  ";
-				}
-				results << std::endl;
-				line++;
-			};
-			dbProxy->executeSQL(sql, &lambda);
-			std::cout << "InA_Interpreter => Results of SQL execution : " << std::endl  << results.str() << std::endl;
-			writer.value("Results = " + results.str());
+			std::ifstream ifs("../resources/response_getResponse_Metadat_expand_cube_catalog.json");
+			if(ifs.is_open() )
+				static_str_response = std::string((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+			else
+				throw std::runtime_error("Could not open file ../resources/response_getResponse_Metadat_expand_cube_catalog.json");
 		}
+		return static_str_response.c_str();
 	}
 }
