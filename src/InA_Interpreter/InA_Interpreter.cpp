@@ -161,17 +161,26 @@ namespace ina_interpreter
 							dimensionObj.addMember(query_model::InA_member(name, agg));
 						}
 					}
+					queryModel.addDimension(dimensionObj);
 				}
 			}
 			if(const auto& subSelections = definition.getObject("DynamicFilter").getObject("Selection").getObject("Operator").getArray("SubSelections"))
 			{
 				for(size_t i = 0; i < subSelections.size(); ++i)
 				{
+					const std::string fieldName = subSelections[i].getObject("SetOperand").getString("FieldName");
 					if(const auto& elements = subSelections[i].getObject("SetOperand").getArray("Elements"))
 					{
 						for(size_t i = 0; i < elements.size(); ++i)
-						{
-							std::cout << "InA_Interpreter => DynamicFilter -> ... -> Low :" << elements[i].getString("Low") << std::endl;
+						{	
+							query_model::InA_queryFilterComparison queryFilterComparison(fieldName);
+							std::string lowValue = elements[i].getString("Low");
+							queryFilterComparison.setLowValue(lowValue);
+
+							query_model::InA_queryFilter::ComparisonOperator comparisonOperator = query_model::InA_queryFilter::getComparator(elements[i].getString("Comparison"));
+							queryFilterComparison.setComparisonOperator(comparisonOperator);
+							queryModel.addQueryFilter(queryFilterComparison);
+							std::cout << "InA_Interpreter => DynamicFilter -> ... -> Low :" << lowValue << std::endl;
 						}
 					}
 				}
