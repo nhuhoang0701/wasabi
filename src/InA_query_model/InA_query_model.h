@@ -4,7 +4,7 @@
 
 #include "InA_member.h"
 #include "InA_dimension.h"
-
+#include "InA_queryFilter.h"
 #include <string>
 #include <vector>
 #include <ostream>
@@ -36,7 +36,9 @@ namespace query_model
 		void addDimension(const InA_dimension & dimension);
 
 		const std::vector<InA_dimension>& getDimensions() const { return m_objs;};
+		const std::vector<InA_member>& getVisibleMembers(const InA_dimension& dimension) const;
 
+		const std::vector<InA_queryFilter>& getQueryFilters() const { return m_filters;};
 
 		void prepareGrid(grid::Grid& grid);
 		
@@ -80,6 +82,7 @@ namespace query_model
 
 	private:
 		std::vector<InA_dimension> m_objs;
+		std::vector<InA_queryFilter> m_filters;
 		std::string m_table;
 		std::string m_cnxString;
 	};
