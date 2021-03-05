@@ -41,11 +41,12 @@ int main()
 		std::function<void(const Row&)> lambda = [&line](const Row& row)
 		{
 			CPPUNIT_ASSERT_EQUAL(row.size(), 1);
+			CPPUNIT_ASSERT_EQUAL(std::stod(row[1].getString()),3.0);
 			line++;
 		};
-		dbProxy->executeSQL("SELECT text FROM " + tableNameStr, &lambda);
+		dbProxy->executeSQL("SELECT sum(real) FROM " + tableNameStr, &lambda);
 		//std::cout << "line:" << line << std::endl;
-		CPPUNIT_ASSERT_EQUAL(line,3);
+		CPPUNIT_ASSERT_EQUAL(line,1);
 	}
 	return TEST_HAVEERROR();
 }
