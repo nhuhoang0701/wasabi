@@ -10,14 +10,14 @@ int main()
 	TEST_INIT();
 
 	// The string parameter is just as example
-	static const std::string cnxStr("local:sqlite:efashion.db");
-	static const std::string tableNameStr("Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma");
+	static const std::string cnxStr("local:sqlite:onetable_datatype.db");
+	static const std::string tableNameStr("onetable_datatype");
 	
 	using namespace dbproxy;
     std::shared_ptr<DBProxy> dbProxy = DBProxy::getDBProxy(cnxStr);
 	
 	const std::vector<TableDescr>& tables = dbProxy->getTables();
-	CPPUNIT_ASSERT_EQUAL(tables.size(),10);
+	CPPUNIT_ASSERT_EQUAL(tables.size(),1);
 	for(const auto& tableDescr : tables)
 	{
 		const std::string& tableName = tableDescr.getName();		
@@ -26,15 +26,11 @@ int main()
 	
 	const TableDescr& tableDescr = dbProxy->getTableDescr(tableNameStr);
 	const std::vector<ColumnDescr>& cols = tableDescr.getColumnsDescr();
-	CPPUNIT_ASSERT_EQUAL(cols.size(),11);
-	CPPUNIT_ASSERT_EQUAL(cols[0].getName(),"agg1_id");
-	CPPUNIT_ASSERT_EQUAL(cols[0].getDataType(),"INT");
-	CPPUNIT_ASSERT_EQUAL(cols[1].getName(),"Yr");
-	CPPUNIT_ASSERT_EQUAL(cols[1].getDataType(),"NVARCHAR (4)");
-	CPPUNIT_ASSERT_EQUAL(cols[2].getName(),"Qtr");
-	CPPUNIT_ASSERT_EQUAL(cols[2].getDataType(),"NVARCHAR (2)");
-	CPPUNIT_ASSERT_EQUAL(cols[3].getName(),"Mth");
-	CPPUNIT_ASSERT_EQUAL(cols[3].getDataType(),"INT");
+	CPPUNIT_ASSERT_EQUAL(cols.size(),2);
+	CPPUNIT_ASSERT_EQUAL(cols[0].getName(),"text");
+	CPPUNIT_ASSERT_EQUAL(cols[0].getDataType(),"TEXT");
+	CPPUNIT_ASSERT_EQUAL(cols[1].getName(),"real");
+	CPPUNIT_ASSERT_EQUAL(cols[1].getDataType(),"REAL");
 	
 	/*
 	{
