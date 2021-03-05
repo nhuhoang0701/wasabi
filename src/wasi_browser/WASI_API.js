@@ -3,6 +3,10 @@
 // Members
 moduleInstanceExports = null;
 
+const  WASI_CLOCKID_REALTIME                          =  0;
+const  WASI_CLOCKID_MONOTONIC                         =  1;
+const  WASI_CLOCKID_PROCESS_CPUTIME_ID                =  2;
+const  WASI_CLOCKID_THREAD_CPUTIME_ID                 =  3;
 
 function clock_res_realtime () {
 			return BigInt(1e6);
@@ -30,7 +34,9 @@ function clock_time_monotonic () {
 const clock_time_process = clock_time_monotonic;
 const clock_time_thread = clock_time_monotonic;
 
-env : { [key: string]: string | undefined };
+// env : { [key: string]: string | undefined };
+env = {};
+//
 
 fs_Path2Data = new Map();
 
