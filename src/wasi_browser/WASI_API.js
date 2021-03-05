@@ -3,6 +3,10 @@
 // Members
 moduleInstanceExports = null;
 
+const  WASI_CLOCKID_REALTIME                          =  0;
+const  WASI_CLOCKID_MONOTONIC                         =  1;
+const  WASI_CLOCKID_PROCESS_CPUTIME_ID                =  2;
+const  WASI_CLOCKID_THREAD_CPUTIME_ID                 =  3;
 
 function clock_res_realtime () {
 			return BigInt(1e6);
@@ -29,6 +33,10 @@ function clock_time_monotonic () {
 
 const clock_time_process = clock_time_monotonic;
 const clock_time_thread = clock_time_monotonic;
+
+// env : { [key: string]: string | undefined };
+env = {};
+//
 
 fs_Path2Data = new Map();
 
@@ -121,6 +129,9 @@ var WASI_API = {
 			var uint8View = new Uint8Array(arrayBuffer);
 			fs_Path2Data.set(paths[i], uint8View);
 		}
+	},
+	wasabi_initEnv : async function(environ) {
+		env = environ ? environ : {} ;
 	},
 	wasabi_log : wasabi_log = function(msg) {
 		if(typeof document !== 'undefined') {
@@ -390,15 +401,34 @@ var WASI_API = {
 	// var env
 	environ_sizes_get: function(environ_size, environ_buf_size) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
+		const entries = Object.entries(env);
+		const text = new TextEncoder();
 		var view = getModuleMemoryDataView();
 
-		view.setUint32(environ_size, 0, !0);
-		view.setUint32(environ_buf_size, 0, !0);
+		view.setUint32(environ_size, entries.length, !0);
+		view.setUint32(environ_buf_size, entries.reduce(function(acc, [key, value]) {
+			return acc + text.encode(`${key}=${value}\0`).length;
+		}, 0), true);
 
 		return WASI_ESUCCESS;
 	},
-	environ_get: function(environ, environ_buf) {
+	environ_get: function(environ_ptr, environ_buf_ptr) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
+		const entries = Object.entries(env);
+		const text = new TextEncoder();
+		const heap = new Uint8Array(this.memory.buffer);
+		var view = getModuleMemoryDataView();
+
+		for (let [key, value] of entries) {
+			view.setUint32(environ_ptr, environ_buf_ptr, true);
+			environ_ptr += 4;
+
+			const data = text.encode(`${key}=${value}\0`);
+			heap.set(data, environ_buf_ptr);
+			environ_buf_ptr += data.length;
+		}
+
+		return WASI_ESUCCESS;
 	},
 	
 	//*************************************************************
