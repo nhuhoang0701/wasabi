@@ -23,6 +23,9 @@ add_executable(C_libc C_libc.c)
 add_executable(C_read C_read.c)
 add_executable(C_write C_write.c)
 add_executable(C_nolib C_nolib.c)
+add_executable(C_clock_monotonic C_clock_monotonic.c)
+add_executable(C_clock_realtime C_clock_realtime.c)
+add_executable(C_clock_process C_clock_process.c)
 #add_executable(C_libc_dl C_libc_dl.c)
 
 ## [installation]
@@ -36,7 +39,9 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/resources/text.txt DESTINATION ${WASAB
 
 add_test(NAME C_nolib COMMAND C_nolib)
 add_test(NAME C_libc COMMAND C_libc --dir=../resources/  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources)
-add_test(NAME C_read COMMAND C_read --dir=../resources/  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources)
+add_test(NAME C_clock_monotonic COMMAND C_clock_monotonic --dir=../resources/  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources)
+add_test(NAME C_clock_realtime COMMAND C_clock_realtime --dir=../resources/  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources)
+add_test(NAME C_clock_process COMMAND C_clock_process --dir=../resources/  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources)
 add_test(NAME C_write COMMAND C_write --dir=../resources/  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
