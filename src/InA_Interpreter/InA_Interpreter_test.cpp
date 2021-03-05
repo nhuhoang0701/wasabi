@@ -38,10 +38,22 @@ void getServerInfo()
 
 void getResponse()
 {
+    const char* response = nullptr;
+	std::string request;
+
     std::cout << "--------------------- getResponse ---------------------" << std::endl;
 
-    const char* response;
-    std::string request = R"({"Metadata":{"Expand":["Cubes"]}})";
+    request = R"({"Metadata":{"DataSource": {"ObjectName": "$$DataSource$$"}, "Expand":["Cubes"]}})";
+
+    // std::cout << "InA_Interpreter_test => request: json_getResponse_json " << request << std::endl;
+
+    response = json_getResponse_json(request.c_str());
+
+    CPPUNIT_ASSERT(!std::string(response).empty());
+    // std::cout << "InA_Interpreter_test => response: " << response << std::endl;
+    std::cout << "--------------------- getResponse ---------------------" << std::endl;
+
+    request = R"({"Metadata":{"DataSource": {"ObjectName": "Article_Color_Lookup"}, "Expand":["Cubes"]}})";
 
     // std::cout << "InA_Interpreter_test => request: json_getResponse_json " << request << std::endl;
 
@@ -75,7 +87,7 @@ void getResponse()
 
     std::cout << "------------------------" << std::endl << std::endl;
 
-    request = R"({"Batch": [{"Metadata": {  }},{"Analytics": {}},{"Analytics": {}}]})";
+    request = R"({"Batch": [{"Metadata":{"DataSource": {"ObjectName": "$$DataSource$$"}, "Expand":["Cubes"]}},{"Analytics": {}},{"Analytics": {}}]})";
 
     // std::cout << "InA_Interpreter_test => request: json_getResponse_json " << request << std::endl;
 
@@ -86,8 +98,7 @@ void getResponse()
 
     std::cout << "------------------------" << std::endl << std::endl;
 
-    request = R"({"Analytics":{"DataSource":{"CustomProperties":{"cnxString":"local:sqlite:efashion.db"},
-            "ObjectName":"Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma","PackageName":"","Type":"sqlite"},"Definition":{"Description":"Order count",
+    request = R"({"Analytics":{"DataSource":{"ObjectName":"Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma","PackageName":"local:sqlite:efashion.db","Type":"sqlite"},"Definition":{"Description":"Order count",
             "Dimensions":[{"Name":"Yr","Axis":"Rows"},{"Name":"Qtr","Axis":"Rows"},{"Name":"Sales_revenue","Axis":"Rows"}],
             "DataSource":{"PackageName":"liquid-sqe","ObjectName":"LIQUID_SALES_AV1"},"Name":"Query35",
             "ReadMode":"BookedAndSpaceAndState"}},"Description":"Order count","Name":"QMDS0035",
