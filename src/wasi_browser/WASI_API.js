@@ -435,7 +435,7 @@ var WASI_API = {
 	// Clock
 	
 	clock_res_get: function (clock_id, resolution_out) {
-		const view = new DataView(this.memory.buffer);
+		var view = getModuleMemoryDataView();
 
 		switch (clock_id) {
 			case WASI_CLOCKID_REALTIME:
