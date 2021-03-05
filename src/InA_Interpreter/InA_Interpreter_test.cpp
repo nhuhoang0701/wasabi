@@ -87,7 +87,7 @@ void getResponse()
 
     std::cout << "------------------------" << std::endl << std::endl;
 
-    request = R"({"Batch": [{"Metadata":{"DataSource": {"ObjectName": "$$DataSource$$"}, "Expand":["Cubes"]}},{"Analytics": {}},{"Analytics": {}}]})";
+    request = R"({"Batch": [{"Metadata":{"DataSource": {"ObjectName": "$$DataSource$$","PackageName":"local:sqlite:efashion.db"}, "Expand":["Cubes"]}},{"Analytics": {}},{"Analytics": {}}]})";
 
     // std::cout << "InA_Interpreter_test => request: json_getResponse_json " << request << std::endl;
 
