@@ -433,6 +433,34 @@ var WASI_API = {
 	
 	//*************************************************************
 	// Clock
+	
+	clock_res_get: function (clock_id, resolution_out) {
+		var view = getModuleMemoryDataView();
+
+		switch (clock_id) {
+			case WASI_CLOCKID_REALTIME:
+				view.setBigUint64(resolution_out, clock_res_realtime(), true);
+				break;
+
+			case WASI_CLOCKID_MONOTONIC:
+				view.setBigUint64(resolution_out, clock_res_monotonic(), true);
+				break;
+
+			case WASI_CLOCKID_PROCESS_CPUTIME_ID:
+				view.setBigUint64(resolution_out, clock_res_process(), true);
+				break;
+
+			case WASI_CLOCKID_THREAD_CPUTIME_ID:
+				view.setBigUint64(resolution_out, clock_res_thread(), true);
+				break;
+
+			default:
+				return WASI_INVAL;
+
+		}
+
+		return WASI_ESUCCESS;
+	},
 	clock_time_get: function(clock_id, precision, time) {
 		console.log("WASI:" + arguments.callee.name + " " + Array.prototype.slice.call(arguments));
 		var view = getModuleMemoryDataView();
