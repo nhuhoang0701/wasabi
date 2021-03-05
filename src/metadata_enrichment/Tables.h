@@ -64,7 +64,7 @@ namespace wasabi{
     class Catalog
 	{
     public:
-      Catalog( const DBProxy& theConnection);
+      Catalog(const std::string& cnxString);
       Catalog(const Catalog&)=delete;
       Catalog& operator=(const Catalog&) = delete;
 

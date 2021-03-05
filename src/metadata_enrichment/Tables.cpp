@@ -95,10 +95,13 @@ namespace wasabi{
       sort(theNames.begin(), theNames.end());
     }
 	
-    Catalog::Catalog(const dbproxy::DBProxy& theProxy)
+    Catalog::Catalog(const std::string& cnxString)
 		:itsPimpl(new utils::CatalogImpl())
 	{
-      retrieveTables(theProxy,itsPimpl->itsTableNames,itsPimpl->itsTables);
+	  std::shared_ptr<dbproxy::DBProxy> theProxy = dbproxy::DBProxy::getDBProxy(cnxString);
+		if(!theProxy.get())
+			throw std::ios_base::failure("No database connection");
+      retrieveTables(*theProxy,itsPimpl->itsTableNames,itsPimpl->itsTables);
     }
     Catalog::~Catalog()
 	{
@@ -116,7 +119,7 @@ namespace wasabi{
 	  {
         return *(aIt->second);
       }
-      throw out_of_range("table not found");
+      throw out_of_range(string("table not found: ") + string(theName));
     };
     void Catalog::write(JSONWriter& theWriter)const
 	{

@@ -96,17 +96,9 @@ namespace ina_interpreter
 
 			if(!queryModel.getCnxString().empty() )
 			{
-				std::shared_ptr<dbproxy::DBProxy> dbProxy = dbproxy::DBProxy::getDBProxy(queryModel.getCnxString());
-				if(!dbProxy.get())
-					throw std::ios_base::failure("No database connection");
-
-				std::shared_ptr<metadata::Catalog> catalog = std::shared_ptr<metadata::Catalog>(new metadata::Catalog(*dbProxy));
-
-				const metadata::TableDescr& tableDescr = dbProxy->getTableDescr(queryModel.getTable());
-				const std::vector<metadata::ColumnDescr>& cols = tableDescr.getColumnsDescr();
 				size_t line = 0;
 				std::ostringstream results;
-				std::function<void(const dbproxy::Row&)> lambda = [&cols, &line, &results, &cube](const dbproxy::Row& row)
+				std::function<void(const dbproxy::Row&)> lambda = [&line, &results, &cube](const dbproxy::Row& row)
 				{
 					cube.insertRow(row);
 					for(int i = 0;i < row.size(); i++)
@@ -116,7 +108,8 @@ namespace ina_interpreter
 					results << std::endl;
 					line++;
 				};
-				dbProxy->executeSQL(sql, &lambda);
+
+				dbproxy::DBProxy::getDBProxy(queryModel.getCnxString())->executeSQL(sql, &lambda);
 				std::cout << "InA_Interpreter => Results of SQL execution : " << std::endl  << results.str() << std::endl;
 				writer.value("Results = " + results.str());
 			}			
@@ -134,12 +127,10 @@ namespace ina_interpreter
 		// parse connectionString
 		if(const auto& datasource = analytics.getObject("DataSource"))
 		{
+			if(datasource.haveValue("PackageName"))
+				queryModel.setCnxString(datasource.getString("PackageName"));
 			if(datasource.haveValue("ObjectName"))
 				queryModel.setTable(datasource.getString("ObjectName"));
-
-			if(const auto& props = datasource.getObject("CustomProperties"))
-				if(props.haveValue("cnxString"))
-					queryModel.setCnxString(props.getString("cnxString"));
 		}
 		// parse dimensions/measures
 		if(const auto& definition = analytics.getObject("Definition"))
@@ -180,18 +171,59 @@ namespace ina_interpreter
 
 	}
 
-	const char* processMetadataRequest(const JSONGenericObject& object)
+	const char* processMetadataRequest(const JSONGenericObject& metadata)
 	{
-		// std::cout << "InA_Interpreter => Process 'Metadata' InA request" << std::endl;
-		static std::string static_str_response;
-		if(static_str_response.empty() )
+		std::string dataSourceName;
+		if(const auto& datasource = metadata.getObject("DataSource"))
+			if(datasource.haveValue("ObjectName"))
+				dataSourceName = datasource.getString("ObjectName");
+		std::string cnxString;
+		if(const auto& packageName = metadata.getObject("PackageName"))
+			if(packageName.haveValue("ObjectName"))
+				cnxString = packageName.getString("PackageName");
+
+		
+		if(const JSONGenericObject& expand = metadata.getArray("Expand"))
 		{
-			std::ifstream ifs("../resources/response_getResponse_Metadat_expand_cube_catalog.json");
-			if(ifs.is_open() )
-				static_str_response = std::string((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
-			else
-				throw std::runtime_error("Could not open file ../resources/response_getResponse_Metadat_expand_cube_catalog.json");
+			bool expandCube = false;
+			for(size_t i = 0; i < expand.size() ; i ++ )
+			{
+				if(expand.getString(i) == "Cubes")
+				{
+					expandCube = true;
+					break;
+				}
+			}
+
+			if(expandCube)
+			{
+				static std::string static_str_response;
+				if(dataSourceName == "$$DataSource$$" )
+				{
+					if(static_str_response.empty() )
+					{
+						std::ifstream ifs("../resources/response_getResponse_Metadat_expand_cube_catalog.json");
+						if(ifs.is_open() )
+							static_str_response = std::string((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+						else
+							throw std::runtime_error("Could not open file ../resources/response_getResponse_Metadat_expand_cube_catalog.json");
+					}
+					return static_str_response.c_str();
+				}
+				else
+				{
+					//TODO: Where will come from the cnx string in the InA
+					std::shared_ptr<metadata::Catalog> catalog = std::shared_ptr<metadata::Catalog>(new metadata::Catalog("local:sqlite:efashion.db"));
+					
+					const auto& colNames = catalog->getTable(dataSourceName).getColumnNames();
+					static_str_response += "|\t";
+					for(const auto& colName : colNames)
+						static_str_response += "\t|";
+					return static_str_response.c_str();
+				}
+			}
 		}
-		return static_str_response.c_str();
+
+		throw std::runtime_error("Error: unsupported InA request");
 	}
 }
