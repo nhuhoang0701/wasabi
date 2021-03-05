@@ -41,5 +41,6 @@ install(TARGETS dbproxy sqlite
 		LIBRARY DESTINATION ${WASABI_LIBS}
 		PUBLIC_HEADER DESTINATION ${WASABI_INCLUDES})
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/sqlite/efashion/efashion.db DESTINATION ${WASABI_ROOT_DIR}/src/wasi_browser/sqlite/efashion)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/sqlite/onetable_datatype/onetable_datatype.db DESTINATION ${WASABI_ROOT_DIR}/src/wasi_browser/sqlite/onetable_datatype)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
