@@ -3,6 +3,18 @@
 #include "onetable_datatype/createtable.h"
 #include "onetable_datatype/table_onetable_datatype.h"
 
+#include "efashion/createtables.h"
+#include "efashion/table_Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma.h"
+#include "efashion/table_Agg_yr_qt_rn_st_ln_ca_sr.h"
+#include "efashion/table_Article_Color_Lookup.h"
+#include "efashion/table_Article_lookup.h"
+#include "efashion/table_Article_Lookup_Criteria.h"
+#include "efashion/table_Calendar_year_lookup.h"
+#include "efashion/table_Outlet_Lookup.h"
+#include "efashion/table_product_promotion_facts.h"
+#include "efashion/table_promotion_lookup.h"
+#include "efashion/table_Shop_facts.h"
+
 #include <sqlite3.h>
 
 #include <iostream>
@@ -13,6 +25,7 @@ namespace dbproxy
 	DBSQLite::DBSQLite(const std::string& dbname)
 	: DBProxy()
 	{
+		std::cout << "dbname:" << dbname << std::endl;
 		int res = 0;
 		if(useDBFile)
 			res = sqlite3_open_v2("../sqlite/onetable_datatype/onetable_datatype.db", &m_sqlite_db, SQLITE_OPEN_READONLY, nullptr);
@@ -32,10 +45,33 @@ namespace dbproxy
 			//***********************************************************
 			// Create a DB on the fly with a SQL , waiting WASI read file
 			
-			// Create the table
-			executeSQL(createOneTableSQL, nullptr);
-			// insert data
-			executeSQL(data_onetable_datatype, nullptr);
+			if(dbname == "onetable_datatype.db")
+			{
+				// Create the table
+				executeSQL(createOneTableSQL, nullptr);
+				// insert data
+				executeSQL(data_onetable_datatype, nullptr);
+			}
+			else if(dbname == "efashion.db")
+			{
+				// Create the tables
+				executeSQL(createFashionTablesSQL, nullptr);
+				// insert data				// insert data
+				executeSQL(data_Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma, nullptr);
+				executeSQL(data_Agg_yr_qt_rn_st_ln_ca_sr, nullptr);
+				executeSQL(data_Article_Color_Lookup, nullptr);
+				executeSQL(data_Article_lookup, nullptr);
+				executeSQL(data_Article_Lookup_Criteria, nullptr);
+				executeSQL(data_Calendar_year_lookup, nullptr);
+				executeSQL(data_Outlet_Lookup, nullptr);
+				executeSQL(data_product_promotion_facts, nullptr);
+				executeSQL(data_promotion_lookup, nullptr);
+				executeSQL(data_Shop_facts, nullptr);
+			}
+			else
+			{
+				throw std::runtime_error("Unknow dbname: '"  + dbname + "'");
+			}
 		}
 
 		//***********************************************************
