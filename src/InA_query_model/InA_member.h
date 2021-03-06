@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace query_model
+namespace ina::query_model
 {
 	typedef std::string Datatype;
 	typedef std::string Aggregation;

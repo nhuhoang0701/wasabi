@@ -2,7 +2,7 @@
 
 #include <exceptions/InA_Exception.h>
 
-namespace InA_DataSource
+namespace ina::query_model
 {
 	std::string DataSource::toString(DataSource::Type type)
 	{

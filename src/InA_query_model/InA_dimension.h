@@ -1,8 +1,11 @@
 #pragma once
+
+#include "InA_member.h"
+
 #include <string>
 #include <vector>
-#include "InA_member.h"
-namespace query_model
+
+namespace ina::query_model
 {
 	class InA_dimension
 	{

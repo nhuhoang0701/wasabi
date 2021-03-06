@@ -2,7 +2,7 @@
 
 #include <json/jsonReader.h>    // For JSONGenericObject
 
-namespace InA_DataSource
+namespace ina::query_model
 {
 	void read(DataSource &ds, const JSONGenericObject& dataSource)
 	{

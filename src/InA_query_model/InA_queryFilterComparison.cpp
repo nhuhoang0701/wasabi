@@ -1,7 +1,7 @@
 #include "InA_queryFilterComparison.h"
 #include <string>
 
-namespace query_model 
+namespace ina::query_model 
 {
         InA_queryFilterComparison::InA_queryFilterComparison(const std::string& fieldName) 
             : _fieldName(fieldName)

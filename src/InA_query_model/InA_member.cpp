@@ -1,6 +1,6 @@
 #include "InA_member.h"
 			
-namespace query_model
+namespace ina::query_model
 {
 	InA_member::InA_member(const std::string & name, const Aggregation & aggregation) :
 	_name(name), _aggregation(aggregation)

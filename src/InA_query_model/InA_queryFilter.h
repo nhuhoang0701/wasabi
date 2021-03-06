@@ -1,8 +1,11 @@
 #pragma once
+
 #include <string>
-namespace query_model
+
+namespace ina::query_model
 {
-    class InA_queryFilter {
+    class InA_queryFilter
+	{
         public:
             enum LogicalOperator
             {

@@ -9,8 +9,8 @@ project(InA_query_model VERSION 1.0)
   
 ################################################
 # InA_query_model
-add_library(InA_query_model InA_query_model.cpp InA_member.cpp InA_dimension.cpp InA_queryFilter.cpp InA_queryFilterComparison.cpp InA_DataSource.cpp InA_DataSourceReader.cpp InA_DataSourceWriter.cpp)
-set_target_properties(InA_query_model PROPERTIES PUBLIC_HEADER InA_query_model.h)
+add_library(InA_query_model InA_queryDefinition.cpp InA_member.cpp InA_dimension.cpp InA_queryFilter.cpp InA_queryFilterComparison.cpp InA_DataSource.cpp InA_DataSourceReader.cpp InA_DataSourceWriter.cpp InA_query.cpp InA_queryDefinitionReader.cpp)
+set_target_properties(InA_query_model PROPERTIES PUBLIC_HEADER InA_query.h)
 
 target_include_directories(InA_query_model PUBLIC ${WASABI_INCLUDES}})
 target_link_libraries(InA_query_model PUBLIC exceptions metadata_enrichment)
