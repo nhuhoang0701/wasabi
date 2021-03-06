@@ -99,8 +99,6 @@ namespace wasabi{
 		:itsPimpl(new utils::CatalogImpl())
 	{
 	  std::shared_ptr<dbproxy::DBProxy> theProxy = dbproxy::DBProxy::getDBProxy(cnxString);
-		if(!theProxy.get())
-			throw std::ios_base::failure("No database connection");
       retrieveTables(*theProxy,itsPimpl->itsTableNames,itsPimpl->itsTables);
     }
     Catalog::~Catalog()
