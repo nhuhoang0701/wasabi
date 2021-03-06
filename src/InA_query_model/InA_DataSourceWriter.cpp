@@ -2,7 +2,7 @@
 
 #include <json/jsonWriter.h>
 
-namespace InA_DataSource
+namespace ina::query_model
 {
 	void write(const DataSource& ds, JSONWriter& writer)
 	{

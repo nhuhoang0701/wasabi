@@ -2,7 +2,7 @@
 #include "InA_queryFilter.h"
 #include <string>
 
-namespace query_model 
+namespace ina::query_model 
 {
 	class InA_queryFilterComparison : public InA_queryFilter
     {

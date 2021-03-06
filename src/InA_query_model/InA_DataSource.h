@@ -7,7 +7,7 @@
 class JSONGenericObject; // From <json/jsonReader.h>
 class JSONWriter;        // From <json/jsonWriter.h>
 
-namespace InA_DataSource
+namespace ina::query_model
 {
 	class DataSource;
 
