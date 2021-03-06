@@ -1,20 +1,20 @@
-#include "InA_query_model.h"
+#include "InA_queryDefinition.h"
 
 #include <iostream>
 
-namespace query_model
+namespace ina::query_model
 {
-    void InA_query_model::addDimension(const InA_dimension& dimension)
+    void Definition::addDimension(const InA_dimension& dimension)
     {
         m_objs.push_back(dimension);
     }
 
-    void InA_query_model::addQueryFilter(const InA_queryFilterComparison& queryFilter)
+    void Definition::addQueryFilter(const InA_queryFilterComparison& queryFilter)
     {
         m_filters.push_back(queryFilter);
     }
 
-    const std::vector<InA_member>& InA_query_model::getVisibleMembers(const InA_dimension& dimension, std::vector<InA_member> & visibleMembers) const 
+    const std::vector<InA_member>& Definition::getVisibleMembers(const InA_dimension& dimension, std::vector<InA_member> & visibleMembers) const 
     {
         std::vector<InA_member>::const_iterator pMemberIterator;
         for(pMemberIterator = dimension.getMembers().begin(); pMemberIterator != dimension.getMembers().end(); ++ pMemberIterator)

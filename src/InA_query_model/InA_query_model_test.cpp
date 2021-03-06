@@ -1,4 +1,6 @@
-#include "InA_query_model.h"
+#include "InA_query.h"
+#include "InA_queryDefinition.h"
+#include "InA_DataSource.h"
 
 #include <test_tools/TestAssert.h>
 
@@ -9,26 +11,25 @@
 int main()
 {
 	TEST_INIT();
+	
+	ina::query_model::Query query;
 
-	InA_DataSource::DataSource ds;
+	ina::query_model::DataSource ds;
 	ds.setObjectName("MyTable");
 	
-	query_model::InA_query_model queryModel;
-	queryModel.setDataSource(ds);
+	ina::query_model::Definition definition;
 
-	query_model::InA_dimension dimensionA("Dim_A", "Rows");
-	queryModel.addDimension(dimensionA);
-	query_model::InA_dimension dimensionB("Dim_B", "Rows");
-	queryModel.addDimension(dimensionB);
-	query_model::InA_dimension dimensionMeasure("Meas_1", "Rows");
-	query_model::InA_member measure1("Meas_1", "Sum");
-	dimensionMeasure.addMember(measure1);
-	queryModel.addDimension(dimensionMeasure);
+	definition.addDimension(ina::query_model::InA_dimension("Dim_A", "Rows"));
+	definition.addDimension(ina::query_model::InA_dimension("Dim_B", "Rows"));
+	
+	ina::query_model::InA_dimension dimensionMeasure("Meas_1", "Rows");
+	dimensionMeasure.addMember(ina::query_model::InA_member("Meas_1", "Sum"));
+	definition.addDimension(dimensionMeasure);
 
-	CPPUNIT_ASSERT_EQUAL("MyTable", queryModel.getDataSource().getObjectName());
-	CPPUNIT_ASSERT_EQUAL(3, queryModel.getDimensions().size());
-	CPPUNIT_ASSERT_EQUAL("Dim_A", queryModel.getDimensions()[0].getName());
-	CPPUNIT_ASSERT_EQUAL("Sum", queryModel.getDimensions()[2].getMembers()[0].getAggregation());
+	CPPUNIT_ASSERT_EQUAL("MyTable", ds.getObjectName());
+	CPPUNIT_ASSERT_EQUAL(3, definition.getDimensions().size());
+	CPPUNIT_ASSERT_EQUAL("Dim_A", definition.getDimensions()[0].getName());
+	CPPUNIT_ASSERT_EQUAL("Sum", definition.getDimensions()[2].getMembers()[0].getAggregation());
 
 	return TEST_HAVEERROR();
 }
