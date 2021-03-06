@@ -43,7 +43,7 @@ void getResponse()
 
     std::cout << "--------------------- getResponse ---------------------" << std::endl;
 
-    request = R"({"Metadata":{"DataSource": {"ObjectName": "$$DataSource$$"}, "Expand":["Cubes"]}})";
+    request = R"({"Metadata":{"DataSource": {"ObjectName": "$$DataSource$$","PackageName":"local:sqlite:onetable_datatype.db"}, "Expand":["Cubes"]}})";
 
     // std::cout << "InA_Interpreter_test => request: json_getResponse_json " << request << std::endl;
 
@@ -53,7 +53,7 @@ void getResponse()
     // std::cout << "InA_Interpreter_test => response: " << response << std::endl;
     std::cout << "--------------------- getResponse ---------------------" << std::endl;
 
-    request = R"({"Metadata":{"DataSource": {"ObjectName": "Article_Color_Lookup"}, "Expand":["Cubes"]}})";
+    request = R"({"Metadata":{"DataSource": {"ObjectName": "onetable_datatype","PackageName":"local:sqlite:onetable_datatype.db"}, "Expand":["Cubes"]}})";
 
     // std::cout << "InA_Interpreter_test => request: json_getResponse_json " << request << std::endl;
 
@@ -87,7 +87,7 @@ void getResponse()
 
     std::cout << "------------------------" << std::endl << std::endl;
 
-    request = R"({"Batch": [{"Metadata":{"DataSource": {"ObjectName": "$$DataSource$$","PackageName":"local:sqlite:efashion.db"}, "Expand":["Cubes"]}},{"Analytics": {}},{"Analytics": {}}]})";
+    request = R"({"Batch": [{"Metadata":{"DataSource": {"ObjectName": "$$DataSource$$","PackageName":"local:sqlite:onetable_datatype.db"}, "Expand":["Cubes"]}},{"Analytics": {}},{"Analytics": {}}]})";
 
     // std::cout << "InA_Interpreter_test => request: json_getResponse_json " << request << std::endl;
 
@@ -98,9 +98,9 @@ void getResponse()
 
     std::cout << "------------------------" << std::endl << std::endl;
 
-    request = R"({"Analytics":{"DataSource":{"ObjectName":"Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma","PackageName":"local:sqlite:efashion.db","Type":"sqlite"},"Definition":{"Description":"Order count",
-            "Dimensions":[{"Name":"Yr","Axis":"Rows"},{"Name":"Qtr","Axis":"Rows"},{"Name":"Sales_revenue","Axis":"Rows"}],
-            "DataSource":{"PackageName":"liquid-sqe","ObjectName":"LIQUID_SALES_AV1"},"Name":"Query35",
+    request = R"({"Analytics":{"DataSource":{"ObjectName":"onetable_datatype","PackageName":"local:sqlite:onetable_datatype.db","Type":"Wasabi"},"Definition":{"Description":"Order count",
+            "Dimensions":[{"Name":"text","Axis":"Rows"},{"Name":"varchar","Axis":"Rows"},{"Name":"real","Axis":"Rows"}]
+            ,"Name":"Query35",
             "ReadMode":"BookedAndSpaceAndState"}},"Description":"Order count","Name":"QMDS0035",
             "TestNumber":66})";
 

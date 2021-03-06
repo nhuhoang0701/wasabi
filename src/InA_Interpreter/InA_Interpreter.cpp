@@ -1,12 +1,16 @@
 #include "InA_Interpreter.h"
 
 #include <InA_query_model/InA_query_model.h>
+#include <InA_query_model/InA_DataSource.h>
+
 #include <query_generator/query_generator.h>
+
 #include <dbproxy/dbproxy.h>
+
 #include <metadata_enrichment/Tables.h>
+
 #include <cube/cube.h>
 
-#include "server_info_response.h"
 
 #include <fstream>      // std::ifstream
 #include <sstream>
@@ -36,7 +40,7 @@ const char* json_getServerInfo()
 WASM_EXPORT
 const char* json_getResponse_json(const char* InA)
 {
-	// std::cout << "InA_Interpreter => getResponse call received: '" << InA << "'" << std::endl;
+	std::cout << "InA_Interpreter => getResponse call received: '" << InA << "'" << std::endl;
 	
 	JSONReader reader;
 	JSONGenericObject root = reader.parse(InA);
@@ -78,12 +82,25 @@ namespace ina_interpreter
 		}
 		if(const auto& metadata = topElement.getObject("Metadata"))
 		{
-			return processMetadataRequest(topElement.getObject("Metadata"));
+			const char* res = processMetadataRequest(topElement.getObject("Metadata"));
+			if(res != nullptr)
+				return res;
+			
 		}
 		if(const auto& analytics = topElement.getObject("Analytics"))
 		{
+			
 			query_model::InA_query_model queryModel;
-			parseAnalyticsRequest(topElement.getObject("Analytics"), queryModel);
+			{
+				// parse datasource
+				InA_DataSource::DataSource ds;
+				if(const auto& datasource = analytics.getObject("DataSource"))
+				{
+					InA_DataSource::read(ds, datasource);
+				}
+				queryModel.setDataSource(ds);
+				parseAnalyticsRequest(topElement.getObject("Analytics"), queryModel);
+			}
 
 			const query_generator::query_generator& queryGen = query_generator::query_generator(queryModel);
 			
@@ -94,7 +111,8 @@ namespace ina_interpreter
 			cube::Cube cube;
 			queryGen.prepareCube(cube);
 
-			if(!queryModel.getCnxString().empty() )
+			const std::string& cnxString = queryModel.getDataSource().getPackageName();
+			if(!cnxString.empty() )
 			{
 				size_t line = 0;
 				std::ostringstream results;
@@ -109,7 +127,7 @@ namespace ina_interpreter
 					line++;
 				};
 
-				dbproxy::DBProxy::getDBProxy(queryModel.getCnxString())->executeSQL(sql, &lambda);
+				dbproxy::DBProxy::getDBProxy(cnxString)->executeSQL(sql, &lambda);
 				std::cout << "InA_Interpreter => Results of SQL execution : " << std::endl  << results.str() << std::endl;
 				writer.value("Results = " + results.str());
 			}			
@@ -124,15 +142,7 @@ namespace ina_interpreter
 
 	void parseAnalyticsRequest(const JSONGenericObject& analytics, query_model::InA_query_model& queryModel)
 	{
-		// parse connectionString
-		if(const auto& datasource = analytics.getObject("DataSource"))
-		{
-			if(datasource.haveValue("PackageName"))
-				queryModel.setCnxString(datasource.getString("PackageName"));
-			if(datasource.haveValue("ObjectName"))
-				queryModel.setTable(datasource.getString("ObjectName"));
-		}
-		// parse dimensions/measures
+		// parse Definition
 		if(const auto& definition = analytics.getObject("Definition"))
 		{
 			if(const auto& dims = definition.getArray("Dimensions"))
@@ -177,19 +187,15 @@ namespace ina_interpreter
 				}
 			}
 		}
-
 	}
 
 	const char* processMetadataRequest(const JSONGenericObject& metadata)
 	{
-		std::string dataSourceName;
+		InA_DataSource::DataSource ds;
 		if(const auto& datasource = metadata.getObject("DataSource"))
-			if(datasource.haveValue("ObjectName"))
-				dataSourceName = datasource.getString("ObjectName");
-		std::string cnxString;
-		if(const auto& packageName = metadata.getObject("PackageName"))
-			if(packageName.haveValue("ObjectName"))
-				cnxString = packageName.getString("PackageName");
+		{
+			InA_DataSource::read(ds, datasource);
+		}
 
 		
 		if(const JSONGenericObject& expand = metadata.getArray("Expand"))
@@ -207,7 +213,7 @@ namespace ina_interpreter
 			if(expandCube)
 			{
 				static std::string static_str_response;
-				if(dataSourceName == "$$DataSource$$" )
+				if(ds.getType() == InA_DataSource::DataSource::Type::TypeCatalog )
 				{
 					if(static_str_response.empty() )
 					{
@@ -221,10 +227,12 @@ namespace ina_interpreter
 				}
 				else
 				{
-					//TODO: Where will come from the cnx string in the InA
-					std::shared_ptr<metadata::Catalog> catalog = std::shared_ptr<metadata::Catalog>(new metadata::Catalog("local:sqlite:efashion.db"));
+					const std::string& cnxString = ds.getPackageName();
+					const std::string& tableName = ds.getObjectName();
+
+					std::shared_ptr<metadata::Catalog> catalog = std::shared_ptr<metadata::Catalog>(new metadata::Catalog(cnxString));
 					
-					const auto& colNames = catalog->getTable(dataSourceName).getColumnNames();
+					const auto& colNames = catalog->getTable(tableName).getColumnNames();
 					static_str_response += "|\t";
 					for(const auto& colName : colNames)
 						static_str_response += "\t|";

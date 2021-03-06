@@ -2,10 +2,12 @@
 
 #include <metadata_enrichment/Tables.h>
 
+#include "InA_DataSource.h"
 #include "InA_member.h"
 #include "InA_dimension.h"
 #include "InA_queryFilter.h"
 #include "InA_queryFilterComparison.h"
+
 #include <string>
 #include <vector>
 #include <ostream>
@@ -17,22 +19,25 @@ namespace grid {class Grid;}
 namespace query_model
 {
 	using namespace wasabi;
+	using namespace InA_DataSource;
 
 	typedef std::string Datatype;
 	typedef std::string Aggregation;
 
 	const Aggregation NO_AGG = "";
 
+	class InA_query_model;
+
+	void read(InA_query_model & model, const JSONGenericObject& object);
+	void write(const InA_query_model& model, JSONWriter& writer);
+
 	class InA_query_model
 	{
 	public:
 		InA_query_model() {};
 		
-		void               setTable(const std::string& table) {m_table = table;};
-		const std::string& getTable() const { return m_table;};
-		
-		void               setCnxString(const std::string& cnxString) {m_table = cnxString;};
-		const std::string& getCnxString() const { return m_cnxString;};
+		void              setDataSource(const DataSource& ds) {m_ds = ds;};
+		const DataSource& getDataSource() const { return m_ds;};
 
 		void addDimension(const InA_dimension & dimension);
 
@@ -87,6 +92,8 @@ namespace query_model
 		std::vector<InA_queryFilterComparison> m_filters;
 		std::string m_table;
 		std::string m_cnxString;
+		
+		DataSource m_ds;
 	};
 
 } // query_model
