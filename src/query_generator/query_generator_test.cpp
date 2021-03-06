@@ -9,9 +9,12 @@ int main()
 {
 	TEST_INIT();
 
-	query_model::InA_query_model queryModel;
+	InA_DataSource::DataSource ds;
+	ds.setObjectName("MyTable");
 
-	queryModel.setTable("MyTable");
+	query_model::InA_query_model queryModel;
+	queryModel.setDataSource(ds);
+	
 	query_model::InA_dimension dimensionA("col_A", "Rows");
 	queryModel.addDimension(dimensionA);
 	

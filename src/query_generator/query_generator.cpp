@@ -36,7 +36,7 @@ namespace query_generator
             delim = ", ";
         }
 
-        const std::string& table = m_qryModel.getTable();
+        const std::string& table = m_qryModel.getDataSource().getObjectName();
         sql << " FROM " << table;
 
         if(!group_by.str().empty())

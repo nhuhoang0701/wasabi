@@ -10,9 +10,12 @@ int main()
 {
 	TEST_INIT();
 
+	InA_DataSource::DataSource ds;
+	ds.setObjectName("MyTable");
+	
 	query_model::InA_query_model queryModel;
+	queryModel.setDataSource(ds);
 
-	queryModel.setTable("MyTable");
 	query_model::InA_dimension dimensionA("Dim_A", "Rows");
 	queryModel.addDimension(dimensionA);
 	query_model::InA_dimension dimensionB("Dim_B", "Rows");
@@ -22,7 +25,7 @@ int main()
 	dimensionMeasure.addMember(measure1);
 	queryModel.addDimension(dimensionMeasure);
 
-	CPPUNIT_ASSERT_EQUAL("MyTable", queryModel.getTable());
+	CPPUNIT_ASSERT_EQUAL("MyTable", queryModel.getDataSource().getObjectName());
 	CPPUNIT_ASSERT_EQUAL(3, queryModel.getDimensions().size());
 	CPPUNIT_ASSERT_EQUAL("Dim_A", queryModel.getDimensions()[0].getName());
 	CPPUNIT_ASSERT_EQUAL("Sum", queryModel.getDimensions()[2].getMembers()[0].getAggregation());

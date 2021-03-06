@@ -21,12 +21,12 @@ int main()
 			if(line == 0)
 			{
 				CPPUNIT_ASSERT_EQUAL_STR(row[0].getString().c_str(),"text1");
-				CPPUNIT_ASSERT_EQUAL_STR(row[1].getString().c_str(),"1.0");
+				CPPUNIT_ASSERT_EQUAL_STR(row[2].getString().c_str(),"1.0");
 			}
 			else if(line == 2)
 			{
 				CPPUNIT_ASSERT_EQUAL_STR(row[0].getString().c_str(),"text3");
-				CPPUNIT_ASSERT_EQUAL_STR(row[1].getString().c_str(),"3.0");
+				CPPUNIT_ASSERT_EQUAL_STR(row[2].getString().c_str(),"3.0");
 			}
 			
 			line++;
