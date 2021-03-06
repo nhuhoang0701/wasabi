@@ -1,8 +1,9 @@
 #include "query_generator.h"
 
 #include <cube/cube.h>
-#include <InA_query_model/InA_query_model.h>
+#include <InA_query_model/InA_query.h>
 #include <InA_query_model/InA_dimension.h>
+
 #include <sstream>
 #include <iostream>
 
@@ -10,14 +11,13 @@ namespace query_generator
 {
     std::string query_generator::getSQL() const
     {
-
         std::string delim;
         std::ostringstream sql;
         std::ostringstream group_by;
         
         sql << "SELECT ";
 
-        for (const auto& dim : m_qryModel.getDimensions())
+        for (const auto& dim : m_query.getDefinition().getDimensions())
         {
             sql << delim;
 
@@ -36,7 +36,7 @@ namespace query_generator
             delim = ", ";
         }
 
-        const std::string& table = m_qryModel.getDataSource().getObjectName();
+        const std::string& table = m_query.getDataSource().getObjectName();
         sql << " FROM " << table;
 
         if(!group_by.str().empty())
@@ -52,7 +52,7 @@ namespace query_generator
 	
 	void query_generator::prepareCube(cube::Cube& cube) const
 	{
-        for (const auto& dim : m_qryModel.getDimensions())
+        for (const auto& dim : m_query.getDefinition().getDimensions())
         {
 			const std::string& nameDim = dim.getName();
 			if(nameDim == "CustomDimension1")

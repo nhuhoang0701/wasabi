@@ -1,0 +1,62 @@
+#pragma once
+
+#include <json/jsonReader.h>
+
+#include "InA_DataSource.h"
+
+#include "InA_queryDefinition.h"
+
+
+#include <memory>
+#include <vector>
+
+
+
+namespace ina::query_model
+{
+	class Query;
+
+	void read(std::shared_ptr<Query>& query, const JSONGenericObject& dataSource);
+	void read(std::vector<std::shared_ptr<Query>>& queries, const JSONGenericObject& dataSource);
+
+	class Query
+	{
+	public:
+		enum eQueryType
+		{
+		 qUndef,
+		 qAnalytics,
+		 qMetadata
+		};
+
+	private:
+		Query(const Query&); // no copy
+		Query& operator=(const Query&); // no copy
+
+	public:
+		Query();
+		~Query();
+
+		bool               haveExpandCube() const;
+		eQueryType         getType() const;
+		const std::string& getLanguage() const;
+
+		void               setDataSource(const DataSource&);
+		const DataSource&  getDataSource() const;
+		
+		void               setDefinition(const Definition&);
+		const Definition&  getDefinition() const;
+
+	private:
+		eQueryType      m_type = eQueryType::qUndef;
+
+		std::string     m_language;
+		Definition      m_definition;
+		DataSource      m_datasource;
+		// TODO: should we have more precise semantic ?
+		bool            m_isExpandCube = false;
+
+		friend void read(std::shared_ptr<Query>& query, const JSONGenericObject& dataSource);
+		friend void read(std::vector<std::shared_ptr<Query>>& queries, const JSONGenericObject& dataSource);
+	};
+}

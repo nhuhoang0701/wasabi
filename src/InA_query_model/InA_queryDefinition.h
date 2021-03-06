@@ -16,29 +16,23 @@
 namespace grid {class Grid;}
 
 
-namespace query_model
+namespace ina::query_model
 {
 	using namespace wasabi;
-	using namespace InA_DataSource;
 
 	typedef std::string Datatype;
 	typedef std::string Aggregation;
 
 	const Aggregation NO_AGG = "";
 
-	class InA_query_model;
+	class Definition;
+	void read(Definition & model, const JSONGenericObject& definition);
 
-	void read(InA_query_model & model, const JSONGenericObject& object);
-	void write(const InA_query_model& model, JSONWriter& writer);
-
-	class InA_query_model
+	class Definition
 	{
 	public:
-		InA_query_model() {};
+		Definition() {};
 		
-		void              setDataSource(const DataSource& ds) {m_ds = ds;};
-		const DataSource& getDataSource() const { return m_ds;};
-
 		void addDimension(const InA_dimension & dimension);
 
 		const std::vector<InA_dimension>& getDimensions() const { return m_objs;};
@@ -94,6 +88,8 @@ namespace query_model
 		std::string m_cnxString;
 		
 		DataSource m_ds;
+		
+		friend void read(Definition & model, const JSONGenericObject& definition);
 	};
 
 } // query_model

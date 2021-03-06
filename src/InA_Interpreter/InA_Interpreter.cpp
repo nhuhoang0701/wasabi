@@ -1,6 +1,6 @@
 #include "InA_Interpreter.h"
 
-#include <InA_query_model/InA_query_model.h>
+#include <InA_query_model/InA_query.h>
 #include <InA_query_model/InA_DataSource.h>
 
 #include <query_generator/query_generator.h>
@@ -45,16 +45,22 @@ const char* json_getResponse_json(const char* InA)
 	JSONReader reader;
 	JSONGenericObject root = reader.parse(InA);
 	
+	std::vector<std::shared_ptr<ina::query_model::Query>> queries;
+	read(queries, root);
+	
 	std::ostringstream osstream;
 	JSONWriter writer(osstream);
-
+	
 	{
 		JSON_MAP(writer);
-		writer.key("message");
+		for(const auto& query : queries)
+		{
+				writer.key("message");
 
-		const char* response = ina_interpreter::processRequest(root, writer);
-		if(response != nullptr )
-			return response;
+				const char* response = ina_interpreter::processRequest(*query, writer);
+				if(response != nullptr )
+					return response;
+		}
 	}
 	static std::string static_str;
 	static_str = osstream.str();
@@ -66,43 +72,44 @@ namespace ina_interpreter
 {
 	using namespace wasabi;
 
-	const char* processRequest(const JSONGenericObject& topElement, JSONWriter& writer)
+	const char* processRequest(const ina::query_model::Query& query, JSONWriter& writer)
 	{
-		// std::cout << "InA_Interpreter => processRequest" << std::endl;
-
-		if(topElement.haveValue("Batch"))
+		if(query.getType() == ina::query_model::Query::qMetadata)
 		{
-			// std::cout << "InA_Interpreter => Process 'Batch' InA request" << std::endl;
-			const auto& batch = topElement.getArray("Batch");
-			JSON_LIST(writer);
-			for(int i = 0;i < batch.size();i++)
+			if(query.haveExpandCube())
 			{
-				processRequest(batch[i], writer);
-			}
-		}
-		if(const auto& metadata = topElement.getObject("Metadata"))
-		{
-			const char* res = processMetadataRequest(topElement.getObject("Metadata"));
-			if(res != nullptr)
-				return res;
-			
-		}
-		if(const auto& analytics = topElement.getObject("Analytics"))
-		{
-			
-			query_model::InA_query_model queryModel;
-			{
-				// parse datasource
-				InA_DataSource::DataSource ds;
-				if(const auto& datasource = analytics.getObject("DataSource"))
+				static std::string static_str_response;
+				if(query.getDataSource().getType() == ina::query_model::DataSource::Type::TypeCatalog )
 				{
-					InA_DataSource::read(ds, datasource);
+					if(static_str_response.empty() )
+					{
+						std::ifstream ifs("../resources/response_getResponse_Metadat_expand_cube_catalog.json");
+						if(ifs.is_open() )
+							static_str_response = std::string((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+						else
+							throw std::runtime_error("Could not open file ../resources/response_getResponse_Metadat_expand_cube_catalog.json");
+					}
+					return static_str_response.c_str();
 				}
-				queryModel.setDataSource(ds);
-				parseAnalyticsRequest(topElement.getObject("Analytics"), queryModel);
-			}
+				else
+				{
+					const std::string& cnxString = query.getDataSource().getPackageName();
+					const std::string& tableName = query.getDataSource().getObjectName();
 
-			const query_generator::query_generator& queryGen = query_generator::query_generator(queryModel);
+					std::shared_ptr<metadata::Catalog> catalog = std::shared_ptr<metadata::Catalog>(new metadata::Catalog(cnxString));
+					
+					const auto& colNames = catalog->getTable(tableName).getColumnNames();
+					static_str_response += "|\t";
+					for(const auto& colName : colNames)
+						static_str_response += "\t|";
+					return static_str_response.c_str();
+				}
+			}
+			
+		}
+		if(query.getType() == ina::query_model::Query::qAnalytics)
+		{
+			const query_generator::query_generator& queryGen = query_generator::query_generator(query);
 			
 			const std::string sql = queryGen.getSQL();
 			std::cout << "InA_Interpreter => Generated SQL: " << sql << std::endl;
@@ -111,7 +118,7 @@ namespace ina_interpreter
 			cube::Cube cube;
 			queryGen.prepareCube(cube);
 
-			const std::string& cnxString = queryModel.getDataSource().getPackageName();
+			const std::string& cnxString = query.getDataSource().getPackageName();
 			if(!cnxString.empty() )
 			{
 				size_t line = 0;
@@ -135,112 +142,7 @@ namespace ina_interpreter
 		else
 		{
 			std::cerr << "InA_Interpreter => Unsupported InA request" << std::endl;
-			writer.value("Error: unsupported InA request");
 		}
 		return nullptr;
-	}
-
-	void parseAnalyticsRequest(const JSONGenericObject& analytics, query_model::InA_query_model& queryModel)
-	{
-		// parse Definition
-		if(const auto& definition = analytics.getObject("Definition"))
-		{
-			if(const auto& dims = definition.getArray("Dimensions"))
-			{
-				for(int i = 0;i < dims.size();i++)
-				{
-					const auto& dim = dims[i];
-					query_model::InA_dimension dimensionObj(dim.getString("Name"), dim.getString("Axis"));
-
-					if(const auto& members = dim.getArray("Members"))
-					{
-						for(int i = 0;i < members.size();i++)
-						{
-							const auto& member = members[i];
-							const std::string agg = member.haveValue("Aggregation")? member.getString("Aggregation") : "";
-							const std::string name = member.getObject("MemberOperand")? member.getObject("MemberOperand").getString("Name") : member.getString("Name");
-							dimensionObj.addMember(query_model::InA_member(name, agg));
-						}
-					}
-					queryModel.addDimension(dimensionObj);
-				}
-			}
-			if(const auto& subSelections = definition.getObject("DynamicFilter").getObject("Selection").getObject("Operator").getArray("SubSelections"))
-			{
-				for(size_t i = 0; i < subSelections.size(); ++i)
-				{
-					const std::string fieldName = subSelections[i].getObject("SetOperand").getString("FieldName");
-					if(const auto& elements = subSelections[i].getObject("SetOperand").getArray("Elements"))
-					{
-						for(size_t i = 0; i < elements.size(); ++i)
-						{	
-							query_model::InA_queryFilterComparison queryFilterComparison(fieldName);
-							std::string lowValue = elements[i].getString("Low");
-							queryFilterComparison.setLowValue(lowValue);
-
-							query_model::InA_queryFilter::ComparisonOperator comparisonOperator = query_model::InA_queryFilter::getComparator(elements[i].getString("Comparison"));
-							queryFilterComparison.setComparisonOperator(comparisonOperator);
-							queryModel.addQueryFilter(queryFilterComparison);
-							std::cout << "InA_Interpreter => DynamicFilter -> ... -> Low :" << lowValue << std::endl;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	const char* processMetadataRequest(const JSONGenericObject& metadata)
-	{
-		InA_DataSource::DataSource ds;
-		if(const auto& datasource = metadata.getObject("DataSource"))
-		{
-			InA_DataSource::read(ds, datasource);
-		}
-
-		
-		if(const JSONGenericObject& expand = metadata.getArray("Expand"))
-		{
-			bool expandCube = false;
-			for(size_t i = 0; i < expand.size() ; i ++ )
-			{
-				if(expand.getString(i) == "Cubes")
-				{
-					expandCube = true;
-					break;
-				}
-			}
-
-			if(expandCube)
-			{
-				static std::string static_str_response;
-				if(ds.getType() == InA_DataSource::DataSource::Type::TypeCatalog )
-				{
-					if(static_str_response.empty() )
-					{
-						std::ifstream ifs("../resources/response_getResponse_Metadat_expand_cube_catalog.json");
-						if(ifs.is_open() )
-							static_str_response = std::string((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
-						else
-							throw std::runtime_error("Could not open file ../resources/response_getResponse_Metadat_expand_cube_catalog.json");
-					}
-					return static_str_response.c_str();
-				}
-				else
-				{
-					const std::string& cnxString = ds.getPackageName();
-					const std::string& tableName = ds.getObjectName();
-
-					std::shared_ptr<metadata::Catalog> catalog = std::shared_ptr<metadata::Catalog>(new metadata::Catalog(cnxString));
-					
-					const auto& colNames = catalog->getTable(tableName).getColumnNames();
-					static_str_response += "|\t";
-					for(const auto& colName : colNames)
-						static_str_response += "\t|";
-					return static_str_response.c_str();
-				}
-			}
-		}
-
-		throw std::runtime_error("Error: unsupported InA request");
 	}
 }
