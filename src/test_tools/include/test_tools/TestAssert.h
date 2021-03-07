@@ -1,5 +1,6 @@
 #pragma once
-#include <stdio.h>
+#include <stdio.h>    // For printf
+#include <cstring>    // For strcmp
 
 static int wasabi_cppunit_haveerror = 0;
 #define TEST_INIT() {wasabi_cppunit_haveerror = 0;}
