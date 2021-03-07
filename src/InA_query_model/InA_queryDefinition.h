@@ -34,11 +34,11 @@ namespace ina::query_model
 	public:
 		Definition() = default;
 		
-		void addDimension(const InA_dimension & dimension);
+		void addDimension(const Dimension & dimension);
 
-		const std::vector<InA_dimension>& getDimensions() const;
+		const std::vector<Dimension>& getDimensions() const;
 
-		const std::vector<InA_member>&    getVisibleMembers(const InA_dimension& dimension, std::vector<InA_member> & visibleMembers) const;
+		const std::vector<InA_member>&    getVisibleMembers(const Dimension& dimension, std::vector<InA_member> & visibleMembers) const;
 
 		const std::vector<InA_queryFilterComparison>& getQueryFilters() const;
 		void                                          addQueryFilter(const InA_queryFilterComparison & queryFilterComparison);
@@ -84,7 +84,7 @@ namespace ina::query_model
 		}
 
 	private:
-		std::vector<InA_dimension> m_objs;
+		std::vector<Dimension> m_objs;
 		std::vector<InA_queryFilterComparison> m_filters;
 		std::string m_table;
 		std::string m_cnxString;

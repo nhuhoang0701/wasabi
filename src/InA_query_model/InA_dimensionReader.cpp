@@ -4,7 +4,7 @@
 
 namespace ina::query_model
 {
-	void read(InA_dimension& dim, const JSONGenericObject& dimNode)
+	void read(Dimension& dim, const JSONGenericObject& dimNode)
 	{
 		dim._name = dimNode.getString("Name");
 		dim._axename = dimNode.getString("Axis");

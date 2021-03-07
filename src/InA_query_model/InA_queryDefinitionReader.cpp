@@ -22,7 +22,7 @@ namespace ina::query_model
 		{
 			for(int i = 0;i < dims.size();i++)
 			{
-				query_model::InA_dimension dimensionObj;
+				query_model::Dimension dimensionObj;
 				read(dimensionObj, dims[i]);
 				definition.addDimension(dimensionObj);
 			}

@@ -2,11 +2,11 @@
 
 namespace ina::query_model
 {
-	static void writeAttributeHierarchy(JSONWriter& writer, const InA_Dimension& dim);
-	static void writeAttributeChildrens(JSONWriter& writer, const InA_Dimension& dim);
-	static void writeHierarchies(JSONWriter& writer, const InA_Dimension& dim);
-	static void writeAttributes(JSONWriter& writer, const InA_Dimension& dim);
-	static void writeMembers(JSONWriter& writer, const InA_Dimension& dim);
+	static void writeAttributeHierarchy(JSONWriter& writer, const Dimension& dim);
+	static void writeAttributeChildrens(JSONWriter& writer, const Dimension& dim);
+	static void writeHierarchies(JSONWriter& writer, const Dimension& dim);
+	static void writeAttributes(JSONWriter& writer, const Dimension& dim);
+	static void writeMembers(JSONWriter& writer, const Dimension& dim);
 	static void writeAttribute(JSONWriter& writer, const InA_Attribute& att);
 	static void writeDefaultExcludingOperators(JSONWriter &writer, const InA_Attribute& att);
 	static void writeDefaultIncludingOperators(JSONWriter &writer, const InA_Attribute& att);
@@ -20,7 +20,7 @@ namespace ina::query_model
 	static std::string  toString(AttributeColumnType);
 	static const AttributeColumnType getColumnType(const InA_Attribute& att);
 
-	void write(const InA_dimension& dim, JSONWriter& dimNode)
+	void write(const Dimension& dim, JSONWriter& dimNode)
 	{
 		JSON_MAP(writer);
 
@@ -31,8 +31,8 @@ namespace ina::query_model
 		writeHierarchies(writer, dim);
 
 		//
-		const bool isMeasure = dim.getDimensionType() == InA_Dimension::MeasuresDimension;
-		const bool isVariable = dim.getDimensionType() == InA_Dimension::VariableDimension;
+		const bool isMeasure = dim.getDimensionType() == Dimension::MeasuresDimension;
+		const bool isVariable = dim.getDimensionType() == Dimension::VariableDimension;
 
 		writer.key("AxisConstraints");
 		{
@@ -108,7 +108,7 @@ namespace ina::query_model
 		writer.pair("CanBeAggregated", !isMeasure);
 	}
 
-	void writeAttributeHierarchy(JSONWriter & writer, const InA_Dimension & dim)
+	void writeAttributeHierarchy(JSONWriter & writer, const Dimension & dim)
 	{
 		writer.key("AttributeHierarchy");
 		{
@@ -126,7 +126,7 @@ namespace ina::query_model
 
 			switch (dim.getDimensionType())
 			{
-				case InA_Dimension::MeasuresDimension:
+				case Dimension::MeasuresDimension:
 				{
 					const bo_utf8string& defaultKeyAttribute = dim.getAttribute(model::InA_Attribute::Key).getName();
 					const bo_utf8string& defaultDisplayKeyAttribute = dim.getAttribute(model::InA_Attribute::Name).getName();
@@ -143,7 +143,7 @@ namespace ina::query_model
 				}
 				break;
 				/*
-				case InA_Dimension::VariableDimension:
+				case Dimension::VariableDimension:
 				{
 
 					const std::string& defaultDisplayKeyAttribute = dim.getKeyAttribute().getDescription();
@@ -168,7 +168,7 @@ namespace ina::query_model
 				}
 				break;
 				*/
-				case InA_Dimension::ObjectsDimension:
+				case Dimension::ObjectsDimension:
 				{
 					const std::string& defaultKeyAttribute = dim.getAttribute(model::InA_Attribute::Key).getName();
 					const std::string& defaultDisplayKeyAttribute = defaultKeyAttribute;
@@ -201,7 +201,7 @@ namespace ina::query_model
 				break;
 
 				default:
-					throw TRACED_InA_EXCEPTION("Unexpected type of InA_Dimension");
+					throw TRACED_InA_EXCEPTION("Unexpected type of Dimension");
 			}
 
 			writer.pair("Description", dim.getDescription());
@@ -209,14 +209,14 @@ namespace ina::query_model
 		}
 	}
 
-	void writeAttributeChildrens(JSONWriter & writer, const InA_Dimension & dim)
+	void writeAttributeChildrens(JSONWriter & writer, const Dimension & dim)
 	{
 		writer.key("Children");
 		{
 			JSON_LIST(writer);
 
 			/*
-			if (dim.getDimensionType() == InA_Dimension::VariableDimension)
+			if (dim.getDimensionType() == Dimension::VariableDimension)
 			{
 				for (std::vector<InA_Attribute>::const_iterator iter = dim.beginAttributes(); iter != dim.endAttributes(); ++iter)
 				{
@@ -244,7 +244,7 @@ namespace ina::query_model
 		}
 	}
 
-	void InA_DimensionBuilder::writeHierarchies(JSONWriter & writer, const InA_Dimension & dim)
+	void writeHierarchies(JSONWriter & writer, const Dimension & dim)
 	{
 		writer.pair("NumberOfHierarchies", 0);
 		writer.pair("HierarchiesPossible", false);
@@ -267,9 +267,9 @@ namespace ina::query_model
 		}
 		*/
 	}
-	void InA_DimensionBuilder::writeMembers(JSONWriter & writer, const InA_Dimension & dim)
+	void writeMembers(JSONWriter & writer, const Dimension & dim)
 	{
-		if (dim.countMembers() > 0 && dim.getDimensionType() != InA_Dimension::MeasuresDimension)
+		if (dim.countMembers() > 0 && dim.getDimensionType() != Dimension::MeasuresDimension)
 			throw TRACED_InA_EXCEPTION("Members are expected in dimension of measures only");
 
 		writer.key("Members");
@@ -291,7 +291,7 @@ namespace ina::query_model
 		}
 	}
 
-	void InA_DimensionBuilder::writeAttributes(JSONWriter & writer, const InA_Dimension & dim)
+	void InA_DimensionBuilder::writeAttributes(JSONWriter & writer, const Dimension & dim)
 	{
 		writer.key("Attributes");
 		JSON_LIST(writer);
@@ -304,10 +304,10 @@ namespace ina::query_model
 
 	void InA_DimensionBuilder::writeAttribute(JSONWriter& writer, const InA_Attribute& att)
 	{
-		const InA_Dimension& dim = att.getDimension();
+		const Dimension& dim = att.getDimension();
 
-		const bool isMeasure = dim.getDimensionType() == InA_Dimension::MeasuresDimension;
-		const bool isVariable = dim.getDimensionType() == InA_Dimension::VariableDimension;
+		const bool isMeasure = dim.getDimensionType() == Dimension::MeasuresDimension;
+		const bool isVariable = dim.getDimensionType() == Dimension::VariableDimension;
 
 		const std::string& dataType = att.getDataTypeAsString();
 		const AttributeColumnType columnType = getColumnType(att);
@@ -337,9 +337,9 @@ namespace ina::query_model
 			}
 		}
 		writer.pair("FractDigits", 0);
-		writer.pair("HasDescriptions", dim.getDimensionType() == InA_Dimension::MeasuresDimension || dim.getDimensionType() == InA_Dimension::VariableDimension || dim.getDimensionType() == InA_Dimension::ObjectsDimension);
+		writer.pair("HasDescriptions", dim.getDimensionType() == Dimension::MeasuresDimension || dim.getDimensionType() == Dimension::VariableDimension || dim.getDimensionType() == Dimension::ObjectsDimension);
 		writer.pair("HasFulltextIndex", false);
-		writer.pair("IsDefaultText", dim.getDimensionType() == InA_Dimension::VariableDimension);
+		writer.pair("IsDefaultText", dim.getDimensionType() == Dimension::VariableDimension);
 		writer.pair("IsDisplayAttribute", att.isDisplayed());
 		writer.pair("IsFilterable", att.isFilterable());
 		writer.pair("IsFreestyle", false);
@@ -362,7 +362,7 @@ namespace ina::query_model
 	void InA_DimensionBuilder::writeDefaultExcludingOperators(JSONWriter& writer, const InA_Attribute& att)
 	{
 		//const bool isFilterable = att.isFilterable();
-		//const InA_Dimension& dim = att.getDimension();
+		//const Dimension& dim = att.getDimension();
 		writer.key("Excluding");
 		{
 			JSON_LIST(writer);
@@ -374,7 +374,7 @@ namespace ina::query_model
 				writer.value(">=");
 				writer.value("<=");
 				writer.value("<>");
-				if (dim.getDimensionType() != InA_Dimension::MeasuresDimension)
+				if (dim.getDimensionType() != Dimension::MeasuresDimension)
 				{
 					writer.value("BETWEEN");
 					writer.value("NOT_BETWEEN");
@@ -388,7 +388,7 @@ namespace ina::query_model
 	void InA_DimensionBuilder::writeDefaultIncludingOperators(JSONWriter& writer, const InA_Attribute& att)
 	{
 		//const bool isFilterable = att.isFilterable();
-		//const InA_Dimension& dim = att.getDimension();
+		//const Dimension& dim = att.getDimension();
 		writer.key("Including");
 		{
 			JSON_LIST(writer);
@@ -401,7 +401,7 @@ namespace ina::query_model
 				writer.value("<=");
 				writer.value("<>");
 				writer.value("BETWEEN");
-				if (dim.getDimensionType() != InA_Dimension::MeasuresDimension)
+				if (dim.getDimensionType() != Dimension::MeasuresDimension)
 				{
 					writer.value("NOT_BETWEEN");
 					writer.value("LIKE");
@@ -424,8 +424,8 @@ namespace ina::query_model
 
 	const InA_DimensionBuilder::AttributeColumnType InA_DimensionBuilder::getColumnType(const InA_Attribute & att)
 	{
-		const InA_Dimension& dim = att.getDimension();
-		if (dim.getDimensionType() == InA_Dimension::MeasuresDimension)
+		const Dimension& dim = att.getDimension();
+		if (dim.getDimensionType() == Dimension::MeasuresDimension)
 		{
 			if (att.getDataType() == InA_Types::Long || att.getDataType() == InA_Types::Double)
 				return InA_DimensionBuilder::NumericMeasure;

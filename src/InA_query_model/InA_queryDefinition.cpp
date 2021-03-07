@@ -4,7 +4,7 @@
 
 namespace ina::query_model
 {
-    void Definition::addDimension(const InA_dimension& dimension)
+    void Definition::addDimension(const Dimension& dimension)
     {
         m_objs.push_back(dimension);
     }
@@ -14,7 +14,7 @@ namespace ina::query_model
         m_filters.push_back(queryFilter);
     }
 
-	const std::vector<InA_dimension>& Definition::getDimensions() const
+	const std::vector<Dimension>& Definition::getDimensions() const
 	{
 		return m_objs;
 	}
@@ -24,7 +24,7 @@ namespace ina::query_model
 		return m_filters;
 	}
 
-    const std::vector<InA_member>& Definition::getVisibleMembers(const InA_dimension& dimension, std::vector<InA_member> & visibleMembers) const 
+    const std::vector<InA_member>& Definition::getVisibleMembers(const Dimension& dimension, std::vector<InA_member> & visibleMembers) const 
     {
         std::vector<InA_member>::const_iterator pMemberIterator;
         for(pMemberIterator = dimension.getMembers().begin(); pMemberIterator != dimension.getMembers().end(); ++ pMemberIterator)
