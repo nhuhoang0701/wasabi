@@ -1,6 +1,6 @@
 #include "query_generator.h"
 
-#include <InA_query_model/InA_query.h>
+#include <InA_query_model/Query.h>
 #include <test_tools/TestAssert.h>
 
 #include <iostream>

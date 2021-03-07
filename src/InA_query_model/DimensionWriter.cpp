@@ -1,4 +1,4 @@
-#include "InA_dimension.h"
+#include "Dimension.h"
 
 namespace ina::query_model
 {
@@ -291,7 +291,7 @@ namespace ina::query_model
 		}
 	}
 
-	void InA_DimensionBuilder::writeAttributes(JSONWriter & writer, const Dimension & dim)
+	void writeAttributes(JSONWriter & writer, const Dimension & dim)
 	{
 		writer.key("Attributes");
 		JSON_LIST(writer);
@@ -302,7 +302,7 @@ namespace ina::query_model
 		}
 	}
 
-	void InA_DimensionBuilder::writeAttribute(JSONWriter& writer, const InA_Attribute& att)
+	void writeAttribute(JSONWriter& writer, const InA_Attribute& att)
 	{
 		const Dimension& dim = att.getDimension();
 
@@ -359,7 +359,7 @@ namespace ina::query_model
 			writer.pair("UpperBound", "");// no present for measure
 	}
 
-	void InA_DimensionBuilder::writeDefaultExcludingOperators(JSONWriter& writer, const InA_Attribute& att)
+	void writeDefaultExcludingOperators(JSONWriter& writer, const InA_Attribute& att)
 	{
 		//const bool isFilterable = att.isFilterable();
 		//const Dimension& dim = att.getDimension();
@@ -385,7 +385,7 @@ namespace ina::query_model
 		}
 	}
 
-	void InA_DimensionBuilder::writeDefaultIncludingOperators(JSONWriter& writer, const InA_Attribute& att)
+	void writeDefaultIncludingOperators(JSONWriter& writer, const InA_Attribute& att)
 	{
 		//const bool isFilterable = att.isFilterable();
 		//const Dimension& dim = att.getDimension();
@@ -411,7 +411,7 @@ namespace ina::query_model
 		}
 	}
 
-	std::string InA_DimensionBuilder::toString(AttributeColumnType type)
+	std::string toString(AttributeColumnType type)
 	{
 		switch (type)
 		{
@@ -422,15 +422,15 @@ namespace ina::query_model
 		}
 	}
 
-	const InA_DimensionBuilder::AttributeColumnType InA_DimensionBuilder::getColumnType(const InA_Attribute & att)
+	const AttributeColumnType getColumnType(const InA_Attribute & att)
 	{
 		const Dimension& dim = att.getDimension();
 		if (dim.getDimensionType() == Dimension::MeasuresDimension)
 		{
 			if (att.getDataType() == InA_Types::Long || att.getDataType() == InA_Types::Double)
-				return InA_DimensionBuilder::NumericMeasure;
-			return InA_DimensionBuilder::NoNumericMeasure;
+				return NumericMeasure;
+			return NoNumericMeasure;
 		}
-		return InA_DimensionBuilder::NoMeasure;
+		return NoMeasure;
 	}
 }

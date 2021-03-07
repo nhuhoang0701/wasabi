@@ -1,6 +1,6 @@
 #pragma once
 
-#include "InA_member.h"
+#include "Member.h"
 
 #include <string>
 #include <vector>

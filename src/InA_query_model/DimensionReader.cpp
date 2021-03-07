@@ -1,4 +1,4 @@
-#include "InA_dimension.h"
+#include "Dimension.h"
 
 #include <json/jsonReader.h>    // For JSONGenericObject
 

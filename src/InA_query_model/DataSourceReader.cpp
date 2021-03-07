@@ -1,4 +1,4 @@
-#include "InA_DataSource.h"
+#include "DataSource.h"
 
 #include <json/jsonReader.h>    // For JSONGenericObject
 
@@ -32,4 +32,4 @@ namespace ina::query_model
 			}
 		}
 	}
-} // InA_DataSource
+} // ina::query_model

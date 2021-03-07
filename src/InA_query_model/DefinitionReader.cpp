@@ -1,4 +1,4 @@
-#include "InA_queryDefinition.h"
+#include "Definition.h"
 
 #include <json/jsonReader.h>
 #include <exceptions/InA_Exception.h>
