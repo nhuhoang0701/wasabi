@@ -19,16 +19,19 @@ namespace query_generator
 
         for (const auto& dim : m_query.getDefinition().getDimensions())
         {
-            sql << delim;
 
 			const std::string& nameDim = dim.getName();
 			if(nameDim == "CustomDimension1")
 			{
 				for(const auto& member : dim.getMembers() )
+				{
+					sql << delim;
 					sql << member.getAggregation() << "(" << member.getName() << ")";
+				}
 			}
 			else
 			{
+				sql << delim;
 				sql << nameDim;
 				group_by << delim << nameDim;
 			}

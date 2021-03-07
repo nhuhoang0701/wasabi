@@ -36,10 +36,11 @@ namespace ina::query_model
 		void addDimension(const InA_dimension & dimension);
 
 		const std::vector<InA_dimension>& getDimensions() const { return m_objs;};
-		const std::vector<InA_member>& getVisibleMembers(const InA_dimension& dimension, std::vector<InA_member> & visibleMembers) const;
+
+		const std::vector<InA_member>&    getVisibleMembers(const InA_dimension& dimension, std::vector<InA_member> & visibleMembers) const;
 
 		const std::vector<InA_queryFilterComparison>& getQueryFilters() const { return m_filters;};
-		void addQueryFilter(const InA_queryFilterComparison & queryFilterComparison);
+		void                                          addQueryFilter(const InA_queryFilterComparison & queryFilterComparison);
 
 		void prepareGrid(grid::Grid& grid);
 		
