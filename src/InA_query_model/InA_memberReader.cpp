@@ -4,7 +4,7 @@
 
 namespace ina::query_model
 {
-	void read(InA_member& obj, const JSONGenericObject& jsonNode)
+	void read(Member& obj, const JSONGenericObject& jsonNode)
 	{
 		obj._aggregation = jsonNode.haveValue("Aggregation")? jsonNode.getString("Aggregation") : "";
 		//TODO: Why this if ?

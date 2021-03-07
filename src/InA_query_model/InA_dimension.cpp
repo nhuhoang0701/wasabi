@@ -12,12 +12,12 @@ namespace ina::query_model
 		return _name;
 	}
 	
-	const std::vector<InA_member> & Dimension::getMembers() const
+	const std::vector<Member> & Dimension::getMembers() const
 	{
 		return _members;
 	}
 
-	void Dimension::addMember(const InA_member & member) 
+	void Dimension::addMember(const Member & member) 
 	{
 		_members.push_back(member);
 	}

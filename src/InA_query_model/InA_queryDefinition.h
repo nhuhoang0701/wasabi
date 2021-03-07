@@ -38,7 +38,7 @@ namespace ina::query_model
 
 		const std::vector<Dimension>& getDimensions() const;
 
-		const std::vector<InA_member>&    getVisibleMembers(const Dimension& dimension, std::vector<InA_member> & visibleMembers) const;
+		const std::vector<Member>&    getVisibleMembers(const Dimension& dimension, std::vector<Member> & visibleMembers) const;
 
 		const std::vector<InA_queryFilterComparison>& getQueryFilters() const;
 		void                                          addQueryFilter(const InA_queryFilterComparison & queryFilterComparison);

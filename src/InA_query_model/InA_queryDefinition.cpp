@@ -24,9 +24,9 @@ namespace ina::query_model
 		return m_filters;
 	}
 
-    const std::vector<InA_member>& Definition::getVisibleMembers(const Dimension& dimension, std::vector<InA_member> & visibleMembers) const 
+    const std::vector<Member>& Definition::getVisibleMembers(const Dimension& dimension, std::vector<Member> & visibleMembers) const 
     {
-        std::vector<InA_member>::const_iterator pMemberIterator;
+        std::vector<Member>::const_iterator pMemberIterator;
         for(pMemberIterator = dimension.getMembers().begin(); pMemberIterator != dimension.getMembers().end(); ++ pMemberIterator)
         {
             std::vector<InA_queryFilterComparison>::const_iterator pFilterIterator;
@@ -36,7 +36,7 @@ namespace ina::query_model
                     && (*pFilterIterator).getComparisonOperator() == InA_queryFilter::ComparisonOperator::EqualTo 
                     && (*pFilterIterator).getLowValue() == (*pMemberIterator).getName())
                 {
-                    const InA_member & currentMember = *pMemberIterator;
+                    const Member & currentMember = *pMemberIterator;
                     visibleMembers.push_back(currentMember);
                 }
             }

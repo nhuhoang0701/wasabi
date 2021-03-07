@@ -276,9 +276,9 @@ namespace ina::query_model
 		{
 			JSON_LIST(writer);
 
-			for (std::vector<InA_Member>::const_iterator it = dim.beginMembers(); it != dim.endMembers(); ++it)
+			for (std::vector<Member>::const_iterator it = dim.beginMembers(); it != dim.endMembers(); ++it)
 			{
-				const InA_Member& member = *it;
+				const Member& member = *it;
 
 				JSON_MAP(writer);
 				writer.pair("[Measures].[Measures]", member.getName());
