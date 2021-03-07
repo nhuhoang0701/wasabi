@@ -19,10 +19,10 @@ int main()
 	
 	ina::query_model::Definition definition;
 
-	definition.addDimension(ina::query_model::InA_dimension("Dim_A", "Rows"));
-	definition.addDimension(ina::query_model::InA_dimension("Dim_B", "Rows"));
+	definition.addDimension(ina::query_model::Dimension("Dim_A", "Rows"));
+	definition.addDimension(ina::query_model::Dimension("Dim_B", "Rows"));
 	
-	ina::query_model::InA_dimension dimensionMeasure("Meas_1", "Rows");
+	ina::query_model::Dimension dimensionMeasure("Meas_1", "Rows");
 	dimensionMeasure.addMember(ina::query_model::InA_member("Meas_1", "Sum"));
 	definition.addDimension(dimensionMeasure);
 

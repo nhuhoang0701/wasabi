@@ -6,7 +6,7 @@ class JSONGenericObject;    // #include <json/jsonReader.h>
 
 namespace ina::query_model
 {
-	class InA_dimension;
+	class Dimension;
 
 	class InA_member;
 	void read(InA_member& obj, const JSONGenericObject& jsonNode);
@@ -28,6 +28,6 @@ namespace ina::query_model
 
 			friend void read(InA_member& obj, const JSONGenericObject& jsonNode);
 
-			friend void read(InA_dimension& obj, const JSONGenericObject& jsonNode);
+			friend void read(Dimension& obj, const JSONGenericObject& jsonNode);
 	};
 }
