@@ -25,6 +25,7 @@
 WASM_EXPORT
 const char* json_getServerInfo()
 {
+	std::cout << "InA_Interpreter => json_getServerInfo call received" << std::endl;
 	static std::string static_str_getserverinfo;
 	if(static_str_getserverinfo.empty() )
 	{
@@ -41,12 +42,13 @@ WASM_EXPORT
 const char* json_getResponse_json(const char* InA)
 {
 	std::cout << "InA_Interpreter => getResponse call received: '" << InA << "'" << std::endl;
-	
 	JSONReader reader;
 	JSONGenericObject root = reader.parse(InA);
 	
+	std::cout << "InA_Interpreter => getResponse JSON to object model" << std::endl;
 	std::vector<std::shared_ptr<ina::query_model::Query>> queries;
 	read(queries, root);
+	std::cout << "                   nb of queries: '" << queries.size() << "'" << std::endl;
 	
 	std::ostringstream osstream;
 	JSONWriter writer(osstream);
