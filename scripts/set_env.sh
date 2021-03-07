@@ -3,6 +3,9 @@
 echo
 echo -----------------------------------
 echo --------- set variables -----------
+export WASABI_USE_WASM=${WASABI_USE_WASM:-yes}
+echo -e "WASABI_USE_WASM: " "\t'"$WASABI_USE_WASM"'";
+
 export WASABI_ROOT_DIR=${WASABI_ROOT_DIR:-$(pwd)}
 echo -e "WASABI_ROOT_DIR: " "\t'"$WASABI_ROOT_DIR"'";
 export WASABI_EXTERNAL_DIR=$WASABI_ROOT_DIR/external
@@ -65,7 +68,7 @@ alias run_wasabi_server='cd $WASABI_ROOT_DIR/src/wasi_browser; $HTTP_SERVER;cd -
 alias clean='$CMAKE --build ./build --target clean'
 alias test='(cd build && $CTEST -V)'
 alias compile='$CMAKE --build ./build'
-alias build='$CMAKE -B ./build . -G Ninja -DCMAKE_MAKE_PROGRAM=$NINJA -DCMAKE_INSTALL_PREFIX:PATH=$WASABI_ROOT_DIR/src/install/ && $CMAKE --build ./build --target install && test'
+alias build='$CMAKE -B ./build . -G Ninja -DCMAKE_MAKE_PROGRAM=$NINJA -DCMAKE_INSTALL_PREFIX:PATH=$WASABI_ROOT_DIR/src/install/ -DWASABI_USE_WASM=yes && $CMAKE --build ./build --target install && test'
 alias rebuild='rm -rf ./build && mkdir build && build'
 
 echo
