@@ -15,23 +15,21 @@ const indexMsgParam = 2;
 
 onmessage = function(e) {
 	var message = e.data;
+	var ID = message[indexMsgId];
+	var action = message[indexMsgAction];
+
 	console.log("******************************************");
-	console.log('Worker: Message received:' + message);
+	console.log("Worker: Message received: ID '" + ID + "' Action:'" + action + "'");
 	
 	if(message.lenght == 0 || message.lenght > 3) {
 		throw 'Worker::onmessage: Bad parameters';
 	}
-	
-	var ID = message[indexMsgId];
-	var action = message[indexMsgAction];
-	
-	console.log('Worker: ID received:' + ID);
-	console.log('Worker: Action received:' + action);
+
 	switch(action){
     case WorkerEvent.eLoad:
 		if(isLoaded == true){
 			console.error("Worker: Already loaded");
-			postMessage({ID, error: "Already loaded"});
+			postMessage([ID, action, {error: "Already loaded"}]);
 			return;
 		}
 

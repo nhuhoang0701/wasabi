@@ -6,9 +6,11 @@ worker.postMessage([ID++, "load"]);
 worker.onmessage = function(msg) {
 	response_ID = msg.data[0];
 	response_Action = msg.data[1];
+	response_value = msg.data[2];
 	
-	console.log("worker.onmessage: " + msg.data);
-	console.log("worker.onmessage, received msg ID:" + response_ID);
+	console.log("******************************************");
+	console.log("Worker: Message executed: ID='" + response_ID + "' Action='" + response_Action + "'");
+	console.log("Worker: Message executed: value='" + response_value.substring(0, 50) + "'");
 	
 	if(response_Action && response_Action.stack && response_Action.message)
 	{

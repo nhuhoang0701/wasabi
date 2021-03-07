@@ -3,12 +3,8 @@
 /external
 build/
 install/
+./resources/
 
 ##############################################
 # IDE
 .vscode/
-
-##############################################
-# installed/copied files
-*.db
-*.txt
