@@ -23,7 +23,7 @@ int main()
 				CPPUNIT_ASSERT_EQUAL_STR(row[0].getString().c_str(),"text1");
 				CPPUNIT_ASSERT_EQUAL_STR(row[2].getString().c_str(),"1.0");
 			}
-			else if(line == 2)
+			else if(line == 3)
 			{
 				CPPUNIT_ASSERT_EQUAL_STR(row[0].getString().c_str(),"text3");
 				CPPUNIT_ASSERT_EQUAL_STR(row[2].getString().c_str(),"3.0");
@@ -33,7 +33,7 @@ int main()
 		};
 		dbProxy->executeSQL("SELECT * FROM " + tableNameStr, &lambda);
 		//std::cout << "line:" << line << std::endl;
-		CPPUNIT_ASSERT_EQUAL(line,3);
+		CPPUNIT_ASSERT_EQUAL(line,4);
 	}
 	
 	{
