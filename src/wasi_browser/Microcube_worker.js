@@ -15,15 +15,18 @@ const indexMsgParam = 2;
 
 onmessage = function(e) {
 	var message = e.data;
+	if(message.length != 3) {
+		throw 'Worker::onmessage: Expect 3 parameters';
+	}
+
 	var ID = message[indexMsgId];
 	var action = message[indexMsgAction];
+	var param = message[indexMsgParam];
 
 	console.log("******************************************");
 	console.log("Worker: Message received: ID '" + ID + "' Action:'" + action + "'");
+	console.log("Worker: Message received: param='" + param.substring(0, 150) + "'");
 	
-	if(message.lenght == 0 || message.lenght > 3) {
-		throw 'Worker::onmessage: Bad parameters';
-	}
 
 	switch(action){
     case WorkerEvent.eLoad:
