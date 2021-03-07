@@ -16,15 +16,13 @@ int main()
 	queryInA.setDataSource(ds);
 	
 	ina::query_model::Definition definition;
-	ina::query_model::InA_dimension dimensionA("col_A", "Rows");
-	definition.addDimension(dimensionA);
+	definition.addDimension(ina::query_model::InA_dimension("dim_A", "Rows"));
 	
-	ina::query_model::InA_dimension dimensionB("col_B", "Rows");
-	definition.addDimension(dimensionB);
+	definition.addDimension(ina::query_model::InA_dimension("dim_B", "Rows"));
 	
 	ina::query_model::InA_dimension dimensionMeasure("CustomDimension1", "Rows");
-	ina::query_model::InA_member measure1("col_C", "SUM");
-	dimensionMeasure.addMember(measure1);
+		dimensionMeasure.addMember(ina::query_model::InA_member("meas_1", "SUM"));
+		dimensionMeasure.addMember(ina::query_model::InA_member("meas_2", "SUM"));
 	definition.addDimension(dimensionMeasure);
 
 	queryInA.setDefinition(definition);
@@ -34,7 +32,7 @@ int main()
 
 	std::cout << "Generated SQL: " << sql << std::endl;
 
-	CPPUNIT_ASSERT_EQUAL("SELECT col_A, col_B, SUM(col_C) FROM MyTable GROUP BY col_A, col_B;", sql);
+	CPPUNIT_ASSERT_EQUAL("SELECT dim_A, dim_B, SUM(meas_1), SUM(meas_2) FROM MyTable GROUP BY dim_A, dim_B;", sql);
 	
 	return TEST_HAVEERROR();
 }
