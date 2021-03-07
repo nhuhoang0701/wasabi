@@ -23,7 +23,7 @@ int main()
 	definition.addDimension(ina::query_model::Dimension("Dim_B", "Rows"));
 	
 	ina::query_model::Dimension dimensionMeasure("Meas_1", "Rows");
-	dimensionMeasure.addMember(ina::query_model::InA_member("Meas_1", "Sum"));
+	dimensionMeasure.addMember(ina::query_model::Member("Meas_1", "Sum"));
 	definition.addDimension(dimensionMeasure);
 
 	CPPUNIT_ASSERT_EQUAL("MyTable", ds.getObjectName());

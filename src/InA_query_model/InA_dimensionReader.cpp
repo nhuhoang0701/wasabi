@@ -13,7 +13,7 @@ namespace ina::query_model
 		{
 			for(int i = 0;i < members.size();i++)
 			{
-				query_model::InA_member member;
+				query_model::Member member;
 				read(member, members[i]);
 				dim.addMember(member);
 			}

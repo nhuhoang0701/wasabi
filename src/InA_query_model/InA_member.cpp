@@ -4,17 +4,17 @@
 
 namespace ina::query_model
 {
-	InA_member::InA_member(const std::string & name, const Aggregation & aggregation) :
+	Member::Member(const std::string & name, const Aggregation & aggregation) :
 	_name(name), _aggregation(aggregation)
 	{	
 	}
 
-	const std::string & InA_member::getName() const
+	const std::string & Member::getName() const
 	{
 		return _name;
 	}
 	
-	const Aggregation & InA_member::getAggregation() const
+	const Aggregation & Member::getAggregation() const
 	{
 		return _aggregation;
 	}

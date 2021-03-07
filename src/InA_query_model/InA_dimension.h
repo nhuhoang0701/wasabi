@@ -24,8 +24,8 @@ namespace ina::query_model
 			const std::string & getName() const;
 			const std::string & getAxeName() const;
 
-			const std::vector<InA_member> & getMembers() const;
-			void                            addMember(const InA_member & member);
+			const std::vector<Member> & getMembers() const;
+			void                            addMember(const Member & member);
 
 		private:
 			Dimension() = default;
@@ -33,7 +33,7 @@ namespace ina::query_model
 			std::string _name; 
 			std::string _axename; 
 
-			std::vector<InA_member> _members;
+			std::vector<Member> _members;
 
 			friend void read(Dimension& obj, const JSONGenericObject& jsonNode);
 			friend void write(const Dimension& obj, JSONWriter& jsonNode);
