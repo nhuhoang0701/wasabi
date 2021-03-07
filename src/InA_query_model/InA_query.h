@@ -1,23 +1,20 @@
 #pragma once
 
-#include <json/jsonReader.h>
-
 #include "InA_DataSource.h"
-
 #include "InA_queryDefinition.h"
 
 
 #include <memory>
 #include <vector>
 
-
+class JSONGenericObject;    // #include <json/jsonReader.h>
 
 namespace ina::query_model
 {
 	class Query;
 
-	void read(std::shared_ptr<Query>& query, const JSONGenericObject& dataSource);
-	void read(std::vector<std::shared_ptr<Query>>& queries, const JSONGenericObject& dataSource);
+	void read(std::shared_ptr<Query>& obj, const JSONGenericObject& jsonNode);
+	void read(std::vector<std::shared_ptr<Query>>& objs, const JSONGenericObject& jsonNode);
 
 	class Query
 	{
@@ -34,7 +31,7 @@ namespace ina::query_model
 		Query& operator=(const Query&); // no copy
 
 	public:
-		Query();
+		Query() = default;
 		~Query();
 
 		bool               haveExpandCube() const;
@@ -56,7 +53,7 @@ namespace ina::query_model
 		// TODO: should we have more precise semantic ?
 		bool            m_isExpandCube = false;
 
-		friend void read(std::shared_ptr<Query>& query, const JSONGenericObject& dataSource);
-		friend void read(std::vector<std::shared_ptr<Query>>& queries, const JSONGenericObject& dataSource);
+		friend void read(std::shared_ptr<Query>& obj, const JSONGenericObject& jsonNode);
+		friend void read(std::vector<std::shared_ptr<Query>>& objs, const JSONGenericObject& jsonNode);
 	};
 }

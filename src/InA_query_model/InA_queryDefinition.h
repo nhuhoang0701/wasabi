@@ -12,6 +12,7 @@
 #include <vector>
 #include <ostream>
 
+class JSONGenericObject;    // #include <json/jsonReader.h>
 
 namespace grid {class Grid;}
 
@@ -26,20 +27,20 @@ namespace ina::query_model
 	const Aggregation NO_AGG = "";
 
 	class Definition;
-	void read(Definition & model, const JSONGenericObject& definition);
+	void read(Definition& obj, const JSONGenericObject& jsonNode);
 
 	class Definition
 	{
 	public:
-		Definition() {};
+		Definition() = default;
 		
 		void addDimension(const InA_dimension & dimension);
 
-		const std::vector<InA_dimension>& getDimensions() const { return m_objs;};
+		const std::vector<InA_dimension>& getDimensions() const;
 
 		const std::vector<InA_member>&    getVisibleMembers(const InA_dimension& dimension, std::vector<InA_member> & visibleMembers) const;
 
-		const std::vector<InA_queryFilterComparison>& getQueryFilters() const { return m_filters;};
+		const std::vector<InA_queryFilterComparison>& getQueryFilters() const;
 		void                                          addQueryFilter(const InA_queryFilterComparison & queryFilterComparison);
 
 		void prepareGrid(grid::Grid& grid);
@@ -90,7 +91,7 @@ namespace ina::query_model
 		
 		DataSource m_ds;
 		
-		friend void read(Definition & model, const JSONGenericObject& definition);
+		friend void read(Definition & obj, const JSONGenericObject& jsonNode);
 	};
 
 } // query_model

@@ -29,13 +29,9 @@ namespace ina::query_model
 		throw TRACED_InA_EXCEPTION(std::string("Unknown datasource type: ") + str);
 	}
 
-	DataSource::DataSource()
-		: m_type(TypeUndef)
-	{
-	}
-
 	DataSource::~DataSource()
 	{
+		m_type = TypeUndef;
 	}
 
 	void DataSource::validate() const
