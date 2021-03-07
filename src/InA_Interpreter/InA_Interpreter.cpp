@@ -79,6 +79,7 @@ namespace ina_interpreter
 			if(query.haveExpandCube())
 			{
 				static std::string static_str_response;
+				static_str_response.clear();
 				if(query.getDataSource().getType() == ina::query_model::DataSource::Type::TypeCatalog )
 				{
 					if(static_str_response.empty() )
@@ -101,7 +102,8 @@ namespace ina_interpreter
 					const auto& colNames = catalog->getTable(tableName).getColumnNames();
 					static_str_response += "|\t";
 					for(const auto& colName : colNames)
-						static_str_response += "\t|";
+						static_str_response += colName + "\t|";
+					std::cout << static_str_response << std::endl;
 					return static_str_response.c_str();
 				}
 			}
