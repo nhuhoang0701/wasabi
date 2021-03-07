@@ -34,6 +34,6 @@ worker.onmessage = function(msg) {
 	}
 	else if(response_ID == 4 && response_Action=="GetResponse")
 	{
-		worker.postMessage([ID++, "GetResponse",'{"Analytics":{"DataSource":{"ObjectName":"onetable_datatype","PackageName":"local:sqlite:onetable_datatype.db","Type":"Wasabi"},"Definition":{"Dimensions":[{"Name":"text","Axis":"Rows"},{"Name":"varchar","Axis":"Rows"},{"Name":"CustomDimension1","Axis":"Cols","Members":[{"Description":"Measure 1","Name":"real", "Aggregation":"SUM"},{"Description":"Measure 1","Name":"integer", "Aggregation":"SUM"}]}]}}}']);
+		worker.postMessage([ID++, "GetResponse",'{"Analytics":{"DataSource":{"ObjectName":"onetable_datatype","PackageName":"local:sqlite:onetable_datatype.db","Type":"Wasabi"},"Definition":{"Dimensions":[{"Name":"varchar","Axis":"Rows"},{"Name":"CustomDimension1","Axis":"Cols","Members":[{"Description":"Measure 1","Name":"real", "Aggregation":"SUM"},{"Description":"Measure 1","Name":"integer", "Aggregation":"SUM"}]}]}}}']);
 	}
 };
