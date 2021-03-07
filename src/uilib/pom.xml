@@ -58,6 +58,46 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>make</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>
+                run
+              </goal>
+            </goals>
+            <configuration>
+              <target>
+                <mkdir dir="${project.build.directory}/build"/>
+                <mkdir dir="${project.build.directory}/install"/>
+                <exec
+                    executable="cmake"
+                    dir="${project.build.directory}"
+                    failonerror="true">
+                  <arg line="-B ./build ../../.. -DCMAKE_INSTALL_PREFIX:PATH=./install"/>
+                </exec>
+                <exec executable="cmake"
+                      dir="${project.build.directory}"
+                      failonerror="true">
+                  <arg line="-B ./build ../../.."/>
+                </exec>
+                <exec
+                    executable="cmake"
+                    dir="${project.build.directory}"
+                    failonerror="true">
+                  <arg
+                      line="--build ./build --target install"
+                      />
+                </exec>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>com.sap.ui5.tools.build</groupId>
         <artifactId>ui5builder-maven-plugin</artifactId>
         <executions>
