@@ -1,7 +1,7 @@
 #pragma once
 
-#include "InA_DataSource.h"
-#include "InA_queryDefinition.h"
+#include "DataSource.h"
+#include "Definition.h"
 
 
 #include <memory>

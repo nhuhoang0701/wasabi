@@ -1,7 +1,7 @@
 #include "InA_Interpreter.h"
 
-#include <InA_query_model/InA_query.h>
-#include <InA_query_model/InA_DataSource.h>
+#include <InA_query_model/Query.h>
+#include <InA_query_model/DataSource.h>
 
 #include <query_generator/query_generator.h>
 

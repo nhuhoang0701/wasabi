@@ -2,9 +2,9 @@
 
 #include <metadata_enrichment/Tables.h>
 
-#include "InA_DataSource.h"
-#include "InA_member.h"
-#include "InA_dimension.h"
+#include "DataSource.h"
+#include "Member.h"
+#include "Dimension.h"
 #include "InA_queryFilter.h"
 #include "InA_queryFilterComparison.h"
 

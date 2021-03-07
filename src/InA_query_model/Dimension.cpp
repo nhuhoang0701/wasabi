@@ -1,4 +1,4 @@
-#include "InA_dimension.h"
+#include "Dimension.h"
 
 namespace ina::query_model
 {

@@ -1,4 +1,4 @@
-#include "InA_queryDefinition.h"
+#include "Definition.h"
 
 #include <iostream>
 

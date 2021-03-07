@@ -1,7 +1,7 @@
 
-#include "InA_query.h"
-#include "InA_queryDefinition.h"
-#include "InA_DataSource.h"
+#include "Query.h"
+#include "Definition.h"
+#include "DataSource.h"
 
 namespace ina::query_model
 {

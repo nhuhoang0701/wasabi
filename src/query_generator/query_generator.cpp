@@ -1,8 +1,8 @@
 #include "query_generator.h"
 
 #include <cube/cube.h>
-#include <InA_query_model/InA_query.h>
-#include <InA_query_model/InA_dimension.h>
+#include <InA_query_model/Query.h>
+#include <InA_query_model/Dimension.h>
 
 #include <sstream>
 #include <iostream>
