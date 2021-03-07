@@ -98,11 +98,7 @@ void getResponse()
 
     std::cout << "------------------------" << std::endl << std::endl;
 
-    request = R"({"Analytics":{"DataSource":{"ObjectName":"onetable_datatype","PackageName":"local:sqlite:onetable_datatype.db","Type":"Wasabi"},"Definition":{"Description":"Order count",
-            "Dimensions":[{"Name":"text","Axis":"Rows"},{"Name":"varchar","Axis":"Rows"},{"Name":"real","Axis":"Rows"}]
-            ,"Name":"Query35",
-            "ReadMode":"BookedAndSpaceAndState"}},"Description":"Order count","Name":"QMDS0035",
-            "TestNumber":66})";
+    request = R"({"Analytics":{"DataSource":{"ObjectName":"onetable_datatype","PackageName":"local:sqlite:onetable_datatype.db","Type":"Wasabi"},"Definition":{"Dimensions":[{"Name":"text","Axis":"Rows"},{"Name":"varchar","Axis":"Rows"},{"Name":"CustomDimension1","Axis":"Cols","Members":[{"Description":"Measure 1","Name":"real", "Aggregation":"SUM"}]}]}}})";
 
     // std::cout << "InA_Interpreter_test => request: json_getResponse_json " << request << std::endl;
 
