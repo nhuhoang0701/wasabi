@@ -43,6 +43,6 @@ namespace ina::query_model
                 else                         return ComparisonOperator::Unknown;
             };
 
-            InA_queryFilter();
+            InA_queryFilter() = default;
     };   
 }

@@ -2,11 +2,16 @@
 
 #include <string>
 
+class JSONGenericObject;    // #include <json/jsonReader.h>
+
 namespace ina::query_model
 {
-	typedef std::string Datatype;
+	class InA_dimension;
+
+	class InA_member;
+	void read(InA_member& obj, const JSONGenericObject& jsonNode);
+
 	typedef std::string Aggregation;
-	
 	class InA_member
 	{
 		public:
@@ -16,9 +21,13 @@ namespace ina::query_model
 			const Aggregation & getAggregation() const;
 
 		private:
-			InA_member();
-			std::string _name; 
+			InA_member() = default;
 
+			std::string _name; 
 			Aggregation _aggregation;
+
+			friend void read(InA_member& obj, const JSONGenericObject& jsonNode);
+
+			friend void read(InA_dimension& obj, const JSONGenericObject& jsonNode);
 	};
 }

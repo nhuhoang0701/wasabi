@@ -14,6 +14,16 @@ namespace ina::query_model
         m_filters.push_back(queryFilter);
     }
 
+	const std::vector<InA_dimension>& Definition::getDimensions() const
+	{
+		return m_objs;
+	}
+	
+	const std::vector<InA_queryFilterComparison>& Definition::getQueryFilters() const
+	{
+		return m_filters;
+	}
+
     const std::vector<InA_member>& Definition::getVisibleMembers(const InA_dimension& dimension, std::vector<InA_member> & visibleMembers) const 
     {
         std::vector<InA_member>::const_iterator pMemberIterator;

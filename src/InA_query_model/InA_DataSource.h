@@ -11,8 +11,8 @@ namespace ina::query_model
 {
 	class DataSource;
 
-	void read(DataSource & ds, const JSONGenericObject& dataSource);
-	void write(const DataSource& ds, JSONWriter& writer);
+	void read(DataSource & obj, const JSONGenericObject& jsonNode);
+	void write(const DataSource& obj, JSONWriter& jsonNode);
 
 	class DataSource
 	{
@@ -30,7 +30,7 @@ namespace ina::query_model
 	private:
 		DataSource(const DataSource&);
 	public:
-		DataSource();
+		DataSource() = default;
 		~DataSource();
 
 		void  validate() const;
@@ -62,7 +62,7 @@ namespace ina::query_model
 	private:
 		std::string		m_objName;
 		std::string		m_InstanceId;
-		Type            m_type;
+		Type            m_type = TypeUndef;
 		std::string		m_packageName;
 		std::string     m_schemaName;
 		std::string		m_description;

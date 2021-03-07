@@ -4,8 +4,7 @@ namespace ina::query_model
 {
 	InA_dimension::InA_dimension(const std::string & name, const std::string & axename) 
 	: _name(name), _axename(axename)
-	{
-		
+	{	
 	}
 	
 	const std::string & InA_dimension::getName() const
