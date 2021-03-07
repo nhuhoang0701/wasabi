@@ -3,6 +3,15 @@ message (TRACE "-- wasabi.cmake toolchain")
 
 ###########################################
 # Variables
+if(DEFINED WASABI_USE_WASM)
+	message(TRACE "- WASABI_USE_WASM='${WASABI_USE_WASM}'")
+elseif (DEFINED ENV{WASABI_USE_WASM})
+	message(TRACE "- WASABI_USE_WASM=ENV'$ENV{WASABI_USE_WASM}' instead WASABI_USE_WASM='${WASABI_USE_WASM}'")
+    set (WASABI_USE_WASM "$ENV{WASABI_USE_WASM}" CACHE PATH "project root" FORCE)
+else()
+	message(FATAL_ERROR "Missing 'WASABI_USE_WASM' definition")
+endif()
+
 if(DEFINED WASMTIME)
 	message(TRACE "- WASMTIME='${WASMTIME}'")
 elseif (DEFINED ENV{WASMTIME})
@@ -42,36 +51,48 @@ endif()
 
 ###########################################
 # tools chain / xcompilation
-set(CMAKE_SYSTEM_NAME Generic)
-set(CMAKE_SYSTEM_PROCESSOR wasm)
-set(CLANG_TARGET_TRIPLE wasm32-unknown-wasi)
-message(TRACE "- CLANG_TARGET_TRIPLE='${CLANG_TARGET_TRIPLE}'")
+if ("${WASABI_USE_WASM}" STREQUAL "yes")
+	set(CMAKE_SYSTEM_NAME Generic)
+	set(CMAKE_SYSTEM_PROCESSOR wasm)
+	set(CLANG_TARGET_TRIPLE wasm32-unknown-wasi)
+	message(TRACE "- CLANG_TARGET_TRIPLE='${CLANG_TARGET_TRIPLE}'")
 
-set(CMAKE_CROSSCOMPILING TRUE)
-set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS FALSE)
-set(CMAKE_CROSSCOMPILING_EMULATOR "${WASMTIME}")
+	set(CMAKE_CROSSCOMPILING TRUE)
+	set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS FALSE)
+	set(CMAKE_CROSSCOMPILING_EMULATOR "${WASMTIME}")
 
-set(CMAKE_SYSROOT ${SYSROOT_DIR})
+	set(CMAKE_SYSROOT ${SYSROOT_DIR})
 
-set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
-set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
-set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
-set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+	set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+	set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+	set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+	set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 
-set(CMAKE_C_COMPILER_WORKS TRUE)
-set(CMAKE_C_COMPILER_ID Clang)
-set(CMAKE_C_COMPILER ${LLVM_DIR}/bin/clang)
-set(CMAKE_C_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
+	set(CMAKE_C_COMPILER_WORKS TRUE)
+	set(CMAKE_C_COMPILER_ID Clang)
+	set(CMAKE_C_COMPILER ${LLVM_DIR}/bin/clang)
+	set(CMAKE_C_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
 
-set(CMAKE_CXX_COMPILER_WORKS TRUE)
-set(CMAKE_CXX_COMPILER_ID Clang)
-set(CMAKE_CXX_COMPILER ${LLVM_DIR}/bin/clang++)
-set(CMAKE_CXX_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
+	set(CMAKE_CXX_COMPILER_WORKS TRUE)
+	set(CMAKE_CXX_COMPILER_ID Clang)
+	set(CMAKE_CXX_COMPILER ${LLVM_DIR}/bin/clang++)
+	set(CMAKE_CXX_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
 
-set(CMAKE_AR ${LLVM_DIR}/bin/llvm-ar)
-set(CMAKE_RANLIB ${LLVM_DIR}/bin/llvm-ranlib)
-set(CMAKE_SPLIT ${LLVM_DIR}/bin/llvm-split)
-
+	set(CMAKE_AR ${LLVM_DIR}/bin/llvm-ar)
+	set(CMAKE_RANLIB ${LLVM_DIR}/bin/llvm-ranlib)
+	set(CMAKE_SPLIT ${LLVM_DIR}/bin/llvm-split)
+elseif ("${WASABI_USE_WASM}" STREQUAL "no")
+	set(CMAKE_C_COMPILER ${LLVM_DIR}/bin/clang)
+	set(CMAKE_CXX_COMPILER ${LLVM_DIR}/bin/clang++)
+	set(CMAKE_LINKER   ${LLVM_DIR}/bin/llvm-ld)
+	set(CMAKE_AR ${LLVM_DIR}/bin/llvm-ar)
+	set(CMAKE_RANLIB ${LLVM_DIR}/bin/llvm-ranlib)
+	set(CMAKE_SPLIT ${LLVM_DIR}/bin/llvm-split)
+	set(CMAKE_CXX_FLAGS "-fuse-ld=lld -stdlib=libc++ -static -rdynamic")
+	set(CMAKE_EXE_LINKER_FLAGS "-stdlib=libc++ -lc++abi -static -Xlinker --allow-multiple-definition")
+else ()
+	message(FATAL_ERROR "${WASABI_USE_WASM} should have 'yes'/'no' only, WASABI_USE_WASM='${WASABI_USE_WASM}'")
+endif ()
 
 ###########################################
 # compilation option

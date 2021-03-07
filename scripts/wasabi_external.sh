@@ -15,7 +15,8 @@ export outfile=$WASABI_EXTERNAL_DIR/output_ext.log
 
 echo
 echo -----------------------------------
-echo " Installing external tools into " $WASABI_EXTERNAL_DIR
+echo " Installing external tools into '$WASABI_EXTERNAL_DIR'"
+echo "     log of this script will be in : '$outfile'"
 echo " Installing external tools into $WASABI_EXTERNAL_DIR" > $outfile
 
 
@@ -152,18 +153,25 @@ then
 
 	echo ------------- build ---------------
 	$CMAKE --build . --target cJSON_test >> $outfile
-	touch $CJSON_DIR/cjson.flag
 else
 	echo "cjson already installed in '$CJSON_DIR'"
 fi
 echo -------------- test ---------------
-$WASMTIME $CJSON_DIR/build/cJSON_test >> $outfile
+
+if [ "$WASABI_USE_WASM" = "no" ]
+then
+	$CJSON_DIR/build/cJSON_test >> $outfile
+else
+	$WASMTIME $CJSON_DIR/build/cJSON_test >> $outfile
+fi
+
 if [ $? -ne 0 ]
 then
 	echo "Error: cJSON test didn't works" 
 	exit 1
 else
 	echo "cJSON test passed"
+	touch $CJSON_DIR/cjson.flag
 fi
 
 

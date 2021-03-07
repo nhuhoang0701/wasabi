@@ -75,3 +75,11 @@ else
 	set -e # Enable error
 	Install_Steps
 fi
+
+if [ "$WASABI_USE_WASM" = "yes" ] || [ "$WASABI_USE_WASM" = "no" ]
+then
+	echo "WASABI_USE_WASM='$WASABI_USE_WASM'"  
+else
+	echo "Error: WASABI_USE_WASM variable should have 'yes'/'no' value only, WASABI_USE_WASM='$WASABI_USE_WASM'"  
+	return 1
+fi
