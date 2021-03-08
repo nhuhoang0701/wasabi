@@ -3,7 +3,7 @@
  */
 /*global sap*/
 sap.ui.define(
-  "sap/wasbi/rsbitt/controller/App.controller",
+  "sap/wasabi/rsbitt/controller/App.controller",
   [
     "jquery.sap.global",
     "sap/base/Log",
@@ -23,7 +23,7 @@ sap.ui.define(
           var that = this;
           var oComp =that.getOwnerComponent();
           that.getView().setBusy(true);
-          oComp.getMain().executeServerInfo().then(
+          oComp.getMain().getServerInfo().then(
             function(s){
               that.getView().getModel().setProperty("/responseBody",s);
               that.getView().setBusy(false);
@@ -43,7 +43,7 @@ sap.ui.define(
           var that = this;
           var oComp =that.getOwnerComponent();
           that.getView().setBusy(true);
-          oComp.getMain().executeGetResponse(
+          oComp.getMain().getResponse(
             that.getView().getModel().getProperty("/requestBody")
           ).then(
             function(s){
