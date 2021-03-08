@@ -33,14 +33,14 @@ target_link_libraries(dbproxy_metadata_test dbproxy)
 target_include_directories(dbproxy_metadata_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
 
 ## [main]
-add_test(NAME dbproxy_test COMMAND dbproxy_test --dir=../sqlite/ WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/sqlite)
-add_test(NAME dbproxy_metadata_test COMMAND dbproxy_metadata_test --dir=../sqlite/ WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/sqlite)
+add_test(NAME dbproxy_test COMMAND dbproxy_test --dir=./ WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+add_test(NAME dbproxy_metadata_test COMMAND dbproxy_metadata_test --dir=./ WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 ## [installation]
 install(TARGETS dbproxy sqlite
 		LIBRARY DESTINATION ${WASABI_LIBS}
 		PUBLIC_HEADER DESTINATION ${WASABI_INCLUDES})
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/sqlite/efashion/efashion.db DESTINATION ${WASABI_ROOT_DIR}/src/wasi_browser/sqlite/efashion)
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/sqlite/onetable_datatype/onetable_datatype.db DESTINATION ${WASABI_ROOT_DIR}/src/wasi_browser/sqlite/onetable_datatype)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/sqlite/efashion/efashion.db DESTINATION ${WASABI_ROOT_DIR}/src/wasi_browser/resources/sqlite/efashion)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/sqlite/onetable_datatype/onetable_datatype.db DESTINATION ${WASABI_ROOT_DIR}/src/wasi_browser/resources/sqlite/onetable_datatype)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)

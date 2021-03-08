@@ -28,7 +28,9 @@ namespace dbproxy
 		std::cout << "dbname:" << dbname << std::endl;
 		int res = 0;
 		if(useDBFile)
-			res = sqlite3_open_v2("../sqlite/onetable_datatype/onetable_datatype.db", &m_sqlite_db, SQLITE_OPEN_READONLY, nullptr);
+		{
+			res = sqlite3_open_v2(std::string("./resources/sqlite/"+dbname+"/"+dbname+".db").c_str(), &m_sqlite_db, SQLITE_OPEN_READONLY, nullptr);
+		}
 		else
 			res = sqlite3_open(":memory:", &m_sqlite_db);
 		if (res != SQLITE_OK)

@@ -28,10 +28,10 @@ function start(response) {
 	{
 		moduleWASI = module;
 		setModuleInstance(module.instance);
-		filesystem = ["../resources/response_getSerververInfo.json",
-					 "../resources/response_getResponse_Metadat_expand_cube_catalog.json",
-					 "../resources/text.txt",
-					 "../sqlite/efashion/efashion.db"];
+		filesystem = ["./resources/response_getSerververInfo.json",
+					 "./resources/response_getResponse_Metadat_expand_cube_catalog.json",
+					 "./resources/text.txt",
+					 "./resources/sqlite/efashion/efashion.db"];
 		WASI_API.wasabi_initFS(filesystem).then(() => {
 			try {module.instance.exports._start();}
 			catch (e)
