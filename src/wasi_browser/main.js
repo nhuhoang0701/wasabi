@@ -1,7 +1,7 @@
 var worker = new Worker("Microcube_worker.js");
 
 ID = 0;
-worker.postMessage([ID++, "load", ""]);
+worker.postMessage([ID++, "load", "."]);
 
 worker.onmessage = function(msg) {
 	response_ID = msg.data[0];

@@ -126,12 +126,19 @@ var WASI_API = {
 			vpath = paths[i];
 			if(rootFS != null && rootFS != "" )
 				path = rootFS + vpath;
-			if(vpath.substring(0, 1) == "/")
-				vpath = vpath.substring(1);
+			else
+				path = vpath;
 			const response = await fetch(path);
-			//TODO: Manage http error code 
+			if (response.status >= 400 && response.status < 600) {
+				response.text().then(function (text) {
+					throw new Error("Bad response from server response.status='"+response.status+"' " + text + "'");
+				  });
+			  }
 			arrayBuffer = await response.arrayBuffer();
 			var uint8View = new Uint8Array(arrayBuffer);
+			
+			if(vpath.substring(0, 1) == "/")
+				vpath = vpath.substring(1);
 			fs_Path2Data.set(vpath, uint8View);
 			console.log("WASI FileSystem: [" +rootFS + "," + vpath + "] loaded from '" + path + "' (" + uint8View.length + " bytes)");
 		}
