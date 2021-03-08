@@ -18,5 +18,16 @@ namespace ina::query_model
 				dim.addMember(member);
 			}
 		}
+
+		if(const auto& attributs = dimNode.getArray("Attributes"))
+		{
+			for(int i = 0;i < attributs.size();i++)
+			{
+				Attribute attribut;
+				read(attribut, attributs[i]);
+				attribut.m_dim = &dim;
+				dim.addAttribute(attribut);
+			}
+		}
 	}
 }

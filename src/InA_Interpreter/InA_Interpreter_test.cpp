@@ -4,6 +4,8 @@
 
 #include "test_tools/TestAssert.h"
 
+#include <InA_query_model/Dimension.h>
+
 #define WASM_EXPORT extern "C"
 
 void getServerInfo();
@@ -106,6 +108,20 @@ void getResponse()
 
     CPPUNIT_ASSERT(!std::string(response).empty());
     // std::cout << "InA_Interpreter_test => response: " << response << std::endl;
+
+    std::cout << "------------------------" << std::endl << std::endl;
+
+	{
+		request = R"({"Name":"dimName","Axis":"Rows","Attributes":[{"Name":"ATTR0","Obtainability":"UserInterface"}, {"Name":"ATTR1","Obtainability":"UserInterface"}]})";
+		JSONReader reader;
+		JSONGenericObject root = reader.parse(request);
+		ina::query_model::Dimension dimension;
+		read(dimension, root);
+
+		CPPUNIT_ASSERT_EQUAL(2, dimension.getAttributes().size());
+		CPPUNIT_ASSERT_EQUAL_STR("ATTR0", dimension.getAttributes().at(0).getName().c_str());
+		CPPUNIT_ASSERT_EQUAL_STR("ATTR1", dimension.getAttributes().at(1).getName().c_str());
+    }
 
     std::cout << "-------------------------------------------------------" << std::endl << std::endl;
 }
