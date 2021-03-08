@@ -24,6 +24,7 @@ namespace wasabi{
                    itsAggregation(theAggregation),
                    itsName(theName),
                    itsSQLName(theSQLName){
+                     itsName = "* " + itsName + " *";
       };
       ColumnImpl(const ColumnImpl&)=delete;
       ColumnImpl& operator=(const ColumnImpl&) = delete;
@@ -179,8 +180,6 @@ namespace wasabi{
     };
     void Table::addColumn( const dbproxy::ColumnDescr& theDesc)
 	{
-      unique_ptr<Column> aPtr( new Column(theDesc) );
-
       auto anIter = itsPimpl->itsColumns.insert(make_pair(theDesc.getName(),unique_ptr<Column>(new Column(theDesc))));
       if(!anIter.second)
 	  {

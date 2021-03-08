@@ -101,10 +101,31 @@ namespace ina_interpreter
 
 					std::shared_ptr<metadata::Catalog> catalog = std::shared_ptr<metadata::Catalog>(new metadata::Catalog(cnxString));
 					
+					std::ostringstream results;
+
 					const auto& colNames = catalog->getTable(tableName).getColumnNames();
-					static_str_response += "|\t";
-					for(const auto& colName : colNames)
-						static_str_response += colName + "\t|";
+
+					results << "Object name" << std::endl;
+					for(auto& colName : colNames)
+						results << "  " << std::setw(10) << catalog->getTable(tableName).getColumn(colName).getName() << "  |  ";
+					results << std::endl;
+
+					results << "SQL Name" << std::endl;
+					for(auto& colName : colNames)
+						results << "  " << std::setw(10) << catalog->getTable(tableName).getColumn(colName).getSQLName() << "  |  ";
+					results << std::endl;
+
+					results << "Datatype" << std::endl;
+					for(auto& colName : colNames)
+						results << "  " << std::setw(10) << catalog->getTable(tableName).getColumn(colName).getDataType() << "  |  ";
+					results << std::endl;
+
+					results << "Agg" << std::endl;
+					for(auto& colName : colNames)
+						results << "  " << std::setw(10) << catalog->getTable(tableName).getColumn(colName).getAggregation() << "  |  ";
+					results << std::endl;
+
+					static_str_response = results.str();
 					std::cout << static_str_response << std::endl;
 					return static_str_response.c_str();
 				}
@@ -125,20 +146,29 @@ namespace ina_interpreter
 			const std::string& cnxString = query.getDataSource().getPackageName();
 			if(!cnxString.empty() )
 			{
-				size_t line = 0;
-				std::ostringstream results;
-				std::function<void(const dbproxy::Row&)> lambda = [&line, &results, &cube](const dbproxy::Row& row)
+				std::function<void(const dbproxy::Row&)> lambda = [&cube](const dbproxy::Row& row)
 				{
 					cube.insertRow(row);
-					for(int i = 0;i < row.size(); i++)
-					{
-						results << "  " << std::setw(10) << row[i].getString() << "  |  ";
-					}
-					results << std::endl;
-					line++;
 				};
-
 				dbproxy::DBProxy::getDBProxy(cnxString)->executeSQL(sql, &lambda);
+
+				auto body = cube.getBody();
+				std::ostringstream results;
+				for(auto row : body)
+				{
+					for(auto cell : row)
+						results << "  " << std::setfill('-') << std::setw(10) << "" << "  |  ";
+					break;
+				}
+				results << std::setfill(' ') << std::endl;
+
+				for(auto row : body)
+				{
+					for(auto cell : row)
+						results << "  " << std::setw(10) << cell << "  |  ";
+					results << std::endl;
+				}
+
 				std::cout << "InA_Interpreter => Results of SQL execution : " << std::endl  << results.str() << std::endl;
 				writer.value("Results = " + results.str());
 			}			
