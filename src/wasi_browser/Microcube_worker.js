@@ -48,10 +48,10 @@ onmessage = function(e) {
 			moduleWASI = module;
 			setModuleInstance(module.instance);
 			
-			filesystem = ["./resources/response_getSerververInfo.json",
-						 "./resources/response_getResponse_Metadat_expand_cube_catalog.json",
-						 "./resources/sqlite/efashion/efashion.db"];
-			WASI_API.wasabi_initFS(filesystem).then(() => 
+			filesystem = ["/resources/response_getSerververInfo.json",
+						 "/resources/response_getResponse_Metadat_expand_cube_catalog.json",
+						 "/resources/sqlite/efashion/efashion.db"];
+			WASI_API.wasabi_initFS(param, filesystem).then(() => 
 			{
 				if(getModuleInstance()._start)
 				{

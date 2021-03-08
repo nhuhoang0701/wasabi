@@ -121,15 +121,19 @@ var WASI_API = {
 	
 	//*************************************************************
 	// wasabi specific
-	wasabi_initFS : async function(paths) {
+	wasabi_initFS : async function(rootFS, paths) {
 		for (let i=0; i<paths.length; i++)  {
-			path = paths[i];
-
+			vpath = paths[i];
+			if(rootFS != null && rootFS != "" )
+				path = rootFS + vpath;
+			if(vpath.substring(0, 1) == "/")
+				vpath = vpath.substring(1);
 			const response = await fetch(path);
+			//TODO: Manage http error code 
 			arrayBuffer = await response.arrayBuffer();
 			var uint8View = new Uint8Array(arrayBuffer);
-			fs_Path2Data.set(path, uint8View);
-			console.log("WASI FileSystem: loading... " + path + " (" + uint8View.length + " bytes)");
+			fs_Path2Data.set(vpath, uint8View);
+			console.log("WASI FileSystem: [" +rootFS + "," + vpath + "] loaded from '" + path + "' (" + uint8View.length + " bytes)");
 		}
 	},
 	wasabi_initEnv : async function(environ) {
