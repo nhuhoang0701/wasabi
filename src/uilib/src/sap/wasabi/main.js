@@ -29,7 +29,7 @@ sap.ui.define(
             reject: fReject,
             resolve: fResolve
           };
-          that.worker.postMessage([nCounter,"load"]);
+          that.worker.postMessage([nCounter,"load", "."]);
         }
         return oWasabi;
       }
@@ -48,7 +48,7 @@ sap.ui.define(
               reject: fReject,
               resolve: fResolve
             };
-            that.worker.postMessage([nCounter,"GetServerInfo"]);
+            that.worker.postMessage([nCounter,"GetServerInfo", ""]);
             return oProm;
           }
         );

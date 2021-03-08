@@ -5,12 +5,14 @@
 #include <stdexcept>
 #include <iostream>
 #include <string>
+#include <map>
 #include <sstream>
-
 
 
 namespace dbproxy
 {
+	std::map<std::string /*cnxString*/, std::shared_ptr<DBProxy>>  proxies;
+
 	std::shared_ptr<DBProxy> DBProxy::getDBProxy(const std::string& cnxString)
 	{
 		std::string segment;
@@ -23,9 +25,13 @@ namespace dbproxy
 		if(seglist[0] == "local")
 		{
 			if(seglist[1] == "sqlite")
-				return std::make_shared<DBSQLite>(seglist[2]);
+			{
+				if(proxies.find(cnxString) == proxies.end())
+					proxies[cnxString] = std::make_shared<DBSQLite>(seglist[2]);
+				return proxies[cnxString];
+			}
 			else
-			throw std::runtime_error("DBProxy::local db unknow:" + seglist[1]);
+				throw std::runtime_error("DBProxy::local db unknow:" + seglist[1]);
 		}
 		else if(seglist[0] == "remote")
 			throw std::runtime_error("DBProxy::remote not implemented");

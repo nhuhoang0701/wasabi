@@ -48,7 +48,7 @@ sap.ui.define(
           ).then(
             function(s){
               that.getView().getModel().setProperty("/responseBody",s);
-              this.getView().byId("editorResponse").prettyPrint();
+              that.getView().byId("editorResponse").prettyPrint();
               that.getView().setBusy(false);
             }
           ).catch(

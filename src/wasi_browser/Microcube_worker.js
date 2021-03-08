@@ -1,6 +1,8 @@
-isLoaded = false;
+//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// Microcube_worker.js
+var isLoaded = false;
 
-const WorkerEvent = {
+var WorkerEvent = {
     eLoad: 'load',
     eGetServerInfo: 'GetServerInfo',
     eGetResponse: 'GetResponse'
@@ -36,7 +38,7 @@ onmessage = function(e) {
 			return;
 		}
 
-		const importObject =
+		var importObject =
 		{
 			wasi_snapshot_preview1: WASI_API,
 			env: {},
@@ -118,6 +120,6 @@ onmessage = function(e) {
 		return;
 	}
 	
-			
-	throw 'Unknow action:' + action;
+	postMessage([ID, action, new Error('Unknow action:' + action)]);
 }
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
