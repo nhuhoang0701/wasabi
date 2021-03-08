@@ -10,7 +10,6 @@
   <appData>
     <jsdoc xmlns="http://www.sap.com/ui5/buildext/jsdoc">
       <exclude name="sap/wasabi/thirdparty/**" />
-      <exclude name="sap/wasabi/hyper/**" />
     </jsdoc>
     <documentation xmlns="http://www.sap.com/ui5/buildext/documentation"
                    indexUrl="../../../../test-resources/sap/wasabi/demokit/docuindex.json"

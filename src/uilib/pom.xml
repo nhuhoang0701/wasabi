@@ -3,8 +3,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-
   <!-- **************************************************************************
        * POM SECTION: Maven Model Version Settings
        *************************************************************************** -->
@@ -58,46 +56,6 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>make</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>
-                run
-              </goal>
-            </goals>
-            <configuration>
-              <target>
-                <mkdir dir="${project.build.directory}/build"/>
-                <mkdir dir="${project.build.directory}/install"/>
-                <exec
-                    executable="cmake"
-                    dir="${project.build.directory}"
-                    failonerror="true">
-                  <arg line="-B ./build ../../.. -DCMAKE_INSTALL_PREFIX:PATH=./install"/>
-                </exec>
-                <exec executable="cmake"
-                      dir="${project.build.directory}"
-                      failonerror="true">
-                  <arg line="-B ./build ../../.."/>
-                </exec>
-                <exec
-                    executable="cmake"
-                    dir="${project.build.directory}"
-                    failonerror="true">
-                  <arg
-                      line="--build ./build --target install"
-                      />
-                </exec>
-              </target>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>com.sap.ui5.tools.build</groupId>
         <artifactId>ui5builder-maven-plugin</artifactId>
         <executions>
@@ -127,10 +85,48 @@
               </resources>
               <verbose>true</verbose>
               <version>${project.version}</version>
-              <failOnValidationErrors>true</failOnValidationErrors>
+              <failOnValidationErrors>false</failOnValidationErrors>
               <validationProfile>sap-ui5-public</validationProfile>
             </configuration>
           </execution>
+
+          <execution>
+            <id>preload-and-merge</id>
+            <configuration>
+              <resources>
+                <resource>
+                  <directory>${project.build.outputDirectory}/META-INF/resources</directory>
+                  <filters combine.children="append">
+                    <!-- ===========================================================================
+                         !! ATTENTION !!
+                         The following excludes must be kept in sync with those configured in the
+                         .library file of the sap.ui.codeeditor library in openui5.
+                         =========================================================================== -->
+                    <filter>!sap/wasabi/thirdparty/</filter>
+                  </filters>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.sap.ui5.tools.build</groupId>
+        <artifactId>maven-coldwater-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>optimize</id>
+            <phase>package</phase>
+            <goals>
+              <goal>optimize</goal>
+            </goals>
+            <configuration>
+              <excludes combine.children="append">
+                <exclude>**/thirdparty/**</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+          <!-- check the platform constraints -->
         </executions>
       </plugin>
     </plugins>

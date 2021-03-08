@@ -3,7 +3,7 @@
  */
 /*global sap */
 sap.ui.define(
-  "sap/firefly/fiori/rsrt/Component",
+  "sap/wasabi/rsbitt/Component",
   [
     "sap/ui/core/UIComponent",
     "sap/base/Log",

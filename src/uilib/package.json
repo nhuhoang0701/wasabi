@@ -7,7 +7,7 @@
     "license": "SEE LICENSE IN LICENSE.txt",
     "scripts": {
         "build": "ui5 build --exclude-task=generateLibraryPreload",
-        "build-all": "ui5 build --all",
+        "build-all": "ui5 build --all --exclude-task=generateLibraryPreload",
         "build-themes": "ui5 build --exclude-task=* --include-task=buildThemes",
         "start": "ui5 serve --open test-resources/sap/wasabi/Example.html"
     },
