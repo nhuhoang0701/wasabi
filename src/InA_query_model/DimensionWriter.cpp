@@ -1,5 +1,7 @@
 #include "Dimension.h"
 
+#include <json/jsonWriter.h>
+
 namespace ina::query_model
 {
 	static void writeAttributeHierarchy(JSONWriter& writer, const Dimension& dim);
@@ -7,9 +9,9 @@ namespace ina::query_model
 	static void writeHierarchies(JSONWriter& writer, const Dimension& dim);
 	static void writeAttributes(JSONWriter& writer, const Dimension& dim);
 	static void writeMembers(JSONWriter& writer, const Dimension& dim);
-	static void writeAttribute(JSONWriter& writer, const InA_Attribute& att);
-	static void writeDefaultExcludingOperators(JSONWriter &writer, const InA_Attribute& att);
-	static void writeDefaultIncludingOperators(JSONWriter &writer, const InA_Attribute& att);
+	static void writeAttribute(JSONWriter& writer, const Attribute& att);
+	static void writeDefaultExcludingOperators(JSONWriter &writer, const Attribute& att);
+	static void writeDefaultIncludingOperators(JSONWriter &writer, const Attribute& att);
 
 	enum AttributeColumnType
 	{
@@ -18,9 +20,9 @@ namespace ina::query_model
 		NoMeasure = 0
 	};
 	static std::string  toString(AttributeColumnType);
-	static const AttributeColumnType getColumnType(const InA_Attribute& att);
+	static const AttributeColumnType getColumnType(const Attribute& att);
 
-	void write(const Dimension& dim, JSONWriter& dimNode)
+	void write(const Dimension& dim, JSONWriter& writer)
 	{
 		JSON_MAP(writer);
 
@@ -116,7 +118,7 @@ namespace ina::query_model
 			writer.key("AttributeNames");
 			{
 				JSON_LIST(writer);
-				for (std::vector<InA_Attribute>::const_iterator iter = dim.beginAttributes(); iter != dim.endAttributes(); ++iter)
+				for (std::vector<Attribute>::const_iterator iter = dim.beginAttributes(); iter != dim.endAttributes(); ++iter)
 				{
 					writer.value(iter->getName());
 				}
@@ -128,9 +130,9 @@ namespace ina::query_model
 			{
 				case Dimension::MeasuresDimension:
 				{
-					const bo_utf8string& defaultKeyAttribute = dim.getAttribute(model::InA_Attribute::Key).getName();
-					const bo_utf8string& defaultDisplayKeyAttribute = dim.getAttribute(model::InA_Attribute::Name).getName();
-					const bo_utf8string& defaultTextAttribute = dim.getAttribute(model::InA_Attribute::Name).getName();
+					const bo_utf8string& defaultKeyAttribute = dim.getAttribute(model::Attribute::Key).getName();
+					const bo_utf8string& defaultDisplayKeyAttribute = dim.getAttribute(model::Attribute::Name).getName();
+					const bo_utf8string& defaultTextAttribute = dim.getAttribute(model::Attribute::Name).getName();
 
 					writer.pair("DefaultDisplayKeyAttribute", defaultDisplayKeyAttribute);
 					writer.pair("DefaultKeyAttribute", defaultKeyAttribute);
@@ -155,14 +157,14 @@ namespace ina::query_model
 					writer.key("DefaultResultSetAttributes");
 					{
 						JSON_LIST(writer);
-						for (std::vector<InA_Attribute>::const_iterator iter = dim.beginAttributes(); iter != dim.endAttributes(); ++iter)
+						for (std::vector<Attribute>::const_iterator iter = dim.beginAttributes(); iter != dim.endAttributes(); ++iter)
 						{
 							writer.value(iter->getDescription());
 						}
 					}
-					if (dim.hasAttribute(InA_Attribute::Description))
+					if (dim.hasAttribute(Attribute::Description))
 					{
-						const std::string defaultTextAttribute = reinterpret_cast<const char*>(dim.getAttribute(InA_Attribute::Description).getDescription().c_str());
+						const std::string defaultTextAttribute = reinterpret_cast<const char*>(dim.getAttribute(Attribute::Description).getDescription().c_str());
 						writer.pair("DefaultTextAttribute", defaultTextAttribute);
 					}
 				}
@@ -170,9 +172,9 @@ namespace ina::query_model
 				*/
 				case Dimension::ObjectsDimension:
 				{
-					const std::string& defaultKeyAttribute = dim.getAttribute(model::InA_Attribute::Key).getName();
+					const std::string& defaultKeyAttribute = dim.getAttribute(model::Attribute::Key).getName();
 					const std::string& defaultDisplayKeyAttribute = defaultKeyAttribute;
-					const std::string& defaultTextAttribute = dim.getAttribute(model::InA_Attribute::Description).getName();
+					const std::string& defaultTextAttribute = dim.getAttribute(model::Attribute::Description).getName();
 
 					writer.pair("DefaultDisplayKeyAttribute", defaultDisplayKeyAttribute);
 					writer.pair("DefaultKeyAttribute", defaultKeyAttribute);
@@ -186,10 +188,10 @@ namespace ina::query_model
 					/*
 					if (dim.countHierarchies() > 0)
 					{
-						const std::string& hDefaultKeyAttribute  = dim.getAttribute(model::InA_Attribute::HKey).getName();
-						const std::string& hDefaultTextAttribute = dim.getAttribute(model::InA_Attribute::HDescription).getName();
-						const std::string& hDefaultPathAttribute = dim.getAttribute(model::InA_Attribute::HPath).getName();
-						const std::string& hDefaultNameAttribute = dim.getAttribute(model::InA_Attribute::HName).getName();
+						const std::string& hDefaultKeyAttribute  = dim.getAttribute(model::Attribute::HKey).getName();
+						const std::string& hDefaultTextAttribute = dim.getAttribute(model::Attribute::HDescription).getName();
+						const std::string& hDefaultPathAttribute = dim.getAttribute(model::Attribute::HPath).getName();
+						const std::string& hDefaultNameAttribute = dim.getAttribute(model::Attribute::HName).getName();
 
 						writer.pair("HierarchyDisplayKeyAttribute", hDefaultNameAttribute);
 						writer.pair("HierarchyKeyAttribute", hDefaultKeyAttribute);
@@ -218,9 +220,9 @@ namespace ina::query_model
 			/*
 			if (dim.getDimensionType() == Dimension::VariableDimension)
 			{
-				for (std::vector<InA_Attribute>::const_iterator iter = dim.beginAttributes(); iter != dim.endAttributes(); ++iter)
+				for (std::vector<Attribute>::const_iterator iter = dim.beginAttributes(); iter != dim.endAttributes(); ++iter)
 				{
-					if (iter->getAttributeType() != InA_Attribute::Key && iter->getAttributeType() != InA_Attribute::Description)
+					if (iter->getAttributeType() != Attribute::Key && iter->getAttributeType() != Attribute::Description)
 					{
 						JSON_MAP(writer);
 						writer.key("AttributeNames");
@@ -259,10 +261,10 @@ namespace ina::query_model
 
 			writer.key("Hierarchies");
 			JSON_LIST(writer);
-			for (std::vector<InA_Hierarchy>::const_iterator it = dim.beginHierarchies();
+			for (std::vector<Hierarchy>::const_iterator it = dim.beginHierarchies();
 				it != dim.endHierarchies(); ++it)
 			{
-				InA_HierarchyBuilder::write(writer, *it);
+				HierarchyBuilder::write(writer, *it);
 			}
 		}
 		*/
@@ -296,13 +298,13 @@ namespace ina::query_model
 		writer.key("Attributes");
 		JSON_LIST(writer);
 
-		for (std::vector<InA_Attribute>::const_iterator iter = dim.beginAttributes(); iter != dim.endAttributes(); ++iter)
+		for (std::vector<Attribute>::const_iterator iter = dim.beginAttributes(); iter != dim.endAttributes(); ++iter)
 		{
 			writeAttribute(writer, *iter);
 		}
 	}
 
-	void writeAttribute(JSONWriter& writer, const InA_Attribute& att)
+	void writeAttribute(JSONWriter& writer, const Attribute& att)
 	{
 		const Dimension& dim = att.getDimension();
 
@@ -359,7 +361,7 @@ namespace ina::query_model
 			writer.pair("UpperBound", "");// no present for measure
 	}
 
-	void writeDefaultExcludingOperators(JSONWriter& writer, const InA_Attribute& att)
+	void writeDefaultExcludingOperators(JSONWriter& writer, const Attribute& att)
 	{
 		//const bool isFilterable = att.isFilterable();
 		//const Dimension& dim = att.getDimension();
@@ -385,7 +387,7 @@ namespace ina::query_model
 		}
 	}
 
-	void writeDefaultIncludingOperators(JSONWriter& writer, const InA_Attribute& att)
+	void writeDefaultIncludingOperators(JSONWriter& writer, const Attribute& att)
 	{
 		//const bool isFilterable = att.isFilterable();
 		//const Dimension& dim = att.getDimension();
@@ -422,7 +424,7 @@ namespace ina::query_model
 		}
 	}
 
-	const AttributeColumnType getColumnType(const InA_Attribute & att)
+	/*const AttributeColumnType getColumnType(const Attribute & att)
 	{
 		const Dimension& dim = att.getDimension();
 		if (dim.getDimensionType() == Dimension::MeasuresDimension)
@@ -432,5 +434,5 @@ namespace ina::query_model
 			return NoNumericMeasure;
 		}
 		return NoMeasure;
-	}
+	}*/
 }

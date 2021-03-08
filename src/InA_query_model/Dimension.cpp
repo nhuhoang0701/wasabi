@@ -21,4 +21,14 @@ namespace ina::query_model
 	{
 		_members.push_back(member);
 	}
+
+	const std::vector<Attribute>& Dimension::getAttributes()  const 
+	{
+		return _attributes;
+	}
+
+	void Dimension::addAttribute(const Attribute& att) 
+	{
+		_attributes.push_back(att);
+	}
 }
