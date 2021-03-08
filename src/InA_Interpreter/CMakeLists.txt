@@ -36,7 +36,7 @@ add_executable(InA_Interpreter_test InA_Interpreter_test.cpp ServerInfo_test.cpp
 target_link_libraries(InA_Interpreter_test InA_Interpreter_lib)
 target_include_directories(InA_Interpreter_test PRIVATE ${WASABI_INCLUDES} ${WASABI_ROOT_DIR}/src/test_tools/include)
 
-add_test(NAME InA_Interpreter_test COMMAND InA_Interpreter_test --dir=../resources/  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources)
+add_test(NAME InA_Interpreter_test COMMAND InA_Interpreter_test --dir=./  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 ## [installation]
 install(TARGETS InA_Interpreter DESTINATION ${WASABI_ROOT_DIR}/src/wasi_browser)

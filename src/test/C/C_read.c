@@ -34,7 +34,7 @@ EXPORT char* str_OPENFILE_READ_str(const char* file)
 int main()
 {
    TEST_INIT();
-   CPPUNIT_ASSERT_EQUAL_STR(str_OPENFILE_READ_str("../resources/text.txt"), "Hello from text.txt");
+   CPPUNIT_ASSERT_EQUAL_STR(str_OPENFILE_READ_str("./resources/text.txt"), "Hello from text.txt");
 
    return TEST_HAVEERROR();
 }

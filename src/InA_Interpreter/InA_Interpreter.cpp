@@ -29,11 +29,11 @@ const char* json_getServerInfo()
 	static std::string static_str_getserverinfo;
 	if(static_str_getserverinfo.empty() )
 	{
-		std::ifstream ifs("../resources/response_getSerververInfo.json");
+		std::ifstream ifs("./resources/response_getSerververInfo.json");
 		if(ifs.is_open() )
 			static_str_getserverinfo = std::string((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
 		else
-			throw std::runtime_error("Could not open file../resources/response_getSerververInfo.json");
+			throw std::runtime_error("Could not open file ./resources/response_getSerververInfo.json");
 	}
 	return static_str_getserverinfo.c_str();
 }
@@ -86,11 +86,11 @@ namespace ina_interpreter
 				{
 					if(static_str_response.empty() )
 					{
-						std::ifstream ifs("../resources/response_getResponse_Metadat_expand_cube_catalog.json");
+						std::ifstream ifs("./resources/response_getResponse_Metadat_expand_cube_catalog.json");
 						if(ifs.is_open() )
 							static_str_response = std::string((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
 						else
-							throw std::runtime_error("Could not open file ../resources/response_getResponse_Metadat_expand_cube_catalog.json");
+							throw std::runtime_error("Could not open file ./resources/response_getResponse_Metadat_expand_cube_catalog.json");
 					}
 					return static_str_response.c_str();
 				}
