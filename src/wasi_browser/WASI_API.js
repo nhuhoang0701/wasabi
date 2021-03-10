@@ -151,7 +151,7 @@ var WASI_API = {
 	},
 	
 	log : log = function(msg) {
-		//console.log("WASI-"+arguments.callee.caller.name + ":" + msg);
+		console.log("WASI-"+arguments.callee.caller.name + ":" + msg);
 	},
 	error : error = function(msg) {
 		console.error("WASI: " + msg);
@@ -220,6 +220,9 @@ var WASI_API = {
 		log("vpath:'" + convertWAsmStr2JSStr(path_ptr, moduleInstanceExports.memory) +"'");
 		return WASI_ENOSYS;
 	},
+	
+	//*************************************************************
+	// async stuff
 	poll_oneoff: function(in_, out, nsubscriptions, nevents) {
 		log(Array.prototype.slice.call(arguments));
 		return WASI_ENOSYS;
