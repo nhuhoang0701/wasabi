@@ -55,10 +55,10 @@ const char* json_getResponse_json(const char* InA)
 	
 	{
 		JSON_MAP(writer);
+		writer.key("message");
 		for(const auto& query : queries)
 		{
-				writer.key("message");
-
+				JSON_LIST(writer);
 				const char* response = ina_interpreter::processRequest(*query, writer);
 				if(response != nullptr )
 					return response;
