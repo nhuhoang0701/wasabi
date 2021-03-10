@@ -46,7 +46,7 @@ const char* json_getResponse_json(const char* InA)
 	JSONGenericObject root = reader.parse(InA);
 	
 	std::cout << "InA_Interpreter => getResponse JSON to object model" << std::endl;
-	std::vector<std::shared_ptr<ina::query_model::Query>> queries;
+	std::vector<std::shared_ptr<const ina::query_model::Query>> queries;
 	read(queries, root);
 	std::cout << "                   nb of queries: '" << queries.size() << "'" << std::endl;
 	
