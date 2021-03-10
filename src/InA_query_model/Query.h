@@ -13,8 +13,7 @@ namespace ina::query_model
 {
 	class Query;
 
-	void read(std::shared_ptr<Query>& obj, const JSONGenericObject& jsonNode);
-	void read(std::vector<std::shared_ptr<Query>>& objs, const JSONGenericObject& jsonNode);
+	void read(std::vector<std::shared_ptr<const Query>>& objs, const JSONGenericObject& jsonNode);
 
 	class Query
 	{
@@ -54,6 +53,6 @@ namespace ina::query_model
 		bool            m_isExpandCube = false;
 
 		friend void read(std::shared_ptr<Query>& obj, const JSONGenericObject& jsonNode);
-		friend void read(std::vector<std::shared_ptr<Query>>& objs, const JSONGenericObject& jsonNode);
+		friend void read(std::vector<std::shared_ptr<const Query>>& objs, const JSONGenericObject& jsonNode);
 	};
 }
