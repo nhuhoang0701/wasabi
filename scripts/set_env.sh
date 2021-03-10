@@ -59,6 +59,7 @@ echo ----------- set alias -------------
 echo -e  "run_wasabi_server    to execute the server";
 echo -e  "clean                clean the current cmake folder";
 echo -e  "compile              to compile the current cmake folder";
+echo -e  "install              to install the current cmake folder";
 echo -e  "test                 to test the current cmake folder";
 echo -e  "build                to compile test the current cmake folder";
 echo -e  "rebuild              to clean compile test the current cmake folder";
@@ -66,9 +67,10 @@ echo -e  "rebuild              to clean compile test the current cmake folder";
 alias setenv='unset WASABI_ROOT_DIR && source ./scripts/set_env.sh'
 alias run_wasabi_server='cd $WASABI_ROOT_DIR/src/wasi_browser; $HTTP_SERVER;cd -'
 alias clean='$CMAKE --build ./build --target clean'
-alias test='(cd build && $CTEST -V)'
 alias compile='$CMAKE --build ./build'
-alias build='$CMAKE -B ./build . -G Ninja -DCMAKE_MAKE_PROGRAM=$NINJA -DCMAKE_INSTALL_PREFIX:PATH=$WASABI_ROOT_DIR/src/install/ -DWASABI_USE_WASM=yes && $CMAKE --build ./build --target install && test'
+alias test='(cd build && $CTEST -V)'
+alias install='$CMAKE --build ./build --target install'
+alias build='$CMAKE -B ./build . -G Ninja -DCMAKE_MAKE_PROGRAM=$NINJA -DCMAKE_INSTALL_PREFIX:PATH=$WASABI_ROOT_DIR/src/install/ -DWASABI_USE_WASM=yes && install && test'
 alias rebuild='rm -rf ./build && mkdir build && build'
 
 echo
