@@ -10,7 +10,7 @@
 
 namespace ina::query_model
 {
-	void read(std::vector<std::shared_ptr<Query>>& queries, const JSONGenericObject& jsonQuery)
+	void read(std::vector<std::shared_ptr<const Query>>& queries, const JSONGenericObject& jsonQuery)
 	{
 		if(jsonQuery.haveValue("Batch"))
 		{
