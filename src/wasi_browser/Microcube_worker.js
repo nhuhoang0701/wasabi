@@ -1,5 +1,6 @@
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 // Microcube_worker.js
+(function(){
 var isLoaded = false;
 
 var WorkerEvent = {
@@ -122,4 +123,5 @@ onmessage = function(e) {
 	
 	postMessage([ID, action, new Error('Unknow action:' + action)]);
 }
+}());
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
