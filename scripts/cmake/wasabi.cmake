@@ -117,6 +117,10 @@ set(WASABI_LIBS ${CMAKE_INSTALL_PREFIX}/lib)
 
 include_directories(${WASABI_ROOT_DIR}/src)
 
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_INSTALL_PREFIX}/bin)
+
 ###########################################
 # cmake option
 enable_testing()
