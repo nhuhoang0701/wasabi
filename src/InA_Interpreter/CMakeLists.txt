@@ -39,9 +39,9 @@ target_include_directories(InA_Interpreter_test PRIVATE ${WASABI_INCLUDES} ${WAS
 add_test(NAME InA_Interpreter_test COMMAND InA_Interpreter_test --dir=./  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 ## [installation]
-install(TARGETS InA_Interpreter DESTINATION ${WASABI_ROOT_DIR}/src/wasi_browser)
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/resources/response_getSerververInfo.json DESTINATION ${WASABI_ROOT_DIR}/src/wasi_browser/resources/)
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/resources/response_getResponse_Metadat_expand_cube_catalog.json DESTINATION ${WASABI_ROOT_DIR}/src/wasi_browser/resources/)
+install(TARGETS InA_Interpreter DESTINATION .)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/resources/response_getSerververInfo.json DESTINATION ./resources/)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/resources/response_getResponse_Metadat_expand_cube_catalog.json DESTINATION ./resources/)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
 
