@@ -12,10 +12,10 @@ function _handleFiles(fileInput) {
 		return;
 	}
 	let response = new Response(file);
-	start(response);
+	start(response, file.name);
 };
 
-function start(response) {
+function start(response, filename) {
 
 	const importObject =
 	{
@@ -33,12 +33,15 @@ function start(response) {
 					 "/resources/text.txt",
 					 "/resources/sqlite/efashion/efashion.db"];
 		WASI_API.wasabi_initFS(".", filesystem).then(() => {
+			WASI_API.wasabi_log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+			WASI_API.wasabi_log(">> start: " + filename + "\n");
 			try {module.instance.exports._start();}
 			catch (e)
 			{
 				console.log("Exception during execution:" + e);
 				console.log("stack" + e.stack);
 			}
+			WASI_API.wasabi_log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
 		});
 	});
 };
