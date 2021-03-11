@@ -1,6 +1,7 @@
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 // WASI_API.js
 
+// https://github.com/WebAssembly/WASI/blob/main/phases/snapshot/docs.md
 // https://docs.rs/wasi/0.10.2+wasi-snapshot-preview1/wasi/wasi_snapshot_preview1/index.html
 
 // Members
