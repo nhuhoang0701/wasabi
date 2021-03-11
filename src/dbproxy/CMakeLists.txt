@@ -40,7 +40,7 @@ add_test(NAME dbproxy_metadata_test COMMAND dbproxy_metadata_test --dir=./ WORKI
 install(TARGETS dbproxy sqlite
 		LIBRARY DESTINATION ${WASABI_LIBS}
 		PUBLIC_HEADER DESTINATION ${WASABI_INCLUDES})
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/sqlite/efashion/efashion.db DESTINATION ${WASABI_ROOT_DIR}/src/wasi_browser/resources/sqlite/efashion)
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/sqlite/onetable_datatype/onetable_datatype.db DESTINATION ${WASABI_ROOT_DIR}/src/wasi_browser/resources/sqlite/onetable_datatype)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/sqlite/efashion/efashion.db DESTINATION ./resources/sqlite/efashion)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/sqlite/onetable_datatype/onetable_datatype.db DESTINATION ./resources/sqlite/onetable_datatype)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)

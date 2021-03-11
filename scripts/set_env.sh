@@ -8,6 +8,8 @@ echo -e "WASABI_USE_WASM: " "\t'"$WASABI_USE_WASM"'";
 
 export WASABI_ROOT_DIR=${WASABI_ROOT_DIR:-$(pwd)}
 echo -e "WASABI_ROOT_DIR: " "\t'"$WASABI_ROOT_DIR"'";
+export WASABI_INSTAL_DIR=$WASABI_ROOT_DIR/install
+echo -e "WASABI_INSTAL_DIR: " "\t'"$WASABI_INSTAL_DIR"'";
 export WASABI_EXTERNAL_DIR=$WASABI_ROOT_DIR/external
 echo -e "WASABI_EXTERNAL_DIR: " "\t'"$WASABI_EXTERNAL_DIR"'";
 
@@ -65,12 +67,12 @@ echo -e  "build                to compile test the current cmake folder";
 echo -e  "rebuild              to clean compile test the current cmake folder";
 
 alias setenv='unset WASABI_ROOT_DIR && source ./scripts/set_env.sh'
-alias run_wasabi_server='cd $WASABI_ROOT_DIR/src/wasi_browser; $HTTP_SERVER;cd -'
+alias run_wasabi_server='cd $WASABI_INSTAL_DIR; $HTTP_SERVER;cd -'
 alias clean='$CMAKE --build ./build --target clean'
 alias compile='$CMAKE --build ./build'
 alias test='(cd build && $CTEST -V)'
 alias install='$CMAKE --build ./build --target install'
-alias build='$CMAKE -B ./build . -G Ninja -DCMAKE_MAKE_PROGRAM=$NINJA -DCMAKE_INSTALL_PREFIX:PATH=$WASABI_ROOT_DIR/src/install/ -DWASABI_USE_WASM=yes && install && test'
+alias build='$CMAKE -B ./build . -G Ninja -DCMAKE_MAKE_PROGRAM=$NINJA -DCMAKE_INSTALL_PREFIX:PATH=$WASABI_INSTAL_DIR -DWASABI_USE_WASM=yes && install && test'
 alias rebuild='rm -rf ./build && mkdir build && build'
 
 echo

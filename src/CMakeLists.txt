@@ -21,6 +21,7 @@ add_subdirectory(grid)
 add_subdirectory(metadata_enrichment)
 add_subdirectory(InA_Interpreter)
 
+add_subdirectory(wasi_browser)
 
 add_subdirectory(test)
 
