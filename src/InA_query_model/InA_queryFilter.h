@@ -7,7 +7,7 @@ namespace ina::query_model
     class InA_queryFilter
 	{
         public:
-            enum LogicalOperator
+            enum class LogicalOperator
             {
                 Or,
                 And,
@@ -15,7 +15,7 @@ namespace ina::query_model
                 Undefined
             };
 
-            enum ComparisonOperator
+            enum class ComparisonOperator
             {
                 EqualTo,
                 NotEqualTo,
