@@ -1,6 +1,6 @@
 #include "query_generator.h"
 
-#include <cube/cube.h>
+#include <calculator/cube.h>
 #include <InA_query_model/Query.h>
 #include <InA_query_model/Dimension.h>
 
