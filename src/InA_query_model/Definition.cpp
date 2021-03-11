@@ -24,8 +24,9 @@ namespace ina::query_model
 		return m_filters;
 	}
 
-    const std::vector<Member>& Definition::getVisibleMembers(const Dimension& dimension, std::vector<Member> & visibleMembers) const 
+    const std::vector<Member> Definition::getVisibleMembers(const Dimension& dimension) const 
     {
+        std::vector<Member> visibleMembers;
         std::vector<Member>::const_iterator pMemberIterator;
         for(pMemberIterator = dimension.getMembers().begin(); pMemberIterator != dimension.getMembers().end(); ++ pMemberIterator)
         {

@@ -13,8 +13,8 @@ add_library(InA_query_model Definition.cpp DefinitionReader.cpp Member.cpp Membe
 set_target_properties(InA_query_model PROPERTIES PUBLIC_HEADER Query.h)
 
 target_include_directories(InA_query_model PUBLIC ${WASABI_INCLUDES}})
-target_link_libraries(InA_query_model PUBLIC exceptions metadata_enrichment)
-target_link_directories(InA_query_model PUBLIC ${WASABI_LIBS})
+target_link_libraries(InA_query_model PUBLIC cjson json exceptions metadata_enrichment)
+target_link_directories(InA_query_model PUBLIC ${WASABI_ROOT_DIR}/external/cJSON/build ${WASABI_LIBS})
 
 ################################################
 # test
