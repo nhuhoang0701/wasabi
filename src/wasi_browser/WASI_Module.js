@@ -1,18 +1,20 @@
 moduleWASI = null;
 
-function _handleFiles(fileInput) {
-	if (fileInput.length == 0) {
+function _handleFiles(files) {
+	if (files.length == 0) {
 		console.error("Missing file");
 		return;
 	}
-	
-	var file = fileInput[0];
-	if(file.type !== "application/wasm" ) {
-		console.error("File type is not 'application/wasm' but was '" + file.type + "'");
-		return;
+
+	for (index = 0; index < files.length; ++index) {
+		var file = files[index];
+		if(file.type !== "application/wasm" ) {
+			console.error("File type is not 'application/wasm' but was '" + file.type + "'");
+			return;
+		}
+		let response = new Response(file);
+		start(response, file.name);
 	}
-	let response = new Response(file);
-	start(response, file.name);
 };
 
 function start(response, filename) {
