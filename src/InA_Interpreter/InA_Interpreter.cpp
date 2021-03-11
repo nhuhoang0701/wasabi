@@ -9,7 +9,7 @@
 
 #include <metadata_enrichment/Tables.h>
 
-#include <cube/cube.h>
+#include <calculator/cube.h>
 
 
 #include <fstream>      // std::ifstream

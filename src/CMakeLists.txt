@@ -15,7 +15,7 @@ add_subdirectory(json)
 add_subdirectory(dbproxy)
 add_subdirectory(InA_query_model)
 add_subdirectory(query_generator)
-add_subdirectory(cube)
+add_subdirectory(calculator)
 add_subdirectory(grid)
 
 add_subdirectory(metadata_enrichment)
