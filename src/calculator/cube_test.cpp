@@ -1,6 +1,6 @@
 #include "cube.h"
 
-#include "../dbproxy/dbproxy.h"
+#include "dbproxy/dbproxy.h"
 
 #include "test_tools/TestAssert.h"
 
