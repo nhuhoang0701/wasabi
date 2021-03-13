@@ -140,6 +140,7 @@ then
 	echo ------------- cmake ---------------
 	$CMAKE .. \
 		-G Ninja -DCMAKE_MAKE_PROGRAM=$NINJA \
+		-Wno-dev \
 		-DCMAKE_TOOLCHAIN_FILE=$WASABI_ROOT_DIR/scripts/cmake/wasabi.cmake \
 		-DCMAKE_C_FLAGS=-fno-stack-protector \
 		\
