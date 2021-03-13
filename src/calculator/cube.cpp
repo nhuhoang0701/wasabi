@@ -1,6 +1,6 @@
 #include "cube.h"
 
-#include "../dbproxy/dbproxy.h"
+#include <dbproxy/dbproxy.h>
 
 namespace cube
 {
@@ -22,7 +22,7 @@ namespace cube
 	{
 		std::vector<std::string> rowBody;
 		for(const auto& val : row)
-			rowBody.push_back(val);
+			rowBody.push_back(val.getString());
 		m_body.push_back(rowBody);
 	}
 } // cube

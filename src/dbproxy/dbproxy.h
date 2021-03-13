@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include <string_view>
+
 #include <vector>
 #include <variant>
 #include <functional>
@@ -8,11 +10,27 @@
 #include <memory>
 
 #include <cmath>
+#include <charconv>   // from_chars
 
 
 
 namespace dbproxy
 {
+	class Value : protected std::string_view
+	{
+		public:
+		Value(const char* str) : std::string_view(str) {}
+		
+		const std::string_view& getStringView() const {return (*this);};
+		//double                  getDouble() const {double dble;std::from_chars(data(), data() + size(), dble);return dble;};
+		const std::string       getString() const {return std::string(static_cast<const std::string_view&>(*this));};
+	};
+
+	class Row : public std::vector<Value>
+	{
+	public:
+	};
+
 	class ColumnDescr
 	{
 	public:
@@ -45,19 +63,6 @@ namespace dbproxy
 
 	private:
 		std::string               m_name;
-	};
-
-	class Value : public std::string
-	{
-	public:
-		Value(const std::string& str) : std::string(str) {}
-		
-		const std::string& getString() const {return (*this);};
-	};
-
-	class Row : public std::vector<Value>
-	{
-	public:
 	};
 
 	class DBProxy

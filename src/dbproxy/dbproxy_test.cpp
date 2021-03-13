@@ -20,7 +20,7 @@ int main()
 		{
 			if(line == 0)
 			{
-				CPPUNIT_ASSERT_EQUAL_STR(row[0].getString().c_str(),"text1");
+				CPPUNIT_ASSERT_EQUAL(row[0].getStringView(),std::string_view("text1"));
 				CPPUNIT_ASSERT_EQUAL_STR(row[2].getString().c_str(),"1.0");
 			}
 			else if(line == 3)
@@ -41,7 +41,7 @@ int main()
 		std::function<void(const Row&)> lambda = [&line](const Row& row)
 		{
 			CPPUNIT_ASSERT_EQUAL(row.size(), 1);
-			CPPUNIT_ASSERT_EQUAL(std::stod(row[0].getString()),6.0);
+			CPPUNIT_ASSERT_EQUAL_STR("6.0", row[0].getString().c_str());
 			line++;
 		};
 		dbProxy->executeSQL("SELECT sum(real) FROM " + tableNameStr, &lambda);
