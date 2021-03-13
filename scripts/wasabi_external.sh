@@ -139,6 +139,7 @@ then
 
 	echo ------------- cmake ---------------
 	$CMAKE .. \
+		-G Ninja -DCMAKE_MAKE_PROGRAM=$NINJA \
 		-DCMAKE_TOOLCHAIN_FILE=$WASABI_ROOT_DIR/scripts/cmake/wasabi.cmake \
 		-DCMAKE_C_FLAGS=-fno-stack-protector \
 		\
@@ -160,9 +161,9 @@ echo -------------- test ---------------
 
 if [ "$WASABI_USE_WASM" = "no" ]
 then
-	$CJSON_DIR/build/cJSON_test >> $outfile
+	$CJSON_DIR/install/bin/cJSON_test >> $outfile
 else
-	$WASMTIME $CJSON_DIR/build/cJSON_test >> $outfile
+	$WASMTIME $CJSON_DIR/install/bin/cJSON_test >> $outfile
 fi
 
 if [ $? -ne 0 ]
@@ -192,6 +193,7 @@ then
 
 	echo ------------- cmake ---------------
 	$CMAKE .. \
+		-G Ninja -DCMAKE_MAKE_PROGRAM=$NINJA \
 		-DCMAKE_TOOLCHAIN_FILE=$WASABI_ROOT_DIR/scripts/cmake/wasabi.cmake \
 		-DCMAKE_C_FLAGS=-fno-stack-protector \
 		\
