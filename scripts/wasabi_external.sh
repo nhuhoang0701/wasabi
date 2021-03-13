@@ -48,7 +48,7 @@ echo ---------- install ninja ----------
 echo " $(date +"%T")"
 export NINJA_VERSION=${NINJA_VERSION:-1.10.2}
 export NINJAFile=ninja-$NINJA_VERSION-linux
-echo "NINJA version: $CMAKE_VERSION"
+echo "NINJA version: $NINJA_VERSION"
 if [ ! -f "$WASABI_NINJA_DIR/$NINJAFile.flag" ]
 then
 	rm -rf $WASABI_NINJA_DIR
