@@ -42,9 +42,6 @@ echo -e "CMAKE: "  "\t\t'"$CMAKE"'";
 export CTEST=${CTEST:-$WASABI_CMAKE_DIR/bin/ctest}
 echo -e "CTEST: "  "\t\t'"$CTEST"'";
 
-export MAKE=${MAKE:-make}
-echo -e "MAKE: "  "\t\t\t'"$MAKE"'";
-
 export WASABI_NINJA_DIR=${WASABI_NINJA_DIR:-$WASABI_EXTERNAL_DIR/ninja}
 export NINJA=${NINJA:-$WASABI_NINJA_DIR/ninja}
 echo -e "NINJA: "  "\t\t'"$NINJA"'";
