@@ -16,17 +16,6 @@ Install_Steps()
 		echo    "$PYTHON installed."
 	fi
 
-	export MAKE=${MAKE:-make}
-	echo -----------------------------------
-	echo ------ check $MAKE install  -------
-	if ! command -v $MAKE &> /dev/null
-	then
-		echo "Error: $MAKE not installed. Please install it:"  
-		return 1
-	else
-		echo    "$MAKE installed."
-	fi
-
 	export CMAKE=${CMAKE:-cmake}
 	echo -----------------------------------
 	echo ------ check $CMAKE install  ------
