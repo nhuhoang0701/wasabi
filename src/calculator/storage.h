@@ -84,9 +84,9 @@ namespace calculator
 				const eDataType dt = std::get<0>(m_cols[i]);
 
 				if(type == eColumnType::Indexed)
-					std::get<ColumnIndexed>(col).push_back(row[i]);
+					std::get<ColumnIndexed>(col).push_back(row[i].getString());
 				else if(type == eColumnType::NoneIndexed)
-					std::get<ColumnNoneIndexed>(col).push_back(std::stod(row[i]));
+					std::get<ColumnNoneIndexed>(col).push_back(std::stod(row[i].getString()));
 				else
 					throw std::runtime_error("unknow column type");
 
