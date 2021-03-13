@@ -11,7 +11,6 @@ project(
   LANGUAGES C)
 
 include_directories(${WASABI_ROOT_DIR}/src/test_tools/include)
-link_directories(${WASABI_ROOT_DIR}/src/build/lib)
 
 #add_library(MyLibExample simple_lib.cpp simple_lib.hpp)
 #add_library(C_libc_dl C_libc_dl.c)
