@@ -11,7 +11,7 @@ project(metadata_enrichment VERSION 1.0 LANGUAGES CXX)
 # metadata_enrichment
 add_library(metadata_enrichment Tables.cpp)
 target_link_libraries(metadata_enrichment PUBLIC json cjson sqlite dbproxy exceptions)
-target_link_directories(metadata_enrichment PUBLIC ${WASABI_ROOT_DIR}/external/cJSON/build  ${WASABI_LIBS})
+target_link_directories(metadata_enrichment PUBLIC ${cJSON_LIBRARY_DIRS}  ${WASABI_LIBS})
 
 ################################################
 # test

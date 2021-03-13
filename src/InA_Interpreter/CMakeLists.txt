@@ -15,7 +15,7 @@ project(InA_Interpreter VERSION 1.0 LANGUAGES CXX)
 add_library(InA_Interpreter_lib InA_Interpreter.cpp)
 target_include_directories(InA_Interpreter_lib PUBLIC ${WASABI_INCLUDES} ${PROJECT_SOURCE_DIR}/include)
 target_link_libraries(InA_Interpreter_lib PUBLIC cjson json exceptions InA_query_model query_generator dbproxy metadata_enrichment sqlite calculator)
-target_link_directories(InA_Interpreter_lib PUBLIC ${WASABI_ROOT_DIR}/external/cJSON/build ${WASABI_LIBS})
+target_link_directories(InA_Interpreter_lib PUBLIC ${cJSON_LIBRARY_DIRS} ${WASABI_LIBS})
 
 
 # InA_Interpreter as executable to be sure of C/C++ init staff is well done
@@ -26,7 +26,7 @@ target_link_options( InA_Interpreter PRIVATE LINKER:--export=json_getServerInfo,
 set_property(TARGET InA_Interpreter PROPERTY ENABLE_EXPORTS 1)
 target_include_directories(InA_Interpreter PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
-target_link_directories(InA_Interpreter PUBLIC ${WASABI_ROOT_DIR}/external/cJSON/build ${WASABI_ROOT_DIR}/src/build/lib)
+target_link_directories(InA_Interpreter PUBLIC ${cJSON_LIBRARY_DIRS})
 target_link_libraries(InA_Interpreter PUBLIC InA_Interpreter_lib)
 
 

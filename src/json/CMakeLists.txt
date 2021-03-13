@@ -13,7 +13,7 @@ add_library(json jsonReader.cpp jsonWriter.cpp)
 set_target_properties(json PROPERTIES PUBLIC_HEADER "${HEADERS}")
 
 target_include_directories(json PRIVATE ../include/ ${WASABI_ROOT_DIR}/external)
-target_link_directories(json PUBLIC ${WASABI_ROOT_DIR}/external/cJSON/build ${WASABI_LIBS})
+target_link_directories(json PUBLIC ${cJSON_LIBRARY_DIRS} ${WASABI_LIBS})
 target_link_libraries(json PRIVATE cjson exceptions)
 
 ## [main]
