@@ -6,14 +6,10 @@ endif()
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
 project(calculator VERSION 1.0)
-  
-set(DB_PROXY_LIB ${WASABI_ROOT_DIR}/src/dbproxy)
-#set(DB_PROXY_LIB_BUILD ${DB_PROXY_LIB}/build)
 
 ################################################
 # calculator
 add_library(calculator cube.cpp )
-target_include_directories(calculator PUBLIC ${DB_PROXY_LIB})
 target_link_libraries(calculator PUBLIC exceptions)
 target_link_directories(calculator PUBLIC ${CMAKE_INSTALL_PREFIX}/lib/)
 
