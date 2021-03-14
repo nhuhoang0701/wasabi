@@ -88,6 +88,8 @@ template <typename STORAGE_TYPE>
 				m_cols.emplace_back(dt, type, ColumnNoneIndexed(name));
 			else
 				throw std::runtime_error("unknow column type");
+
+			m_colsIdxByName[name] = m_cols.size()-1;
 		}
 
 		size_t        getIndexOf(const std::string& name) {return m_colsIdxByName.at(name);}
