@@ -6,6 +6,7 @@
 
 #include <sstream>
 #include <iostream>
+#include <stdexcept>
 
 namespace query_generator
 {
@@ -19,7 +20,6 @@ namespace query_generator
 
         for (const auto& dim : m_query.getDefinition().getDimensions())
         {
-
 			const std::string& nameDim = dim.getName();
 			if(nameDim == "CustomDimension1")
 			{
@@ -50,9 +50,8 @@ namespace query_generator
         sql << ";";
 
         return sql.str();
-
     }
-	
+
 	void query_generator::prepareCube(cube::Cube& cube) const
 	{
         for (const auto& dim : m_query.getDefinition().getDimensions())
@@ -61,11 +60,25 @@ namespace query_generator
 			if(nameDim == "CustomDimension1")
 			{
 				for(const auto& member : dim.getMembers() )
-					cube.addColumnMeas(dim.getName());
+					cube.addMeas(dim.getName());
 			}
 			else
 			{
-				cube.addColumnDim(dim.getName());
+				switch (dim.getAxe())
+				{
+				case ina::query_model::Dimension::eAxe::Rows:
+				{
+					cube.addDim(cube::Cube::eAxe::Row,dim.getName());
+					break;
+				}
+				case ina::query_model::Dimension::eAxe::Columns:
+				{
+					cube.addDim(cube::Cube::eAxe::Column,dim.getName());
+					break;
+				}
+				default:
+					throw std::runtime_error("Unknow axe");
+				}
 			}
         }
 	}

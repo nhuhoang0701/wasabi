@@ -10,10 +10,10 @@ int main()
 	
 	using namespace cube;
 	Cube cube;
-	cube.addColumnDim("Dim0");
-	cube.addColumnDim("Dim1");
-	cube.addColumnMeas("Meas0");
-	cube.addColumnMeas("Meas1");
+	cube.addDim(Cube::eAxe::Column, Object("Dim0"));
+	cube.addDim(Cube::eAxe::Row, Object("Dim1"));
+	cube.addMeas("Meas0");
+	cube.addMeas("Meas1");
 	
 	CPPUNIT_ASSERT_EQUAL(cube.getBody().size(),0);
 	
