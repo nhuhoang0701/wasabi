@@ -1,21 +1,37 @@
 #include "cube.h"
 
 #include <dbproxy/dbproxy.h>
+#include <stdexcept>
 
 namespace cube
 {
-	Cube::Cube()
+	Object::Object(const std::string& name)
 	{
+
 	}
 
-	void Cube::addColumnDim(const std::string& name)
+	void Cube::addDim(eAxe axe, const Object& obj)
 	{
-		m_columns.push_back(name);
+		switch (axe)
+		{
+		case eAxe::Row:
+		{
+			m_AxeRows.push_back(obj);
+			break;
+		}
+		case eAxe::Column:
+		{
+			m_AxesColumns.push_back(obj);
+			break;
+		}
+		default:
+		throw std::runtime_error("Unknow eAxe");
+		}
 	}
 
-	void Cube::addColumnMeas(const std::string& name)
+	void Cube::addMeas(const std::string& name)
 	{
-		m_columns.push_back(name);
+		m_meas.push_back(name);
 	}
 	
 	void Cube::insertRow(const dbproxy::Row& row)

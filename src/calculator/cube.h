@@ -3,26 +3,48 @@
 #include <string>
 #include <vector>
 
-namespace dbproxy {class Row;};
+namespace dbproxy {class Row;};   // dbproxy/dbprxy.h
 
 namespace cube
 {
+	class Object
+	{
+		public:
+		Object() = default;
+		Object(const std::string& name);
+	};
+
+	class Axe : public std::vector<Object>
+	{
+	public:
+		Axe() = default;
+		~Axe() = default;
+
+		size_t getCardinality() const;
+
+	private:
+	};
+
 	class Cube
 	{
 	public:
 	typedef std::vector<std::vector<std::string>> Body;
 
-		Cube();
+		Cube() = default;
+		
+		enum class eAxe {Row, Column};
+		void         addDim(eAxe eAxe, const Object& obj);
+		void         addMeas(const std::string& name);
 
 		const Body&  getBody() const {return m_body;};
-		
-		void addColumnDim(const std::string& name);
-		void addColumnMeas(const std::string& name);
 
-		void insertRow(const dbproxy::Row& row);
+		void         insertRow(const dbproxy::Row& row);
 
 	private:
-		std::vector<std::string /*name*/>  m_columns;
+		Axe  m_AxeRows;
+		Axe  m_AxesColumns;
+
+		std::vector<std::string>  m_meas;
 		
 		Body   m_body;
 	};
