@@ -1,13 +1,20 @@
 #include "Dimension.h"
 
 #include <json/jsonReader.h>    // For JSONGenericObject
+#include <stdexcept>
 
 namespace ina::query_model
 {
 	void read(Dimension& dim, const JSONGenericObject& dimNode)
 	{
 		dim._name = dimNode.getString("Name");
-		dim._axename = dimNode.getString("Axis");
+		const std::string axisName = dimNode.getString("Axis");
+		if(axisName=="Rows")
+			dim._axe = Dimension::eAxe::Rows;
+		else if(axisName=="Cols")
+			dim._axe = Dimension::eAxe::Columns;
+		else
+			throw std::runtime_error("Unkown InA Axis: " + axisName);
 
 		if(const auto& members = dimNode.getArray("Members"))
 		{

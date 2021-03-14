@@ -2,14 +2,19 @@
 
 namespace ina::query_model
 {
-	Dimension::Dimension(const std::string & name, const std::string & axename) 
-	: _name(name), _axename(axename)
+	Dimension::Dimension(const std::string & name, eAxe axe) 
+	: _name(name), _axe(axe)
 	{	
 	}
 	
 	const std::string & Dimension::getName() const
 	{
 		return _name;
+	}
+
+	Dimension::eAxe Dimension::getAxe() const
+	{
+		return _axe;
 	}
 	
 	const std::vector<Member> & Dimension::getMembers() const
