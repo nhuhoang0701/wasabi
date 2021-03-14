@@ -13,11 +13,14 @@ int main()
 	DataStorage storage;
 	CPPUNIT_ASSERT_EQUAL(0,storage.size());
 
-	storage.addColumn(eDataType::String, eColumnType::Indexed);
+	storage.addColumn("col0", eDataType::String, eColumnType::Indexed);
 	CPPUNIT_ASSERT_EQUAL(1,storage.size());
 
-	storage.addColumn(eDataType::Number, eColumnType::NoneIndexed);
+	storage.addColumn("col1", eDataType::Number, eColumnType::NoneIndexed);
 	CPPUNIT_ASSERT_EQUAL(2,storage.size());
+
+	CPPUNIT_ASSERT_EQUAL(0,storage.getIndexOf("col0"));
+	CPPUNIT_ASSERT_EQUAL(1,storage.getIndexOf("col1"));
 
 	const auto& col0 = storage[0];
 	CPPUNIT_ASSERT_EQUAL(eDataType::String,std::get<0>(col0));
