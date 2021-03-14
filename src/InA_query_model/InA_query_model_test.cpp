@@ -1,3 +1,4 @@
+#include "InA_query_model/Dimension.h"
 #include "Query.h"
 #include "Definition.h"
 #include "DataSource.h"
@@ -19,10 +20,10 @@ int main()
 	
 	ina::query_model::Definition definition;
 
-	definition.addDimension(ina::query_model::Dimension("Dim_A", "Rows"));
-	definition.addDimension(ina::query_model::Dimension("Dim_B", "Rows"));
+	definition.addDimension(ina::query_model::Dimension("Dim_A", ina::query_model::Dimension::eAxe::Columns));
+	definition.addDimension(ina::query_model::Dimension("Dim_B", ina::query_model::Dimension::eAxe::Rows));
 	
-	ina::query_model::Dimension dimensionMeasure("Meas_1", "Rows");
+	ina::query_model::Dimension dimensionMeasure("Meas_1", ina::query_model::Dimension::eAxe::Rows);
 	dimensionMeasure.addMember(ina::query_model::Member("Meas_1", "Sum"));
 	definition.addDimension(dimensionMeasure);
 

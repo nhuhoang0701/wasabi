@@ -16,11 +16,11 @@ int main()
 	queryInA.setDataSource(ds);
 	
 	ina::query_model::Definition definition;
-	definition.addDimension(ina::query_model::Dimension("dim_A", "Rows"));
+	definition.addDimension(ina::query_model::Dimension("dim_A", ina::query_model::Dimension::eAxe::Rows));
 	
-	definition.addDimension(ina::query_model::Dimension("dim_B", "Rows"));
+	definition.addDimension(ina::query_model::Dimension("dim_B", ina::query_model::Dimension::eAxe::Rows));
 	
-	ina::query_model::Dimension dimensionMeasure("CustomDimension1", "Rows");
+	ina::query_model::Dimension dimensionMeasure("CustomDimension1", ina::query_model::Dimension::eAxe::Rows);
 		dimensionMeasure.addMember(ina::query_model::Member("meas_1", "SUM"));
 		dimensionMeasure.addMember(ina::query_model::Member("meas_2", "SUM"));
 	definition.addDimension(dimensionMeasure);

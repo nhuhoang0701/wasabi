@@ -20,13 +20,15 @@ namespace ina::query_model
 	class Dimension
 	{
 		public:
+			enum class eAxe {Uninit=0, Rows, Columns};
+
 			Dimension() = default;
 
 			//TODO: Remove this constructor obj should only be createa from a InA json
-			Dimension(const std::string & name, const std::string & axename);
+			Dimension(const std::string & name, eAxe axename);
 			
 			const std::string & getName() const;
-			const std::string & getAxeName() const;
+			eAxe                getAxe() const;
 
 			const std::vector<Member> & getMembers() const;
 			void                        addMember(const Member & member);
@@ -36,7 +38,7 @@ namespace ina::query_model
 
 		private:
 			std::string _name; 
-			std::string _axename; 
+			eAxe        _axe = eAxe::Uninit;
 
 			std::vector<Member>     _members;
 			std::vector<Attribute>  _attributes;
