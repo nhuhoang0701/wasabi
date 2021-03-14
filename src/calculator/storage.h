@@ -2,6 +2,8 @@
 
 #include <dbproxy/dbproxy.h>
 
+#include <stdexcept>
+#include <string_view>
 #include <tuple>
 #include <string>
 #include <map>
@@ -15,16 +17,34 @@ namespace calculator
 	enum class eDataType {Number, String};
 	enum class eColumnType {Indexed, NoneIndexed};
 
-	class ColumnNoneIndexed : public std::vector<Value>
+template <typename STORAGE_TYPE>
+	class Column : public std::vector<STORAGE_TYPE>
 	{
-		public:
+	public:
+		Column(const std::string& name)
+		: m_name(name) {}
+
+	private:
+		const std::string  m_name;
+	};
+	class ColumnNoneIndexed : public Column<Value>
+	{
+	public:
+		ColumnNoneIndexed(const std::string& name)
+			: Column(name) {}
+
 		size_t getNbDistinctVals() const {return std::vector<Value>::size();}
+
+	private:
 	};
 
 	typedef size_t Index;
-	class ColumnIndexed : protected std::vector<Index>
+	class ColumnIndexed : protected Column<Index>
 	{
-		public:
+	public:
+		ColumnIndexed(const std::string& name)
+			: Column(name) {}
+
 		size_t getNbDistinctVals() const {return m_values.size();}
 		size_t size() const {return std::vector<Index>::size();}
 		
@@ -55,20 +75,22 @@ namespace calculator
 	{
 	public:
 		typedef std::tuple<eDataType, eColumnType, std::variant<ColumnIndexed, ColumnNoneIndexed>> Column;
-		
-		std::vector<Column>  m_cols;
 
 	public:
-		void addColumn(eDataType dt, eColumnType type)
+		void addColumn(const std::string& name, eDataType dt, eColumnType type)
 		{
+			if(m_colsIdxByName.find(name) != m_colsIdxByName.end())
+				throw std::runtime_error("Column already exist:" + name);
+
 			if(type == eColumnType::Indexed)
-				m_cols.emplace_back(dt, type, ColumnIndexed());
+				m_cols.emplace_back(dt, type, ColumnIndexed(name));
 			else if(type == eColumnType::NoneIndexed)
-				m_cols.emplace_back(dt, type, ColumnNoneIndexed());
+				m_cols.emplace_back(dt, type, ColumnNoneIndexed(name));
 			else
 				throw std::runtime_error("unknow column type");
 		}
 
+		size_t        getIndexOf(const std::string& name) {return m_colsIdxByName.at(name);}
 		size_t        size() const {return m_cols.size();}
 		const Column& operator[](size_t index) const {return m_cols[index];}
 
@@ -77,20 +99,24 @@ namespace calculator
 			if(row.size() != m_cols.size())
 				throw std::runtime_error("row size didn't match column size");
 
-			for(size_t i = 0; i < m_cols.size(); ++i)
+			size_t idx = 0;
+			for(auto& col : m_cols)
 			{
-				auto& col = std::get<2>(m_cols[i]);
-				const eColumnType type = std::get<1>(m_cols[i]);
-				const eDataType dt = std::get<0>(m_cols[i]);
+				auto& colData = std::get<2>(col);
+				const eColumnType type = std::get<1>(col);
+				const eDataType dt = std::get<0>(col);
 
 				if(type == eColumnType::Indexed)
-					std::get<ColumnIndexed>(col).push_back(row[i].getString());
+					std::get<ColumnIndexed>(colData).push_back(row[idx].getString());
 				else if(type == eColumnType::NoneIndexed)
-					std::get<ColumnNoneIndexed>(col).push_back(std::stod(row[i].getString()));
+					std::get<ColumnNoneIndexed>(colData).push_back(std::stod(row[idx].getString()));
 				else
 					throw std::runtime_error("unknow column type");
-
+				idx++;
 			}
 		}
+	private:
+		std::map<std::string_view, size_t /*index*/> m_colsIdxByName;
+		std::vector<Column>  m_cols;
 	};
 } // cube
