@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "test_tools/TestAssert.h"
+#include <test_tools/TestAssert.h>
 
 #include <InA_query_model/Dimension.h>
 

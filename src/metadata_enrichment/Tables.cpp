@@ -2,7 +2,7 @@
 
 #include <dbproxy/dbproxy.h>
 
-#include "json/jsonWriter.h"
+#include <json/jsonWriter.h>
 
 #include <algorithm>
 #include  <stdexcept>

@@ -1,6 +1,6 @@
 #include "dbproxy.h"
 
-#include "test_tools/TestAssert.h"
+#include <test_tools/TestAssert.h>
 
 #include <iostream>
 

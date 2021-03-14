@@ -4,9 +4,9 @@
 #include <ios>
 #include <iostream>
 #include <memory>
-#include "test_tools/TestAssert.h"
+#include <test_tools/TestAssert.h>
 #include "metadata_enrichment/Tables.h"
-#include "json/jsonReader.h"
+#include <json/jsonReader.h>
 
 
 using namespace std;

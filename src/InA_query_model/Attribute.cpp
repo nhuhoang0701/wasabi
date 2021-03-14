@@ -1,7 +1,7 @@
 #include "Attribute.h"
 #include "Dimension.h"
 
-#include "exceptions/InA_Exception.h"
+#include <exceptions/InA_Exception.h>
 
 namespace ina::query_model
 {

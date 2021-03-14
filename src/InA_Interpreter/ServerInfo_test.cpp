@@ -1,6 +1,7 @@
 #include <sstream>
 #include "ServerInfo.h"
-#include "json/jsonReader.h"
+
+#include <json/jsonReader.h>
 #include <iostream>
 
 using namespace wasabi::metadata;

@@ -1,6 +1,6 @@
 #include "grid.h"
 
-#include "test_tools/TestAssert.h"
+#include <test_tools/TestAssert.h>
 
 int main()
 {

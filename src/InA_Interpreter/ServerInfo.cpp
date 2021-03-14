@@ -1,5 +1,7 @@
 #include "metadata_enrichment/ServerInfo.h"
-#include "json/jsonWriter.h"
+
+#include <json/jsonWriter.h>
+
 namespace wasabi{
   namespace metadata{
     ServerInfo::ServerInfo(
