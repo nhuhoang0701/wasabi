@@ -77,6 +77,15 @@ template <typename STORAGE_TYPE>
 		typedef std::tuple<eDataType, eColumnType, std::variant<ColumnIndexed, ColumnNoneIndexed>> Column;
 
 	public:
+		DataStorage() = default;
+
+		size_t        getColIndexOf(const std::string& col_name) const {return m_colsIdxByName.at(col_name);}
+
+		size_t        getColNbrs() const {return m_cols.size();}
+		const Column& operator[](size_t index) const {return m_cols[index];}
+
+		size_t        getRowNbrs() const {return m_rowsNb;}
+
 		void addColumn(const std::string& name, eDataType dt, eColumnType type)
 		{
 			if(m_colsIdxByName.find(name) != m_colsIdxByName.end())
@@ -92,14 +101,10 @@ template <typename STORAGE_TYPE>
 			m_colsIdxByName[name] = m_cols.size()-1;
 		}
 
-		size_t        getIndexOf(const std::string& name) {return m_colsIdxByName.at(name);}
-		size_t        size() const {return m_cols.size();}
-		const Column& operator[](size_t index) const {return m_cols[index];}
-
 		void    insertRow(const dbproxy::Row& row)
 		{
 			if(row.size() != m_cols.size())
-				throw std::runtime_error("row size didn't match column size");
+				throw std::runtime_error("row size didn't match column size input:" + std::to_string(row.size()) + " expected" + std::to_string(m_cols.size()));
 
 			size_t idx = 0;
 			for(auto& col : m_cols)
@@ -116,9 +121,13 @@ template <typename STORAGE_TYPE>
 					throw std::runtime_error("unknow column type");
 				idx++;
 			}
+			m_rowsNb++;
 		}
+
 	private:
 		std::map<std::string_view, size_t /*index*/> m_colsIdxByName;
 		std::vector<Column>  m_cols;
+
+		size_t               m_rowsNb = 0;
 	};
 } // cube

@@ -3,9 +3,10 @@
 #include <dbproxy/dbproxy.h>
 #include <stdexcept>
 
-namespace cube
+namespace calculator
 {
 	Object::Object(const std::string& name)
+		: m_name(name)
 	{
 
 	}
@@ -34,11 +35,8 @@ namespace cube
 		m_meas.push_back(name);
 	}
 	
-	void Cube::insertRow(const dbproxy::Row& row)
+	void Cube::setStorage(std::shared_ptr<const DataStorage> data)
 	{
-		std::vector<std::string> rowBody;
-		for(const auto& val : row)
-			rowBody.push_back(val.getString());
-		m_body.push_back(rowBody);
+		m_data = data;
 	}
 } // cube

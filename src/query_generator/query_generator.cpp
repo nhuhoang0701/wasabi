@@ -1,6 +1,6 @@
 #include "query_generator.h"
 
-#include <calculator/cube.h>
+#include <calculator/storage.h>
 #include <InA_query_model/Query.h>
 #include <InA_query_model/Dimension.h>
 
@@ -52,7 +52,7 @@ namespace query_generator
         return sql.str();
     }
 
-	void query_generator::prepareCube(cube::Cube& cube) const
+	void query_generator::prepareStorage(calculator::DataStorage& data) const
 	{
         for (const auto& dim : m_query.getDefinition().getDimensions())
         {
@@ -60,7 +60,7 @@ namespace query_generator
 			if(nameDim == "CustomDimension1")
 			{
 				for(const auto& member : dim.getMembers() )
-					cube.addMeas(dim.getName());
+					data.addColumn(member.getName(),calculator::eDataType::Number, calculator::eColumnType::NoneIndexed);
 			}
 			else
 			{
@@ -68,12 +68,12 @@ namespace query_generator
 				{
 				case ina::query_model::Dimension::eAxe::Rows:
 				{
-					cube.addDim(cube::Cube::eAxe::Row,dim.getName());
+					data.addColumn(dim.getName(),calculator::eDataType::String, calculator::eColumnType::Indexed);
 					break;
 				}
 				case ina::query_model::Dimension::eAxe::Columns:
 				{
-					cube.addDim(cube::Cube::eAxe::Column,dim.getName());
+					data.addColumn(dim.getName(),calculator::eDataType::String, calculator::eColumnType::Indexed);
 					break;
 				}
 				default:
