@@ -1,17 +1,22 @@
 #pragma once
 
+#include "storage.h"
+#include <memory>
 #include <string>
 #include <vector>
 
 namespace dbproxy {class Row;};   // dbproxy/dbprxy.h
 
-namespace cube
+namespace calculator
 {
 	class Object
 	{
 		public:
 		Object() = default;
 		Object(const std::string& name);
+
+	private:
+		std::string m_name;
 	};
 
 	class Axe : public std::vector<Object>
@@ -36,15 +41,17 @@ namespace cube
 		void         addDim(eAxe eAxe, const Object& obj);
 		void         addMeas(const std::string& name);
 
-		const Body&  getBody() const {return m_body;};
+		void         setStorage(std::shared_ptr<const DataStorage> data);
 
-		void         insertRow(const dbproxy::Row& row);
+		const Body&  getBody() const {return m_body;};
 
 	private:
 		Axe  m_AxeRows;
 		Axe  m_AxesColumns;
 
-		std::vector<std::string>  m_meas;
+		std::vector<std::string>      m_meas;
+
+		std::shared_ptr<const DataStorage>  m_data;
 		
 		Body   m_body;
 	};

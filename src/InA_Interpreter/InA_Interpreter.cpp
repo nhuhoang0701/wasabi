@@ -1,5 +1,8 @@
 #include "InA_Interpreter.h"
 
+#include <calculator/storage.h>
+#include <calculator/cube.h>
+
 #include <InA_query_model/Query.h>
 #include <InA_query_model/DataSource.h>
 
@@ -9,9 +12,8 @@
 
 #include <metadata_enrichment/Tables.h>
 
-#include <calculator/cube.h>
 
-
+#include <memory>
 #include <fstream>      // std::ifstream
 #include <sstream>
 #include <iostream>
@@ -130,7 +132,6 @@ namespace ina_interpreter
 					return static_str_response.c_str();
 				}
 			}
-			
 		}
 		if(query.getType() == ina::query_model::Query::qAnalytics)
 		{
@@ -140,32 +141,51 @@ namespace ina_interpreter
 			std::cout << "InA_Interpreter => Generated SQL: " << sql << std::endl;
 			writer.value("SQL = " + sql);
 
-			cube::Cube cube;
-			queryGen.prepareCube(cube);
-
 			const std::string& cnxString = query.getDataSource().getPackageName();
 			if(!cnxString.empty() )
 			{
-				std::function<void(const dbproxy::Row&)> lambda = [&cube](const dbproxy::Row& row)
+				std::shared_ptr<calculator::DataStorage> data(new calculator::DataStorage());
+
+				queryGen.prepareStorage(*data);
+				std::function<void(const dbproxy::Row&)> lambda = [&data](const dbproxy::Row& row)
 				{
-					cube.insertRow(row);
+					data->insertRow(row);
 				};
 				dbproxy::DBProxy::getDBProxy(cnxString)->executeSQL(sql, &lambda);
 
-				auto body = cube.getBody();
 				std::ostringstream results;
-				for(auto row : body)
+				for(size_t idxCol = 0; idxCol < data->getColNbrs(); idxCol++)
 				{
-					for(auto cell : row)
-						results << "  " << std::setfill('-') << std::setw(10) << "" << "  |  ";
-					break;
+					results << "  " << std::setfill('-') << std::setw(10) << "" << "  |  ";
 				}
 				results << std::setfill(' ') << std::endl;
 
-				for(auto row : body)
+				//TODO: Simplify DataStorage cosomption
+				for(size_t rowNb = 0; rowNb < data->getRowNbrs(); rowNb++)
 				{
-					for(auto cell : row)
-						results << "  " << std::setw(10) << cell << "  |  ";
+					for(size_t idxCol = 0; idxCol < data->getColNbrs(); idxCol++)
+					{
+						const auto col = (*data)[idxCol];
+						const auto colDataType = std::get<0>(col);
+						const auto colType = std::get<1>(col);
+						const auto colData = std::get<2>(col);
+						if(colType == calculator::eColumnType::Indexed)
+						{
+							auto colTyped = std::get<calculator::ColumnIndexed>(colData)[rowNb];
+							if(colDataType == calculator::eDataType::String)
+								results << "  " << std::setw(10) << std::get<std::string>(colTyped) << "  |  ";
+							else if(colDataType == calculator::eDataType::Number)
+								results << "  " << std::setw(10) << std::get<double>(colTyped) << "  |  ";
+						}
+						else if(colType == calculator::eColumnType::NoneIndexed)
+						{
+							auto colTyped = std::get<calculator::ColumnNoneIndexed>(colData)[rowNb];
+							if(colDataType == calculator::eDataType::String)
+								results << "  " << std::setw(10) << std::get<std::string>(colTyped) << "  |  ";
+							else if(colDataType == calculator::eDataType::Number)
+								results << "  " << std::setw(10) << std::get<double>(colTyped) << "  |  ";
+						}
+					}
 					results << std::endl;
 				}
 

@@ -29,6 +29,8 @@ namespace dbproxy
 	class Row : public std::vector<Value>
 	{
 	public:
+		Row() = default;
+		Row(std::initializer_list<Value> vals) : std::vector<Value>(vals) {};
 	};
 
 	class ColumnDescr
