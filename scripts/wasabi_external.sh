@@ -92,7 +92,16 @@ else
 	git checkout llvmorg-12.0.0-rc3
 	#mkdir build
 	cd build
-	$CMAKE -DLLVM_ENABLE_PROJECTS="clang;lld" -DLLVM_STATIC_LINK_CXX_STDLIB=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-static-libstdc++" -DLLVM_TARGETS_TO_BUILD="X86"  -G "Ninja" -DCMAKE_MAKE_PROGRAM=$NINJA  -DCMAKE_INSTALL_PREFIX=$LLVM_DIR ../llvm
+	which gcc
+	$CMAKE -DLLVM_ENABLE_PROJECTS="clang;lld" \
+			-DLLVM_STATIC_LINK_CXX_STDLIB=ON \
+			-DCMAKE_BUILD_TYPE=Release \
+			-DCMAKE_C_COMPILER=gcc \
+			-DCMAKE_CXX_COMPILER=g++ \
+			-DCMAKE_CXX_FLAGS="-static-libstdc++" \
+			-DLLVM_TARGETS_TO_BUILD="X86"  -G "Ninja" \
+			-DCMAKE_MAKE_PROGRAM=$NINJA \
+			-DCMAKE_INSTALL_PREFIX=$LLVM_DIR ../llvm
 	$CMAKE --build . --target install
 	touch $LLVM_DIR/$LLVMFile.flag
 fi
