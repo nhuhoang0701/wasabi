@@ -84,6 +84,7 @@ then
 	rm -rf $WASABI_EXTERNAL_DIR/$LLVMFile
 else
 	cd $WASABI_EXTERNAL_DIR
+	rm -rf llvm4build
 	mkdir llvm4build
 	cd llvm4build
 	git clone https://github.com/llvm/llvm-project.git
