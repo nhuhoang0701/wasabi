@@ -101,7 +101,7 @@ else
 			-DCMAKE_CXX_FLAGS="-static-libstdc++" \
 			-DLLVM_TARGETS_TO_BUILD="X86"  -G "Ninja" \
 			-DCMAKE_MAKE_PROGRAM=$NINJA \
-			-DCMAKE_INSTALL_PREFIX=$LLVM_DIR ../llvm
+			../llvm
 	$CMAKE --build . --target install
 	touch $LLVM_DIR/$LLVMFile.flag
 fi
