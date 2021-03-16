@@ -89,7 +89,7 @@ else
 	cd llvm4build
 	#git clone https://github.com/llvm/llvm-project.git
 	cd llvm-project
-	git checkout llvmorg-12.0.0-rc3
+	#git checkout llvmorg-12.0.0-rc3
 	#mkdir build
 	cd build
 	which gcc
