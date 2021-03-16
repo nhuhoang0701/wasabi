@@ -90,7 +90,8 @@ else
 	#git clone https://github.com/llvm/llvm-project.git
 	cd llvm-project
 	#git checkout llvmorg-12.0.0-rc3
-	#mkdir build
+	rm -rf build || true
+	mkdir build
 	cd build
 	which gcc
 	$CMAKE -DLLVM_ENABLE_PROJECTS="clang;lld" \
@@ -101,6 +102,7 @@ else
 			-DCMAKE_CXX_FLAGS="-static-libstdc++" \
 			-DLLVM_TARGETS_TO_BUILD="X86"  -G "Ninja" \
 			-DCMAKE_MAKE_PROGRAM=$NINJA \
+			-DCMAKE_INSTALL_PREFIX=$LLVM_DIR \
 			../llvm
 	$CMAKE --build . --target install
 	touch $LLVM_DIR/$LLVMFile.flag
