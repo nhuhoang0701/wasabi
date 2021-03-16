@@ -75,37 +75,45 @@ export LLVMFile=clang+llvm-$LLVM_VERSION-$LLVM_ARCH-$LLVM_OS
 echo "LLVM version: $LLVMFile"
 if [ ! -f "$LLVM_DIR/$LLVMFile.flag" ]
 then
-if [ "$WASABI_BUILD_LLVM" = "no" ]
+if [ "$WASABI_LLVM" = "external" ]
 then
 	rm -rf $LLVM_DIR
 	rm -rf $WASABI_EXTERNAL_DIR/$LLVMFile
 	wget -qO - https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVM_VERSION/$LLVMFile.tar.xz | tar xfJ - -C $WASABI_EXTERNAL_DIR/ && \rm -rf $LLVM_DIR && cp -rf $WASABI_EXTERNAL_DIR/$LLVMFile $LLVM_DIR
 	touch $LLVM_DIR/$LLVMFile.flag
 	rm -rf $WASABI_EXTERNAL_DIR/$LLVMFile
-else
+elif [ "$WASABI_LLVM" = "compiled" ]
+then
 	cd $WASABI_EXTERNAL_DIR
-	#rm -rf llvm4build
-	#mkdir -p llvm4build
+	#rm -rf llvm4build || true
+	#mkdir -p llvm4build || true
 	cd llvm4build
 	#git clone https://github.com/llvm/llvm-project.git
 	cd llvm-project
 	#git checkout llvmorg-12.0.0-rc3
-	rm -rf build || true
-	mkdir build
+	#rm -rf build || true
+	#mkdir build || true
 	cd build
-	which gcc
-	$CMAKE -DLLVM_ENABLE_PROJECTS="clang;lld" \
-			-DLLVM_STATIC_LINK_CXX_STDLIB=ON \
+	$CMAKE  -G "Ninja" \
+			-DCMAKE_MAKE_PROGRAM=$NINJA \
 			-DCMAKE_BUILD_TYPE=Release \
 			-DCMAKE_C_COMPILER=gcc \
+			-DCMAKE_C_FLAGS="-static" \
 			-DCMAKE_CXX_COMPILER=g++ \
 			-DCMAKE_CXX_FLAGS="-static-libstdc++" \
-			-DLLVM_TARGETS_TO_BUILD="X86"  -G "Ninja" \
-			-DCMAKE_MAKE_PROGRAM=$NINJA \
 			-DCMAKE_INSTALL_PREFIX=$LLVM_DIR \
+			-DLLVM_ENABLE_PROJECTS="clang;lld" \
+			-DLLVM_STATIC_LINK_CXX_STDLIB=ON \
+			-DLLVM_TARGETS_TO_BUILD="X86;WebAssembly" \
 			../llvm
 	$CMAKE --build . --target install
 	touch $LLVM_DIR/$LLVMFile.flag
+elif [ "$WASABI_LLVM" = "internal" ]
+then
+	mv "$LLVM_DIR"_ $LLVM_DIR
+else
+	echo "WASABI_LLVM should be one of {internal|external|compiled} not '$WASABI_LLVM'"
+	return 1;
 fi
 else
 	echo "Clang already installed in '$LLVM_DIR'"
