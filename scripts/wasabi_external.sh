@@ -86,12 +86,12 @@ else
 	cd $WASABI_EXTERNAL_DIR
 	mkdir llvm4build
 	cd llvm4build
-	clone https://github.com/llvm/llvm-project.git
+	git clone https://github.com/llvm/llvm-project.git
 	git checkout llvmorg-12.0.0-rc3
 	cd llvm-project
 	mkdir build
 	cd build
-	cmake -DLLVM_ENABLE_PROJECTS="clang;lld" -DLLVM_STATIC_LINK_CXX_STDLIB=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-static-libstdc++" -DLLVM_TARGETS_TO_
+	$CMAKE -DLLVM_ENABLE_PROJECTS="clang;lld" -DLLVM_STATIC_LINK_CXX_STDLIB=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-static-libstdc++" -DLLVM_TARGETS_TO_
 BUILD="X86"  -G "Ninja" -DCMAKE_MAKE_PROGRAM=$NINJA  -DCMAKE_INSTALL_PREFIX=$LLVM_DIR ../llvm
 	touch $LLVM_DIR/$LLVMFile.flag
 fi
