@@ -1,6 +1,7 @@
 ##############################################
 # wasabi
-/external
+/external/*
+!external/llvm_/
 build/
 install/
 
