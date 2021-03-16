@@ -85,9 +85,9 @@ then
 else
 	cd $WASABI_EXTERNAL_DIR
 	#rm -rf llvm4build
-	mkdir -p llvm4build
+	#mkdir -p llvm4build
 	cd llvm4build
-	git clone https://github.com/llvm/llvm-project.git
+	#git clone https://github.com/llvm/llvm-project.git
 	cd llvm-project
 	git checkout llvmorg-12.0.0-rc3
 	mkdir build
