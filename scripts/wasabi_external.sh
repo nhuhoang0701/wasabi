@@ -84,12 +84,12 @@ then
 	rm -rf $WASABI_EXTERNAL_DIR/$LLVMFile
 else
 	cd $WASABI_EXTERNAL_DIR
-	rm -rf llvm4build
-	mkdir llvm4build
+	#rm -rf llvm4build
+	mkdir -p llvm4build
 	cd llvm4build
 	git clone https://github.com/llvm/llvm-project.git
-	git checkout llvmorg-12.0.0-rc3
 	cd llvm-project
+	git checkout llvmorg-12.0.0-rc3
 	mkdir build
 	cd build
 	$CMAKE -DLLVM_ENABLE_PROJECTS="clang;lld" -DLLVM_STATIC_LINK_CXX_STDLIB=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-static-libstdc++" -DLLVM_TARGETS_TO_
