@@ -19,15 +19,17 @@ namespace calculator
 		std::string m_name;
 	};
 
+	class Cube;
 	class Axe : public std::vector<Object>
 	{
 	public:
-		Axe() = default;
+		Axe(const Cube& cube) : m_cube(cube) {};
 		~Axe() = default;
 
 		size_t getCardinality() const;
 
 	private:
+		const Cube& m_cube;
 	};
 
 	class Cube
@@ -35,7 +37,7 @@ namespace calculator
 	public:
 	typedef std::vector<std::vector<std::string>> Body;
 
-		Cube() = default;
+		Cube();
 		
 		enum class eAxe {Row, Column};
 		void         addDim(eAxe eAxe, const Object& obj);
@@ -49,10 +51,9 @@ namespace calculator
 		Axe  m_AxeRows;
 		Axe  m_AxesColumns;
 
-		std::vector<std::string>      m_meas;
-
+		std::vector<std::string>            m_meas;
 		std::shared_ptr<const DataStorage>  m_data;
-		
+
 		Body   m_body;
 	};
 } // cube
