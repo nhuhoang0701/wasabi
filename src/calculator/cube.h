@@ -5,8 +5,6 @@
 #include <string>
 #include <vector>
 
-namespace dbproxy {class Row;};   // dbproxy/dbprxy.h
-
 namespace calculator
 {
 	class Object
@@ -14,6 +12,8 @@ namespace calculator
 		public:
 		Object() = default;
 		Object(const std::string& name);
+
+		const std::string& getName() const {return m_name;}
 
 	private:
 		std::string m_name;
@@ -32,26 +32,36 @@ namespace calculator
 		const Cube& m_cube;
 	};
 
+	class Body : public std::vector<Object>
+	{
+		public:
+		Body(const Axe& row,const Axe& col);
+
+		size_t  getCellsNbs() const;
+
+		private:
+		const Axe& m_axeRow;
+		const Axe& m_axeCol;
+	};
 	class Cube
 	{
 	public:
-	typedef std::vector<std::vector<std::string>> Body;
-
 		Cube();
+
+		void  setStorage(std::shared_ptr<const DataStorage> data);
 		
 		enum class eAxe {Row, Column};
 		void         addDim(eAxe eAxe, const Object& obj);
 		void         addMeas(const std::string& name);
 
-		void         setStorage(std::shared_ptr<const DataStorage> data);
-
+		const Axe&   getAxe(eAxe eAxe) const;
 		const Body&  getBody() const {return m_body;};
 
 	private:
+		friend class Axe;
 		Axe  m_AxeRows;
-		Axe  m_AxesColumns;
+		Axe  m_AxeColumns;
 
-		std::vector<std::string>            m_meas;
 		std::shared_ptr<const DataStorage>  m_data;
 
 		Body   m_body;
