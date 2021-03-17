@@ -5,7 +5,7 @@
 ##############################################
 # wasabi
 /external/*
-!external/llvm_/
+!external/llvm.tar.gz
 build/
 install/
 
