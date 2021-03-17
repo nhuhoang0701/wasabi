@@ -69,10 +69,12 @@ echo -----------------------------------
 echo ---------- install clang ----------
 echo " $(date +"%T")"
 export LLVM_VERSION=${LLVM_VERSION:-11.0.0}
+echo "LLVM version: $version"
 export LLVM_ARCH=${LLVM_ARCH:-x86_64}
 export LLVM_OS=${LLVM_OS:-linux-gnu-ubuntu-20.04}
 export LLVMFile=clang+llvm-$LLVM_VERSION-$LLVM_ARCH-$LLVM_OS
 echo "LLVM version: $LLVMFile"
+echo "LLVM WASABI_LLVM: $WASABI_LLVM"
 if [ ! -f "$LLVM_DIR/$LLVMFile.flag" ]
 then
 if [ "$WASABI_LLVM" = "external" ]
@@ -90,7 +92,8 @@ then
 	cd llvm4build
 	git clone https://github.com/llvm/llvm-project.git
 	cd llvm-project
-	git checkout llvmorg-12.0.0-rc3
+	git checkout llvmorg-$LLVM_VERSION
+	#llvmorg-12.0.0-rc3
 	rm -rf build || true
 	mkdir build || true
 	cd build
@@ -113,9 +116,9 @@ then
 	rm -rf  $LLVM_DIR
 	cp -ra "$LLVM_DIR"_ $LLVM_DIR
 	cd $LLVM_DIR/bin
-	tar --extract --file=clang-12.tar clang-12
+	tar --extract --file=clang.tar
 	rm clang-12.tar
-	tar --extract --file=wasm-ld.tar wasm-ld
+	tar --extract --file=wasm-ld.tar
 	rm wasm-ld.tar
 	touch $LLVM_DIR/$LLVMFile.flag
 else
