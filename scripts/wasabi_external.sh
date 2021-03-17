@@ -80,8 +80,8 @@ then
 	rm -rf $LLVM_DIR
 	rm -rf $WASABI_EXTERNAL_DIR/$LLVMFile
 	wget -qO - https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVM_VERSION/$LLVMFile.tar.xz | tar xfJ - -C $WASABI_EXTERNAL_DIR/ && \rm -rf $LLVM_DIR && cp -rf $WASABI_EXTERNAL_DIR/$LLVMFile $LLVM_DIR
-	touch $LLVM_DIR/$LLVMFile.flag
 	rm -rf $WASABI_EXTERNAL_DIR/$LLVMFile
+	touch $LLVM_DIR/$LLVMFile.flag
 elif [ "$WASABI_LLVM" = "compiled" ]
 then
 	cd $WASABI_EXTERNAL_DIR
@@ -110,7 +110,14 @@ then
 	touch $LLVM_DIR/$LLVMFile.flag
 elif [ "$WASABI_LLVM" = "internal" ]
 then
-	mv "$LLVM_DIR"_ $LLVM_DIR
+	rm -rf  $LLVM_DIR
+	cp -ra "$LLVM_DIR"_ $LLVM_DIR
+	cd $LLVM_DIR/bin
+	tar --extract --file=clang-12.tar clang-12
+	rm clang-12.tar
+	tar --extract --file=wasm-ld.tar wasm-ld
+	rm wasm-ld.tar
+	touch $LLVM_DIR/$LLVMFile.flag
 else
 	echo "WASABI_LLVM should be one of {internal|external|compiled} not '$WASABI_LLVM'"
 	return 1;
