@@ -85,14 +85,14 @@ then
 elif [ "$WASABI_LLVM" = "compiled" ]
 then
 	cd $WASABI_EXTERNAL_DIR
-	#rm -rf llvm4build || true
-	#mkdir -p llvm4build || true
+	rm -rf llvm4build || true
+	mkdir -p llvm4build || true
 	cd llvm4build
-	#git clone https://github.com/llvm/llvm-project.git
+	git clone https://github.com/llvm/llvm-project.git
 	cd llvm-project
-	#git checkout llvmorg-12.0.0-rc3
-	#rm -rf build || true
-	#mkdir build || true
+	git checkout llvmorg-12.0.0-rc3
+	rm -rf build || true
+	mkdir build || true
 	cd build
 	$CMAKE  -G "Ninja" \
 			-DCMAKE_MAKE_PROGRAM=$NINJA \
