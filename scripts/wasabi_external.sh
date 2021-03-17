@@ -69,7 +69,7 @@ echo -----------------------------------
 echo ---------- install clang ----------
 echo " $(date +"%T")"
 export LLVM_VERSION=${LLVM_VERSION:-11.0.0}
-echo "LLVM version: $version"
+echo "LLVM version: $LLVM_VERSION"
 export LLVM_ARCH=${LLVM_ARCH:-x86_64}
 export LLVM_OS=${LLVM_OS:-linux-gnu-ubuntu-20.04}
 export LLVMFile=clang+llvm-$LLVM_VERSION-$LLVM_ARCH-$LLVM_OS
@@ -113,13 +113,9 @@ then
 		touch $LLVM_DIR/$LLVMFile.flag
 	elif [ "$WASABI_LLVM" = "internal" ]
 	then
-		rm -rf  $LLVM_DIR
-		cp -ra "$LLVM_DIR"_ $LLVM_DIR
-		cd $LLVM_DIR/bin
-		tar --extract --file=clang.tar
-		rm clang.tar
-		tar --extract --file=wasm-ld.tar
-		rm wasm-ld.tar
+		cd $WASABI_EXTERNAL_DIR
+		rm -rf $LLVM_DIR
+		tar --extract --file=llvm.tar.gz
 		touch $LLVM_DIR/$LLVMFile.flag
 	else
 		echo "WASABI_LLVM should be one of {internal|external|compiled} not '$WASABI_LLVM'"
@@ -144,13 +140,13 @@ then
 else
 	echo "sysroot already installed in '$WASI_SDK_DIR'"
 fi
-if [ ! -f "$WASABI_EXTERNAL_DIR/llvm/lib/clang/$LLVM_VERSION/wasisdk_librt_$WASISDK_VERSION.flag" ]
+if [ ! -f "$LLVM_DIR/lib/clang/$LLVM_VERSION/wasisdk_librt_$WASISDK_VERSION.flag" ]
 then
 	mkdir -p $WASABI_EXTERNAL_DIR/llvm/lib/clang/$LLVM_VERSION
 	wget -qO - https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$WASISDK_VERSION/libclang_rt.builtins-wasm32-wasi-$WASISDK_VERSION.0.tar.gz | tar xfz - -C $WASABI_EXTERNAL_DIR/llvm/lib/clang/$LLVM_VERSION
-	touch $WASABI_EXTERNAL_DIR/llvm/lib/clang/$LLVM_VERSION/wasisdk_librt_$WASISDK_VERSION.flag
+	touch $LLVM_DIR/lib/clang/$LLVM_VERSION/wasisdk_librt_$WASISDK_VERSION.flag
 else
-	echo "wasisdk_librt already installed in '$WASABI_EXTERNAL_DIR/llvm/lib/clang/$LLVM_VERSION'"
+	echo "wasisdk_librt already installed in '$LLVM_DIR/lib/clang/$LLVM_VERSION'"
 fi
 
 echo
