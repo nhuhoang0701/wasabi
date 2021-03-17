@@ -5,7 +5,7 @@ echo -----------------------------------
 echo --------- set variables -----------
 export WASABI_USE_WASM=${WASABI_USE_WASM:-yes}
 echo -e "WASABI_USE_WASM: " "\t'"$WASABI_USE_WASM"'";
-export WASABI_BUILD_LLVM=${WASABI_LLVM:-internal}
+export WASABI_LLVM=${WASABI_LLVM:-internal}
 echo -e "WASABI_LLVM{compiled|external|internal}: " "\t'"$WASABI_LLVM"'";
 
 export WASABI_ROOT_DIR=${WASABI_ROOT_DIR:-$(pwd)}
