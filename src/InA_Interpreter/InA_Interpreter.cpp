@@ -160,30 +160,21 @@ namespace ina_interpreter
 				}
 				results << std::setfill(' ') << std::endl;
 
-				//TODO: Simplify DataStorage cosomption
 				for(size_t rowNb = 0; rowNb < data->getRowNbrs(); rowNb++)
 				{
 					for(size_t idxCol = 0; idxCol < data->getColNbrs(); idxCol++)
 					{
 						const auto col = (*data)[idxCol];
-						const auto colDataType = std::get<0>(col);
-						const auto colType = std::get<1>(col);
-						const auto colData = std::get<2>(col);
-						if(colType == calculator::eColumnType::Indexed)
+						const auto& colData = std::get<2>(col);
+						const auto& colTyped = (*colData)[rowNb];
+						switch (std::get<0>(col))
 						{
-							auto colTyped = std::get<calculator::ColumnIndexed>(colData)[rowNb];
-							if(colDataType == calculator::eDataType::String)
-								results << "  " << std::setw(10) << std::get<std::string>(colTyped) << "  |  ";
-							else if(colDataType == calculator::eDataType::Number)
-								results << "  " << std::setw(10) << std::get<double>(colTyped) << "  |  ";
-						}
-						else if(colType == calculator::eColumnType::NoneIndexed)
-						{
-							auto colTyped = std::get<calculator::ColumnNoneIndexed>(colData)[rowNb];
-							if(colDataType == calculator::eDataType::String)
-								results << "  " << std::setw(10) << std::get<std::string>(colTyped) << "  |  ";
-							else if(colDataType == calculator::eDataType::Number)
-								results << "  " << std::setw(10) << std::get<double>(colTyped) << "  |  ";
+						case calculator::eDataType::String:
+							results << "  " << std::setw(10) << std::get<std::string>(colTyped) << "  |  ";
+							break;
+						case calculator::eDataType::Number:
+							results << "  " << std::setw(10) << std::get<double>(colTyped) << "  |  ";
+							break;
 						}
 					}
 					results << std::endl;
