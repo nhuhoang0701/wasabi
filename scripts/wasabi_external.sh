@@ -117,7 +117,7 @@ then
 	cp -ra "$LLVM_DIR"_ $LLVM_DIR
 	cd $LLVM_DIR/bin
 	tar --extract --file=clang.tar
-	rm clang-12.tar
+	rm clang.tar
 	tar --extract --file=wasm-ld.tar
 	rm wasm-ld.tar
 	touch $LLVM_DIR/$LLVMFile.flag
