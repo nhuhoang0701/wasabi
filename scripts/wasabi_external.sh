@@ -77,54 +77,54 @@ echo "LLVM version: $LLVMFile"
 echo "LLVM WASABI_LLVM: $WASABI_LLVM"
 if [ ! -f "$LLVM_DIR/$LLVMFile.flag" ]
 then
-if [ "$WASABI_LLVM" = "external" ]
-then
-	rm -rf $LLVM_DIR
-	rm -rf $WASABI_EXTERNAL_DIR/$LLVMFile
-	wget -qO - https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVM_VERSION/$LLVMFile.tar.xz | tar xfJ - -C $WASABI_EXTERNAL_DIR/ && \rm -rf $LLVM_DIR && cp -rf $WASABI_EXTERNAL_DIR/$LLVMFile $LLVM_DIR
-	rm -rf $WASABI_EXTERNAL_DIR/$LLVMFile
-	touch $LLVM_DIR/$LLVMFile.flag
-elif [ "$WASABI_LLVM" = "compiled" ]
-then
-	cd $WASABI_EXTERNAL_DIR
-	rm -rf llvm4build || true
-	mkdir -p llvm4build || true
-	cd llvm4build
-	git clone https://github.com/llvm/llvm-project.git
-	cd llvm-project
-	git checkout llvmorg-$LLVM_VERSION
-	#llvmorg-12.0.0-rc3
-	rm -rf build || true
-	mkdir build || true
-	cd build
-	$CMAKE  -G "Ninja" \
-			-DCMAKE_MAKE_PROGRAM=$NINJA \
-			-DCMAKE_BUILD_TYPE=Release \
-			-DCMAKE_C_COMPILER=gcc \
-			-DCMAKE_C_FLAGS="-static" \
-			-DCMAKE_CXX_COMPILER=g++ \
-			-DCMAKE_CXX_FLAGS="-static-libstdc++" \
-			-DCMAKE_INSTALL_PREFIX=$LLVM_DIR \
-			-DLLVM_ENABLE_PROJECTS="clang;lld" \
-			-DLLVM_STATIC_LINK_CXX_STDLIB=ON \
-			-DLLVM_TARGETS_TO_BUILD="X86;WebAssembly" \
-			../llvm
-	$CMAKE --build . --target install
-	touch $LLVM_DIR/$LLVMFile.flag
-elif [ "$WASABI_LLVM" = "internal" ]
-then
-	rm -rf  $LLVM_DIR
-	cp -ra "$LLVM_DIR"_ $LLVM_DIR
-	cd $LLVM_DIR/bin
-	tar --extract --file=clang.tar
-	rm clang.tar
-	tar --extract --file=wasm-ld.tar
-	rm wasm-ld.tar
-	touch $LLVM_DIR/$LLVMFile.flag
-else
-	echo "WASABI_LLVM should be one of {internal|external|compiled} not '$WASABI_LLVM'"
-	return 1;
-fi
+	if [ "$WASABI_LLVM" = "external" ]
+	then
+		rm -rf $LLVM_DIR
+		rm -rf $WASABI_EXTERNAL_DIR/$LLVMFile
+		wget -qO - https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVM_VERSION/$LLVMFile.tar.xz | tar xfJ - -C $WASABI_EXTERNAL_DIR/ && \rm -rf $LLVM_DIR && cp -rf $WASABI_EXTERNAL_DIR/$LLVMFile $LLVM_DIR
+		rm -rf $WASABI_EXTERNAL_DIR/$LLVMFile
+		touch $LLVM_DIR/$LLVMFile.flag
+	elif [ "$WASABI_LLVM" = "compiled" ]
+	then
+		cd $WASABI_EXTERNAL_DIR
+		rm -rf llvm4build || true
+		mkdir -p llvm4build || true
+		cd llvm4build
+		git clone https://github.com/llvm/llvm-project.git
+		cd llvm-project
+		git checkout llvmorg-$LLVM_VERSION
+		#llvmorg-12.0.0-rc3
+		rm -rf build || true
+		mkdir build || true
+		cd build
+		$CMAKE  -G "Ninja" \
+				-DCMAKE_MAKE_PROGRAM=$NINJA \
+				-DCMAKE_BUILD_TYPE=Release \
+				-DCMAKE_C_COMPILER=gcc \
+				-DCMAKE_C_FLAGS="-static" \
+				-DCMAKE_CXX_COMPILER=g++ \
+				-DCMAKE_CXX_FLAGS="-static-libstdc++" \
+				-DCMAKE_INSTALL_PREFIX=$LLVM_DIR \
+				-DLLVM_ENABLE_PROJECTS="clang;lld" \
+				-DLLVM_STATIC_LINK_CXX_STDLIB=ON \
+				-DLLVM_TARGETS_TO_BUILD="X86;WebAssembly" \
+				../llvm
+		$CMAKE --build . --target install
+		touch $LLVM_DIR/$LLVMFile.flag
+	elif [ "$WASABI_LLVM" = "internal" ]
+	then
+		rm -rf  $LLVM_DIR
+		cp -ra "$LLVM_DIR"_ $LLVM_DIR
+		cd $LLVM_DIR/bin
+		tar --extract --file=clang.tar
+		rm clang.tar
+		tar --extract --file=wasm-ld.tar
+		rm wasm-ld.tar
+		touch $LLVM_DIR/$LLVMFile.flag
+	else
+		echo "WASABI_LLVM should be one of {internal|external|compiled} not '$WASABI_LLVM'"
+		return 1;
+	fi
 else
 	echo "Clang already installed in '$LLVM_DIR'"
 fi
@@ -144,10 +144,11 @@ then
 else
 	echo "sysroot already installed in '$WASI_SDK_DIR'"
 fi
-if [ ! -f "$WASI_SDK_DIR/wasisdk_librt_$WASISDK_VERSION.flag" ]
+if [ ! -f "$WASABI_EXTERNAL_DIR/llvm/lib/clang/$LLVM_VERSION/wasisdk_librt_$WASISDK_VERSION.flag" ]
 then
+	mkdir -p $WASABI_EXTERNAL_DIR/llvm/lib/clang/$LLVM_VERSION
 	wget -qO - https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$WASISDK_VERSION/libclang_rt.builtins-wasm32-wasi-$WASISDK_VERSION.0.tar.gz | tar xfz - -C $WASABI_EXTERNAL_DIR/llvm/lib/clang/$LLVM_VERSION
-	touch $WASI_SDK_DIR/wasisdk_librt_$WASISDK_VERSION.flag
+	touch $WASABI_EXTERNAL_DIR/llvm/lib/clang/$LLVM_VERSION/wasisdk_librt_$WASISDK_VERSION.flag
 else
 	echo "wasisdk_librt already installed in '$WASABI_EXTERNAL_DIR/llvm/lib/clang/$LLVM_VERSION'"
 fi
