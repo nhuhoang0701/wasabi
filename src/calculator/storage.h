@@ -2,6 +2,7 @@
 
 #include <dbproxy/dbproxy.h>
 
+#include <memory>
 #include <stdexcept>
 #include <string_view>
 #include <tuple>
@@ -17,38 +18,53 @@ namespace calculator
 	enum class eDataType {Number, String};
 	enum class eColumnType {Indexed, NoneIndexed};
 
-template <typename STORAGE_TYPE>
-	class Column : public std::vector<STORAGE_TYPE>
+	class ColumnData
 	{
 	public:
-		Column(const std::string& name)
+		ColumnData(const std::string& name)
 		: m_name(name) {}
+
+		virtual void push_back(const Value& value) = 0;
+
+		virtual size_t getNbVals() const = 0;
+		virtual size_t getNbDistinctVals() const = 0;
+
+		virtual const Value& operator[](size_t index) const = 0;
 
 	private:
 		const std::string  m_name;
 	};
-	class ColumnNoneIndexed : public Column<Value>
+	class ColumnNoneIndexed : public ColumnData
 	{
 	public:
 		ColumnNoneIndexed(const std::string& name)
-			: Column(name) {}
+			: ColumnData(name) {}
 
-		size_t getNbDistinctVals() const {return std::vector<Value>::size();}
+		void push_back(const Value& value)
+		{
+			m_data.push_back(value);
+		}
+
+		size_t getNbVals() const {return m_data.size();}
+		size_t getNbDistinctVals() const {return m_data.size();}
+
+		const Value& operator[](size_t index) const {return m_data[index];}
 
 	private:
+		std::vector<Value> m_data;
 	};
 
 	typedef size_t Index;
-	class ColumnIndexed : protected Column<Index>
+	class ColumnIndexed : public ColumnData
 	{
 	public:
 		ColumnIndexed(const std::string& name)
-			: Column(name) {}
+			: ColumnData(name) {}
 
+		size_t getNbVals() const {return m_indexes.size();}
 		size_t getNbDistinctVals() const {return m_values.size();}
-		size_t size() const {return std::vector<Index>::size();}
 		
-		const Value& operator[](size_t index) const {return m_values[std::vector<Index>::operator [](index)];}
+		const Value& operator[](size_t index) const {return m_values[m_indexes[index]];}
 
 		void push_back(const Value& value)
 		{
@@ -64,9 +80,11 @@ template <typename STORAGE_TYPE>
 				m_values.push_back(value);
 			}
 
-			std::vector<Index>::push_back(index);
+			m_indexes.push_back(index);
 		}
 
+	private:
+		std::vector<Index>      m_indexes;
 		std::vector<Value>      m_values;
 		std::map<Value, Index>  m_idxByVal;
 	};
@@ -74,12 +92,13 @@ template <typename STORAGE_TYPE>
 	class DataStorage
 	{
 	public:
-		typedef std::tuple<eDataType, eColumnType, std::variant<ColumnIndexed, ColumnNoneIndexed>> Column;
+		typedef std::tuple<eDataType, eColumnType, std::shared_ptr<ColumnData>> Column;
 
 	public:
 		DataStorage() = default;
 
-		size_t        getColIndexOf(const std::string& col_name) const {return m_colsIdxByName.at(col_name);}
+		bool          haveCol(const std::string& col_name) const {return m_colsIdxByName.find(col_name) != m_colsIdxByName.end();}
+		size_t        getColIndex(const std::string& col_name) const {return m_colsIdxByName.at(col_name);}
 
 		size_t        getColNbrs() const {return m_cols.size();}
 		const Column& operator[](size_t index) const {return m_cols[index];}
@@ -91,12 +110,14 @@ template <typename STORAGE_TYPE>
 			if(m_colsIdxByName.find(name) != m_colsIdxByName.end())
 				throw std::runtime_error("Column already exist:" + name);
 
+			std::shared_ptr<ColumnData> colData;
 			if(type == eColumnType::Indexed)
-				m_cols.emplace_back(dt, type, ColumnIndexed(name));
+				colData = std::make_shared<ColumnIndexed>(name);
 			else if(type == eColumnType::NoneIndexed)
-				m_cols.emplace_back(dt, type, ColumnNoneIndexed(name));
+				colData = std::make_shared<ColumnNoneIndexed>(name);
 			else
 				throw std::runtime_error("unknow column type");
+			m_cols.emplace_back(dt, type, colData);
 
 			m_colsIdxByName[name] = m_cols.size()-1;
 		}
@@ -113,10 +134,10 @@ template <typename STORAGE_TYPE>
 				const eColumnType type = std::get<1>(col);
 				const eDataType dt = std::get<0>(col);
 
-				if(type == eColumnType::Indexed)
-					std::get<ColumnIndexed>(colData).push_back(row[idx].getString());
-				else if(type == eColumnType::NoneIndexed)
-					std::get<ColumnNoneIndexed>(colData).push_back(std::stod(row[idx].getString()));
+				if(dt == eDataType::String)
+					colData->push_back(row[idx].getString());
+				else if(dt == eDataType::Number)
+					colData->push_back(std::stod(row[idx].getString()));
 				else
 					throw std::runtime_error("unknow column type");
 				idx++;
