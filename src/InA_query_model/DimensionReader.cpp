@@ -11,7 +11,7 @@ namespace ina::query_model
 		const std::string axisName = dimNode.getString("Axis");
 		if(axisName=="Rows")
 			dim._axe = Dimension::eAxe::Rows;
-		else if(axisName=="Cols")
+		else if(axisName=="Columns")
 			dim._axe = Dimension::eAxe::Columns;
 		else
 			throw std::runtime_error("Unkown InA Axis: " + axisName);
