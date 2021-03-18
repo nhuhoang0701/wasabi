@@ -4,9 +4,9 @@ echo
 echo -----------------------------------
 echo --------- set variables -----------
 export WASABI_USE_WASM=${WASABI_USE_WASM:-yes}
-echo -e "WASABI_USE_WASM: " "\t'"$WASABI_USE_WASM"'";
+echo -e "WASABI_USE_WASM{yes|no}: " "\t'"$WASABI_USE_WASM"'";
 export WASABI_LLVM=${WASABI_LLVM:-internal}
-echo -e "WASABI_LLVM{compiled|external|internal}: " "\t'"$WASABI_LLVM"'";
+echo -e "WASABI_LLVM{compiled|external|git|local}: " "'"$WASABI_LLVM"'";
 
 export WASABI_ROOT_DIR=${WASABI_ROOT_DIR:-$(pwd)}
 echo -e "WASABI_ROOT_DIR: " "\t'"$WASABI_ROOT_DIR"'";
