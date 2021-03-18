@@ -114,6 +114,7 @@ then
 				-DLLVM_TARGETS_TO_BUILD="X86;WebAssembly" \
 				-DLLVM_BUILD_TESTS=OFF \
 				-DLLVM_INCLUDE_TESTS=OFF \
+				-DCLANG_ENABLE_ARCMT=OFF \
 				../llvm
 		$CMAKE --build . --target install -j11
 		touch $LLVM_DIR/$LLVMFile.flag
