@@ -7,8 +7,9 @@ include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
 project(wasabi_src_test VERSION 1.0)
 
-
+if ("${WASABI_USE_WASM}" STREQUAL "yes")
 add_subdirectory(C)
+endif()
 add_subdirectory(CPP)
 
 ################################################
