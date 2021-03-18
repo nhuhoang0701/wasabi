@@ -86,6 +86,7 @@ then
 		touch $LLVM_DIR/$LLVMFile.flag
 	elif [ "$WASABI_LLVM" = "compiled" ]
 	then
+		#source clang_llvm.sh
 		cd $WASABI_EXTERNAL_DIR
 		rm -rf llvm4build || true
 		mkdir -p llvm4build || true
@@ -102,6 +103,7 @@ then
 				-DPARALLEL_COMPILE_JOBS=11 \
 				-DCMAKE_BUILD_TYPE=Release \
 				-DCMAKE_C_COMPILER=gcc \
+				-DCMAKE_EXE_LINKER_FLAGS="-static" \
 				-DCMAKE_C_FLAGS="-static" \
 				-DCMAKE_CXX_COMPILER=g++ \
 				-DCMAKE_CXX_FLAGS="-static-libstdc++" \
@@ -112,12 +114,15 @@ then
 				../llvm
 		$CMAKE --build . --target install -j11
 		touch $LLVM_DIR/$LLVMFile.flag
-	elif [ "$WASABI_LLVM" = "internal" ]
+	elif [ "$WASABI_LLVM" = "git" ]
 	then
 		cd $WASABI_EXTERNAL_DIR
 		rm -rf $LLVM_DIR
 		tar --extract --file=llvm.tar.gz
 		touch $LLVM_DIR/$LLVMFile.flag
+	elif [ "$WASABI_LLVM" = "local" ]
+	then
+		echo "LLVM will be used from: '$LLVM_DIR'" 
 	else
 		echo "WASABI_LLVM should be one of {internal|external|compiled} not '$WASABI_LLVM'"
 		return 1;
@@ -125,6 +130,8 @@ then
 else
 	echo "Clang already installed in '$LLVM_DIR'"
 fi
+$LLVM_DIR/llvm/bin/clang --version
+ldd $LLVM_DIR/llvm/bin/clang || true
 
 
 echo
