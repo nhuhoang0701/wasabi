@@ -26,23 +26,45 @@ namespace ina::query_model
 
     const std::vector<Member> Definition::getVisibleMembers(const Dimension& dimension) const 
     {
-        std::vector<Member> visibleMembers;
-        std::vector<Member>::const_iterator pMemberIterator;
-        for(pMemberIterator = dimension.getMembers().begin(); pMemberIterator != dimension.getMembers().end(); ++ pMemberIterator)
+        if (!m_filters.empty())
         {
-            std::vector<InA_queryFilterComparison>::const_iterator pFilterIterator;
-            for(pFilterIterator = m_filters.begin(); pFilterIterator != m_filters.end(); ++ pFilterIterator)
+            std::vector<Member> visibleMembers;
+            for(auto member : dimension.getMembers())
             {
-                if ((*pFilterIterator).getFieldName() == dimension.getName()
-                    && (*pFilterIterator).getComparisonOperator() == InA_queryFilter::ComparisonOperator::EqualTo 
-                    && (*pFilterIterator).getLowValue() == (*pMemberIterator).getName())
+                for(auto filter : m_filters)
                 {
-                    const Member & currentMember = *pMemberIterator;
-                    visibleMembers.push_back(currentMember);
+                    /* 
+                    MDS_TheDefinitveGuide_2_1 page 237
+                    5.4.1 FieldName
+                        The name of the field, which is used in the comparison. Even though the term “FieldName”
+                        was use, only attribute names may be specified in this field.
+                        Even some virtual attributes (e.g. hierarchy key or description) can be used.
+                    */
+                    bool matchFieldName = false;                    
+                    for(auto attribute : dimension.getAttributes())
+                    {
+                        if (filter.getFieldName()  == attribute.getName())
+                        {
+                            matchFieldName = true;
+                            break;
+                        }
+                    }
+                    if (matchFieldName)
+                    {
+                        if (filter.getComparisonOperator() == InA_queryFilter::ComparisonOperator::EqualTo 
+                            && filter.getLowValue() == member.getName())
+                        {
+                            visibleMembers.push_back(member);
+                        }
+                    }
                 }
             }
+            return visibleMembers;
         }
-        return visibleMembers;
+        else
+        {
+            return dimension.getMembers();
+        }
     }
 
 } //query_model
