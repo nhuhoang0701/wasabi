@@ -21,7 +21,9 @@ target_link_directories(InA_Interpreter_lib PUBLIC ${cJSON_LIBRARY_DIRS} ${WASAB
 # InA_Interpreter as executable to be sure of C/C++ init staff is well done
 add_executable(InA_Interpreter InA_Interpreter_main.cpp)
 # External entries points
+if ("${WASABI_USE_WASM}" STREQUAL "yes")
 target_link_options( InA_Interpreter PRIVATE LINKER:--export=json_getServerInfo,--export=json_getResponse_json,--export=malloc,--export=free)
+endif()
 # To allow to link with InA_Interpreter executable
 set_property(TARGET InA_Interpreter PROPERTY ENABLE_EXPORTS 1)
 target_include_directories(InA_Interpreter PUBLIC ${PROJECT_SOURCE_DIR}/include)
