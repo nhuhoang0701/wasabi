@@ -100,7 +100,7 @@ then
 		cd build
 		$CMAKE  -G "Ninja" \
 				-DCMAKE_MAKE_PROGRAM=$NINJA \
-				-DPARALLEL_COMPILE_JOBS=11 \
+				-DCMAKE_BUILD_PARALLEL_LEVEL=11 \
 				-DCMAKE_BUILD_TYPE=Release \
 				-DCMAKE_C_COMPILER=gcc \
 				-DCMAKE_EXE_LINKER_FLAGS="-static" \
@@ -116,7 +116,7 @@ then
 				-DLLVM_INCLUDE_TESTS=OFF \
 				-DCLANG_ENABLE_ARCMT=OFF \
 				../llvm
-		$CMAKE --build . --target install -j11 -i
+		$CMAKE --build . --target install
 		touch $LLVM_DIR/$LLVMFile.$WASABI_LLVM.flag
 	elif [ "$WASABI_LLVM" = "git" ]
 	then
@@ -134,8 +134,9 @@ then
 else
 	echo "Clang already installed in '$LLVM_DIR'"
 fi
-$LLVM_DIR/llvm/bin/clang --version || true
-ldd $LLVM_DIR/llvm/bin/clang || true
+$LLVM_DIR/bin/clang --version || true
+ldd $LLVM_DIR/bin/clang || true
+ldd $LLVM_DIR/bin/lld || true
 
 
 echo
