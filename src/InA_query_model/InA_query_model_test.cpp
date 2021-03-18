@@ -44,15 +44,13 @@ int main()
 		CPPUNIT_ASSERT_EQUAL_STR("ATTR1", dimension.getAttributes().at(1).getName().c_str());
     }
 	{
-		std::string request = R"({"Dimensions":[{"Name":"text","Axis":"Rows"},{"Name":"varchar","Axis":"Rows"},{"Name":"CustomDimension1","Axis":"Cols","Members":[{"Description":"Measure 1","Name":"real", "Aggregation":"SUM"}]}]})";
+		std::string request = R"({"Dimensions":[{"Name":"text","Axis":"Rows"},{"Name":"varchar","Axis":"Rows"},{"Name":"CustomDimension1","Axis":"Columns","Members":[{"Description":"Measure 1","Name":"real", "Aggregation":"SUM"}]}]})";
 		JSONReader reader;
 		JSONGenericObject root = reader.parse(request);
 		ina::query_model::Definition definition;
 		read(definition, root);
 		CPPUNIT_ASSERT_EQUAL(3, definition.getDimensions().size());
-
 	}
-
 	{
 		std::string request = R"({"DynamicFilter":{"Selection":{"Operator":{"Code":"And","SubSelections":[{"SetOperand":{"Elements":[{"Comparison":"=","Low":"OBJ_147"},{"Comparison":"<>","Low":"OBJ_191"}],"FieldName":"[Measures].[Measures]"}}]}}}})";
 		JSONReader reader;
@@ -68,8 +66,39 @@ int main()
 		CPPUNIT_ASSERT_EQUAL("[Measures].[Measures]", definition.getQueryFilters().at(1).getFieldName());
 		CPPUNIT_ASSERT_EQUAL(ina::query_model::InA_queryFilter::ComparisonOperator::NotEqualTo, definition.getQueryFilters().at(1).getComparisonOperator());
 		CPPUNIT_ASSERT_EQUAL("OBJ_191", definition.getQueryFilters().at(1).getLowValue());
+
+		//TODO: check with attributes KEY
 	}
-	
+	{
+		std::string request = R"({"Dimensions":[{"Members":[{"Description":"Calculated Measure 1","Formula":{"Function":{"Name":"**","Parameters":[{"Member":{"Name":"OBJ_147"}},{"Function":{"Name":"decfloat","Parameters":[{"Constant":{"Value":"2","ValueType":"String"}}]}}]}},"Name":"32160367-6930-4537-9181-755582731239"}],"Axis":"Rows","Name":"CustomDimension1"}]})";;
+		JSONReader reader;
+		JSONGenericObject root = reader.parse(request);
+		ina::query_model::Definition definition;
+		read(definition, root);
+		CPPUNIT_ASSERT_EQUAL(1, definition.getDimensions().size());
+		CPPUNIT_ASSERT_EQUAL(1, definition.getDimensions().at(0).getMembers().size());
+	}
+	{
+		std::string request = R"({"Dimensions":[{"Attributes":[{"Name":"OBJ_188","Obtainability":"UserInterface"}],"Axis":"Rows","Name":"OBJ_188","NonEmpty":true,"ReadMode":"Booked","ResultStructure":[{"Result":"Members","Visibility":"Visible"}]},{"Attributes":[{"Name":"[Measures].[Measures]","Obtainability":"UserInterface"},{"Name":"[Measures].[Name]","Obtainability":"UserInterface"}],"Axis":"Columns","Members":[{"Aggregation":"SUM","MemberOperand":{"AttributeName":"Measures","Comparison":"=","Value":"OBJ_147"},"Visibility":"Visible"},{"Aggregation":"SUM","MemberOperand":{"AttributeName":"Measures","Comparison":"=","Value":"OBJ_262"},"Visibility":"Visible"}],"Name":"CustomDimension1","NonEmpty":false,"ReadMode":"Master"}],"DynamicFilter":{"Selection":{"Operator":{"Code":"And","SubSelections":[{"SetOperand":{"Elements":[{"Comparison":"=","Low":"OBJ_262"}],"FieldName":"[Measures].[Measures]"}},{"SetOperand":{"Elements":[{"Comparison":"=","Low":"2014"}],"FieldName":"OBJ_188"}}]}}},"ResultSetFeatureRequest":{"ResultEncoding":"None","ResultFormat":"Version2","ReturnedDataSelection":{"Actions":false,"CellDataType":false,"CellFormat":false,"CellMeasure":false,"CellValueTypes":false,"ExceptionAlertLevel":false,"ExceptionName":false,"ExceptionSettings":false,"Exceptions":false,"InputEnabled":false,"NumericRounding":false,"NumericShift":false,"TupleDisplayLevel":false,"TupleDrillState":false,"TupleElementIds":true,"TupleElementIndexes":false,"TupleLevel":false,"TupleParentIndexes":false,"UnitDescriptions":false,"UnitTypes":false,"Units":false,"Values":false,"ValuesFormatted":false,"ValuesRounded":false},"SubSetDescription":{"ColumnFrom":0,"ColumnTo":60,"RowFrom":0,"RowTo":500},"UseDefaultAttributeKey":false},"Sort":[]})";
+		JSONReader reader;
+		JSONGenericObject root = reader.parse(request);
+		ina::query_model::Definition definition;
+		read(definition, root);
+		auto dimensionYear 		= definition.getDimensions().at(0);
+		auto dimensionMeasure 	= definition.getDimensions().at(1);
+		CPPUNIT_ASSERT_EQUAL(2, definition.getDimensions().size());
+		CPPUNIT_ASSERT_EQUAL(2, definition.getQueryFilters().size());
+
+		CPPUNIT_ASSERT_EQUAL(0, dimensionYear.getMembers().size());
+		CPPUNIT_ASSERT_EQUAL(0, definition.getVisibleMembers(dimensionYear).size());		
+		CPPUNIT_ASSERT_EQUAL(1, dimensionYear.getAttributes().size());
+
+		auto attributeYear = dimensionYear.getAttributes().at(0);
+		CPPUNIT_ASSERT_EQUAL("OBJ_188", attributeYear.getName());
+
+		CPPUNIT_ASSERT_EQUAL(2, dimensionMeasure.getMembers().size());
+		CPPUNIT_ASSERT_EQUAL(1, definition.getVisibleMembers(dimensionMeasure).size());
+	}
 
 	return TEST_HAVEERROR();
 }
