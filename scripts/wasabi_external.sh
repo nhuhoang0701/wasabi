@@ -75,7 +75,7 @@ export LLVM_OS=${LLVM_OS:-linux-gnu-ubuntu-20.04}
 export LLVMFile=clang+llvm-$LLVM_VERSION-$LLVM_ARCH-$LLVM_OS
 echo "LLVM version: $LLVMFile"
 echo "LLVM WASABI_LLVM: $WASABI_LLVM"
-if [ ! -f "$LLVM_DIR/$LLVMFile.flag" ]
+if [ ! -f "$LLVM_DIR/$LLVMFile.$WASABI_LLVM.flag" ]
 then
 	if [ "$WASABI_LLVM" = "external" ]
 	then
@@ -83,7 +83,7 @@ then
 		rm -rf $WASABI_EXTERNAL_DIR/$LLVMFile
 		wget -qO - https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVM_VERSION/$LLVMFile.tar.xz | tar xfJ - -C $WASABI_EXTERNAL_DIR/ && \rm -rf $LLVM_DIR && cp -rf $WASABI_EXTERNAL_DIR/$LLVMFile $LLVM_DIR
 		rm -rf $WASABI_EXTERNAL_DIR/$LLVMFile
-		touch $LLVM_DIR/$LLVMFile.flag
+		touch $LLVM_DIR/$LLVMFile.$WASABI_LLVM.flag
 	elif [ "$WASABI_LLVM" = "compiled" ]
 	then
 		#source clang_llvm.sh
@@ -116,14 +116,14 @@ then
 				-DLLVM_INCLUDE_TESTS=OFF \
 				-DCLANG_ENABLE_ARCMT=OFF \
 				../llvm
-		$CMAKE --build . --target install -j11
-		touch $LLVM_DIR/$LLVMFile.flag
+		$CMAKE --build . --target install -j11 -i
+		touch $LLVM_DIR/$LLVMFile.$WASABI_LLVM.flag
 	elif [ "$WASABI_LLVM" = "git" ]
 	then
 		cd $WASABI_EXTERNAL_DIR
 		rm -rf $LLVM_DIR
 		tar --extract --file=llvm.tar.gz
-		touch $LLVM_DIR/$LLVMFile.flag
+		touch $LLVM_DIR/$LLVMFile.$WASABI_LLVM.flag
 	elif [ "$WASABI_LLVM" = "local" ]
 	then
 		echo "LLVM will be used from: '$LLVM_DIR'" 
@@ -134,7 +134,7 @@ then
 else
 	echo "Clang already installed in '$LLVM_DIR'"
 fi
-$LLVM_DIR/llvm/bin/clang --version
+$LLVM_DIR/llvm/bin/clang --version || true
 ldd $LLVM_DIR/llvm/bin/clang || true
 
 
