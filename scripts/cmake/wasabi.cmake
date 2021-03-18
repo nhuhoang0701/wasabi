@@ -88,7 +88,9 @@ elseif ("${WASABI_USE_WASM}" STREQUAL "no")
 	set(CMAKE_AR ${LLVM_DIR}/bin/llvm-ar)
 	set(CMAKE_RANLIB ${LLVM_DIR}/bin/llvm-ranlib)
 	set(CMAKE_SPLIT ${LLVM_DIR}/bin/llvm-split)
-	set(CMAKE_CXX_FLAGS "-I${LLVM_DIR}/include/c++/v1")
+	
+	set(CMAKE_CXX_FLAGS "-fsanitize=address -I${LLVM_DIR}/include/c++/v1")
+	
 	set(CMAKE_MODULE_LINKER_FLAGS "-stdlib=libc++ -nostdinc++ -L${LLVM_DIR}/lib -Wl,-rpath,${LLVM_DIR}/lib")
 	set(CMAKE_SHARED_LINKER_FLAGS "-stdlib=libc++ -nostdinc++ -L${LLVM_DIR}/lib -Wl,-rpath,${LLVM_DIR}/lib")
 	set(CMAKE_STATIC_LINKER_FLAGS "")
