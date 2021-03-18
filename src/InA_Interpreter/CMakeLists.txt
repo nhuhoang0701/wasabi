@@ -34,7 +34,7 @@ target_link_libraries(InA_Interpreter PUBLIC InA_Interpreter_lib)
 
 ################################################
 # test
-add_executable(InA_Interpreter_test InA_Interpreter_test.cpp ServerInfo_test.cpp)
+add_executable(InA_Interpreter_test InA_Interpreter_test.cpp)
 target_link_libraries(InA_Interpreter_test InA_Interpreter_lib)
 target_include_directories(InA_Interpreter_test PRIVATE ${WASABI_INCLUDES} ${WASABI_ROOT_DIR}/src/test_tools/include)
 
