@@ -18,27 +18,32 @@ namespace wasabiUtils{
   };
   void escape_json(string_view theString, ostream& theStream) {
     theStream << "\"";
-    for_each(
-             theString.cbegin(),theString.cend(),
-             [&theStream](char c)  -> void {
-               switch (c) {
-               case '"': theStream << "\\\""; break;
-               case '\\': theStream << "\\\\"; break;
-               case '\b': theStream << "\\b"; break;
-               case '\f': theStream << "\\f"; break;
-               case '\n': theStream << "\\n"; break;
-               case '\r': theStream << "\\r"; break;
-               case '\t': theStream << "\\t"; break;
-               default:
-                 if ('\x00' <= c && c <= '\x1f') {
-                   theStream << "\\u"
-                             << hex << setw(4) << setfill('0') << (int)c;
-                 } else {
-                   theStream << c;
-                 }
-               }
-             }
-             );
+    for(auto c : theString)
+    {
+      switch (c)
+      {
+      case '"': theStream << "\\\""; break;
+      case '\\': theStream << "\\\\"; break;
+      case '\b': theStream << "\\b"; break;
+      case '\f': theStream << "\\f"; break;
+      case '\n': theStream << "\\n"; break;
+      case '\r': theStream << "\\r"; break;
+      case '\t': theStream << "\\t"; break;
+      default:
+        {
+          if ('\x00' <= c && c <= '\x1f')
+          {
+            theStream << "\\u"
+            << hex << setw(4) << setfill('0') << (int)c;
+          }
+          else
+          {
+            theStream << c;
+          }
+          break;
+        }
+      }
+    }
     theStream << "\"";
   }
 }
