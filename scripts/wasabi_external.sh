@@ -99,6 +99,7 @@ then
 		cd build
 		$CMAKE  -G "Ninja" \
 				-DCMAKE_MAKE_PROGRAM=$NINJA \
+				-DPARALLEL_COMPILE_JOBS=11 \
 				-DCMAKE_BUILD_TYPE=Release \
 				-DCMAKE_C_COMPILER=gcc \
 				-DCMAKE_C_FLAGS="-static" \
@@ -109,7 +110,7 @@ then
 				-DLLVM_STATIC_LINK_CXX_STDLIB=ON \
 				-DLLVM_TARGETS_TO_BUILD="X86;WebAssembly" \
 				../llvm
-		$CMAKE --build . --target install
+		$CMAKE --build . --target install -j11
 		touch $LLVM_DIR/$LLVMFile.flag
 	elif [ "$WASABI_LLVM" = "internal" ]
 	then
