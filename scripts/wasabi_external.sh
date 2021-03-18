@@ -93,7 +93,7 @@ then
 		git clone https://github.com/llvm/llvm-project.git
 		cd llvm-project
 		git checkout llvmorg-$LLVM_VERSION
-		llvmorg-12.0.0-rc3
+		#llvmorg-12.0.0-rc3
 		rm -rf build || true
 		mkdir build || true
 		cd build
