@@ -89,14 +89,14 @@ then
 		#source clang_llvm.sh
 		cd $WASABI_EXTERNAL_DIR
 		#rm -rf llvm4build || true
-		#mkdir -p llvm4build || true
+		#mkdir -p llvm4build
 		cd llvm4build
 		#git clone https://github.com/llvm/llvm-project.git
 		cd llvm-project
 		#git checkout llvmorg-$LLVM_VERSION
 		#llvmorg-12.0.0-rc3
 		#rm -rf build || true
-		#mkdir build || true
+		mkdir -p build
 		cd build
 		$CMAKE  -G "Ninja" \
 				-DCMAKE_MAKE_PROGRAM=$NINJA \
@@ -108,7 +108,7 @@ then
 				-DCMAKE_CXX_COMPILER=g++ \
 				-DCMAKE_CXX_FLAGS="-static-libstdc++" \
 				-DCMAKE_INSTALL_PREFIX=$LLVM_DIR \
-				-DLLVM_ENABLE_PROJECTS="clang;lld" \
+				-DLLVM_ENABLE_PROJECTS="lld" \
 				-DBUILD_SHARED_LIBS=OFF \
 				-DLLVM_STATIC_LINK_CXX_STDLIB=ON \
 				-DLLVM_TARGETS_TO_BUILD="X86;WebAssembly" \
@@ -128,13 +128,14 @@ then
 	then
 		echo "LLVM will be used from: '$LLVM_DIR'" 
 	else
-		echo "WASABI_LLVM should be one of {internal|external|compiled} not '$WASABI_LLVM'"
+		echo "WASABI_LLVM should be one of {compiled|external|git|local} not '$WASABI_LLVM'"
 		return 1;
 	fi
 else
 	echo "Clang already installed in '$LLVM_DIR'"
 fi
-$LLVM_DIR/bin/clang --version || true
+$LLVM_DIR/bin/clang --version
+$LLVM_DIR/bin/lld --version
 ldd $LLVM_DIR/bin/clang || true
 ldd $LLVM_DIR/bin/lld || true
 
