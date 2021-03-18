@@ -134,8 +134,10 @@ then
 else
 	echo "Clang already installed in '$LLVM_DIR'"
 fi
-$LLVM_DIR/bin/clang --version
-$LLVM_DIR/bin/lld --version
+echo "clang version:"
+$LLVM_DIR/bin/clang --version || true
+echo "lld version:"
+$LLVM_DIR/bin/lld --version || true
 ldd $LLVM_DIR/bin/clang || true
 ldd $LLVM_DIR/bin/lld || true
 
