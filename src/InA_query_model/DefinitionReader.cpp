@@ -40,10 +40,9 @@ namespace ina::query_model
 						std::string lowValue = elements[i].getString("Low");
 						queryFilterComparison.setLowValue(lowValue);
 						std::string comparisonValue = elements[i].getString("Comparison");
-						query_model::InA_queryFilter::ComparisonOperator comparisonOperator = query_model::InA_queryFilter::getComparator(comparisonValue);
+						query_model::InA_queryFilter::ComparisonOperator comparisonOperator = query_model::InA_queryFilter::getComparisonOperator(comparisonValue);
 						queryFilterComparison.setComparisonOperator(comparisonOperator);
 						definition.addQueryFilter(queryFilterComparison);
-						std::cout << "InA_Interpreter => DynamicFilter -> ... -> Low :" << lowValue << std::endl;
 					}
 				}
 			}
