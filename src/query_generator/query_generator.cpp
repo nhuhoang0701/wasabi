@@ -14,16 +14,16 @@ namespace query_generator
     {
         std::string delim;
         std::ostringstream sql;
+		std::ostringstream where;
         std::ostringstream group_by;
         
         sql << "SELECT ";
 
-        for (const auto& dim : m_query.getDefinition().getDimensions())
+        for (const auto& dimension : m_query.getDefinition().getDimensions())
         {
-			const std::string& nameDim = dim.getName();
-			if(nameDim == "CustomDimension1")
+			if(ina::query_model::Dimension::isDimensionOfMeasures(dimension))
 			{
-				for(const auto& member : dim.getMembers() )
+				for(const auto& member : m_query.getDefinition().getVisibleMembers(dimension) )
 				{
 					sql << delim;
 					sql << member.getAggregation() << "(" << member.getName() << ")";
@@ -31,9 +31,10 @@ namespace query_generator
 			}
 			else
 			{
+				const std::string& dimensionName = dimension.getName();
 				sql << delim;
-				sql << nameDim;
-				group_by << delim << nameDim;
+				sql << dimensionName;
+				group_by << delim << dimensionName;
 			}
 
             delim = ", ";
@@ -42,6 +43,27 @@ namespace query_generator
         const std::string& table = m_query.getDataSource().getObjectName();
         sql << " FROM " << table;
 
+		for(const auto & filter : m_query.getDefinition().getQueryFilters())
+		{
+			if (!("[Measures].[Measures]" == filter.getFieldName()))
+			{
+				if (where.str().empty())
+				{
+					where << " WHERE ";
+				}
+				else 
+				{
+					//TODO: Change when we handle logical operators
+					where << " AND ";
+				}
+				
+				where << filter.getFieldName() << " " << ina::query_model::InA_queryFilter::comparisonOperatorToString(filter.getComparisonOperator()) << " " << filter.getLowValue();
+			}
+		}
+		if (!where.str().empty())
+		{
+			sql << where.str();
+		}
         if(!group_by.str().empty())
         {
             sql << " GROUP BY " << group_by.str();
