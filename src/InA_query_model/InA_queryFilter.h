@@ -29,7 +29,7 @@ namespace ina::query_model
                 Unknown
             };
 
-            inline static InA_queryFilter::ComparisonOperator getComparator(const std::string& str)
+            inline static InA_queryFilter::ComparisonOperator getComparisonOperator(const std::string& str)
             {
                 if (str == "=") 		     return ComparisonOperator::EqualTo;
                 else if (str == "<>")		 return ComparisonOperator::NotEqualTo;
@@ -41,6 +41,20 @@ namespace ina::query_model
                 else if (str == "<")         return ComparisonOperator::LessThan;
                 else if (str == "<=")        return ComparisonOperator::LessThanOrEqualTo;
                 else                         return ComparisonOperator::Unknown;
+            };
+
+            inline static std::string comparisonOperatorToString(const InA_queryFilter::ComparisonOperator& comparator)
+            {
+                if (comparator == ComparisonOperator::EqualTo)                          return "=";
+                else if (comparator == ComparisonOperator::NotEqualTo)                  return "<>";
+                else if (comparator == ComparisonOperator::Between)                     return"BETWEEN";
+                else if (comparator == ComparisonOperator::Match)                       return "MATCH";
+                else if (comparator ==ComparisonOperator::GreaterThan)                  return ">";
+                else if (comparator == ComparisonOperator::GreaterThanOrEqualTo)        return ">=";
+                else if (comparator == ComparisonOperator::IsNull)                      return "IS_NULL";
+                else if (comparator == ComparisonOperator::LessThan)                    return "<";
+                else if (comparator == ComparisonOperator::LessThanOrEqualTo)           return "<=";
+                else return "";
             };
 
             InA_queryFilter() = default;
