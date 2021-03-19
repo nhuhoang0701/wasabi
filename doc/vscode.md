@@ -1,3 +1,5 @@
+https://code.visualstudio.com/docs/remote/wsl  
+
 Extension :
  - https://marketplace.visualstudio.com/items?itemName=llvm-vs-code-extensions.vscode-clangd  
         "clangd.path": "/home/ghislain/B/wasabi/external/llvm/bin/clangd"
