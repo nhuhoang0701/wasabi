@@ -91,10 +91,10 @@ elseif ("${WASABI_USE_WASM}" STREQUAL "no")
 	
 	set(CMAKE_CXX_FLAGS "-nostdinc --sysroot ${MUSL_DIR} -isystem ${MUSL_DIR}/include -I${LLVM_DIR}/include/c++/v1")
 	
-	set(CMAKE_MODULE_LINKER_FLAGS "-nostdinc --sysroot ${MUSL_DIR} -L${MUSL_DIR}/lib -stdlib=libc++ -nostdinc++ -L${LLVM_DIR}/lib -Wl,-rpath,${LLVM_DIR}/lib")
-	set(CMAKE_SHARED_LINKER_FLAGS "-nostdinc --sysroot ${MUSL_DIR} -L${MUSL_DIR}/lib-stdlib=libc++ -nostdinc++ -L${LLVM_DIR}/lib -Wl,-rpath,${LLVM_DIR}/lib")
+	set(CMAKE_MODULE_LINKER_FLAGS "-nostdinc --sysroot ${MUSL_DIR} -static -Lc -L${MUSL_DIR}/lib -stdlib=libc++ -nostdinc++ -L${LLVM_DIR}/lib -Wl,-rpath,${LLVM_DIR}/lib")
+	set(CMAKE_SHARED_LINKER_FLAGS "-nostdinc --sysroot ${MUSL_DIR} -static -Lc -L${MUSL_DIR}/lib-stdlib=libc++ -nostdinc++ -L${LLVM_DIR}/lib -Wl,-rpath,${LLVM_DIR}/lib")
 	set(CMAKE_STATIC_LINKER_FLAGS "")
-	set(CMAKE_EXE_LINKER_FLAGS "-nostdinc --sysroot ${MUSL_DIR} -L${MUSL_DIR}/lib-stdlib=libc++ -nostdinc++  -L${LLVM_DIR}/lib -Wl,-rpath,${LLVM_DIR}/lib -Xlinker --allow-multiple-definition")
+	set(CMAKE_EXE_LINKER_FLAGS "-nostdinc --sysroot ${MUSL_DIR} -L -L${MUSL_DIR}/lib-stdlib=libc++ -nostdinc++  -L${LLVM_DIR}/lib -Wl,-rpath,${LLVM_DIR}/lib -Xlinker --allow-multiple-definition")
 else ()
 	message(FATAL_ERROR "${WASABI_USE_WASM} should have 'yes'/'no' only, WASABI_USE_WASM='${WASABI_USE_WASM}'")
 endif ()
