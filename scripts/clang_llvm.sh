@@ -9,7 +9,8 @@ cd musl4build
 git clone git://git.musl-libc.org/musl
 cd musl
 git checkout v1.2.2
-./configure --prefix=$WASABI_EXTERNAL_DIR/musl --syslibdir=--prefix=$MUSL_DIR/syslib   CC=$C_COMPILER --disable-shared
+./configure --prefix=$WASABI_EXTERNAL_DIR/musl --syslibdir=--prefix=$MUSL_DIR/syslib   CC=$C_COMPILER
+# --disable-shared
 make -j$((`nproc`-2))
 make install
 
