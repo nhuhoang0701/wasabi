@@ -4,7 +4,7 @@ echo
 echo -----------------------------------
 echo ---------- compile musl  ----------
 cd $WASABI_EXTERNAL_DIR
-mkdir musl4build
+mkdir -p musl4build
 cd musl4build
 git clone git://git.musl-libc.org/musl
 cd musl
