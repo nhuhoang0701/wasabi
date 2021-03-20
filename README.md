@@ -22,7 +22,7 @@ The dev. env. is tested on Ubuntu 20 in WSL1
      !!!DO ONLY WSL1 COMMAND!!! WSL2 have some network issue in our context.
 
   - Tips : From the wls terminal to open the current linux folder in windows explorer:  
-    <code>~/explorer.exe .</code>
+    `~/explorer.exe .`
   
  # Get the environment:
   
@@ -34,15 +34,15 @@ The dev. env. is tested on Ubuntu 20 in WSL1
  Once the env. is ready, to just get the necessaries var. env., from the ~/wasabi root folder (the folder which contains this README.md file):  
       `source ./scripts/set_env.sh`  
  
- # Compile a wasm/WASI binary and launch his test:
- 'cd ~/wasabi/src/test/wasi/'  
+ # Compile/install/test :
+ ( `./wasabi.sh` should be launch at least one time and `source ./scripts/set_env.sh`should always launch each time)
+ 'cd ~/wasabi/'  
  'rebuild'  
  
  # Execute wasm/WASI binary on your browser:
-  - From the folder '~/wasabi/src/wasi_browser' start the http server  by typing `$HTTP_SERVER`  
+  - `run_server`
   - Open your browser at http://localhost:8080 and select your wasm file  
-      for example \\wsl$\Ubuntu\home\ghislain\wasabi5\wasabi\src\test\wasi\build\MyExample.wasm  
-      Don't forget to open the browser debugger to see the output in the console.
+      for example \\wsl$\Ubuntu\home\ghislain\wasabi\install\bin\InA_Interpreter_test.wasm  
   - If you want to debug c++ in your browser :
       - Install [canary](https://www.google.com/chrome/canary/)
       - Inside Canary install this [extension](https://chrome.google.com/webstore/detail/cc%20%20-devtools-support-dwa/pdcpmagijalfljmkmjngeonclgbbannb), in extension option add a path subtitution rule :  
@@ -51,7 +51,7 @@ The dev. env. is tested on Ubuntu 20 in WSL1
       - Now use Canary browser and his debugger to debug the c++ code :)
  
  # Execute wasm/WASI binary locally on your machine:  
-   - `$WASMTIME ~/wasabi/src/test/wasi/build/MyExample.wasm`
+   - `$WASMTIME ~/wasabi/install/bin/InA_Interpreter_test.wasm`
 
 
 # Troubleshooting
