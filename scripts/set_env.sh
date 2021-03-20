@@ -71,7 +71,7 @@ alias clean='$CMAKE --build ./build --target clean'
 alias compile='$CMAKE --build ./build'
 alias test='(cd build && $CTEST -j8 -T test --output-on-failure)'
 alias install='$CMAKE --build ./build --target install'
-alias build='$CMAKE -B ./build . -G Ninja -DCMAKE_MAKE_PROGRAM=$NINJA -DCMAKE_INSTALL_PREFIX:PATH=$WASABI_INSTAL_DIR -DWASABI_USE_WASM=yes && install && test'
+alias build='$CMAKE -B ./build . -G Ninja -DCMAKE_MAKE_PROGRAM=$NINJA -DCMAKE_INSTALL_PREFIX:PATH=$WASABI_INSTAL_DIR && install && test'
 alias rebuild='rm -rf ./build && mkdir build && build'
 
 echo
