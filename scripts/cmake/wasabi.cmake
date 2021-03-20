@@ -45,7 +45,7 @@ elseif (DEFINED ENV{MUSL_DIR})
 	message(STATUS "- MUSL_DIR=ENV'$ENV{MUSL_DIR}' instead MUSL_DIR='${MUSL_DIR}'")
     set (MUSL_DIR "$ENV{MUSL_DIR}" CACHE PATH "project root" FORCE)
 else()
-	message(FATAL_ERROR "Missing 'MUSL_DIR' definition")
+	message(STATUS "Missing 'MUSL_DIR' definition")
 endif()
 
 if(DEFINED NINJA)
