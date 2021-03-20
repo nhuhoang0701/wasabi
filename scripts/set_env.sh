@@ -63,7 +63,7 @@ echo -e  "build                to compile test the current cmake folder";
 echo -e  "rebuild              to clean compile test the current cmake folder";
 
 alias setenv='unset WASABI_ROOT_DIR && source ./scripts/set_env.sh'
-alias run_wasabi_server='cd $WASABI_INSTAL_DIR; $HTTP_SERVER;cd -'
+alias run_server='cd $WASABI_INSTAL_DIR; $HTTP_SERVER;cd -'
 alias clean='$CMAKE --build ./build --target clean'
 alias compile='$CMAKE --build ./build'
 alias test='(cd build && $CTEST -j8 -T test --output-on-failure)'
