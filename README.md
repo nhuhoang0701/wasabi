@@ -7,7 +7,7 @@ To execute it in the browser we will use webassembly https://webassembly.org/
 We will use c++ to have more chance to integrate some existing code MDS / Micro Cube code  
 
 The technical stacks are :  
-  - [wasi](https://wasi.dev/)        : can be executed in the browser, nodejs or on any machine throw [Wasmtime](https://wasmtime.dev/)      
+  - [wasi](https://wasi.dev/)        : own implementation, can be executed in the browser, nodejs or on any machine throw [Wasmtime](https://wasmtime.dev/)      
   - [wasi-sdk](https://github.com/WebAssembly/wasi-sdk)  
   - [clang](https://clang.llvm.org/) compiler (No Emscripten !)  
   - [CMake](https://cmake.org/) for compilation process
