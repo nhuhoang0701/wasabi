@@ -66,6 +66,18 @@ fi
 
 echo
 echo -----------------------------------
+echo ---------- install musl ----------
+if [ ! -f "$MUSL_DIR/musl.flag" ]
+then
+	$WASABI_ROOT_DIR/scripts/clang_llvm.sh
+	touch $MUSL_DIR/musl.flag
+else
+	echo "Clang already installed in '$MUSL_DIR'"
+fi
+
+echo 
+echo
+echo -----------------------------------
 echo ---------- install clang ----------
 echo " $(date +"%T")"
 export LLVM_VERSION=${LLVM_VERSION:-11.0.0}
@@ -137,12 +149,12 @@ fi
 echo -----------------------------------
 echo "clang version:"
 $LLVM_DIR/bin/clang --version || true
+echo --------------
+ldd $LLVM_DIR/bin/clang || true
 echo -----------------------------------
 echo "lld version:"
 $LLVM_DIR/bin/lld --version || true
-echo -----------------------------------
-ldd $LLVM_DIR/bin/clang || true
-echo -----------------------------------
+echo --------------
 ldd $LLVM_DIR/bin/lld || true
 echo -----------------------------------
 
