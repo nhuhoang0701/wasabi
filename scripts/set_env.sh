@@ -22,15 +22,18 @@ export LLVM_SPLIT=$LLVM_DIR/bin/llvm-split
 export C_COMPILER=$LLVM_DIR/bin/clang
 export CXX_COMPILER=$LLVM_DIR/bin/clang++
 
+export SYSROOT_DIR=$WASABI_EXTERNAL_DIR/sysroot
+
+export SYSROOT_LINUX_DIR=$SYSROOT_DIR/linux-sysroot
+echo -e "SYSROOT_LINUX_DIR: " "\t\t'"$SYSROOT_LINUX_DIR"'";
+export SYSROOT_WASI_DIR=$SYSROOT_DIR/wasi-sysroot
+echo -e "SYSROOT_WASI_DIR: " "\t\t'"$SYSROOT_WASI_DIR"'";
+
 export MUSL_DIR=${MUSL_DIR:-$WASABI_EXTERNAL_DIR/musl}
 echo -e "MUSL_DIR: " "\t\t'"$MUSL_DIR"'";
 
 export BINARYEN_DIR=$WASABI_EXTERNAL_DIR/binaryen
 echo -e "BINARYEN_DIR: " "\t\t'"$BINARYEN_DIR"'";
-
-export WASI_SDK_DIR=$WASABI_EXTERNAL_DIR/wasi-sdk-12
-export SYSROOT_DIR=$WASI_SDK_DIR/wasi-sysroot
-echo -e "SYSROOT_DIR: " "\t\t'"$SYSROOT_DIR"'";
 
 export WASMTIME_DIR=$WASABI_EXTERNAL_DIR/wasmtime-v0.22.0
 export WASMTIME_LINUX_DIR=$WASMTIME_DIR-x86_64-linux
