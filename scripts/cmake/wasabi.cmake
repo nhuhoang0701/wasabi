@@ -131,7 +131,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 ###########################################
 # wasabi external
-set(cJSON_LIBRARY_DIRS ${WASABI_ROOT_DIR}/external/cJSON/install/lib)
+set(cJSON_LIBRARY_DIRS ${CMAKE_INSTALL_PREFIX}/cJSON/lib)
 
 ###########################################
 # wasabi var
