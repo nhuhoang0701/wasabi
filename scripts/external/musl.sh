@@ -3,6 +3,7 @@
 echo
 echo -----------------------------------
 echo ---------- compile musl  ----------
+echo "start at $(date +"%T")"
 if [ ! -f "$MUSL_DIR/musl.flag" ]
 then
     cd $WASABI_EXTERNAL_DIR
@@ -17,5 +18,6 @@ then
 
 	touch $MUSL_DIR/musl.flag
 else
-	echo "Clang already installed in '$MUSL_DIR'"
+	echo "already installed in '$MUSL_DIR'"
 fi
+echo "end at $(date +"%T")"
