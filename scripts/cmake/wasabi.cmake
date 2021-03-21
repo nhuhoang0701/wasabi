@@ -98,7 +98,7 @@ elseif ("${WASABI_PLATFORM_TARGET}" STREQUAL "linux")
 
 	set(CMAKE_C_COMPILER ${SYSROOT_LINUX_DIR}/bin/musl-clang)
 	set(CMAKE_CXX_COMPILER ${SYSROOT_LINUX_DIR}/bin/musl-clang)
-	set(CMAKE_LINKER   ${LLVM_DIR}/bin/lld)
+	set(CMAKE_LINKER   ${SYSROOT_LINUX_DIR}/bin/ld.musl-clang)
 	set(CMAKE_AR ${LLVM_DIR}/bin/llvm-ar)
 	set(CMAKE_RANLIB ${LLVM_DIR}/bin/llvm-ranlib)
 	set(CMAKE_SPLIT ${LLVM_DIR}/bin/llvm-split)
