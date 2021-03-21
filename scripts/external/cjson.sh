@@ -29,7 +29,7 @@ then
 		-DENABLE_CUSTOM_COMPILER_FLAGS=off >> $outfile
 
 	echo ------------- build ---------------
-	$CMAKE --build_$WASABI_PLATFORM_TARGET . --target cJSON_test >> $outfile
+	$CMAKE --build . --target cJSON_test >> $outfile
 else
 	echo "already installed in '$WASABI_INSTAL_DIR/cJSON'"
 fi
