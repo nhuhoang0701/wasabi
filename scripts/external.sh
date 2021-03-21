@@ -31,6 +31,7 @@ then
 	echo -------- compile toolhain ---------
 	$WASABI_ROOT_DIR/scripts/external/musl.sh | tee -a $outfile
 fi
+$WASABI_ROOT_DIR/scripts/external/binaryen.sh | tee -a $outfile
 $WASABI_ROOT_DIR/scripts/external/wasmtime.sh | tee -a $outfile
 $WASABI_ROOT_DIR/scripts/external/wasmsysroot.sh | tee -a $outfile
 

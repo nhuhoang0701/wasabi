@@ -9,7 +9,7 @@ namespace calculator
 {
 	class Object
 	{
-		public:
+	public:
 		Object() = default;
 		Object(const std::string& name);
 
@@ -34,12 +34,12 @@ namespace calculator
 
 	class Body : public std::vector<Object>
 	{
-		public:
+	public:
 		Body(const Axe& row,const Axe& col);
 
 		size_t  getCellsNbs() const;
 
-		private:
+	private:
 		const Axe& m_axeRow;
 		const Axe& m_axeCol;
 	};

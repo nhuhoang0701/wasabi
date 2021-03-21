@@ -25,6 +25,9 @@ export CXX_COMPILER=$LLVM_DIR/bin/clang++
 export MUSL_DIR=${MUSL_DIR:-$WASABI_EXTERNAL_DIR/musl}
 echo -e "MUSL_DIR: " "\t\t'"$MUSL_DIR"'";
 
+export BINARYEN_DIR=$WASABI_EXTERNAL_DIR/binaryen
+echo -e "BINARYEN_DIR: " "\t\t'"$BINARYEN_DIR"'";
+
 export WASI_SDK_DIR=$WASABI_EXTERNAL_DIR/wasi-sdk-12
 export SYSROOT_DIR=$WASI_SDK_DIR/wasi-sysroot
 echo -e "SYSROOT_DIR: " "\t\t'"$SYSROOT_DIR"'";

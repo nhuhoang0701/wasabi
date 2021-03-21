@@ -1,7 +1,7 @@
 echo
 echo -----------------------------------
 echo -------------- cJSON --------------
-echo " $(date +"%T")"
+echo "start at $(date +"%T")"
 if [ ! -f "$CJSON_DIR/cjson.flag" ]
 then
 	cd $WASABI_EXTERNAL_DIR/
@@ -31,7 +31,7 @@ then
 	echo ------------- build ---------------
 	$CMAKE --build . --target cJSON_test >> $outfile
 else
-	echo "cjson already installed in '$CJSON_DIR'"
+	echo "already installed in '$CJSON_DIR'"
 fi
 echo -------------- test ---------------
 
@@ -50,3 +50,4 @@ else
 	echo "cJSON test passed"
 	touch $CJSON_DIR/cjson.flag
 fi
+echo "end at $(date +"%T")"
