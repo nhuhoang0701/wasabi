@@ -2,7 +2,7 @@ echo
 echo
 echo -----------------------------------
 echo ---------- install clang ----------
-echo " $(date +"%T")"
+echo "start at $(date +"%T")"
 echo "LLVM version: $LLVM_VERSION"
 export LLVM_ARCH=${LLVM_ARCH:-x86_64}
 export LLVM_OS=${LLVM_OS:-linux-gnu-ubuntu-20.04}
@@ -65,7 +65,7 @@ then
 		return 1;
 	fi
 else
-	echo "Clang already installed in '$LLVM_DIR'"
+	echo "already installed in '$LLVM_DIR'"
 fi
 echo -----------------------------------
 echo "clang version:"
@@ -78,3 +78,4 @@ $LLVM_DIR/bin/lld --version || true
 echo --------------
 ldd $LLVM_DIR/bin/lld || true
 echo -----------------------------------
+echo "end at $(date +"%T")"

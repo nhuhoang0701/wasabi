@@ -1,7 +1,7 @@
 echo
 echo -----------------------------------
 echo ---------- install ninja ----------
-echo " $(date +"%T")"
+echo "start at $(date +"%T")"
 export NINJA_VERSION=${NINJA_VERSION:-1.10.2}
 export NINJAFile=ninja-$NINJA_VERSION-linux
 echo "NINJA version: $NINJA_VERSION"
@@ -16,5 +16,6 @@ then
 	
 	touch $WASABI_NINJA_DIR/$NINJAFile.flag
 else
-	echo "ninja already installed in '$WASABI_NINJA_DIR'"
+	echo "already installed in '$WASABI_NINJA_DIR'"
 fi
+echo "end at $(date +"%T")"

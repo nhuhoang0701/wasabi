@@ -1,7 +1,7 @@
 echo
 echo -----------------------------------
 echo ------------- sqlite --------------
-echo " $(date +"%T")"
+echo "start at $(date +"%T")"
 if [ ! -f "$SQLITE_DIR/sqlite.flag" ]
 then
 	cd $WASABI_EXTERNAL_DIR/
@@ -24,5 +24,6 @@ then
 	$CMAKE --build . >> $outfile
 	touch $SQLITE_DIR/sqlite.flag
 else
-	echo "sqlite already installed in '$SQLITE_DIR'"
+	echo "already installed in '$SQLITE_DIR'"
 fi
+echo "end at $(date +"%T")"
