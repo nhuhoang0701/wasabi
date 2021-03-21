@@ -6,8 +6,8 @@
 # wasabi
 /external/*
 !external/llvm-*.tar.gz
-build/
-install/
+build*/
+install*/
 
 ##############################################
 # IDE
