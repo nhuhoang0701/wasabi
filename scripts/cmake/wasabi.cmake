@@ -96,14 +96,14 @@ elseif ("${WASABI_PLATFORM_TARGET}" STREQUAL "linux")
 	
 	set(CMAKE_SYSROOT ${SYSROOT_LINUX_DIR})
 
-	set(CMAKE_C_COMPILER ${LLVM_DIR}/bin/clang)
-	set(CMAKE_CXX_COMPILER ${LLVM_DIR}/bin/clang++)
+	set(CMAKE_C_COMPILER ${SYSROOT_LINUX_DIR}/bin/musl-clang)
+	set(CMAKE_CXX_COMPILER ${SYSROOT_LINUX_DIR}/bin/musl-clang)
 	set(CMAKE_LINKER   ${LLVM_DIR}/bin/lld)
 	set(CMAKE_AR ${LLVM_DIR}/bin/llvm-ar)
 	set(CMAKE_RANLIB ${LLVM_DIR}/bin/llvm-ranlib)
 	set(CMAKE_SPLIT ${LLVM_DIR}/bin/llvm-split)
 	
-	set(CMAKE_CXX_FLAGS "-nostdinc")
+	set(CMAKE_CXX_FLAGS "-nostdinc -I${LLVM_DIR}/include/c++/v1")
 	
 	set(CMAKE_MODULE_LINKER_FLAGS "-fuse-ld=lld -rtlib=compiler-rt -static -static-libstdc++ -stdlib=libc++ -L${LLVM_DIR}/lib -Wl,-rpath,${LLVM_DIR}/lib")
 	set(CMAKE_SHARED_LINKER_FLAGS "-fuse-ld=lld -rtlib=compiler-rt -static -static-libstdc++ -stdlib=libc++ -L${LLVM_DIR}/lib -Wl,-rpath,${LLVM_DIR}/lib")
