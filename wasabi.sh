@@ -5,7 +5,7 @@
 # exit on error
 set -e
 
-./scripts/wasabi_external.sh
+./scripts/external.sh
 
 source ./scripts/check_env.sh
 
