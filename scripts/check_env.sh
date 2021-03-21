@@ -65,10 +65,10 @@ else
 	Install_Steps
 fi
 
-if [ "$WASABI_USE_WASM" = "yes" ] || [ "$WASABI_USE_WASM" = "no" ]
+if [ "$WASABI_PLATFORM_TARGET" = "linux" ] || [ "$WASABI_PLATFORM_TARGET" = "wasm" ]
 then
-	echo "WASABI_USE_WASM='$WASABI_USE_WASM'"  
+	echo "WASABI_PLATFORM_TARGET='$WASABI_PLATFORM_TARGET'"  
 else
-	echo "Error: WASABI_USE_WASM variable should have 'yes'/'no' value only, WASABI_USE_WASM='$WASABI_USE_WASM'"  
+	echo "Error: WASABI_PLATFORM_TARGET variable should have 'wasm'/'linux' value only, WASABI_PLATFORM_TARGET='$WASABI_PLATFORM_TARGET'"  
 	return 1
 fi
