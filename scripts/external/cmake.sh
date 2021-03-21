@@ -1,7 +1,7 @@
 echo
 echo -----------------------------------
 echo ---------- install cmake ----------
-echo " $(date +"%T")"
+echo "start at $(date +"%T")"
 export CMAKE_VERSION=${CMAKE_VERSION:-3.19.5}
 export CMAKEFile=cmake-$CMAKE_VERSION-Linux-x86_64
 echo "CMAKE version: $CMAKE_VERSION"
@@ -17,5 +17,6 @@ then
 	rm -rf $WASABI_EXTERNAL_DIR/$CMAKEFile
 	touch $WASABI_CMAKE_DIR/$CMAKEFile.flag
 else
-	echo "CMake already installed in '$WASABI_CMAKE_DIR'"
+	echo "already installed in '$WASABI_CMAKE_DIR'"
 fi
+echo "end at $(date +"%T")"
