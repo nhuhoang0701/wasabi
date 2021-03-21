@@ -2,15 +2,15 @@ echo
 echo -----------------------------------
 echo -------------- cJSON --------------
 echo "start at $(date +"%T")"
-if [ ! -f "$CJSON_DIR/cjson.flag" ]
+if [ ! -f "$WASABI_INSTAL_DIR/cJSON/cjson.flag" ]
 then
 	cd $WASABI_EXTERNAL_DIR/
 	echo --------------- git ---------------
 	rm -rf cJSON
 	git clone https://github.com/DaveGamble/cJSON.git  >> $outfile
 	cd cJSON
-	mkdir build
-	cd build
+	mkdir build_$WASABI_PLATFORM_TARGET
+	cd build_$WASABI_PLATFORM_TARGET
 
 	echo ------------- cmake ---------------
 	$CMAKE .. \
@@ -19,7 +19,7 @@ then
 		-DCMAKE_TOOLCHAIN_FILE=$WASABI_ROOT_DIR/scripts/cmake/wasabi.cmake \
 		-DCMAKE_C_FLAGS=-fno-stack-protector \
 		\
-		-DCMAKE_INSTALL_PREFIX=$CJSON_DIR/install \
+		-DCMAKE_INSTALL_PREFIX=$WASABI_INSTAL_DIR/cJSON \
 		\
 		-DENABLE_CJSON_TEST=on \
 		-DENABLE_CJSON_UTILS=off \
@@ -29,17 +29,17 @@ then
 		-DENABLE_CUSTOM_COMPILER_FLAGS=off >> $outfile
 
 	echo ------------- build ---------------
-	$CMAKE --build . --target cJSON_test >> $outfile
+	$CMAKE --build_$WASABI_PLATFORM_TARGET . --target cJSON_test >> $outfile
 else
-	echo "already installed in '$CJSON_DIR'"
+	echo "already installed in '$WASABI_INSTAL_DIR/cJSON'"
 fi
 echo -------------- test ---------------
 
-if [ "$WASABI_USE_WASM" = "no" ]
+if [ "$WASABI_PLATFORM_TARGET" = "linux" ]
 then
-	$CJSON_DIR/install/bin/cJSON_test >> $outfile
+	$WASABI_INSTAL_DIR/cJSON/bin/cJSON_test >> $outfile
 else
-	$WASMTIME $CJSON_DIR/install/bin/cJSON_test >> $outfile
+	$WASMTIME $WASABI_INSTAL_DIR/cJSON/bin/cJSON_test >> $outfile
 fi
 
 if [ $? -ne 0 ]
@@ -48,6 +48,6 @@ then
 	exit 1
 else
 	echo "cJSON test passed"
-	touch $CJSON_DIR/cjson.flag
+	touch $WASABI_INSTAL_DIR/cJSON/cjson.flag
 fi
 echo "end at $(date +"%T")"

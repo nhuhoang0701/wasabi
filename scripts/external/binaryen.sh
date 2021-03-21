@@ -18,8 +18,8 @@ then
 	echo ------------- cmake ---------------
 	$CMAKE .. \
 		-G Ninja -DCMAKE_MAKE_PROGRAM=$NINJA \
-		-DCMAKE_C_COMPILER=${LLVM_DIR}/bin/clang \
-		-DCMAKE_CXX_COMPILER=${LLVM_DIR}/bin/clang++ \
+		-DCMAKE_C_COMPILER=${C_COMPILER} \
+		-DCMAKE_CXX_COMPILER=${CXX_COMPILER} \
 		-DCMAKE_INSTALL_PREFIX=$BINARYEN_DIR/install >> $outfile
 
 	echo ------------- build ---------------

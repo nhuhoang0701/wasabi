@@ -3,14 +3,14 @@
 echo
 echo -----------------------------------
 echo --------- set variables -----------
-export WASABI_USE_WASM=${WASABI_USE_WASM:-yes}
-echo -e "WASABI_USE_WASM{yes|no}: " "\t'"$WASABI_USE_WASM"'";
+export WASABI_PLATFORM_TARGET=${WASABI_PLATFORM_TARGET:-wasm}
+echo -e "WASABI_PLATFORM_TARGET{wasm|linux}: " "\t'"$WASABI_PLATFORM_TARGET"'";
 export WASABI_LLVM=${WASABI_LLVM:-external}
 echo -e "WASABI_LLVM{compiled|external|git|local}: " "'"$WASABI_LLVM"'";
 
 export WASABI_ROOT_DIR=${WASABI_ROOT_DIR:-$(pwd)}
 echo -e "WASABI_ROOT_DIR: " "\t'"$WASABI_ROOT_DIR"'";
-export WASABI_INSTAL_DIR=$WASABI_ROOT_DIR/install
+export WASABI_INSTAL_DIR=$WASABI_ROOT_DIR/install_$WASABI_PLATFORM_TARGET
 echo -e "WASABI_INSTAL_DIR: " "\t'"$WASABI_INSTAL_DIR"'";
 export WASABI_EXTERNAL_DIR=$WASABI_ROOT_DIR/external
 echo -e "WASABI_EXTERNAL_DIR: " "\t'"$WASABI_EXTERNAL_DIR"'";
@@ -73,11 +73,11 @@ echo -e  "rebuild              to clean compile test the current cmake folder";
 
 alias setenv='unset WASABI_ROOT_DIR && source ./scripts/set_env.sh'
 alias run_server='cd $WASABI_INSTAL_DIR; $HTTP_SERVER;cd -'
-alias clean='$CMAKE --build ./build --target clean'
-alias compile='$CMAKE --build ./build'
+alias clean='$CMAKE --build ./build_$WASABI_PLATFORM_TARGET --target clean'
+alias compile='$CMAKE --build ./build_$WASABI_PLATFORM_TARGET'
 alias test='(cd build && $CTEST -j8 -T test --output-on-failure)'
-alias install='$CMAKE --build ./build --target install'
-alias build='$CMAKE -B ./build . -G Ninja -DCMAKE_MAKE_PROGRAM=$NINJA -DCMAKE_INSTALL_PREFIX:PATH=$WASABI_INSTAL_DIR && install && test'
-alias rebuild='rm -rf ./build && mkdir build && build'
+alias install='$CMAKE --build ./build_$WASABI_PLATFORM_TARGET --target install'
+alias build='$CMAKE -B ./build_$WASABI_PLATFORM_TARGET . -G Ninja -DCMAKE_MAKE_PROGRAM=$NINJA -DCMAKE_INSTALL_PREFIX:PATH=$WASABI_INSTAL_DIR && install && test'
+alias rebuild='rm -rf ./build_$WASABI_PLATFORM_TARGET && mkdir build_$WASABI_PLATFORM_TARGET && build'
 
 echo
