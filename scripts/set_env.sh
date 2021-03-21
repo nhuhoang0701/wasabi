@@ -41,9 +41,6 @@ export WASMTIME=${WASMTIME:-$WASMTIME_DIR/wasmtime}
 echo -e "WASMTIME: " "\t\t'"$WASMTIME"'";
 export WASMTIME_BACKTRACE_DETAILS=1
 
-export CJSON_DIR=$WASABI_EXTERNAL_DIR/cJSON
-export SQLITE_DIR=$WASABI_EXTERNAL_DIR/sqlite
-
 export WASABI_CMAKE_DIR=$WASABI_EXTERNAL_DIR/cmake
 export CMAKE=${CMAKE:-$WASABI_CMAKE_DIR/bin/cmake}
 echo -e "CMAKE: "  "\t\t'"$CMAKE"'";
@@ -75,7 +72,7 @@ alias setenv='unset WASABI_ROOT_DIR && source ./scripts/set_env.sh'
 alias run_server='cd $WASABI_INSTAL_DIR; $HTTP_SERVER;cd -'
 alias clean='$CMAKE --build ./build_$WASABI_PLATFORM_TARGET --target clean'
 alias compile='$CMAKE --build ./build_$WASABI_PLATFORM_TARGET'
-alias test='(cd build && $CTEST -j8 -T test --output-on-failure)'
+alias test='(cd build_$WASABI_PLATFORM_TARGET && $CTEST -j8 -T test --output-on-failure)'
 alias install='$CMAKE --build ./build_$WASABI_PLATFORM_TARGET --target install'
 alias build='$CMAKE -B ./build_$WASABI_PLATFORM_TARGET . -G Ninja -DCMAKE_MAKE_PROGRAM=$NINJA -DCMAKE_INSTALL_PREFIX:PATH=$WASABI_INSTAL_DIR && install && test'
 alias rebuild='rm -rf ./build_$WASABI_PLATFORM_TARGET && mkdir build_$WASABI_PLATFORM_TARGET && build'
