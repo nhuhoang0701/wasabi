@@ -11,8 +11,7 @@ then
 	git clone https://github.com/WebAssembly/binaryen.git  >> $outfile
 	cd binaryen
 	git checkout version_100
-	rm -rf build
-	mkdir build
+	mkdir -p build
 	cd build
 
 	echo ------------- cmake ---------------
