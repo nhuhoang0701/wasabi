@@ -20,20 +20,17 @@ then
 		touch $LLVM_DIR/$LLVMFile.$WASABI_LLVM.flag
 	elif [ "$WASABI_LLVM" = "compiled" ]
 	then
-		#source clang_llvm.sh
 		cd $WASABI_EXTERNAL_DIR
-		#rm -rf llvm4build || true
-		#mkdir -p llvm4build
+		mkdir -p llvm4build
 		cd llvm4build
-		#git clone https://github.com/llvm/llvm-project.git
+		git clone https://github.com/llvm/llvm-project.git
 		cd llvm-project
 		git checkout llvmorg-$LLVM_VERSION
-		#rm -rf build || true
 		mkdir -p build
 		cd build
 		$CMAKE  -G "Ninja" \
 				-DCMAKE_MAKE_PROGRAM=$NINJA \
-				-DCMAKE_BUILD_PARALLEL_LEVEL=11 \
+				-DCMAKE_BUILD_PARALLEL_LEVEL=$((`nproc`-2)) \
 				-DCMAKE_BUILD_TYPE=Release \
 				-DCMAKE_C_COMPILER=gcc \
 				-DCMAKE_EXE_LINKER_FLAGS="-static" \

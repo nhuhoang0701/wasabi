@@ -6,10 +6,9 @@ if [ ! -f "$WASABI_INSTAL_DIR/cJSON/cjson.flag" ]
 then
 	cd $WASABI_EXTERNAL_DIR/
 	echo --------------- git ---------------
-	rm -rf cJSON
 	git clone https://github.com/DaveGamble/cJSON.git  >> $outfile
 	cd cJSON
-	mkdir build_$WASABI_PLATFORM_TARGET
+	mkdir -p build_$WASABI_PLATFORM_TARGET
 	cd build_$WASABI_PLATFORM_TARGET
 
 	echo ------------- cmake ---------------
