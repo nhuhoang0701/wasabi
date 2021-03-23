@@ -89,4 +89,8 @@ namespace calculator
 		throw std::runtime_error("Unknow eAxe");
 		}
 	}
+	
+	void materialyze()
+	{
+	}
 } // namespace calculator
