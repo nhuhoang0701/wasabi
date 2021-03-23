@@ -52,6 +52,9 @@ namespace calculator
 
 	void Cube::addDim(eAxe axe, const Object& obj)
 	{
+		if(!m_data->haveCol(obj.getName()))
+			throw std::runtime_error("Object " + obj.getName() + " not found in datastorage");
+
 		switch (axe)
 		{
 		case eAxe::Row:
@@ -67,9 +70,6 @@ namespace calculator
 		default:
 		throw std::runtime_error("Unknow eAxe");
 		}
-
-		if(!m_data->haveCol(obj.getName()))
-			throw std::runtime_error("Object " + obj.getName() + " not present in data");
 	}
 
 	void Cube::addMeas(const std::string& name)
