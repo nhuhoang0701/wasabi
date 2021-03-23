@@ -55,6 +55,8 @@ namespace calculator
 		void         addMeas(const std::string& name);
 
 		const Axe&   getAxe(eAxe eAxe) const;
+		
+		void         materialyze();
 		const Body&  getBody() const {return m_body;};
 
 	private:
