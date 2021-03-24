@@ -35,6 +35,7 @@ public:
 		getStaticStr()[m_index++] = getVal();
 		getStaticStr()[m_index++] = ':';
 		getStaticStr()[m_index++] = 'A';
+		getStaticStr()[m_index] = '\0';
 	}
 	virtual ~A()
 	{
@@ -43,6 +44,7 @@ public:
 		getStaticStr()[m_index++] = ':';
 		getStaticStr()[m_index++] = '~';
 		getStaticStr()[m_index++] = 'A';
+		getStaticStr()[m_index] = '\0';
 	}
 
 protected:
@@ -65,6 +67,7 @@ public:
 		getStaticStr()[m_index++] = getVal();
 		getStaticStr()[m_index++] = ':';
 		getStaticStr()[m_index++] = 'B';
+		getStaticStr()[m_index] = '\0';
 	}
 	virtual ~B()
 	{
@@ -73,6 +76,7 @@ public:
 		getStaticStr()[m_index++] = ':';
 		getStaticStr()[m_index++] = '~';
 		getStaticStr()[m_index++] = 'B';
+		getStaticStr()[m_index] = '\0';
 	}
 };
 
@@ -95,7 +99,7 @@ EXPORT const char* str_DESTRUCTOR_v()
 
 EXPORT const char* str_VDESTRUCTOR_v()
 {
-	char* str256 = new char[256];
+	static char str256[256];
 	str256[0]= '\0';
 	unsigned char index = 0;
 	{
@@ -115,6 +119,7 @@ EXPORT const char* str_VDESTRUCTOR_v()
 	}
 	str256[index++] = ' ';
 	str256[index++] = '5';
+	str256[index] = '\0';
 
 	// Should be "0 A:A 1 2 B:A B:B 3 B:~B B:~A 4 A:~A 5"
 	return str256;
@@ -135,7 +140,7 @@ EXPORT const char* str_CALL_VIRTUAL_METHOD_c(char c)
 
 EXPORT int i_DYNCATS_v()
 {
-	char* str256 = new char[256];
+	char str256[256];
 	str256[0]= '\0';
 	unsigned char index = 0;
 	int i1;
