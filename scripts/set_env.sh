@@ -55,6 +55,9 @@ echo -e "NINJA: "  "\t\t'"$NINJA"'";
 export HTTP_SERVER="python3 -m http.server 8080"
 echo -e "HTTP_SERVER: " "\t\t'"$HTTP_SERVER"'";
 
+# Needed to get call with symbolsfrom 
+export ASAN_SYMBOLIZER_PATH=$LLVM_DIR/bin/llvm-symbolizer
+export MSAN_SYMBOLIZER_PATH=$ASAN_SYMBOLIZER_PATH
 
 # alias
 echo
