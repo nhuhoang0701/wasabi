@@ -26,8 +26,8 @@ then
 			\
 			-DCMAKE_CXX_FLAGS="-stdlib=libc++  -I${LLVM_DIR}/include/c++/v1" \
 			\
-			-DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -static -stdlib=libc++ -L${LLVM_DIR}/lib" \
-			-DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=lld -static -stdlib=libc++ -L${LLVM_DIR}/lib" \
+			-DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -static -L${LLVM_DIR}/lib" \
+			-DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=lld -static -L${LLVM_DIR}/lib" \
 			\
 			-DCMAKE_INSTALL_PREFIX=$LLVM_DIR \
 			-DBUILD_SHARED_LIBS=OFF \
