@@ -14,6 +14,7 @@ then
 	git clone https://github.com/llvm/llvm-project.git
 	cd llvm-project
 	git checkout llvmorg-$LLVM_VERSION
+	rm -rf build
 	mkdir -p build
 	cd build
 	$CMAKE  -G "Ninja" \
