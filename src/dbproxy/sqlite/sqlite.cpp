@@ -149,8 +149,10 @@ namespace dbproxy
 		row.reserve(argc);
 		for (int i = 0; i < argc; i++)
 		{
-			//TODO: argv[i] == nullptr
-			row.push_back(Value(argv[i]));
+			if(argv[i] == nullptr)
+				row.push_back(Value("##NULL")); //TODO: Manage NULL Value
+			else
+				row.push_back(Value(argv[i]));
 			//std::cout << "sqlite_callback SQL result: '" << azColName[i] << "' = '" << (argv[i] ? argv[i] : "NULL") << "'" << std::endl;
 		}
 		(*calback)(row);
