@@ -30,15 +30,18 @@ then
 			\
 			-DCMAKE_CXX_FLAGS="-stdlib=libc++  -I${LLVM_DIR}/include/c++/v1" \
 			\
-			-DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -static -stdlib=libc++  -rtlib=compiler-rt -L${LLVM_DIR}/lib  -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libunwind.a -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libc++abi.a" \
-			-DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=lld -static -stdlib=libc++  -rtlib=compiler-rt -L${LLVM_DIR}/lib -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libunwind.a -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libc++abi.a" \
+			-DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -static -stdlib=libc++  -rtlib=compiler-rt -L${LLVM_DIR}/lib" \
+			-DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=lld -static -stdlib=libc++  -rtlib=compiler-rt -L${LLVM_DIR}/lib" \
 			\
 			-DCMAKE_INSTALL_PREFIX=$LLVM_DIR \
 			-DBUILD_SHARED_LIBS=OFF \
+			\
+			-DLLVM_ENABLE_PROJECTS=all \
 			-DLLVM_STATIC_LINK_CXX_STDLIB=ON \
 			-DLLVM_TARGETS_TO_BUILD="X86;WebAssembly" \
 			-DLLVM_BUILD_TESTS=OFF \
 			-DLLVM_INCLUDE_TESTS=OFF \
+			\
 			-DCLANG_ENABLE_ARCMT=OFF \
 			../llvm >> $outfile
 	$CMAKE --build . --target install >> $outfile
