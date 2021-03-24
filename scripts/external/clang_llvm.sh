@@ -23,10 +23,8 @@ then
 			-DCMAKE_BUILD_TYPE=Release \
 			\
 			-DCMAKE_INSTALL_PREFIX=$LLVM_DIR \
-			-DBUILD_SHARED_LIBS=OFF \
 			\
 			-DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;compiler-rt;libcxx;libcxxabi;libunwind;lld;lldb" \
-			-DLLVM_STATIC_LINK_CXX_STDLIB=ON \
 			-DLLVM_TARGETS_TO_BUILD="X86;WebAssembly" \
 			-DLLVM_BUILD_TESTS=OFF \
 			-DLLVM_INCLUDE_TESTS=OFF \
