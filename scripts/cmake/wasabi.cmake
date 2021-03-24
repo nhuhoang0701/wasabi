@@ -94,30 +94,28 @@ elseif ("${WASABI_PLATFORM_TARGET}" STREQUAL "linux")
 	set(CMAKE_C_COMPILER ${LLVM_DIR}/bin/clang)
 	set(CMAKE_CXX_COMPILER ${LLVM_DIR}/bin/clang++)
 	set(CMAKE_LINKER   ${LLVM_DIR}/bin/clang)
-#	set(CMAKE_CXX_FLAGS           "-fsanitize=address")
-#	set(CMAKE_EXE_LINKER_FLAGS    "-fsanitize=address")
-#	set(CMAKE_CXX_FLAGS           "-fsanitize=memory")
-#	set(CMAKE_EXE_LINKER_FLAGS    "-fsanitize=memory")
+	set(CMAKE_AR ${LLVM_DIR}/bin/llvm-ar)
+	set(CMAKE_RANLIB ${LLVM_DIR}/bin/llvm-ranlib)
+	set(CMAKE_SPLIT ${LLVM_DIR}/bin/llvm-split)
+	
+	set(CMAKE_CXX_FLAGS           "-stdlib=libc++  -I${LLVM_DIR}/include/c++/v1")
+	set(CMAKE_EXE_LINKER_FLAGS    "-fuse-ld=lld -static-libstdc++ -rtlib=compiler-rt -stdlib=libc++ -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libunwind.a -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libc++abi.a")
 
-#TODO: use musl and LLVM libc++
-#	set(CLANG_TARGET_TRIPLE x86_64-wherelinux-musl)
+	set(CMAKE_CXX_FLAGS           "${CMAKE_CXX_FLAGS} -fsanitize=address")
+	set(CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
+#	set(CMAKE_CXX_FLAGS           "${CMAKE_CXX_FLAGS} -fsanitize=memory -Wl,--exclude-libs=libc++.a")
+#	set(CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=memory -Wl,--exclude-libs=libc++.a")
+
+#TODO: use musl as static libc
+#	set(CLANG_TARGET_TRIPLE x86_64-linux-musl)
 #	message(STATUS "- CLANG_TARGET_TRIPLE='${CLANG_TARGET_TRIPLE}'")
 	
 #	set(CMAKE_SYSROOT ${SYSROOT_LINUX_DIR})
-
-#	set(CMAKE_C_COMPILER ${SYSROOT_LINUX_DIR}/bin/musl-clang)
-#	set(CMAKE_CXX_COMPILER ${SYSROOT_LINUX_DIR}/bin/musl-clang)
-#	set(CMAKE_LINKER   ${SYSROOT_LINUX_DIR}/bin/ld.musl-clang)
-#	set(CMAKE_AR ${LLVM_DIR}/bin/llvm-ar)
-#	set(CMAKE_RANLIB ${LLVM_DIR}/bin/llvm-ranlib)
-#	set(CMAKE_SPLIT ${LLVM_DIR}/bin/llvm-split)
 	
-#	set(CMAKE_CXX_FLAGS "-nostdinc -I${LLVM_DIR}/include/c++/v1")
-	
-#	set(CMAKE_MODULE_LINKER_FLAGS "-fuse-ld=lld -rtlib=compiler-rt -static -static-libstdc++ -stdlib=libc++ -L${LLVM_DIR}/lib -Wl,-rpath,${LLVM_DIR}/lib")
-#	set(CMAKE_SHARED_LINKER_FLAGS "-fuse-ld=lld -rtlib=compiler-rt -static -static-libstdc++ -stdlib=libc++ -L${LLVM_DIR}/lib -Wl,-rpath,${LLVM_DIR}/lib")
+#	set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,-rpath,${LLVM_DIR}/lib")
+#	set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-rpath,${LLVM_DIR}/lib")
 #	set(CMAKE_STATIC_LINKER_FLAGS "")
-#	set(CMAKE_EXE_LINKER_FLAGS    "-fuse-ld=lld -rtlib=compiler-rt -static -static-libstdc++ -stdlib=libc++ -L${LLVM_DIR}/lib -Wl,-rpath,${LLVM_DIR}/lib -Xlinker --allow-multiple-definition")
+#	set(CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath,${LLVM_DIR}/lib -Xlinker --allow-multiple-definition")
 else ()
 	message(FATAL_ERROR "${WASABI_PLATFORM_TARGET} should have 'wasm'/'linux' only, WASABI_PLATFORM_TARGET='${WASABI_PLATFORM_TARGET}'")
 endif ()
