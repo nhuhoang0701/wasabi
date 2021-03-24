@@ -24,8 +24,6 @@ then
 			-DCMAKE_CXX_COMPILER="${LLVM_DIR}/bin/clang++" \
 			-DCMAKE_LINKER="${LLVM_DIR}/bin/clang" \
 			\
-			-DCMAKE_CXX_FLAGS="-stdlib=libc++  -I${LLVM_DIR}/include/c++/v1" \
-			\
 			-DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -static -L${LLVM_DIR}/lib" \
 			-DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=lld -static -L${LLVM_DIR}/lib" \
 			\
