@@ -4,10 +4,6 @@ echo -----------------------------------
 echo ---------- install clang ----------
 echo "start at $(date +"%T")"
 echo "LLVM version: $LLVM_VERSION"
-export LLVM_ARCH=${LLVM_ARCH:-x86_64}
-export LLVM_OS=${LLVM_OS:-linux-gnu-ubuntu-20.04}
-export LLVMFile=clang+llvm-$LLVM_VERSION-$LLVM_ARCH-$LLVM_OS
-echo "LLVM version: $LLVMFile"
 echo "LLVM WASABI_LLVM: $WASABI_LLVM"
 
 if [ "$WASABI_LLVM" = "compiled" ]
@@ -30,8 +26,8 @@ then
 			\
 			-DCMAKE_CXX_FLAGS="-stdlib=libc++  -I${LLVM_DIR}/include/c++/v1" \
 			\
-			-DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -static -stdlib=libc++  -rtlib=compiler-rt -L${LLVM_DIR}/lib" \
-			-DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=lld -static -stdlib=libc++  -rtlib=compiler-rt -L${LLVM_DIR}/lib" \
+			-DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -static -stdlib=libc++ -L${LLVM_DIR}/lib" \
+			-DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=lld -static -stdlib=libc++ -L${LLVM_DIR}/lib" \
 			\
 			-DCMAKE_INSTALL_PREFIX=$LLVM_DIR \
 			-DBUILD_SHARED_LIBS=OFF \
@@ -45,22 +41,22 @@ then
 			-DCLANG_ENABLE_ARCMT=OFF \
 			../llvm >> $outfile
 	$CMAKE --build . --target install >> $outfile
-	touch $LLVM_DIR/$LLVMFile.$WASABI_LLVM.flag
-elif [ ! -f "$LLVM_DIR/$LLVMFile.$WASABI_LLVM.flag" ]
+elif [ ! -f "$LLVM_DIR/$LLVM_VERSION.$WASABI_LLVM.flag" ]
 then
 	if [ "$WASABI_LLVM" = "external" ]
 	then
+		LLVM_ARCH=${LLVM_ARCH:-x86_64}
+		LLVM_OS=${LLVM_OS:-linux-gnu-ubuntu-20.04}
+		LLVMFile=clang+llvm-$LLVM_VERSION-$LLVM_ARCH-$LLVM_OS
 		rm -rf $LLVM_DIR
 		rm -rf $WASABI_EXTERNAL_DIR/$LLVMFile
 		wget -qO - https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVM_VERSION/$LLVMFile.tar.xz | tar xfJ - -C $WASABI_EXTERNAL_DIR/ && \rm -rf $LLVM_DIR && cp -rf $WASABI_EXTERNAL_DIR/$LLVMFile $LLVM_DIR
 		rm -rf $WASABI_EXTERNAL_DIR/$LLVMFile
-		touch $LLVM_DIR/$LLVMFile.$WASABI_LLVM.flag
 	elif [ "$WASABI_LLVM" = "git" ]
 	then
 		cd $WASABI_EXTERNAL_DIR
 		rm -rf $LLVM_DIR
 		tar --extract --file=llvm-$LLVM_VERSION.tar.gz
-		touch $LLVM_DIR/$LLVMFile.$WASABI_LLVM.flag
 	elif [ "$WASABI_LLVM" = "local" ]
 	then
 		echo "LLVM will be used from: '$LLVM_DIR'" 
@@ -68,6 +64,7 @@ then
 		echo "WASABI_LLVM should be one of {compiled|external|git|local} not '$WASABI_LLVM'"
 		return 1;
 	fi
+	touch $LLVM_DIR/$LLVM_VERSION.$WASABI_LLVM.flag
 else
 	echo "already installed in '$LLVM_DIR'"
 fi
