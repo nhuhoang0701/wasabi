@@ -105,7 +105,7 @@ namespace calculator
 
 		size_t        getRowNbrs() const {return m_rowsNb;}
 
-		void addColumn(const std::string& name, eDataType dt, eColumnType type)
+		void addColumn(const std::string name, eDataType dt, eColumnType type)
 		{
 			if(m_colsIdxByName.find(name) != m_colsIdxByName.end())
 				throw std::runtime_error("Column already exist:" + name);
