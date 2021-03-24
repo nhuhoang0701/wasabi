@@ -25,7 +25,7 @@ then
 			\
 			-DCMAKE_INSTALL_PREFIX=$LLVM_DIR \
 			\
-			-DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;compiler-rt;libcxx;libcxxabi;libunwind;lld;lldb" \
+			-DLLVM_ENABLE_PROJECTS="clang;libcxx;libcxxabi;libunwind;lld;lldb" \
 			-DLLVM_TARGETS_TO_BUILD="X86;WebAssembly" \
 			-DLLVM_BUILD_TESTS=OFF \
 			-DLLVM_INCLUDE_TESTS=OFF \
