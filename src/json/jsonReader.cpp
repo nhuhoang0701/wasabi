@@ -247,7 +247,8 @@ JSONGenericObject::operator bool() const
 
 const JSONGenericObject JSONGenericObject::getObject(const std::string & key) const
 {
-	//checkObject(*this, key);
+	if(m_jsonDocument==nullptr)
+		return JSONGenericObject();
 
 	JsonObject* jsonObject = cJSON_GetObjectItemCaseSensitive(m_jsonDocument->Object(), key.c_str());
 	if(!jsonObject)
@@ -347,7 +348,9 @@ bool JSONGenericObject::getBool(const std::string & key) const
 
 const JSONGenericObject JSONGenericObject::getArray(const std::string & key) const
 {
-	//checkObject(*this, key);
+	if(m_jsonDocument==nullptr)
+		return JSONGenericObject();
+
 	JsonObject* jsonObject = cJSON_GetObjectItemCaseSensitive(m_jsonDocument->Object(), key.c_str());
 	if (! cJSON_IsArray(jsonObject))
 		return JSONGenericObject();
