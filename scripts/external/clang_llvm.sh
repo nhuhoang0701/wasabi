@@ -27,6 +27,7 @@ then
 		-DCMAKE_BUILD_PARALLEL_LEVEL=$((`nproc`-2)) \
 		-DCMAKE_BUILD_TYPE=Release \
 		\
+		-DCMAKE_CXX_FLAGS="-stdlib=libc++  -I${LLVM_DIR}/include/c++/v1" \
 		-DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld" \
 		-DPOSITION_INDEPENDENT_CODE=ON \
 		\
