@@ -17,21 +17,23 @@ then
 	rm -rf build
 	mkdir -p build
 	cd build
-	$CMAKE  -G "Ninja" \
-			-DCMAKE_MAKE_PROGRAM=$NINJA \
-			-DCMAKE_BUILD_PARALLEL_LEVEL=$((`nproc`-2)) \
-			-DCMAKE_BUILD_TYPE=Release \
-			-DPOSITION_INDEPENDENT_CODE=ON \
-			\
-			-DCMAKE_INSTALL_PREFIX=$LLVM_DIR \
-			\
-			-DLLVM_ENABLE_PROJECTS="clang;libcxx;libcxxabi;libunwind;lld;lldb" \
-			-DLLVM_TARGETS_TO_BUILD="X86;WebAssembly" \
-			-DLLVM_BUILD_TESTS=OFF \
-			-DLLVM_INCLUDE_TESTS=OFF \
-			\
-			-DCLANG_ENABLE_ARCMT=OFF \
-			../llvm >> $outfile
+	$CMAKE  -G Ninja \
+		-DCMAKE_C_COMPILER=${C_COMPILER} \
+		-DCMAKE_CXX_COMPILER=${CXX_COMPILER} \
+		-DCMAKE_MAKE_PROGRAM=$NINJA \
+		-DCMAKE_BUILD_PARALLEL_LEVEL=$((`nproc`-2)) \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DPOSITION_INDEPENDENT_CODE=ON \
+		\
+		-DCMAKE_INSTALL_PREFIX=$LLVM_DIR \
+		\
+		-DLLVM_ENABLE_PROJECTS="clang;libcxx;libcxxabi;libunwind;lld" \
+		-DLLVM_TARGETS_TO_BUILD="X86;WebAssembly" \
+		-DLLVM_BUILD_TESTS=OFF \
+		-DLLVM_INCLUDE_TESTS=OFF \
+		\
+		-DCLANG_ENABLE_ARCMT=OFF \
+		../llvm >> $outfile
 	$CMAKE --build . --target install >> $outfile
 elif [ ! -f "$LLVM_DIR/$LLVM_VERSION.$WASABI_LLVM.flag" ]
 then
