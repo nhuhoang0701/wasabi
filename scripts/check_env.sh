@@ -7,7 +7,7 @@ Install_Steps()
 {
 	export PYTHON=${PYTHON:-python3}
 	echo -----------------------------------
-	echo ----- check $PYTHON install  ------
+	echo ----- check 'python' install  ------
 	if ! command -v $PYTHON &> /dev/null
 	then
 		echo "Error: $PYTHON not installed. Please install it:"  
@@ -18,7 +18,7 @@ Install_Steps()
 
 	export CMAKE=${CMAKE:-cmake}
 	echo -----------------------------------
-	echo ------ check $CMAKE install  ------
+	echo ------ check 'cmake' install  ------
 	if ! command -v $CMAKE &> /dev/null
 	then
 		echo "Error: $CMAKE not installed. Please install it:"  
@@ -29,7 +29,7 @@ Install_Steps()
 
 	export CTEST=${CTEST:-ctest}
 	echo -----------------------------------
-	echo ------ check $CTEST install  ------
+	echo ------ check 'ctest' install  ------
 	if ! command -v $CTEST &> /dev/null
 	then
 		echo "Error: $CTEST not installed. Please install it:"  
