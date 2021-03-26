@@ -5,7 +5,10 @@ echo "start at $(date +"%T")"
 export NINJA_VERSION=${NINJA_VERSION:-1.10.2}
 export NINJAFile=ninja-$NINJA_VERSION-linux
 echo "NINJA version: $NINJA_VERSION"
-if [ ! -f "$WASABI_NINJA_DIR/$NINJAFile.flag" ]
+if [ "$NINJA" != "$WASABI_NINJA_DIR/ninja" ]
+then
+	echo "    - use the local one '$NINJA'"
+elif [ ! -f "$WASABI_NINJA_DIR/$NINJAFile.flag" ]
 then
 	rm -rf $WASABI_NINJA_DIR
 	mkdir -p $WASABI_NINJA_DIR
