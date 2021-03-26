@@ -55,7 +55,26 @@ int main()
 		CPPUNIT_ASSERT_EQUAL("SELECT OBJ_188, SUM(OBJ_262) FROM MyTable WHERE OBJ_188 = 2014 GROUP BY OBJ_188;", sql);
 		std::cout << "Generated SQL: " << sql << std::endl;
 	}
+	{
+		ina::query_model::DataSource ds;
+		ds.setObjectName("MyTable");
 
+		ina::query_model::Query queryInA;
+		queryInA.setDataSource(ds);
+
+		std::string request = R"({"Dimensions":[{"Attributes":[{"Name":"OBJ_188","Obtainability":"UserInterface"}],"Axis":"Rows","Name":"OBJ_188","NonEmpty":true,"ReadMode":"Booked","ResultStructure":[{"Result":"Members","Visibility":"Visible"}]},{"Attributes":[{"Name":"[Measures].[Measures]","Obtainability":"UserInterface"},{"Name":"[Measures].[Name]","Obtainability":"UserInterface"}],"Axis":"Columns","Members":[{"Aggregation":"SUM","MemberOperand":{"AttributeName":"Measures","Comparison":"=","Value":"OBJ_262"},"Visibility":"Visible"},{"Aggregation":"SUM","MemberOperand":{"AttributeName":"Measures","Comparison":"=","Value":"OBJ_147"},"Visibility":"Visible"}],"Name":"CustomDimension1","NonEmpty":false,"ReadMode":"Master"}],"DynamicFilter":{"Selection":{"Operator":{"Code":"And","SubSelections":[{"Operator":{"Code":"And","SubSelections":[{"Operator":{"Code":"Or","SubSelections":[{"SetOperand":{"Elements":[{"Comparison":"IS_NULL"}],"FieldName":"OBJ_188"}},{"SetOperand":{"Elements":[{"Comparison":"=","IsExcluding":true,"Low":"2014"}],"FieldName":"OBJ_188"}}]}}]}}]}}}})";
+		JSONReader reader;
+		JSONGenericObject root = reader.parse(request);
+		ina::query_model::Definition definition;
+		read(definition, root);
+
+		queryInA.setDefinition(definition);
+
+		const query_generator::query_generator& queryGen = query_generator::query_generator(queryInA);
+		std::string sql = queryGen.getSQL();
+		CPPUNIT_ASSERT_EQUAL("SELECT OBJ_188 FROM MyTable WHERE OBJ_188 IS_NULL AND NOT ( OBJ_188 = 2014 ) GROUP BY OBJ_188;", sql);
+		std::cout << "Generated SQL: " << sql << std::endl;
+	}
 
 	return TEST_HAVEERROR();
 }
