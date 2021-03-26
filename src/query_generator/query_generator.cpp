@@ -57,7 +57,23 @@ namespace query_generator
 					where << " AND ";
 				}
 				
-				where << filter.getFieldName() << " " << ina::query_model::InA_queryFilter::comparisonOperatorToString(filter.getComparisonOperator()) << " " << filter.getLowValue();
+				if (filter.isExcluding())
+				{
+					where << "NOT ( ";
+				}
+				// fieldName is never empty 
+				where << filter.getFieldName() << " " ;
+				// comparisonOperator is never empty 
+				where << ina::query_model::InA_queryFilter::comparisonOperatorToString(filter.getComparisonOperator());
+				// In case of unary operator, now low/high value
+				if (!filter.getLowValue().empty())
+				{
+					where << " " << filter.getLowValue();
+				}
+				if (filter.isExcluding())
+				{
+					where << " )";
+				}
 			}
 		}
 		if (!where.str().empty())

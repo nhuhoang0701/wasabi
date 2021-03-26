@@ -4,7 +4,7 @@
 namespace ina::query_model 
 {
         InA_queryFilterComparison::InA_queryFilterComparison(const std::string& fieldName) 
-            : _fieldName(fieldName)
+            : _fieldName(fieldName),_comparisonOperator(InA_queryFilter::ComparisonOperator::Unknown),_isExcluding(false)
         {
 
         }
@@ -22,6 +22,11 @@ namespace ina::query_model
         void InA_queryFilterComparison::setHighValue(const std::string& highValue)
         {
             _highValue = highValue;
+        }
+
+        void InA_queryFilterComparison::setExcluding(const bool isExcluding)
+        {
+            _isExcluding = isExcluding;
         }
 
         InA_queryFilter::ComparisonOperator InA_queryFilterComparison::getComparisonOperator() const
@@ -42,5 +47,10 @@ namespace ina::query_model
         const std::string& InA_queryFilterComparison::getHighValue() const
         {
             return _highValue;
+        }
+
+        const bool InA_queryFilterComparison::isExcluding() const 
+        {
+            return _isExcluding;
         }
 }
