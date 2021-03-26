@@ -5,8 +5,10 @@ echo ---------- install clang ----------
 echo "start at $(date +"%T")"
 echo "LLVM version: $LLVM_VERSION"
 echo "LLVM WASABI_LLVM: $WASABI_LLVM"
-
-if [ "$WASABI_LLVM" = "compiled" ]
+if [ "$LLVM_DIR" != "$WASABI_EXTERNAL_DIR/llvm" ]
+then
+	echo "    - use the local one '$LLVM_DIR'"
+elif [ "$WASABI_LLVM" = "compiled" ]
 then
 	cd $WASABI_EXTERNAL_DIR
 	mkdir -p llvm4build
@@ -59,14 +61,14 @@ then
 		tar --extract --file=llvm-$LLVM_VERSION.tar.gz
 	elif [ "$WASABI_LLVM" = "local" ]
 	then
-		echo "LLVM will be used from: '$LLVM_DIR'" 
+		echo "    - LLVM will be used from: '$LLVM_DIR'" 
 	else
-		echo "WASABI_LLVM should be one of {compiled|external|git|local} not '$WASABI_LLVM'"
+		echo "ERROR: WASABI_LLVM should be one of {compiled|external|git|local} not '$WASABI_LLVM'"
 		return 1;
 	fi
 	touch $LLVM_DIR/$LLVM_VERSION.$WASABI_LLVM.flag
 else
-	echo "already installed in '$LLVM_DIR'"
+	echo "    - already installed in '$LLVM_DIR'"
 fi
 echo -----------------------------------
 echo "clang version:"
