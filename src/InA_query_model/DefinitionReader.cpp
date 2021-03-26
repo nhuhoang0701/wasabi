@@ -29,19 +29,58 @@ namespace ina::query_model
 		}
 		if(const auto& subSelections = definitionNode.getObject("DynamicFilter").getObject("Selection").getObject("Operator").getArray("SubSelections"))
 		{
-			for(size_t i = 0; i < subSelections.size(); ++i)
+			buildQueryFilter(definition, subSelections);
+		}
+	}
+
+	void buildQueryFilter(Definition & definition, const JSONGenericObject & subSelections) 
+	{
+		bool isSubSelectionArray = false;
+		for(size_t i = 0; i < subSelections.size(); ++i)
+		{
+			auto currentSubSelection = subSelections[i];
+			while (!currentSubSelection.getObject("SetOperand") && !isSubSelectionArray)
 			{
-				const std::string fieldName = subSelections[i].getObject("SetOperand").getString("FieldName");
-				if(const auto& elements = subSelections[i].getObject("SetOperand").getArray("Elements"))
+				if (const auto currentOperator = currentSubSelection.getObject("Operator"))				
 				{
-					for(size_t i = 0; i < elements.size(); ++i)
+					if (currentOperator.getArray("SubSelections"))
+					{
+						if (currentOperator.getArray("SubSelections").size() == 1)
+						{
+							currentSubSelection = currentOperator.getArray("SubSelections")[0];
+						}
+						else
+						{							
+							currentSubSelection = currentOperator.getArray("SubSelections");
+							isSubSelectionArray = true;
+							buildQueryFilter(definition, currentSubSelection);
+						}
+					}
+				}
+			}
+
+			if (!isSubSelectionArray)
+			{
+				const std::string fieldName = currentSubSelection.getObject("SetOperand").getString("FieldName");
+				if(const auto& elements = currentSubSelection.getObject("SetOperand").getArray("Elements"))
+				{
+					for(size_t j = 0; j < elements.size(); ++j)
 					{	
 						query_model::InA_queryFilterComparison queryFilterComparison(fieldName);
-						std::string lowValue = elements[i].getString("Low");
-						queryFilterComparison.setLowValue(lowValue);
-						std::string comparisonValue = elements[i].getString("Comparison");
+						if (elements[j].haveValue("Low"))
+						{
+							std::string lowValue = elements[j].getString("Low");
+							queryFilterComparison.setLowValue(lowValue);
+						}
+						
+						std::string comparisonValue = elements[j].getString("Comparison");
 						query_model::InA_queryFilter::ComparisonOperator comparisonOperator = query_model::InA_queryFilter::getComparisonOperator(comparisonValue);
 						queryFilterComparison.setComparisonOperator(comparisonOperator);
+						if (elements[j].haveValue("IsExcluding"))
+						{
+							bool isExcluding = elements[j].getBool("IsExcluding");
+							queryFilterComparison.setExcluding(isExcluding);
+						}
 						definition.addQueryFilter(queryFilterComparison);
 					}
 				}
