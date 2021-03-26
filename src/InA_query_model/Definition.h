@@ -28,6 +28,7 @@ namespace ina::query_model
 
 	class Definition;
 	void read(Definition& obj, const JSONGenericObject& jsonNode);
+	void buildQueryFilter(Definition& obj, const JSONGenericObject& jsonNode);
 
 	class Definition
 	{

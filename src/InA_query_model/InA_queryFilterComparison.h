@@ -13,15 +13,18 @@ namespace ina::query_model
             void setComparisonOperator(InA_queryFilter::ComparisonOperator comparisonOperator);
             void setLowValue(const std::string & lowValue);
             void setHighValue(const std::string& highValue);
+            void setExcluding(const bool isExcluding);
 
             InA_queryFilter::ComparisonOperator getComparisonOperator() const;
             const std::string& getFieldName() const;
             const std::string& getLowValue() const;
             const std::string& getHighValue() const;
+            const bool isExcluding() const;
         private:
             std::string _fieldName;
             InA_queryFilter::ComparisonOperator _comparisonOperator;
             std::string _lowValue;
             std::string _highValue;
+            bool _isExcluding;
     };
 }
