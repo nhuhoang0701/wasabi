@@ -186,7 +186,13 @@ namespace ina_interpreter
 		}
 		else
 		{
-			std::cerr << "InA_Interpreter => Unsupported InA request" << std::endl;
+                  static std::string static_str_response;
+                  JSON_MAP(writer);
+		  writer.key("text");
+		  writer.value("InA_Interpreter => Unsupported InA request" );
+                  writer.key("errorClass");
+                  writer.value(2);
+		  std::cerr << "InA_Interpreter => Unsupported InA request" << std::endl;
 		}
 		return nullptr;
 	}
