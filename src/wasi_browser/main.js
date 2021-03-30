@@ -32,11 +32,11 @@ worker.onmessage = function(msg) {
 		}
 		else if(response_ID == 3 && response_Action=="GetResponse")
 		{
-			worker.postMessage([ID++, "GetResponse",'{"Analytics":{"DataSource":{"ObjectName":"Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma","PackageName":"local:sqlite:efashion.db","Type":"Wasabi"},"Definition":{"Dimensions":[{"Name":"Yr","Axis":"Rows"},{"Name":"Month_name","Axis":"Rows"},{"Name":"CustomDimension1","Axis":"Cols","Members":[{"Description":"Measure 1","Name":"Sales_revenue", "Aggregation":"SUM"}]}]}}}']);
+			worker.postMessage([ID++, "GetResponse",'{"Analytics":{"DataSource":{"ObjectName":"Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma","PackageName":"local:sqlite:efashion.db","Type":"Wasabi"},"Definition":{"Dimensions":[{"Name":"Yr","Axis":"Rows"},{"Name":"Month_name","Axis":"Rows"},{"Name":"CustomDimension1","Axis":"Columns","Members":[{"Description":"Measure 1","Name":"Sales_revenue", "Aggregation":"SUM"}]}]}}}']);
 		}
 		else if(response_ID == 4 && response_Action=="GetResponse")
 		{
-			worker.postMessage([ID++, "GetResponse",'{"Analytics":{"DataSource":{"ObjectName":"Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma","PackageName":"local:sqlite:efashion.db","Type":"Wasabi"},"Definition":{"Dimensions":[{"Name":"Yr","Axis":"Rows"},{"Name":"CustomDimension1","Axis":"Cols","Members":[{"Description":"Measure 1","Name":"Sales_revenue", "Aggregation":"SUM"},{"Description":"Measure 1","Name":"Quantity_sold", "Aggregation":"SUM"}]}]}}}']);
+			worker.postMessage([ID++, "GetResponse",'{"Analytics":{"DataSource":{"ObjectName":"Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma","PackageName":"local:sqlite:efashion.db","Type":"Wasabi"},"Definition":{"Dimensions":[{"Name":"Yr","Axis":"Rows"},{"Name":"CustomDimension1","Axis":"Columns","Members":[{"Description":"Measure 1","Name":"Sales_revenue", "Aggregation":"SUM"},{"Description":"Measure 1","Name":"Quantity_sold", "Aggregation":"SUM"}]}]}}}']);
 		}
 	}
 };
