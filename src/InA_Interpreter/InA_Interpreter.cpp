@@ -78,115 +78,120 @@ namespace ina_interpreter
 
 	const char* processRequest(const ina::query_model::Query& query, JSONWriter& writer)
 	{
-		if(query.getType() == ina::query_model::Query::qMetadata)
+		switch(query.getType())
 		{
-			if(query.haveExpandCube())
+			case ina::query_model::Query::qMetadata :
 			{
-				static std::string static_str_response;
-				static_str_response.clear();
-				if(query.getDataSource().getType() == ina::query_model::DataSource::Type::TypeCatalog )
+				if(query.haveExpandCube())
 				{
-					if(static_str_response.empty() )
+					static std::string static_str_response;
+					static_str_response.clear();
+					if(query.getDataSource().getType() == ina::query_model::DataSource::Type::TypeCatalog )
 					{
-						std::ifstream ifs("./resources/response_getResponse_Metadat_expand_cube_catalog.json");
-						if(ifs.is_open() )
-							static_str_response = std::string((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
-						else
-							throw std::runtime_error("Could not open file ./resources/response_getResponse_Metadat_expand_cube_catalog.json");
+						if(static_str_response.empty() )
+						{
+							std::ifstream ifs("./resources/response_getResponse_Metadat_expand_cube_catalog.json");
+							if(ifs.is_open() )
+								static_str_response = std::string((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+							else
+								throw std::runtime_error("Could not open file ./resources/response_getResponse_Metadat_expand_cube_catalog.json");
+						}
+						return static_str_response.c_str();
 					}
-					return static_str_response.c_str();
+					else
+					{
+						const std::string& cnxString = query.getDataSource().getPackageName();
+						const std::string& tableName = query.getDataSource().getObjectName();
+
+						std::shared_ptr<metadata::Catalog> catalog = std::shared_ptr<metadata::Catalog>(new metadata::Catalog(cnxString));
+						
+						std::ostringstream results;
+
+						const auto& colNames = catalog->getTable(tableName).getColumnNames();
+
+						results << "Object name" << std::endl;
+						for(auto& colName : colNames)
+							results << "  " << std::setw(10) << catalog->getTable(tableName).getColumn(colName).getName() << "  |  ";
+						results << std::endl;
+
+						results << "SQL Name" << std::endl;
+						for(auto& colName : colNames)
+							results << "  " << std::setw(10) << catalog->getTable(tableName).getColumn(colName).getSQLName() << "  |  ";
+						results << std::endl;
+
+						results << "Datatype" << std::endl;
+						for(auto& colName : colNames)
+							results << "  " << std::setw(10) << catalog->getTable(tableName).getColumn(colName).getDataType() << "  |  ";
+						results << std::endl;
+
+						results << "Agg" << std::endl;
+						for(auto& colName : colNames)
+							results << "  " << std::setw(10) << catalog->getTable(tableName).getColumn(colName).getAggregation() << "  |  ";
+						results << std::endl;
+
+						static_str_response = results.str();
+						std::cout << static_str_response << std::endl;
+						return static_str_response.c_str();
+					}
 				}
-				else
-				{
-					const std::string& cnxString = query.getDataSource().getPackageName();
-					const std::string& tableName = query.getDataSource().getObjectName();
-
-					std::shared_ptr<metadata::Catalog> catalog = std::shared_ptr<metadata::Catalog>(new metadata::Catalog(cnxString));
-					
-					std::ostringstream results;
-
-					const auto& colNames = catalog->getTable(tableName).getColumnNames();
-
-					results << "Object name" << std::endl;
-					for(auto& colName : colNames)
-						results << "  " << std::setw(10) << catalog->getTable(tableName).getColumn(colName).getName() << "  |  ";
-					results << std::endl;
-
-					results << "SQL Name" << std::endl;
-					for(auto& colName : colNames)
-						results << "  " << std::setw(10) << catalog->getTable(tableName).getColumn(colName).getSQLName() << "  |  ";
-					results << std::endl;
-
-					results << "Datatype" << std::endl;
-					for(auto& colName : colNames)
-						results << "  " << std::setw(10) << catalog->getTable(tableName).getColumn(colName).getDataType() << "  |  ";
-					results << std::endl;
-
-					results << "Agg" << std::endl;
-					for(auto& colName : colNames)
-						results << "  " << std::setw(10) << catalog->getTable(tableName).getColumn(colName).getAggregation() << "  |  ";
-					results << std::endl;
-
-					static_str_response = results.str();
-					std::cout << static_str_response << std::endl;
-					return static_str_response.c_str();
-				}
+				break;
 			}
-		}
-		if(query.getType() == ina::query_model::Query::qAnalytics)
-		{
-			const query_generator::query_generator& queryGen = query_generator::query_generator(query);
-			
-			const std::string sql = queryGen.getSQL();
-			std::cout << "InA_Interpreter => Generated SQL: " << sql << std::endl;
-			writer.value("SQL = " + sql);
-
-			const std::string& cnxString = query.getDataSource().getPackageName();
-			if(!cnxString.empty() )
+			case (ina::query_model::Query::qAnalytics):
 			{
-				std::shared_ptr<calculator::DataStorage> data(new calculator::DataStorage());
+				const query_generator::query_generator& queryGen = query_generator::query_generator(query);
+				
+				const std::string sql = queryGen.getSQL();
+				std::cout << "InA_Interpreter => Generated SQL: " << sql << std::endl;
+				writer.value("SQL = " + sql);
 
-				queryGen.prepareStorage(*data);
-				std::function<void(const dbproxy::Row&)> lambda = [&data](const dbproxy::Row& row)
+				const std::string& cnxString = query.getDataSource().getPackageName();
+				if(!cnxString.empty() )
 				{
-					data->insertRow(row);
-				};
-				dbproxy::DBProxy::getDBProxy(cnxString)->executeSQL(sql, &lambda);
+					std::shared_ptr<calculator::DataStorage> data(new calculator::DataStorage());
 
-				std::ostringstream results;
-				for(size_t idxCol = 0; idxCol < data->getColNbrs(); idxCol++)
-				{
-					results << "  " << std::setfill('-') << std::setw(10) << "" << "  |  ";
-				}
-				results << std::setfill(' ') << std::endl;
+					queryGen.prepareStorage(*data);
+					std::function<void(const dbproxy::Row&)> lambda = [&data](const dbproxy::Row& row)
+					{
+						data->insertRow(row);
+					};
+					dbproxy::DBProxy::getDBProxy(cnxString)->executeSQL(sql, &lambda);
 
-				for(size_t rowNb = 0; rowNb < data->getRowNbrs(); rowNb++)
-				{
+					std::ostringstream results;
 					for(size_t idxCol = 0; idxCol < data->getColNbrs(); idxCol++)
 					{
-						const auto col = (*data)[idxCol];
-						const auto& colData = std::get<2>(col);
-						const auto& colTyped = (*colData)[rowNb];
-						switch (std::get<0>(col))
-						{
-						case calculator::eDataType::String:
-							results << "  " << std::setw(10) << std::get<std::string>(colTyped) << "  |  ";
-							break;
-						case calculator::eDataType::Number:
-							results << "  " << std::setw(10) << std::get<double>(colTyped) << "  |  ";
-							break;
-						}
+						results << "  " << std::setfill('-') << std::setw(10) << "" << "  |  ";
 					}
-					results << std::endl;
-				}
+					results << std::setfill(' ') << std::endl;
 
-				std::cout << "InA_Interpreter => Results of SQL execution : " << std::endl  << results.str() << std::endl;
-				writer.value("Results = " + results.str());
-			}			
-		}
-		else
-		{
-			std::cerr << "InA_Interpreter => Unsupported InA request" << std::endl;
+					for(size_t rowNb = 0; rowNb < data->getRowNbrs(); rowNb++)
+					{
+						for(size_t idxCol = 0; idxCol < data->getColNbrs(); idxCol++)
+						{
+							const auto col = (*data)[idxCol];
+							const auto& colData = std::get<2>(col);
+							const auto& colTyped = (*colData)[rowNb];
+							switch (std::get<0>(col))
+							{
+							case calculator::eDataType::String:
+								results << "  " << std::setw(10) << std::get<std::string>(colTyped) << "  |  ";
+								break;
+							case calculator::eDataType::Number:
+								results << "  " << std::setw(10) << std::get<double>(colTyped) << "  |  ";
+								break;
+							}
+						}
+						results << std::endl;
+					}
+
+					std::cout << "InA_Interpreter => Results of SQL execution : " << std::endl  << results.str() << std::endl;
+					writer.value("Results = " + results.str());
+				}
+				break;
+			}
+			default:
+			{
+				std::cerr << "InA_Interpreter => Unsupported InA request" << std::endl;
+			}
 		}
 		return nullptr;
 	}
