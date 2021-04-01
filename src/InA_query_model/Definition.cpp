@@ -9,7 +9,7 @@ namespace ina::query_model
         m_objs.push_back(dimension);
     }
 
-    void Definition::addQueryFilter(const InA_queryFilterComparison& queryFilter)
+    void Definition::addQueryFilter(const QueryFilterComparison& queryFilter)
     {
         m_filters.push_back(queryFilter);
     }
@@ -19,7 +19,7 @@ namespace ina::query_model
 		return m_objs;
 	}
 	
-	const std::vector<InA_queryFilterComparison>& Definition::getQueryFilters() const
+	const std::vector<QueryFilterComparison>& Definition::getQueryFilters() const
 	{
 		return m_filters;
 	}
@@ -51,7 +51,7 @@ namespace ina::query_model
                     }
                     if (matchFieldName)
                     {
-                        if (filter.getComparisonOperator() == InA_queryFilter::ComparisonOperator::EqualTo 
+                        if (filter.getComparisonOperator() == QueryFilter::ComparisonOperator::EqualTo 
                             && filter.getLowValue() == member.getName())
                         {
                             visibleMembers.push_back(member);
