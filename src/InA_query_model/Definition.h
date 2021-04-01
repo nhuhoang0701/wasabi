@@ -3,6 +3,7 @@
 #include <metadata_enrichment/Tables.h>
 
 #include "DataSource.h"
+#include "InA_query_model/QuerySort.h"
 #include "Member.h"
 #include "Dimension.h"
 #include "QueryFilter.h"
@@ -43,6 +44,9 @@ namespace ina::query_model
 
 		const std::vector<QueryFilterComparison>& getQueryFilters() const;
 		void                                          addQueryFilter(const QueryFilterComparison & queryFilterComparison);
+
+		const std::vector<QuerySort>& getQuerySorts() const;
+		void addQuerySort(const QuerySort& querySort);
 
 		void prepareGrid(grid::Grid& grid);
 		
@@ -87,6 +91,7 @@ namespace ina::query_model
 	private:
 		std::vector<Dimension> m_objs;
 		std::vector<QueryFilterComparison> m_filters;
+		std::vector<QuerySort> m_sorts;
 		std::string m_table;
 		std::string m_cnxString;
 		

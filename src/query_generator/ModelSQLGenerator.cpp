@@ -65,4 +65,20 @@ namespace query_generator
 
         return filterSQL;
     }
+
+    std::string generateSQL(ina::query_model::QuerySort querySort)
+    {
+        std::string sortSQL = querySort.getObjectName();
+        
+        if (querySort.getDirection() == ina::query_model::QuerySort::Direction::Ascending) 
+        {
+            sortSQL += " ASC";
+        }
+        else if (querySort.getDirection() == ina::query_model::QuerySort::Direction::Descending) 
+        {
+            sortSQL += " DESC";
+        }
+
+        return sortSQL;
+    }
 }
