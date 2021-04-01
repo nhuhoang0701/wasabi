@@ -8,6 +8,8 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "ModelSQLGenerator.h"
+
 namespace query_generator
 {
     std::string query_generator::getSQL() const
@@ -53,27 +55,11 @@ namespace query_generator
 				}
 				else 
 				{
-					//TODO: Change when we handle logical operators
-					where << " AND ";
+					//TODO: Change when we handle the whole filter tree
+					where << " OR ";
 				}
 				
-				if (filter.isExcluding())
-				{
-					where << "NOT ( ";
-				}
-				// fieldName is never empty 
-				where << filter.getFieldName() << " " ;
-				// comparisonOperator is never empty 
-				where << ina::query_model::InA_queryFilter::comparisonOperatorToString(filter.getComparisonOperator());
-				// In case of unary operator, now low/high value
-				if (!filter.getLowValue().empty())
-				{
-					where << " " << filter.getLowValue();
-				}
-				if (filter.isExcluding())
-				{
-					where << " )";
-				}
+				where << generateSQL(filter);
 			}
 		}
 		if (!where.str().empty())

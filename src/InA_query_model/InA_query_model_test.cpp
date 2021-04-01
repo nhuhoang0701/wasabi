@@ -60,11 +60,11 @@ int main()
 		CPPUNIT_ASSERT_EQUAL(2, definition.getQueryFilters().size());
 		
 		CPPUNIT_ASSERT_EQUAL("[Measures].[Measures]", definition.getQueryFilters().at(0).getFieldName());
-		CPPUNIT_ASSERT_EQUAL(ina::query_model::InA_queryFilter::ComparisonOperator::EqualTo, definition.getQueryFilters().at(0).getComparisonOperator());
+		CPPUNIT_ASSERT_EQUAL(ina::query_model::QueryFilter::ComparisonOperator::EqualTo, definition.getQueryFilters().at(0).getComparisonOperator());
 		CPPUNIT_ASSERT_EQUAL("OBJ_147", definition.getQueryFilters().at(0).getLowValue());
 		
 		CPPUNIT_ASSERT_EQUAL("[Measures].[Measures]", definition.getQueryFilters().at(1).getFieldName());
-		CPPUNIT_ASSERT_EQUAL(ina::query_model::InA_queryFilter::ComparisonOperator::NotEqualTo, definition.getQueryFilters().at(1).getComparisonOperator());
+		CPPUNIT_ASSERT_EQUAL(ina::query_model::QueryFilter::ComparisonOperator::NotEqualTo, definition.getQueryFilters().at(1).getComparisonOperator());
 		CPPUNIT_ASSERT_EQUAL("OBJ_191", definition.getQueryFilters().at(1).getLowValue());
 
 		//TODO: check with attributes KEY
