@@ -6,16 +6,19 @@
 #include <string>
 #include <vector>
 
+
+
 class JSONGenericObject; // From <json/jsonReader.h>
 class JSONWriter;        // From <json/jsonWriter.h>
 
 namespace ina::query_model
 {
-	const std::string DIMENSION_OF_MEASURES_NAME = "CustomDimension1";
+	#define DIMENSION_OF_MEASURES_NAME "CustomDimension1";
 
 	class Definition;
 
 	class Dimension;
+
 	void read(Dimension& obj, const JSONGenericObject& jsonNode);
 	void write(const Dimension& obj, JSONWriter& jsonNode);
 
