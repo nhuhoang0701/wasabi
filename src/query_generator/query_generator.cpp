@@ -18,6 +18,7 @@ namespace query_generator
         std::ostringstream sql;
 		std::ostringstream where;
         std::ostringstream group_by;
+		std::ostringstream order_by;
         
         sql << "SELECT ";
 
@@ -36,7 +37,11 @@ namespace query_generator
 				const std::string& dimensionName = dimension.getName();
 				sql << delim;
 				sql << dimensionName;
-				group_by << delim << dimensionName;
+				if (!group_by.str().empty())
+				{
+					group_by << delim;
+				}
+				group_by << dimensionName;
 			}
 
             delim = ", ";
@@ -69,6 +74,23 @@ namespace query_generator
         if(!group_by.str().empty())
         {
             sql << " GROUP BY " << group_by.str();
+        }
+
+		if (!m_query.getDefinition().getQuerySorts().empty())
+		{
+			for(const auto & querySort : m_query.getDefinition().getQuerySorts())
+			{
+				if (!order_by.str().empty())
+				{
+					order_by << ", ";
+				}
+				order_by << generateSQL(querySort);
+			}
+		}
+
+		if(!order_by.str().empty())
+        {
+            sql << " ORDER BY " << order_by.str();
         }
 
         sql << ";";

@@ -94,6 +94,23 @@ int main()
 		std::cout << "Generated SQL: " << sql << std::endl;
 		CPPUNIT_ASSERT_EQUAL("SELECT Yr, Month_name, SUM(Sales_revenue) FROM MyTable GROUP BY Yr, Month_name;", sql);		
 	}	
+	{
+		ina::query_model::DataSource ds;
+		ds.setObjectName("MyTable");
 
+		ina::query_model::Query queryInA;
+		queryInA.setDataSource(ds);
+
+		std::string request = R"({"Dimensions":[{"Attributes":[{"Name":"[Measures].[Measures]","Obtainability":"UserInterface"},{"Name":"[Measures].[Name]","Obtainability":"UserInterface"}],"Axis":"Columns","Members":[{"Aggregation":"SUM","MemberOperand":{"AttributeName":"Measures","Comparison":"=","Value":"OBJ_147"},"Visibility":"Visible"},{"Aggregation":"SUM","MemberOperand":{"AttributeName":"Measures","Comparison":"=","Value":"OBJ_191"},"Visibility":"Visible"}],"Name":"CustomDimension1","NonEmpty":false,"ReadMode":"Master"},{"Attributes":[{"Name":"OBJ_166","Obtainability":"UserInterface"}],"Axis":"Columns","Name":"OBJ_166","NonEmpty":false,"ReadMode":"Master","ResultStructure":[{"Result":"Members","Visibility":"Visible"}]},{"Attributes":[{"Name":"OBJ_185","Obtainability":"UserInterface"}],"Axis":"Columns","Name":"OBJ_185","NonEmpty":false,"ReadMode":"Master","ResultStructure":[{"Result":"Members","Visibility":"Visible"}]},{"Attributes":[{"Name":"OBJ_186","Obtainability":"UserInterface"}],"Axis":"Columns","Name":"OBJ_186","NonEmpty":false,"ReadMode":"Master","ResultStructure":[{"Result":"Members","Visibility":"Visible"}]}],"DynamicFilter":{"Selection":{"Operator":{"Code":"And","SubSelections":[{"SetOperand":{"Elements":[{"Comparison":"=","Low":"OBJ_147"}],"FieldName":"[Measures].[Measures]"}}]}}},"Sort":[{"Direction":"Asc","FieldName":"OBJ_166","PreserveGrouping":false,"SortType":"Field"},{"Direction":"Desc","FieldName":"OBJ_185","PreserveGrouping":false,"SortType":"Field"},{"Direction":"Asc","FieldName":"OBJ_186","PreserveGrouping":false,"SortType":"Field"}]})";
+		JSONReader reader;
+		JSONGenericObject root = reader.parse(request);
+		ina::query_model::Definition definition;
+		read(definition, root);
+		queryInA.setDefinition(definition);
+		const query_generator::query_generator& queryGen = query_generator::query_generator(queryInA);
+		std::string sql = queryGen.getSQL();
+		std::cout << "Generated SQL: " << sql << std::endl;
+		CPPUNIT_ASSERT_EQUAL("SELECT SUM(OBJ_147), OBJ_166, OBJ_185, OBJ_186 FROM MyTable GROUP BY OBJ_166, OBJ_185, OBJ_186 ORDER BY OBJ_166 ASC, OBJ_185 DESC, OBJ_186 ASC;", sql);		
+	}
 	return TEST_HAVEERROR();
 }

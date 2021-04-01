@@ -1,4 +1,5 @@
 #include "Definition.h"
+#include "QuerySort.h"
 
 #include <json/jsonReader.h>
 #include <exceptions/InA_Exception.h>
@@ -30,6 +31,15 @@ namespace ina::query_model
 		if(const auto& subSelections = definitionNode.getObject("DynamicFilter").getObject("Selection").getObject("Operator").getArray("SubSelections"))
 		{
 			buildQueryFilter(definition, subSelections);
+		}
+		if (const auto& sortArray = definitionNode.getArray("Sort"))
+		{
+			for(int i=0; i < sortArray.size(); i++)
+			{
+				query_model::QuerySort querySort;
+				read(querySort, sortArray[i]);
+				definition.addQuerySort(querySort);
+			}
 		}
 	}
 

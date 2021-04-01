@@ -1,4 +1,5 @@
 #include "InA_query_model/Dimension.h"
+#include "InA_query_model/QuerySort.h"
 #include "Query.h"
 #include "Definition.h"
 #include "DataSource.h"
@@ -99,6 +100,17 @@ int main()
 		CPPUNIT_ASSERT_EQUAL(2, dimensionMeasure.getMembers().size());
 		CPPUNIT_ASSERT_EQUAL(1, definition.getVisibleMembers(dimensionMeasure).size());
 	}
+	{
+		std::string request = R"({"Sort":[{"Dimension":"Week ?","Direction":"None","SortType":"MemberKey"}]})";
+		JSONReader reader;
+		JSONGenericObject root = reader.parse(request);
+		ina::query_model::Definition definition;
+		read(definition, root);
+		CPPUNIT_ASSERT_EQUAL(1, definition.getQuerySorts().size());
+		CPPUNIT_ASSERT_EQUAL("Week ?", definition.getQuerySorts().at(0).getObjectName());
+		CPPUNIT_ASSERT_EQUAL(ina::query_model::QuerySort::SortType::MemberKey, definition.getQuerySorts().at(0).getSortType());
+		CPPUNIT_ASSERT_EQUAL(ina::query_model::QuerySort::Direction::None, definition.getQuerySorts().at(0).getDirection());
+	}	
 
 	return TEST_HAVEERROR();
 }
