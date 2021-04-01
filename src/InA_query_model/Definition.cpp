@@ -14,6 +14,12 @@ namespace ina::query_model
         m_filters.push_back(queryFilter);
     }
 
+    
+    void Definition::addQuerySort(const QuerySort& querySort)
+    {
+        m_sorts.push_back(querySort);
+    }
+
 	const std::vector<Dimension>& Definition::getDimensions() const
 	{
 		return m_objs;
@@ -22,6 +28,11 @@ namespace ina::query_model
 	const std::vector<QueryFilterComparison>& Definition::getQueryFilters() const
 	{
 		return m_filters;
+	}
+
+	const std::vector<QuerySort>& Definition::getQuerySorts() const
+	{
+		return m_sorts;
 	}
 
     const std::vector<Member> Definition::getVisibleMembers(const Dimension& dimension) const 
