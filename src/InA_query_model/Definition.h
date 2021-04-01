@@ -5,8 +5,8 @@
 #include "DataSource.h"
 #include "Member.h"
 #include "Dimension.h"
-#include "InA_queryFilter.h"
-#include "InA_queryFilterComparison.h"
+#include "QueryFilter.h"
+#include "QueryFilterComparison.h"
 
 #include <string>
 #include <vector>
@@ -41,8 +41,8 @@ namespace ina::query_model
 
 		const std::vector<Member>    getVisibleMembers(const Dimension& dimension) const;
 
-		const std::vector<InA_queryFilterComparison>& getQueryFilters() const;
-		void                                          addQueryFilter(const InA_queryFilterComparison & queryFilterComparison);
+		const std::vector<QueryFilterComparison>& getQueryFilters() const;
+		void                                          addQueryFilter(const QueryFilterComparison & queryFilterComparison);
 
 		void prepareGrid(grid::Grid& grid);
 		
@@ -86,7 +86,7 @@ namespace ina::query_model
 
 	private:
 		std::vector<Dimension> m_objs;
-		std::vector<InA_queryFilterComparison> m_filters;
+		std::vector<QueryFilterComparison> m_filters;
 		std::string m_table;
 		std::string m_cnxString;
 		
