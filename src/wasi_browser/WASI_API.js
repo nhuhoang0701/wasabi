@@ -152,10 +152,10 @@ let WASI_API = {
 	},
 	
 	log : log = function(msg) {
-		console.log("WASI-"+arguments.callee.caller.name + ":" + msg);
+		// console.log("WASI-"+arguments.callee.caller.name + ":" + msg);
 	},
 	error : error = function(msg) {
-		console.error("WASI: " + msg);
+		// console.error("WASI: " + msg);
 	},
 	
 	//*************************************************************
