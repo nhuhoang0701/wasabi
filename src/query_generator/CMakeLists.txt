@@ -10,7 +10,7 @@ project(query_generator VERSION 1.0)
 
 ################################################
 # query_generator
-add_library(query_generator query_generator.cpp)
+add_library(query_generator query_generator.cpp ModelSQLGenerator.cpp)
 set_target_properties(query_generator PROPERTIES PUBLIC_HEADER query_generator.h)
 
 target_include_directories(query_generator PUBLIC ${WASABI_INCLUDES})

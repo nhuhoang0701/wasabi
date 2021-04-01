@@ -1,28 +1,28 @@
 #pragma once
-#include "InA_queryFilter.h"
+#include "QueryFilter.h"
 #include <string>
 
 namespace ina::query_model 
 {
-	class InA_queryFilterComparison : public InA_queryFilter
+	class QueryFilterComparison : public QueryFilter
     {
         public:
 
-            InA_queryFilterComparison(const std::string& fieldName);
+            QueryFilterComparison(const std::string& fieldName);
 
-            void setComparisonOperator(InA_queryFilter::ComparisonOperator comparisonOperator);
+            void setComparisonOperator(QueryFilter::ComparisonOperator comparisonOperator);
             void setLowValue(const std::string & lowValue);
             void setHighValue(const std::string& highValue);
             void setExcluding(const bool isExcluding);
 
-            InA_queryFilter::ComparisonOperator getComparisonOperator() const;
+            QueryFilter::ComparisonOperator getComparisonOperator() const;
             const std::string& getFieldName() const;
             const std::string& getLowValue() const;
             const std::string& getHighValue() const;
             const bool isExcluding() const;
         private:
             std::string _fieldName;
-            InA_queryFilter::ComparisonOperator _comparisonOperator;
+            QueryFilter::ComparisonOperator _comparisonOperator;
             std::string _lowValue;
             std::string _highValue;
             bool _isExcluding;

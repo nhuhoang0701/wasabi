@@ -66,7 +66,7 @@ namespace ina::query_model
 				{
 					for(size_t j = 0; j < elements.size(); ++j)
 					{	
-						query_model::InA_queryFilterComparison queryFilterComparison(fieldName);
+						query_model::QueryFilterComparison queryFilterComparison(fieldName);
 						if (elements[j].haveValue("Low"))
 						{
 							std::string lowValue = elements[j].getString("Low");
@@ -74,7 +74,7 @@ namespace ina::query_model
 						}
 						
 						std::string comparisonValue = elements[j].getString("Comparison");
-						query_model::InA_queryFilter::ComparisonOperator comparisonOperator = query_model::InA_queryFilter::getComparisonOperator(comparisonValue);
+						query_model::QueryFilter::ComparisonOperator comparisonOperator = query_model::QueryFilter::getComparisonOperator(comparisonValue);
 						queryFilterComparison.setComparisonOperator(comparisonOperator);
 						if (elements[j].haveValue("IsExcluding"))
 						{

@@ -22,8 +22,8 @@ int main()
 		definition.addDimension(ina::query_model::Dimension("dim_B", ina::query_model::Dimension::eAxe::Rows));
 		
 		ina::query_model::Dimension dimensionMeasure("CustomDimension1", ina::query_model::Dimension::eAxe::Rows);
-			dimensionMeasure.addMember(ina::query_model::Member("meas_1", "SUM"));
-			dimensionMeasure.addMember(ina::query_model::Member("meas_2", "SUM"));
+		dimensionMeasure.addMember(ina::query_model::Member("meas_1", "SUM"));
+		dimensionMeasure.addMember(ina::query_model::Member("meas_2", "SUM"));
 		definition.addDimension(dimensionMeasure);
 
 		queryInA.setDefinition(definition);
@@ -32,7 +32,6 @@ int main()
 		std::string sql = queryGen.getSQL();
 
 		std::cout << "Generated SQL: " << sql << std::endl;
-
 		CPPUNIT_ASSERT_EQUAL("SELECT dim_A, dim_B, SUM(meas_1), SUM(meas_2) FROM MyTable GROUP BY dim_A, dim_B;", sql);
 	}
 	{
@@ -52,8 +51,8 @@ int main()
 
 		const query_generator::query_generator& queryGen = query_generator::query_generator(queryInA);
 		std::string sql = queryGen.getSQL();
-		CPPUNIT_ASSERT_EQUAL("SELECT OBJ_188, SUM(OBJ_262) FROM MyTable WHERE OBJ_188 = 2014 GROUP BY OBJ_188;", sql);
 		std::cout << "Generated SQL: " << sql << std::endl;
+		CPPUNIT_ASSERT_EQUAL("SELECT OBJ_188, SUM(OBJ_262) FROM MyTable WHERE OBJ_188 = 2014 GROUP BY OBJ_188;", sql);
 	}
 	{
 		ina::query_model::DataSource ds;
@@ -72,9 +71,29 @@ int main()
 
 		const query_generator::query_generator& queryGen = query_generator::query_generator(queryInA);
 		std::string sql = queryGen.getSQL();
-		CPPUNIT_ASSERT_EQUAL("SELECT OBJ_188 FROM MyTable WHERE OBJ_188 IS_NULL AND NOT ( OBJ_188 = 2014 ) GROUP BY OBJ_188;", sql);
 		std::cout << "Generated SQL: " << sql << std::endl;
+		CPPUNIT_ASSERT_EQUAL("SELECT OBJ_188 FROM MyTable WHERE OBJ_188 IS NULL OR NOT ( OBJ_188 = 2014 ) GROUP BY OBJ_188;", sql);
 	}
+	{
+		ina::query_model::DataSource ds;
+		ds.setObjectName("MyTable");
+
+		ina::query_model::Query queryInA;
+		queryInA.setDataSource(ds);
+
+		std::string request = R"({"Dimensions":[{"Name":"Yr","Axis":"Rows"},{"Name":"Month_name","Axis":"Rows"},{"Name":"CustomDimension1","Axis":"Columns","Members":[{"Description":"Measure 1","Name":"Sales_revenue", "Aggregation":"SUM"}]}]})";
+		JSONReader reader;
+		JSONGenericObject root = reader.parse(request);
+		ina::query_model::Definition definition;
+		read(definition, root);
+		std::cout << "Dimension size " << definition.getDimensions().size() << std::endl;
+		CPPUNIT_ASSERT_EQUAL(definition.getDimensions().size(),3);
+		queryInA.setDefinition(definition);
+		const query_generator::query_generator& queryGen = query_generator::query_generator(queryInA);
+		std::string sql = queryGen.getSQL();
+		std::cout << "Generated SQL: " << sql << std::endl;
+		CPPUNIT_ASSERT_EQUAL("SELECT Yr, Month_name, SUM(Sales_revenue) FROM MyTable GROUP BY Yr, Month_name;", sql);		
+	}	
 
 	return TEST_HAVEERROR();
 }

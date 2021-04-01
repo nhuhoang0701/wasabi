@@ -1,4 +1,4 @@
-#include "InA_queryFilter.h"
+#include "QueryFilter.h"
 
 namespace ina::query_model
 {
