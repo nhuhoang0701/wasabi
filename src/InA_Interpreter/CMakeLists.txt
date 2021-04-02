@@ -18,8 +18,10 @@ target_link_libraries(InA_Interpreter_lib PUBLIC cjson json exceptions InA_query
 target_link_directories(InA_Interpreter_lib PUBLIC ${cJSON_LIBRARY_DIRS} ${WASABI_LIBS})
 
 
-# InA_Interpreter as executable to be sure of C/C++ init staff is well done
+# InA_Interpreter as reactor
 add_executable(InA_Interpreter InA_Interpreter_main.cpp)
+target_link_options(InA_Interpreter PUBLIC "-mexec-model=reactor")
+
 # External entries points
 if ("${WASABI_PLATFORM_TARGET}" STREQUAL "wasm")
 target_link_options( InA_Interpreter PRIVATE LINKER:--export=json_getServerInfo,--export=json_getResponse_json,--export=malloc,--export=free)

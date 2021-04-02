@@ -26,7 +26,7 @@ namespace dbproxy
 	{
 		std::cout << "dbname:" << dbname << std::endl;
 		int res = 0;
-		bool useDBFile = dbname=="efashion";
+		bool useDBFile = false;//dbname=="efashion";
 		if(useDBFile)
 		{
 			std::string file("./resources/sqlite/"+dbname+"/"+dbname+".db");
