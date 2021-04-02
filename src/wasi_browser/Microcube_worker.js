@@ -56,11 +56,17 @@ onmessage = function(e) {
 						 "/resources/sqlite/efashion/efashion.db"];
 			WASI_API.wasabi_initFS(param, filesystem).then(() => 
 			{
-				if(getModuleInstance()._start)
+				if(getModuleInstance()._initialize)
+				{
+					console.log('Worker: execute _initialize');
+					getModuleInstance()._initialize();
+				}
+				else if(getModuleInstance()._start)
 				{
 					console.log('Worker: execute _start');
 					getModuleInstance()._start();
-				} else
+				}
+				else
 				{
 					console.log('Worker: no _start entry point');
 				}
