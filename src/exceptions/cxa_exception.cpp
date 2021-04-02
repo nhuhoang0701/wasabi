@@ -20,18 +20,20 @@ void *__cxa_allocate_exception(size_t thrown_size) throw()
 
 void __cxa_throw(void *thrown_object, std::type_info *tinfo, void (*dest)(void *))
 {
-	std::cerr << "WASABI:Error: Throwing exception. Exception's type info name: ";
+	std::string typeinfo =  "unknown";
+	std::string msg =  "";
 	if (tinfo && tinfo->name())
 	{
-		std::cerr << " '" << tinfo->name() << "'";
-	}
-	else
-	{
-		std::cerr << " 'unknown'";
-	}
+		typeinfo = tinfo->name();
 
-	std::exception* x = reinterpret_cast<std::exception*>(thrown_object); // this may crash
-	std::cerr << std::flush << " message: '" << x->what() << "'" << std::endl;
+		if (thrown_object)
+		{
+			std::exception* x = reinterpret_cast<std::exception*>(thrown_object); // this may crash
+			msg = x->what();
+		}
+	}
+	msg = "WASABI:Error: Throwing exception. Exception's type info name: '" + typeinfo + "' message:'" + msg + "'";
+	std::cerr << msg << "'";
 
 	std::terminate();
 }
