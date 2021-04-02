@@ -15,7 +15,7 @@ using namespace dbproxy;
 
 void testTables()
 {
-  const string aCnxStr("local:sqlite:onetable_datatype.db");
+  const string aCnxStr("local:sqlite:onetable_datatype");
   const string aTableNameStr("onetable_datatype");
   const Catalog aCatalog(aCnxStr);
   {

@@ -10,7 +10,7 @@ int main()
 	TEST_INIT();
 
 	// The string parameter is just as example
-	static const std::string cnxStr("local:sqlite:onetable_datatype.db");
+	static const std::string cnxStr("local:sqlite:onetable_datatype");
 	static const std::string tableNameStr("onetable_datatype");
 	
 	using namespace dbproxy;
