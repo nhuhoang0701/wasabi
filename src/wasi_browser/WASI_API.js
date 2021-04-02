@@ -209,7 +209,7 @@ let WASI_API = {
 
 			if(!fs_Path2Data.get(vpath))
 			{
-				error("Please register your file '" + entry.vpath + "' by calling WASI_API::wasabi_initFS()");
+				error("Please register your file '" + vpath + "' by calling WASI_API::wasabi_initFS()");
 				return WASI_EBADF;
 			}
 			entry.offset = BigInt(0);
