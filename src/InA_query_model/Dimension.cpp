@@ -2,6 +2,9 @@
 
 namespace ina::query_model
 {
+	
+	const std::string Dimension::DIMENSION_OF_MEASURES_NAME = "CustomDimension1";
+
 	Dimension::Dimension(const std::string & name, eAxe axe) 
 	: _name(name), _axe(axe)
 	{	
