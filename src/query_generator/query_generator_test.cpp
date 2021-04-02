@@ -21,7 +21,7 @@ int main()
 		
 		definition.addDimension(ina::query_model::Dimension("dim_B", ina::query_model::Dimension::eAxe::Rows));
 		
-		ina::query_model::Dimension dimensionMeasure("CustomDimension1", ina::query_model::Dimension::eAxe::Rows);
+		ina::query_model::Dimension dimensionMeasure(ina::query_model::Dimension::DIMENSION_OF_MEASURES_NAME, ina::query_model::Dimension::eAxe::Rows);
 		dimensionMeasure.addMember(ina::query_model::Member("meas_1", "SUM"));
 		dimensionMeasure.addMember(ina::query_model::Member("meas_2", "SUM"));
 		definition.addDimension(dimensionMeasure);

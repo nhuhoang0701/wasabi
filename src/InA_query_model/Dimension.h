@@ -13,8 +13,6 @@ class JSONWriter;        // From <json/jsonWriter.h>
 
 namespace ina::query_model
 {
-	const std::string DIMENSION_OF_MEASURES_NAME = "CustomDimension1";
-
 	class Definition;
 
 	class Dimension;
@@ -24,6 +22,14 @@ namespace ina::query_model
 
 	class Dimension
 	{
+		public:
+			const static std::string DIMENSION_OF_MEASURES_NAME;
+
+			inline static bool isDimensionOfMeasures(const Dimension & dimension)
+			{
+				return dimension.getName() == DIMENSION_OF_MEASURES_NAME;
+			}
+
 		public:
 			enum class eAxe {Uninit=0, Rows, Columns};
 
@@ -52,12 +58,5 @@ namespace ina::query_model
 			friend void write(const Dimension& obj, JSONWriter& jsonNode);
 			
 			friend void read(Definition& obj, const JSONGenericObject& jsonNode);
-
-
-		public:
-			inline static bool isDimensionOfMeasures(const Dimension & dimension)
-			{
-				return dimension.getName() == DIMENSION_OF_MEASURES_NAME;
-			}
 	};
 }

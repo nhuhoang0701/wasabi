@@ -102,13 +102,7 @@ namespace query_generator
 	{
         for (const auto& dim : m_query.getDefinition().getDimensions())
         {
-			const std::string& nameDim = dim.getName();
-			if(nameDim == "CustomDimension1")
-			{
-				for(const auto& member : dim.getMembers() )
-					data.addColumn(member.getName(),calculator::eDataType::Number, calculator::eColumnType::NoneIndexed);
-			}
-			else
+			if(!ina::query_model::Dimension::isDimensionOfMeasures(dim))
 			{
 				switch (dim.getAxe())
 				{
@@ -127,5 +121,14 @@ namespace query_generator
 				}
 			}
         }
+		
+        for (const auto& dim : m_query.getDefinition().getDimensions())
+        {
+			if(ina::query_model::Dimension::isDimensionOfMeasures(dim))
+			{
+				for(const auto& member : dim.getMembers() )
+					data.addColumn(member.getName(),calculator::eDataType::Number, calculator::eColumnType::NoneIndexed);
+			}
+		}
 	}
 } //query_generator

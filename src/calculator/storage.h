@@ -4,7 +4,6 @@
 
 #include <memory>
 #include <stdexcept>
-#include <string_view>
 #include <tuple>
 #include <string>
 #include <map>
@@ -146,7 +145,7 @@ namespace calculator
 		}
 
 	private:
-		std::map<std::string_view, size_t /*index*/> m_colsIdxByName;
+		std::map<std::string, size_t /*index*/> m_colsIdxByName;
 		std::vector<Column>  m_cols;
 
 		size_t               m_rowsNb = 0;
