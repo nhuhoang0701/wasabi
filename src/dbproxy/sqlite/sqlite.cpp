@@ -29,7 +29,8 @@ namespace dbproxy
 		int res = 0;
 		if(useDBFile)
 		{
-			res = sqlite3_open_v2(std::string("./resources/sqlite/"+dbname+"/"+dbname+".db").c_str(), &m_sqlite_db, SQLITE_OPEN_READONLY, nullptr);
+			std::string file("./resources/sqlite/"+dbname+"/"+dbname+".db");
+			res = sqlite3_open_v2(file.c_str(), &m_sqlite_db, SQLITE_OPEN_READONLY, nullptr);
 		}
 		else
 			res = sqlite3_open(":memory:", &m_sqlite_db);

@@ -28,13 +28,18 @@ add_executable(dbproxy_test dbproxy_test.cpp)
 target_link_libraries(dbproxy_test dbproxy)
 target_include_directories(dbproxy_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
 
+add_executable(sqlite_test sqlite/sqlite_test.cpp)
+target_link_libraries(sqlite_test dbproxy)
+target_include_directories(sqlite_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
+
 add_executable(dbproxy_metadata_test dbproxy_metadata_test.cpp)
 target_link_libraries(dbproxy_metadata_test dbproxy)
 target_include_directories(dbproxy_metadata_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
 
 ## [main]
-add_test(NAME dbproxy_test COMMAND dbproxy_test --dir=./ WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-add_test(NAME dbproxy_metadata_test COMMAND dbproxy_metadata_test --dir=./ WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+add_test(NAME sqlite_test COMMAND sqlite_test --dir=./ WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX})
+add_test(NAME dbproxy_test COMMAND dbproxy_test --dir=./ WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX})
+add_test(NAME dbproxy_metadata_test COMMAND dbproxy_metadata_test --dir=./ WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX})
 
 ## [installation]
 install(TARGETS dbproxy sqlite
