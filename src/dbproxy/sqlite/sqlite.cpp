@@ -19,7 +19,6 @@
 
 #include <iostream>
 
-const bool useDBFile = false;
 namespace dbproxy
 {
 	DBSQLite::DBSQLite(const std::string& dbname)
@@ -27,9 +26,11 @@ namespace dbproxy
 	{
 		std::cout << "dbname:" << dbname << std::endl;
 		int res = 0;
+		bool useDBFile = dbname=="efashion";
 		if(useDBFile)
 		{
 			std::string file("./resources/sqlite/"+dbname+"/"+dbname+".db");
+			std::cout << "db from file: '" << file << "'" << std::endl;
 			res = sqlite3_open_v2(file.c_str(), &m_sqlite_db, SQLITE_OPEN_READONLY, nullptr);
 		}
 		else
@@ -48,14 +49,14 @@ namespace dbproxy
 			//***********************************************************
 			// Create a DB on the fly with a SQL , waiting WASI read file
 			
-			if(dbname == "onetable_datatype.db")
+			if(dbname == "onetable_datatype")
 			{
 				// Create the table
 				executeSQL(createOneTableSQL, nullptr);
 				// insert data
 				executeSQL(data_onetable_datatype, nullptr);
 			}
-			else if(dbname == "efashion.db")
+			else if(dbname == "efashion")
 			{
 				// Create the tables
 				executeSQL(createFashionTablesSQL, nullptr);
