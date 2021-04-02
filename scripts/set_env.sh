@@ -63,7 +63,7 @@ export MSAN_SYMBOLIZER_PATH=$ASAN_SYMBOLIZER_PATH
 echo
 echo -----------------------------------
 echo ----------- set alias -------------
-echo -e  "run_wasabi_server    to execute the server";
+echo -e  "run_server           to execute the server";
 echo -e  "clean                clean the current cmake folder";
 echo -e  "compile              to compile the current cmake folder";
 echo -e  "install              to install the current cmake folder";
