@@ -13,7 +13,7 @@ class JSONWriter;        // From <json/jsonWriter.h>
 
 namespace ina::query_model
 {
-	#define DIMENSION_OF_MEASURES_NAME "CustomDimension1";
+	const std::string DIMENSION_OF_MEASURES_NAME = "CustomDimension1";
 
 	class Definition;
 
