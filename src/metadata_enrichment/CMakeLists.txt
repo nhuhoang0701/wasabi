@@ -20,7 +20,7 @@ target_include_directories(metadata_enrichment_test PRIVATE ${WASABI_ROOT_DIR}/s
 target_link_libraries(metadata_enrichment_test PRIVATE metadata_enrichment)
 
 # run with ctest -V
-add_test(NAME metadata_enrichment_test COMMAND metadata_enrichment_test)
+add_test(NAME metadata_enrichment_test COMMAND metadata_enrichment_test --dir=./  WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX})
 
 ## [installation]
 install(TARGETS metadata_enrichment DESTINATION lib)
