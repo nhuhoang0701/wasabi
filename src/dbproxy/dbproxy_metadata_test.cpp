@@ -27,14 +27,14 @@ int main()
 	const TableDescr& tableDescr = dbProxy->getTableDescr(tableNameStr);
 	const std::vector<ColumnDescr>& cols = tableDescr.getColumnsDescr();
 	CPPUNIT_ASSERT_EQUAL(cols.size(),4);
-	CPPUNIT_ASSERT_EQUAL(cols[0].getName(),"text");
-	CPPUNIT_ASSERT_EQUAL(cols[0].getDataType(),"TEXT");
-	CPPUNIT_ASSERT_EQUAL(cols[1].getName(),"varchar");
-	CPPUNIT_ASSERT_EQUAL(cols[1].getDataType(),"VARCHAR");
-	CPPUNIT_ASSERT_EQUAL(cols[2].getName(),"real");
-	CPPUNIT_ASSERT_EQUAL(cols[2].getDataType(),"REAL");
-	CPPUNIT_ASSERT_EQUAL(cols[3].getName(),"integer");
-	CPPUNIT_ASSERT_EQUAL(cols[3].getDataType(),"INTEGER");
+	CPPUNIT_ASSERT_EQUAL(cols.at(0).getName(),"text");
+	CPPUNIT_ASSERT_EQUAL(cols.at(0).getDataType(),"TEXT");
+	CPPUNIT_ASSERT_EQUAL(cols.at(1).getName(),"varchar");
+	CPPUNIT_ASSERT_EQUAL(cols.at(1).getDataType(),"VARCHAR");
+	CPPUNIT_ASSERT_EQUAL(cols.at(2).getName(),"real");
+	CPPUNIT_ASSERT_EQUAL(cols.at(2).getDataType(),"REAL");
+	CPPUNIT_ASSERT_EQUAL(cols.at(3).getName(),"integer");
+	CPPUNIT_ASSERT_EQUAL(cols.at(3).getDataType(),"INTEGER");
 	
 	/*
 	{
