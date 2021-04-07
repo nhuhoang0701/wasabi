@@ -86,7 +86,7 @@ Tests
 //Verify construtor destructor order
 EXPORT const char* str_DESTRUCTOR_v()
 {
-	char* str256 = new char[256];
+	static char str256[256];
 	str256[0]= '\0';
 	unsigned char index = 0;
 	A a0('A', str256, index);
