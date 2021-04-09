@@ -3,11 +3,14 @@
   <body>
 	<script src="./WASI_API.js" type="text/javascript" charset="utf-8"></script>
 	<script src="./WASI_Module.js" type="text/javascript" charset="utf-8"></script>
+	<script src="./Microcube_worker_test.js" type="text/javascript" charset="utf-8"></script>
 	
-	<p><strong>WASI implementation is partial!</strong></p>
-	<input type="file" id="input" accept="application/wasm" multiple="multiple" onclick="this.value=null;" onchange="_handleFiles(this.files)">
+
+	<p><strong>WASABI tests</strong></p>
+	<button  id='linkStartWorker' onclick="_startWorkerTest();">Start worker test</button>
+	<div/>
+	<input type="file" id="inputOpenWasmFile" accept="application/wasm" multiple="multiple" onclick="this.value=null;" onchange="_handleFiles(this.files)">
 	<div id="log" style="border:1px solid black;"></div>
-	
-    <script src="./main.js" type="text/javascript" charset="utf-8"></script>
+
   </body>
 </html>
