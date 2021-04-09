@@ -21,7 +21,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Microcube_worker_WASI.js
         DESTINATION . RENAME Microcube_worker.js)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/WASI_API.js    DESTINATION . )
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/WASI_Module.js DESTINATION . )
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/main.js        DESTINATION . )
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/Microcube_worker_test.js        DESTINATION . )
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/index.html     DESTINATION . )
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/favicon.ico     DESTINATION . )
 
