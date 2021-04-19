@@ -12,6 +12,15 @@ const  WASI_CLOCKID_MONOTONIC                         =  1;
 const  WASI_CLOCKID_PROCESS_CPUTIME_ID                =  2;
 const  WASI_CLOCKID_THREAD_CPUTIME_ID                 =  3;
 
+const  WASI_FILETYPE_UNKNOWN                          =  0;
+const  WASI_FILETYPE_BLOCK_DEVICE                     =  1;
+const  WASI_FILETYPE_CHARACTER_DEVICE                 =  2;
+const  WASI_FILETYPE_DIRECTORY                        =  3;
+const  WASI_FILETYPE_REGULAR_FILE                     =  4;
+const  WASI_FILETYPE_SOCKET_DGRAM                     =  5;
+const  WASI_FILETYPE_SOCKET_STREAM                    =  6;
+const  WASI_FILETYPE_SYMBOLIC_LINK                    =  7;
+
 function clock_res_realtime () {
 			return BigInt(1e6);
 };
@@ -152,10 +161,10 @@ let WASI_API = {
 	},
 	
 	log : log = function(msg) {
-		// console.log("WASI-"+arguments.callee.caller.name + ":" + msg);
+	//	console.log("WASI-"+arguments.callee.caller.name + ":" + msg);
 	},
 	error : error = function(msg) {
-		// console.error("WASI: " + msg);
+	//	console.error("WASI: " + msg);
 	},
 	
 	//*************************************************************
@@ -383,7 +392,40 @@ let WASI_API = {
 	},
 	fd_filestat_get: function(fd, buf_ptr) {
 		log(Array.prototype.slice.call(arguments));
-		return WASI_ENOSYS;
+		const entry = fds[fd];
+		if (!entry) {
+			return WASI_EBADF;
+		}
+
+		let view = getModuleMemoryDataView();
+
+		// ID of Device containing file
+		view.setUint32(buf_ptr , 0, !0);
+		view.setUint32(buf_ptr + 4, 0, !0);
+
+		// inode number
+		view.setUint32(buf_ptr + 8, 0, !0);
+		view.setUint32(buf_ptr + 12, 0, !0);
+
+		/* protection */
+		view.setUint8(buf_ptr + 16, WASI_FILETYPE_REGULAR_FILE, !0);
+
+		/* number of hard links */
+		view.setUint32(buf_ptr + 20, 0 , !0);
+		
+		/* user ID of owner */
+		view.setUint32(buf_ptr + 24, 0, !0);
+		/* group  ID of owner */
+		view.setUint32(buf_ptr + 28, 0, !0);
+		/* device ID (if special file) */
+		view.setUint32(buf_ptr + 32, 0, !0);
+		view.setUint32(buf_ptr + 36, 0, !0);
+
+		/* total size, in bytes */
+		view.setUint32(buf_ptr + 40, 0, !0);
+		view.setUint32(buf_ptr + 44, entry.data.length, !0);
+
+		return WASI_ESUCCESS;
 	},
 	fd_fdstat_set_flags: function(fd, flags) {
 		log(Array.prototype.slice.call(arguments));
@@ -396,6 +438,11 @@ let WASI_API = {
 		view.setUint16(stat_ptr + 2, 0, !0);
 		view.setUint16(stat_ptr + 4, 0, !0);
 
+		view.setUint32(stat_ptr + 8, 0, !0);
+		view.setUint32(stat_ptr + 12, 0, !0);
+		view.setUint32(stat_ptr + 16, 0, !0);
+		view.setUint32(stat_ptr + 20, 0, !0);
+/*
 		function setBigUint64(byteOffset, value, littleEndian) {
 			let lowWord = value;
 			let highWord = 0;
@@ -403,9 +450,9 @@ let WASI_API = {
 			view.setUint32(littleEndian ? 0 : 4, lowWord, littleEndian);
 			view.setUint32(littleEndian ? 4 : 0, highWord, littleEndian);
 		}
-
-		setBigUint64(stat_ptr + 8, 0, !0);
-		setBigUint64(stat_ptr + 8 + 8, 0, !0);
+*/
+	//	setBigUint64(stat_ptr + 8, 0, !0);
+	//	setBigUint64(stat_ptr + 8 + 8, 0, !0);
 
 		return WASI_ESUCCESS;
 	},
