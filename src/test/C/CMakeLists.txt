@@ -19,6 +19,7 @@ include_directories(${WASABI_ROOT_DIR}/src/test_tools/include)
 
 # Adding something we can run - Output name matches target name
 add_executable(C_libc C_libc.c)
+add_executable(C_fstat C_fstat.c)
 add_executable(C_read C_read.c)
 add_executable(C_write C_write.c)
 add_executable(C_nolib C_nolib.c)
@@ -41,6 +42,7 @@ add_test(NAME C_libc COMMAND C_libc)
 add_test(NAME C_clock_monotonic COMMAND C_clock_monotonic)
 add_test(NAME C_clock_realtime COMMAND C_clock_realtime)
 add_test(NAME C_clock_process COMMAND C_clock_process)
+add_test(NAME C_fstat COMMAND C_fstat --dir=./  WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX})
 add_test(NAME C_read COMMAND C_read --dir=./  WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX})
 add_test(NAME C_write COMMAND C_write --dir=./  WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX})
 
