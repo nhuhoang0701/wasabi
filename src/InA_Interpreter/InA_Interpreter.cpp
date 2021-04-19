@@ -86,7 +86,8 @@ namespace ina_interpreter
 				{
 					static std::string static_str_response;
 					static_str_response.clear();
-					if(query.getDataSource().getType() == ina::query_model::DataSource::Type::TypeCatalog )
+					if(query.getDataSource().getType() == ina::query_model::DataSource::Type::TypeCatalogView 
+					  || query.getDataSource().getType() == ina::query_model::DataSource::Type::TypeView )
 					{
 						if(static_str_response.empty() )
 						{

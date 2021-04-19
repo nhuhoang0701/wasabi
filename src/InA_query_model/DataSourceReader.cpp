@@ -20,7 +20,7 @@ namespace ina::query_model
 			ds.setType(type);
 		}
 		else if(ds.getObjectName() == "$$DataSource$$")
-			ds.setType(DataSource::Type::TypeCatalog);
+			ds.setType(DataSource::Type::TypeCatalogView);
 
 
 		if (JSONGenericObject customProperties = dataSource.getObject("CustomProperties"))
