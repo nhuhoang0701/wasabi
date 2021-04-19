@@ -35,6 +35,9 @@ echo -e "MUSL_DIR: " "\t\t'"$MUSL_DIR"'";
 export BINARYEN_DIR=$WASABI_EXTERNAL_DIR/binaryen
 echo -e "BINARYEN_DIR: " "\t\t'"$BINARYEN_DIR"'";
 
+export WASMSDK_DIR=$WASABI_EXTERNAL_DIR/wasmsdk4compile
+echo -e "WASMSDK_DIR: " "\t\t'"$WASMSDK_DIR"'";
+
 export WASMTIME_DIR=$WASABI_EXTERNAL_DIR/wasmtime-v0.22.0
 export WASMTIME_LINUX_DIR=$WASMTIME_DIR-x86_64-linux
 export WASMTIME=${WASMTIME:-$WASMTIME_DIR/wasmtime}
