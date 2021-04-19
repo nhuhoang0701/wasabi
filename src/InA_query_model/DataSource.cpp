@@ -10,7 +10,7 @@ namespace ina::query_model
 		{
 			case TypeWasabi:   return "Wasabi";
 			case TypeUniverse: return "Universe";
-			case TypeCatalog:  return "CatalogView";
+			case TypeCatalogView:  return "CatalogView";
 			case TypeView:     return "View";
 			case TypeUndef:    return "Undefined";
 			default: throw TRACED_InA_EXCEPTION("Unknown datasource type");
@@ -26,7 +26,7 @@ namespace ina::query_model
 		if ("Unx" == str)
 			return TypeUniverse;
 		if ("CatalogView" == str)
-			return TypeCatalog;
+			return TypeCatalogView;
 		throw TRACED_InA_EXCEPTION(std::string("Unknown datasource type: ") + str);
 	}
 
@@ -59,7 +59,8 @@ namespace ina::query_model
 		switch (m_type)
 		{
 			case TypeUniverse: return "OLAP";
-			case TypeCatalog:  return "COLUMN";
+			case TypeView:
+			case TypeCatalogView:  return "COLUMN";
 			case TypeUndef:
 			default: throw TRACED_InA_EXCEPTION("Unknown datasource type");
 		}
@@ -81,7 +82,8 @@ namespace ina::query_model
 		{
 			case TypeWasabi: return 13;
 			case TypeUniverse: return 5;
-			case TypeCatalog:  return 0;
+			case TypeView:
+			case TypeCatalogView:  return 0;
 			case TypeUndef:
 			default: throw TRACED_InA_EXCEPTION("Unknown datasource type");
 		}
