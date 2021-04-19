@@ -11,6 +11,7 @@ namespace ina::query_model
 			case TypeWasabi:   return "Wasabi";
 			case TypeUniverse: return "Universe";
 			case TypeCatalog:  return "CatalogView";
+			case TypeView:     return "View";
 			case TypeUndef:    return "Undefined";
 			default: throw TRACED_InA_EXCEPTION("Unknown datasource type");
 		}
