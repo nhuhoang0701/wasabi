@@ -22,7 +22,7 @@ namespace ina::query_model
 			TypeUndef = -1,
 			TypeUniverse,
 			TypeWasabi,
-			TypeCatalog,
+			TypeCatalogView,
 			TypeView
 		};
 		static std::string toString(Type type);
