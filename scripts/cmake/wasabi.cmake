@@ -139,6 +139,8 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 ###########################################
 # wasabi external
 set(cJSON_LIBRARY_DIRS ${CMAKE_INSTALL_PREFIX}/cJSON/lib)
+set(SQLITE_LIBRARY_DIRS ${CMAKE_INSTALL_PREFIX}/sqlite/lib)
+set(SQLITE_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/sqlite/include)
 
 ###########################################
 # wasabi var
