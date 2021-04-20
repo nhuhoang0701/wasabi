@@ -1,0 +1,5 @@
+sqlite-autoconf-*
+/build
+.DS_Store
+/wapm_packages
+/wapm.lock

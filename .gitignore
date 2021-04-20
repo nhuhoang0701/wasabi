@@ -5,6 +5,7 @@
 ##############################################
 # wasabi
 /external/*
+!/external/sqlite/CMakeLists.txt
 !external/llvm-*.tar.gz
 build*/
 install*/
