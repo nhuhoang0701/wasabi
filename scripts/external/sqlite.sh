@@ -6,7 +6,7 @@ if [ ! -f "$WASABI_INSTAL_DIR/sqlite/sqlite.flag" ]
 then
 	cd $WASABI_EXTERNAL_DIR/
 	echo --------------- git ---------------
-	git clone https://github.com/wapm-packages/sqlite.git  >> $outfile
+	#git clone https://github.com/wapm-packages/sqlite.git  >> $outfile
 	cd sqlite
 	mkdir -p build_$WASABI_PLATFORM_TARGET
 
