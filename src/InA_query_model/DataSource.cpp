@@ -1,6 +1,7 @@
 #include "DataSource.h"
 
 #include <exceptions/InA_Exception.h>
+#include <iostream>
 
 namespace ina::query_model
 {
@@ -41,6 +42,13 @@ namespace ina::query_model
 
 	const std::string&	DataSource::getObjectName() const
 	{
+		const static std::string table = "Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma";
+		//TODO: Remove just to start dev.
+		if(m_objName.empty())
+		{
+			std::cerr << "Harcoded table will be used: " << table << std::endl;
+			return table;
+		}
 		return m_objName;
 	}
 
@@ -51,6 +59,13 @@ namespace ina::query_model
 
 	const std::string& DataSource::getPackageName() const
 	{
+		const static std::string cnxstrg =  "local:sqlite:efashion";
+		//TODO: Remove just to start dev.
+		if(m_packageName.empty())
+		{
+			std::cerr << "Harcoded connection string will be used: " << cnxstrg << std::endl;
+			return cnxstrg;
+		}
 		return m_packageName;
 	}
 
