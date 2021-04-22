@@ -54,18 +54,13 @@ const char* json_getResponse_json(const char* InA)
 	
 	std::ostringstream osstream;
 	JSONWriter writer(osstream);
-	
+	for(const auto& query : queries)
 	{
-		JSON_MAP(writer);
-		writer.key("message");
-		for(const auto& query : queries)
-		{
-				JSON_LIST(writer);
-				const char* response = ina_interpreter::processRequest(*query, writer);
-				if(response != nullptr )
-					return response;
-		}
+		const char* response = ina_interpreter::processRequest(*query, writer);
+		if(response != nullptr )
+			return response;
 	}
+
 	static std::string static_str;
 	static_str = osstream.str();
 	
@@ -143,64 +138,67 @@ namespace ina_interpreter
 				
 				const std::string sql = queryGen.getSQL();
 				std::cout << "InA_Interpreter => Generated SQL: " << sql << std::endl;
-				writer.value("SQL = " + sql);
 
-				const std::string& cnxString = query.getDataSource().getPackageName();
-				if(!cnxString.empty() )
+				std::shared_ptr<calculator::DataStorage> data(new calculator::DataStorage());
+
+				queryGen.prepareStorage(*data);
+				std::function<void(const dbproxy::Row&)> lambda = [&data](const dbproxy::Row& row)
 				{
-					std::shared_ptr<calculator::DataStorage> data(new calculator::DataStorage());
+					data->insertRow(row);
+				};
+				const std::string& cnxString = query.getDataSource().getPackageName();
+				dbproxy::DBProxy::getDBProxy(cnxString)->executeSQL(sql, &lambda);
 
-					queryGen.prepareStorage(*data);
-					std::function<void(const dbproxy::Row&)> lambda = [&data](const dbproxy::Row& row)
+				size_t rowDataStart = 0;
+				size_t columnDataStart = 0;
+				for (auto dimension : query.getDefinition().getDimensions()) 
+				{
+					if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Rows && !ina::query_model::Dimension::isDimensionOfMeasures(dimension))
 					{
-						data->insertRow(row);
-					};
-					dbproxy::DBProxy::getDBProxy(cnxString)->executeSQL(sql, &lambda);
-
-					std::ostringstream results;
-					int rowDataStart = 0;
-					int columnDataStart = 0;
-					for (auto dimension : query.getDefinition().getDimensions()) 
-					{
-						if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Rows && !ina::query_model::Dimension::isDimensionOfMeasures(dimension))
-						{
-							columnDataStart ++;
-						}
+						columnDataStart ++;
 					}
-					
-					results << R"({"Cells":{"Values":{"Encoding": "None","Values": [)";
-					bool firstCell = true;
-					for(size_t rowIndex = rowDataStart; rowIndex < data->getRowNbrs(); rowIndex++)
-					{
-						for(size_t columnIndex = columnDataStart; columnIndex < data->getColNbrs(); columnIndex++)
-						{
-							if (firstCell) {
-								firstCell = false;
-							}
-							else 
-							{
-								results << ",";
-							}
-							const auto column = (*data)[columnIndex];
-							const auto& columnData = std::get<2>(column);
-							const auto& columnTyped = (*columnData)[rowIndex];
-							switch (std::get<0>(column))
-							{
-							case calculator::eDataType::String:
-								results << std::get<std::string>(columnTyped);
-								break;
-							case calculator::eDataType::Number:
-								results << std::get<double>(columnTyped);
-								break;
-							}
-						}
-					}
-					results << "]}}}";
-
-
-					std::cout << "InA_Interpreter => Results of SQL execution : " << std::endl  << results.str() << std::endl;
-					writer.value("Results = " + results.str());
 				}
+
+				{
+					JSON_MAP(writer);
+					writer.key("Cells");
+					{
+						JSON_MAP(writer);
+						writer.key("Values");
+						{
+							writer.pair("Encoding", "None");
+							writer.key("Values");
+							{
+								JSON_LIST(writer);
+								for(size_t rowIndex = rowDataStart; rowIndex < data->getRowNbrs(); rowIndex++)
+								{
+									for(size_t columnIndex = columnDataStart; columnIndex < data->getColNbrs(); columnIndex++)
+									{
+										const auto& column = (*data)[columnIndex];
+										const auto& columnData = std::get<2>(column);
+										const auto& columnTyped = (*columnData)[rowIndex];
+										switch (std::get<0>(column))
+										{
+										case calculator::eDataType::String:
+										{
+											const auto& val = std::get<std::string>(columnTyped);
+											writer.value(val);
+											break;
+										}
+										case calculator::eDataType::Number:
+										{
+											const auto& val = std::get<double>(columnTyped);
+											writer.value(val);
+											break;
+										}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+
 				break;
 			}
 			default:
