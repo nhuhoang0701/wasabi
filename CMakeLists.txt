@@ -14,3 +14,9 @@ add_subdirectory(src)
 ################################################
 # 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
+
+################################################
+# Nexus 
+if("${WASABI_NEXUS_EXPORT}" STREQUAL "yes")
+install(CODE "execute_process(COMMAND mvn clean deploy WORKING_DIRECTORY ${WASABI_ROOT_DIR}/nexus)")
+endif()
