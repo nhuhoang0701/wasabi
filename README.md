@@ -12,7 +12,7 @@ The technical stacks are :
   - [clang](https://clang.llvm.org/) compiler (No Emscripten !)  
   - [CMake](https://cmake.org/) for compilation process
 
-This is the [Jenkins](https://gkelucjenkins3.jaas-gcp.cloud.sap.corp/view/experiments/job/wasabi_cmake_test/) for compilation and tests.  
+This is the [Jenkins](https://gkelucjenkins3.jaas-gcp.cloud.sap.corp/view/experiments/job/wasabi_cmake_nexus/ for compilation and tests.  
 
 # WindowsSubsystemLinux
 The dev. env. is tested on Ubuntu 20 in WSL1
