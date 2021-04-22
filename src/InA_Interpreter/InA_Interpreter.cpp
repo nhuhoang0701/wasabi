@@ -158,31 +158,45 @@ namespace ina_interpreter
 					dbproxy::DBProxy::getDBProxy(cnxString)->executeSQL(sql, &lambda);
 
 					std::ostringstream results;
-					for(size_t idxCol = 0; idxCol < data->getColNbrs(); idxCol++)
+					int rowDataStart = 0;
+					int columnDataStart = 0;
+					for (auto dimension : query.getDefinition().getDimensions()) 
 					{
-						results << "  " << std::setfill('-') << std::setw(10) << "" << "  |  ";
-					}
-					results << std::setfill(' ') << std::endl;
-
-					for(size_t rowNb = 0; rowNb < data->getRowNbrs(); rowNb++)
-					{
-						for(size_t idxCol = 0; idxCol < data->getColNbrs(); idxCol++)
+						if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Rows && !ina::query_model::Dimension::isDimensionOfMeasures(dimension))
 						{
-							const auto col = (*data)[idxCol];
-							const auto& colData = std::get<2>(col);
-							const auto& colTyped = (*colData)[rowNb];
-							switch (std::get<0>(col))
+							columnDataStart ++;
+						}
+					}
+					
+					results << R"({"Cells":{"Values":{"Encoding": "None","Values": [)";
+					bool firstCell = true;
+					for(size_t rowIndex = rowDataStart; rowIndex < data->getRowNbrs(); rowIndex++)
+					{
+						for(size_t columnIndex = columnDataStart; columnIndex < data->getColNbrs(); columnIndex++)
+						{
+							if (firstCell) {
+								firstCell = false;
+							}
+							else 
+							{
+								results << ",";
+							}
+							const auto column = (*data)[columnIndex];
+							const auto& columnData = std::get<2>(column);
+							const auto& columnTyped = (*columnData)[rowIndex];
+							switch (std::get<0>(column))
 							{
 							case calculator::eDataType::String:
-								results << "  " << std::setw(10) << std::get<std::string>(colTyped) << "  |  ";
+								results << std::get<std::string>(columnTyped);
 								break;
 							case calculator::eDataType::Number:
-								results << "  " << std::setw(10) << std::get<double>(colTyped) << "  |  ";
+								results << std::get<double>(columnTyped);
 								break;
 							}
 						}
-						results << std::endl;
 					}
+					results << "]}}}";
+
 
 					std::cout << "InA_Interpreter => Results of SQL execution : " << std::endl  << results.str() << std::endl;
 					writer.value("Results = " + results.str());
