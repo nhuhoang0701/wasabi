@@ -1,0 +1,24 @@
+<assembly
+    xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+  <id>binary</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <fileSets>
+    <fileSet>
+      <directory>${project.basedir}/../install_wasm/.</directory>
+	  <outputDirectory>..</outputDirectory>
+      <includes>
+         <include>WASI_API.js</include>
+         <include>Microcube_worker.js</include>
+         <include>InA_Interpreter.wasm</include>
+         <include>resources/response_getSerververInfo.json</include>
+         <include>resources/response_getResponse_Metadat_expand_cube_catalog.json</include>
+         <include>resources/sqlite/efashion/efashion.db</include>
+      </includes>
+      <useDefaultExcludes>false</useDefaultExcludes>
+    </fileSet>
+  </fileSets>
+</assembly>
