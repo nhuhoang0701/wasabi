@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+    >
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.sap.bi.wasabi</groupId>
+  <artifactId>Microcube.wasm</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>${project.groupId}.${project.artifactId}</name>
+  <description>Wasabi microcube in wasm</description>
+  <packaging>pom</packaging>
+
+  <distributionManagement>
+    <repository>
+      <id>deploy.milestones</id>
+      <url>http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones/</url>
+    </repository>
+    <snapshotRepository>
+      <id>deploy.snapshots</id>
+      <url>http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.1.1</version>
+        <configuration>
+          <descriptors>
+            <descriptor>assembly.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+          <goals>
+            <goal>single</goal>
+          </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
