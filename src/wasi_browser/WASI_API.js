@@ -156,6 +156,27 @@ let WASI_API = {
 			console.log("WASI FileSystem: [" +rootFS + "," + vpath + "] loaded from '" + path + "' (" + uint8View.length + " bytes)");
 		}
 	},
+	wasabi_getFileEntry : wasabi_getFileEntry = function(fd) {
+		const entry = fds[fd];
+		if (!entry) {
+			error("Invalid fd="+fd);
+			return null;
+		} else if (!entry.vpath) {
+			error("No vpath for fd="+fd);
+			return null;
+		}
+		
+		if(!entry.data) {
+			entry.data = fs_Path2Data.get(entry.vpath);
+			if(!entry.data)
+			{
+				error("Please register your file '" + entry.vpath + "' by calling WASI_API::wasabi_initFS()");
+				return null;
+			}
+			entry.offset = BigInt(0);
+		}
+		return entry;
+	},
 	wasabi_initEnv : async function(environ) {
 		env = environ ? environ : {} ;
 	},
@@ -340,23 +361,9 @@ let WASI_API = {
 	},
 	fd_read: function(fd, iovs_ptr, iovs_len, nread_ptr) {
 		log(Array.prototype.slice.call(arguments));
-		const entry = fds[fd];
+		const entry = wasabi_getFileEntry(fd);
 		if (!entry) {
-			error("Invalid fd="+fd);
 			return WASI_EBADF;
-		} else if (!entry.vpath) {
-			error("No vpath for fd="+fd);
-			return WASI_EINVAL;
-		}
-		
-		if(!entry.data) {
-			entry.data = fs_Path2Data.get(entry.vpath);
-			if(!entry.data)
-			{
-				error("Please register your file '" + entry.vpath + "' by calling WASI_API::wasabi_initFS()");
-				return WASI_EBADF;
-			}
-			entry.offset = BigInt(0);
 		}
 
 		const view = new DataView(moduleInstanceExports.memory.buffer);
@@ -392,7 +399,7 @@ let WASI_API = {
 	},
 	fd_filestat_get: function(fd, buf_ptr) {
 		log(Array.prototype.slice.call(arguments));
-		const entry = fds[fd];
+		const entry = wasabi_getFileEntry(fd);
 		if (!entry) {
 			return WASI_EBADF;
 		}
