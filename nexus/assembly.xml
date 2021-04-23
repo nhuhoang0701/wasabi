@@ -8,7 +8,7 @@
   </formats>
   <fileSets>
     <fileSet>
-      <directory>${project.basedir}/../install_wasm/.</directory>
+      <directory>${project.basedir}/../install_wasm_Release/.</directory>
 	  <outputDirectory>..</outputDirectory>
       <includes>
          <include>WASI_API.js</include>

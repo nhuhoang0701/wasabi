@@ -36,13 +36,13 @@ namespace dbproxy
 	DBSQLite::DBSQLite(const std::string& dbname)
 	: DBProxy()
 	{
-		std::cout << "dbname:" << dbname << std::endl;
+		std::cout << "dbname: '" << dbname << "'" << std::endl;
 		int res = 0;
 #if defined(DB_FILE_EMBDED)
 		res = sqlite3_open(":memory:", &m_sqlite_db);
 #else
 		std::string file("./resources/sqlite/"+dbname+"/"+dbname+".db");
-		std::cout << "db from file: '" << file << "'" << std::endl;
+		std::cout << "db  file: '" << file << "'" << std::endl;
 		res = sqlite3_open_v2(file.c_str(), &m_sqlite_db, SQLITE_OPEN_READONLY, nullptr);
 #endif
 
@@ -164,11 +164,12 @@ namespace dbproxy
 				int *pPrimaryKey = nullptr;
 				int *pAutoinc = nullptr;
 				if(SQLITE_OK ==sqlite3_table_column_metadata(g_db, nullptr, g_tableDescr->getName().c_str(), azColName[i], &pzDataType, &pzCollSeq, pNotNull, pPrimaryKey, pAutoinc) )
+				{
 					g_tableDescr->push_back(ColumnDescr(std::string(azColName[i]), std::string(pzDataType?pzDataType:"")));
+					std::cout <<  g_tableDescr->getName()<< ": '" << azColName[i] << "' = '" << (pzDataType ? pzDataType : "NULL") << "'" << std::endl;
+				}
 				else
 					std::cerr << "ERROR :sqlite3_table_column_metadata" << std::endl;
-				
-				std::cout << "sqlite_callback: '" << azColName[i] << "' = '" << (pzDataType ? pzDataType : "NULL") << "'" << std::endl;
 			}
 #endif
 
