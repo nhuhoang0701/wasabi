@@ -86,8 +86,8 @@ echo -e  "rebuild              to clean compile test the current cmake folder";
 alias setenv='unset WASABI_ROOT_DIR && source ./scripts/set_env.sh'
 alias run_server='cd $WASABI_INSTAL_DIR; $HTTP_SERVER;cd -'
 alias clean='$CMAKE --build ./$WASABI_BUILD_DIR_NAME --target clean'
-alias compile='$CMAKE --build ./$WASABI_BUILD_DIR_NAME
-alias test='(cd $WASABI_BUILD_DIR_NAME && $CTEST -j8 -T test --output-on-failure)'
+alias compile='$CMAKE --build ./$WASABI_BUILD_DIR_NAME'
+alias test='(cd "$WASABI_BUILD_DIR_NAME" && $CTEST -j8 -T test --output-on-failure)'
 alias install='$CMAKE --build ./$WASABI_BUILD_DIR_NAME --target install'
 alias build='$CMAKE -B ./$WASABI_BUILD_DIR_NAME . -G Ninja -DCMAKE_BUILD_TYPE=$WASABI_BUILD_TYPE -DCMAKE_MAKE_PROGRAM=$NINJA -DCMAKE_INSTALL_PREFIX:PATH=$WASABI_INSTAL_DIR && install && test'
 alias rebuild='rm -rf ./$WASABI_BUILD_DIR_NAME && mkdir $WASABI_BUILD_DIR_NAME && build'

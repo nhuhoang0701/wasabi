@@ -11,7 +11,7 @@ echo "start at $(date +"%T")"
 	mkdir -p $WASABI_BUILD_DIR_NAME
 
 	echo ------------- cmake ---------------
-	$CMAKE -B ./$WASABI_BUILD_DIR_NAME
+	$CMAKE -B ./$WASABI_BUILD_DIR_NAME \
 		-G Ninja -DCMAKE_MAKE_PROGRAM=$NINJA \
 		-DCMAKE_TOOLCHAIN_FILE=$WASABI_ROOT_DIR/scripts/cmake/wasabi.cmake \
 		-DCMAKE_C_FLAGS=-fno-stack-protector \
