@@ -36,7 +36,15 @@ namespace ina::query_model
 			query->m_type = Query::qMetadata;
 
 			if (metadata.haveValue("Language"))
-				query->m_language = metadata.getString("Language");
+			{
+				if(metadata.isNull("Language"))
+				{
+					//TODO: Should be an error
+					query->m_language = "EN";
+				}
+				else
+					query->m_language = metadata.getString("Language");
+			}
 			else
 				;//TODO throw TRACED_InA_EXCEPTION("Missing Language value in Metadata query");
 
