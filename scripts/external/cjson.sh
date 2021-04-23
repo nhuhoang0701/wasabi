@@ -8,8 +8,8 @@ then
 	echo --------------- git ---------------
 	git clone https://github.com/DaveGamble/cJSON.git  >> $outfile
 	cd cJSON
-	mkdir -p build_$WASABI_PLATFORM_TARGET
-	cd build_$WASABI_PLATFORM_TARGET
+	mkdir -p $WASABI_BUILD_DIR_NAME
+	cd $WASABI_BUILD_DIR_NAME
 
 	echo ------------- cmake ---------------
 	$CMAKE .. \
