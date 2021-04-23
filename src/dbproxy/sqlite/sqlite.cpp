@@ -1,5 +1,8 @@
 #include "sqlite.h"
 
+#include "dbproxy/dbproxy.h"
+
+#if defined(DB_FILE_EMBDED)
 #include "onetable_datatype/createtable.h"
 #include "onetable_datatype/table_onetable_datatype.h"
 
@@ -14,27 +17,35 @@
 #include "efashion/table_product_promotion_facts.h"
 #include "efashion/table_promotion_lookup.h"
 #include "efashion/table_Shop_facts.h"
+#endif
 
+#include <iterator>
 #include <sqlite3.h>
 
 #include <iostream>
 
 namespace dbproxy
 {
+#if !defined (DB_FILE_EMBDED)
+	// Workaround as PRAGMA table_info didn't works
+	static sqlite3* g_db = nullptr;
+	static TableDescr* g_tableDescr = nullptr;
+	// Workaround as PRAGMA table_info didn't works
+#endif
+
 	DBSQLite::DBSQLite(const std::string& dbname)
 	: DBProxy()
 	{
 		std::cout << "dbname:" << dbname << std::endl;
 		int res = 0;
-		bool useDBFile = false;//dbname=="efashion";
-		if(useDBFile)
-		{
-			std::string file("./resources/sqlite/"+dbname+"/"+dbname+".db");
-			std::cout << "db from file: '" << file << "'" << std::endl;
-			res = sqlite3_open_v2(file.c_str(), &m_sqlite_db, SQLITE_OPEN_READONLY, nullptr);
-		}
-		else
-			res = sqlite3_open(":memory:", &m_sqlite_db);
+#if defined(DB_FILE_EMBDED)
+		res = sqlite3_open(":memory:", &m_sqlite_db);
+#else
+		std::string file("./resources/sqlite/"+dbname+"/"+dbname+".db");
+		std::cout << "db from file: '" << file << "'" << std::endl;
+		res = sqlite3_open_v2(file.c_str(), &m_sqlite_db, SQLITE_OPEN_READONLY, nullptr);
+#endif
+
 		if (res != SQLITE_OK)
 		{
 			const std::string err = sqlite3_errmsg(m_sqlite_db);
@@ -77,8 +88,9 @@ namespace dbproxy
 				throw std::runtime_error("Unknow dbname: '"  + dbname + "'");
 			}
 		}
+#endif //DB_FILE_EMBDED
 
-		//***********************************************************
+		// ***********************************************************
 		// Retrieve the tables from the DB
 		std::function<void(const Row&)> lambda = [this](const Row& row)
 		{
@@ -89,35 +101,27 @@ namespace dbproxy
 		};
 		executeSQL("SELECT * FROM sqlite_master WHERE type='table';", &lambda);
 
+		//***********************************************************
+		// Retrieve the from the tables
+#if !defined (DB_FILE_EMBDED)
+		g_db = m_sqlite_db;
 		for(auto& table : getTables())
 		{
-			//std::cout << ">>*******************************************************" << std::endl;
-			//std::cout << "Table name : '" << table.getName() << "'" << std::endl;
+			g_tableDescr = &table;
+			executeSQL("SELECT * FROM "+table.getName()+" LIMIT  1;", nullptr);
+			g_tableDescr = nullptr;
+		}
+		g_db = nullptr;
+#else // DB_FILE_EMBDED
+		for(auto& table : getTables())
+		{
 			std::function<void(const Row&)> lambda = [&table](const Row& row)
 			{
 				table.push_back(ColumnDescr(row[1].getString(), row[2].getString()));
 			};
 			executeSQL("PRAGMA table_info("+table.getName()+");", &lambda);
-			//std::cout << "<<*******************************************************" << std::endl << std::endl;
 		}
-		/*
-		{
-			sqlite3_stmt* stmt = nullptr;
-			int rc = sqlite3_prepare_v2(m_sqlite_db, "SELECT * FROM pragma_table_info('sometable');", -1, &stmt, 0);
-			printf("first query rc = %d\n", rc);
-			while( sqlite3_step(stmt)==SQLITE_ROW )
-			{
-				for(int i=0; i<sqlite3_column_count(stmt); i++)
-				{
-					if( i ) 
-						printf(",");
-					printf("%s", sqlite3_column_text(stmt,i));
-				}
-				printf("\n");
-			}
-			sqlite3_finalize(stmt);
-		}
-		*/
+#endif // DB_FILE_EMBDED
 	}
 
 	DBSQLite::~DBSQLite()
@@ -151,13 +155,33 @@ namespace dbproxy
 		row.reserve(argc);
 		for (int i = 0; i < argc; i++)
 		{
-			if(argv[i] == nullptr)
-				row.push_back(Value("##NULL")); //TODO: Manage NULL Value
-			else
-				row.push_back(Value(argv[i]));
-			//std::cout << "sqlite_callback SQL result: '" << azColName[i] << "' = '" << (argv[i] ? argv[i] : "NULL") << "'" << std::endl;
+#if !defined (DB_FILE_EMBDED)
+			if(g_db && g_tableDescr)
+			{
+				char const *pzDataType = nullptr;
+				char const *pzCollSeq = nullptr;
+				int *pNotNull = nullptr;
+				int *pPrimaryKey = nullptr;
+				int *pAutoinc = nullptr;
+				if(SQLITE_OK ==sqlite3_table_column_metadata(g_db, nullptr, g_tableDescr->getName().c_str(), azColName[i], &pzDataType, &pzCollSeq, pNotNull, pPrimaryKey, pAutoinc) )
+					g_tableDescr->push_back(ColumnDescr(std::string(azColName[i]), std::string(pzDataType?pzDataType:"")));
+				else
+					std::cerr << "ERROR :sqlite3_table_column_metadata" << std::endl;
+				
+				std::cout << "sqlite_callback: '" << azColName[i] << "' = '" << (pzDataType ? pzDataType : "NULL") << "'" << std::endl;
+			}
+#endif
+
+			if(calback != nullptr)
+			{
+				if(argv[i] == nullptr)
+					row.push_back(Value("##NULL")); //TODO: Manage NULL Value
+				else
+					row.push_back(Value(argv[i]));
+			}
 		}
-		(*calback)(row);
+		if(calback != nullptr)
+			(*calback)(row);
 		
 		return 0;
 	}
