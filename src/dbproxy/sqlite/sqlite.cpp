@@ -55,7 +55,7 @@ namespace dbproxy
 			throw std::runtime_error("Cannot open database:" + err);
 		}
 
-		if(useDBFile == false)
+#if defined(DB_FILE_EMBDED)
 		{
 			//***********************************************************
 			// Create a DB on the fly with a SQL , waiting WASI read file
