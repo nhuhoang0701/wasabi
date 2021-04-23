@@ -406,31 +406,37 @@ let WASI_API = {
 
 		let view = getModuleMemoryDataView();
 
-		// ID of Device containing file
+		// Device ID of device containing the file.
 		view.setUint32(buf_ptr , 0, !0);
 		view.setUint32(buf_ptr + 4, 0, !0);
 
-		// inode number
+		// File serial number.
 		view.setUint32(buf_ptr + 8, 0, !0);
 		view.setUint32(buf_ptr + 12, 0, !0);
 
-		/* protection */
+		// File type.
 		view.setUint8(buf_ptr + 16, WASI_FILETYPE_REGULAR_FILE, !0);
+		view.setUint32(buf_ptr + 20, 0, !0);
 
-		/* number of hard links */
-		view.setUint32(buf_ptr + 20, 0 , !0);
+		// Number of hard links to the file.
+		view.setUint32(buf_ptr + 24, 0 , !0);
+		view.setUint32(buf_ptr + 28, 0 , !0);
 		
-		/* user ID of owner */
-		view.setUint32(buf_ptr + 24, 0, !0);
-		/* group  ID of owner */
-		view.setUint32(buf_ptr + 28, 0, !0);
-		/* device ID (if special file) */
-		view.setUint32(buf_ptr + 32, 0, !0);
+		// For regular files, the file size in bytes. For symbolic links, the length in bytes of the pathname contained in the symbolic
+		view.setUint32(buf_ptr + 32, entry.data.length, !0);
 		view.setUint32(buf_ptr + 36, 0, !0);
 
-		/* total size, in bytes */
+		// Last data access timestamp.
 		view.setUint32(buf_ptr + 40, 0, !0);
-		view.setUint32(buf_ptr + 44, entry.data.length, !0);
+		view.setUint32(buf_ptr + 44, 0, !0);
+
+		// Last data modification timestamp.
+		view.setUint32(buf_ptr + 48, 0, !0);
+		view.setUint32(buf_ptr + 52, 0, !0);
+
+		// Last file status change timestamp.
+		view.setUint32(buf_ptr + 56, 0, !0);
+		view.setUint32(buf_ptr + 60, 0, !0);
 
 		return WASI_ESUCCESS;
 	},
