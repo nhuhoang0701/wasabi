@@ -98,6 +98,10 @@ if ("${WASABI_PLATFORM_TARGET}" STREQUAL "wasm")
 	set(CMAKE_AR ${LLVM_DIR}/bin/llvm-ar)
 	set(CMAKE_RANLIB ${LLVM_DIR}/bin/llvm-ranlib)
 	set(CMAKE_SPLIT ${LLVM_DIR}/bin/llvm-split)
+	set(CMAKE_C_COMPILER_AR "${CMAKE_AR}")
+	set(CMAKE_CXX_COMPILER_AR "${CMAKE_AR}")
+	set(CMAKE_C_COMPILER_RANLIB "${CMAKE_RANLIB}")
+	set(CMAKE_CXX_COMPILER_RANLIB "${CMAKE_RANLIB}")
 
 elseif ("${WASABI_PLATFORM_TARGET}" STREQUAL "linux")
 	set(CMAKE_C_COMPILER ${LLVM_DIR}/bin/clang)
@@ -106,6 +110,10 @@ elseif ("${WASABI_PLATFORM_TARGET}" STREQUAL "linux")
 	set(CMAKE_AR ${LLVM_DIR}/bin/llvm-ar)
 	set(CMAKE_RANLIB ${LLVM_DIR}/bin/llvm-ranlib)
 	set(CMAKE_SPLIT ${LLVM_DIR}/bin/llvm-split)
+	set(CMAKE_C_COMPILER_AR "${CMAKE_AR}")
+	set(CMAKE_CXX_COMPILER_AR "${CMAKE_AR}")
+	set(CMAKE_C_COMPILER_RANLIB "${CMAKE_RANLIB}")
+	set(CMAKE_CXX_COMPILER_RANLIB "${CMAKE_RANLIB}")
 	
 	set(CMAKE_CXX_FLAGS           "-stdlib=libc++  -I${LLVM_DIR}/include/c++/v1")
 	set(CMAKE_EXE_LINKER_FLAGS    "-fuse-ld=lld -static-libstdc++ -rtlib=compiler-rt -stdlib=libc++ -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libunwind.a -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libc++abi.a")
@@ -131,7 +139,6 @@ endif ()
 
 ###########################################
 # compilation option
-set(CMAKE_BUILD_TYPE Debug)
 message(STATUS "- CMAKE_BUILD_TYPE='${CMAKE_BUILD_TYPE}'")
   
 set(CMAKE_CXX_STANDARD 20)
@@ -140,8 +147,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-#For none debug
-#set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
+if ("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
+set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
+endif ()
 #add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-fwasm-exceptions>)
 
 
