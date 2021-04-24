@@ -41,6 +41,9 @@ namespace calculator
 		size_t  getRowNbrs() const;
 		size_t  getColNbrs() const;
 
+		calculator::eDataType  getValueDatatype(size_t col, size_t row) const;
+		const Value&           getValue(size_t col, size_t row) const;
+
 	private:
 		const Cube& m_cube;
 		const Axe& m_axeRow;
@@ -58,9 +61,9 @@ namespace calculator
 		void         addDim(eAxe eAxe, const Object& obj);
 		void         addMeas(const std::string& name);
 
-		const Axe&   getAxe(eAxe eAxe) const;
-		
 		void         materialyze();
+
+		const Axe&   getAxe(eAxe eAxe) const;
 		const Body&  getBody() const {return m_body;};
 
 	private:
