@@ -35,13 +35,14 @@ namespace calculator
 	class Body : public std::vector<Object>
 	{
 	public:
-		Body(const Axe& row,const Axe& col);
+		Body(const Cube& cube, const Axe& row,const Axe& col);
 
 		size_t  getCellsNbs() const;
 		size_t  getRowNbrs() const;
 		size_t  getColNbrs() const;
 
 	private:
+		const Cube& m_cube;
 		const Axe& m_axeRow;
 		const Axe& m_axeCol;
 	};
