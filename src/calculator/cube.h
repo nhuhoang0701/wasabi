@@ -38,6 +38,8 @@ namespace calculator
 		Body(const Axe& row,const Axe& col);
 
 		size_t  getCellsNbs() const;
+		size_t  getRowNbrs() const;
+		size_t  getColNbrs() const;
 
 	private:
 		const Axe& m_axeRow;
@@ -48,7 +50,8 @@ namespace calculator
 	public:
 		Cube();
 
-		void  setStorage(std::shared_ptr<const DataStorage> data);
+		void                setStorage(std::shared_ptr<const DataStorage> data);
+		const DataStorage&  getStorage() const;
 		
 		enum class eAxe {Row, Column};
 		void         addDim(eAxe eAxe, const Object& obj);

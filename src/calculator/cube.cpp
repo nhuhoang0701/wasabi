@@ -27,16 +27,26 @@ namespace calculator
 
 	size_t  Body::getCellsNbs() const
 	{
+		return getRowNbrs() * getColNbrs();
+	}
+
+	size_t  Body::getColNbrs() const
+	{
+		return std::vector<Object>::size();
+	}
+
+	size_t  Body::getRowNbrs() const
+	{
 		if(empty())
 			return 0;
 		else if(m_axeRow.empty() && m_axeCol.empty())
-			return size();
+			return 1;
 		else if(!m_axeRow.empty() && !m_axeCol.empty())
-			return size() * m_axeRow.getCardinality() * m_axeCol.getCardinality();
+			return m_axeRow.getCardinality() * m_axeCol.getCardinality();
 		else if(!m_axeRow.empty() && m_axeCol.empty())
-			return size() * m_axeRow.getCardinality();
+			return m_axeRow.getCardinality();
 		else if(m_axeRow.empty() && !m_axeCol.empty())
-			return size() * m_axeCol.getCardinality();
+			return m_axeCol.getCardinality();
 
 		return 0; // TODO: Error
 	}
@@ -49,10 +59,17 @@ namespace calculator
 	{
 		m_data = data;
 	}
+	
+	const DataStorage&  Cube::getStorage() const
+	{
+		if(!m_data)
+			throw std::runtime_error("Cube storage is missing");
+		return *m_data;
+	}
 
 	void Cube::addDim(eAxe axe, const Object& obj)
 	{
-		if(!m_data->haveCol(obj.getName()))
+		if(!getStorage().haveCol(obj.getName()))
 			throw std::runtime_error("Object " + obj.getName() + " not found in datastorage");
 
 		switch (axe)
@@ -74,6 +91,9 @@ namespace calculator
 
 	void Cube::addMeas(const std::string& name)
 	{
+		if(!getStorage().haveCol(name))
+			throw std::runtime_error("Object " + name + " not found in datastorage");
+
 		m_body.push_back(name);
 	}
 	
