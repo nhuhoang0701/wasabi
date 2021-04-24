@@ -33,6 +33,8 @@ int main()
 		CPPUNIT_ASSERT_EQUAL(4, cube.getAxe(Cube::eAxe::Row).getCardinality());
 		CPPUNIT_ASSERT_EQUAL(0, cube.getAxe(Cube::eAxe::Column).getCardinality());
 		CPPUNIT_ASSERT_EQUAL(0, cube.getBody().getCellsNbs());
+		CPPUNIT_ASSERT_EQUAL(0, cube.getBody().getColNbrs());
+		CPPUNIT_ASSERT_EQUAL(0, cube.getBody().getRowNbrs());
 	}
 	{
 		Cube cube;	
@@ -43,6 +45,8 @@ int main()
 		CPPUNIT_ASSERT_EQUAL(0, cube.getAxe(Cube::eAxe::Row).getCardinality());
 		CPPUNIT_ASSERT_EQUAL(0, cube.getAxe(Cube::eAxe::Column).getCardinality());
 		CPPUNIT_ASSERT_EQUAL(2, cube.getBody().getCellsNbs());
+		CPPUNIT_ASSERT_EQUAL(2, cube.getBody().getColNbrs());
+		CPPUNIT_ASSERT_EQUAL(1, cube.getBody().getRowNbrs());
 	}
 	{
 		Cube cube;	
@@ -55,6 +59,8 @@ int main()
 		CPPUNIT_ASSERT_EQUAL(2, cube.getAxe(Cube::eAxe::Row).getCardinality());
 		CPPUNIT_ASSERT_EQUAL(3, cube.getAxe(Cube::eAxe::Column).getCardinality());
 		CPPUNIT_ASSERT_EQUAL(12, cube.getBody().getCellsNbs());
+		CPPUNIT_ASSERT_EQUAL(2, cube.getBody().getColNbrs());
+		CPPUNIT_ASSERT_EQUAL(6, cube.getBody().getRowNbrs());
 	}
 
 	return TEST_HAVEERROR();
