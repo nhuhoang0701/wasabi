@@ -134,31 +134,40 @@ namespace ina_interpreter
 			}
 			case (ina::query_model::Query::qAnalytics):
 			{
-				const query_generator::query_generator& queryGen = query_generator::query_generator(query);
-				
-				const std::string sql = queryGen.getSQL();
-				std::cout << "InA_Interpreter => Generated SQL: " << sql << std::endl;
-
-				std::shared_ptr<calculator::DataStorage> data(new calculator::DataStorage());
-
-				queryGen.prepareStorage(*data);
-				std::function<void(const dbproxy::Row&)> lambda = [&data](const dbproxy::Row& row)
+				calculator::Cube cube;
 				{
-					data->insertRow(row);
-				};
-				const std::string& cnxString = query.getDataSource().getPackageName();
-				dbproxy::DBProxy::getDBProxy(cnxString)->executeSQL(sql, &lambda);
+					const query_generator::query_generator& queryGen = query_generator::query_generator(query);
 
-				size_t rowDataStart = 0;
-				size_t columnDataStart = 0;
-				for (auto dimension : query.getDefinition().getDimensions()) 
-				{
-					if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Rows && !ina::query_model::Dimension::isDimensionOfMeasures(dimension))
+					std::shared_ptr<calculator::DataStorage> data(new calculator::DataStorage());
+					queryGen.prepareStorage(*data);
+					std::function<void(const dbproxy::Row&)> lambda = [&data](const dbproxy::Row& row)
 					{
-						columnDataStart ++;
+						data->insertRow(row);
+					};
+					const std::string& cnxString = query.getDataSource().getPackageName();
+					dbproxy::DBProxy::getDBProxy(cnxString)->executeSQL(queryGen.getSQL(), &lambda);
+
+					cube.setStorage(data);
+					for (const auto& dimension : query.getDefinition().getDimensions()) 
+					{
+						if(!ina::query_model::Dimension::isDimensionOfMeasures(dimension) )
+						{
+							if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Rows)
+								cube.addDim(calculator::Cube::eAxe::Row, dimension.getName());
+							else if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Columns)
+								cube.addDim(calculator::Cube::eAxe::Column, dimension.getName());
+							else throw std::runtime_error("Unknow axis type");
+						}
+						else
+						{
+							for(const auto& member : dimension.getMembers())
+								cube.addMeas(member.getName());
+						}
 					}
 				}
 
+				size_t rowDataStart = 0;
+				size_t columnDataStart = 0;
 				{
 					JSON_MAP(writer);
 					writer.key("Cells");
@@ -170,24 +179,22 @@ namespace ina_interpreter
 							writer.key("Values");
 							{
 								JSON_LIST(writer);
-								for(size_t rowIndex = rowDataStart; rowIndex < data->getRowNbrs(); rowIndex++)
+								for(size_t rowIndex = rowDataStart; rowIndex < cube.getBody().getRowNbrs(); rowIndex++)
 								{
-									for(size_t columnIndex = columnDataStart; columnIndex < data->getColNbrs(); columnIndex++)
+									for(size_t colIndex = 0; colIndex < cube.getBody().getColNbrs(); colIndex++)
 									{
-										const auto& column = (*data)[columnIndex];
-										const auto& columnData = std::get<2>(column);
-										const auto& columnTyped = (*columnData)[rowIndex];
-										switch (std::get<0>(column))
+										const auto& data = cube.getBody().getValue(colIndex, rowIndex);
+										switch (cube.getBody().getValueDatatype(colIndex, rowIndex))
 										{
 										case calculator::eDataType::String:
 										{
-											const auto& val = std::get<std::string>(columnTyped);
+											const auto& val = std::get<std::string>(data);
 											writer.value(val);
 											break;
 										}
 										case calculator::eDataType::Number:
 										{
-											const auto& val = std::get<double>(columnTyped);
+											const auto& val = std::get<double>(data);
 											writer.value(val);
 											break;
 										}
