@@ -24,6 +24,7 @@ int main()
 		cube.setStorage(storage);
 		cube.addMeas("Meas0");
 		cube.addMeas("Meas1");
+		cube.materialyze();
 
 		CPPUNIT_ASSERT_EQUAL(0, cube.getAxe(Cube::eAxe::Row).getCardinality());
 		CPPUNIT_ASSERT_EQUAL(0, cube.getAxe(Cube::eAxe::Column).getCardinality());
@@ -44,6 +45,7 @@ int main()
 		Cube cube;	
 		cube.setStorage(storage);
 		cube.addDim(Cube::eAxe::Row, Object("Dim"));
+		cube.materialyze();
 
 		CPPUNIT_ASSERT_EQUAL(4, cube.getAxe(Cube::eAxe::Row).getCardinality());
 		CPPUNIT_ASSERT_EQUAL(0, cube.getAxe(Cube::eAxe::Column).getCardinality());
@@ -57,6 +59,7 @@ int main()
 		cube.setStorage(storage);
 		cube.addMeas("Meas0");
 		cube.addMeas("Meas1");
+		cube.materialyze();
 
 		CPPUNIT_ASSERT_EQUAL(0, cube.getAxe(Cube::eAxe::Row).getCardinality());
 		CPPUNIT_ASSERT_EQUAL(0, cube.getAxe(Cube::eAxe::Column).getCardinality());
@@ -69,9 +72,25 @@ int main()
 		Cube cube;	
 		cube.setStorage(storage);
 		cube.addDim(Cube::eAxe::Row, Object("DimA"));
+		cube.addDim(Cube::eAxe::Row, Object("DimB"));
+		cube.addMeas("Meas0");
+		cube.materialyze();
+
+		CPPUNIT_ASSERT_EQUAL(4, cube.getAxe(Cube::eAxe::Row).getCardinality());
+		CPPUNIT_ASSERT_EQUAL(0, cube.getAxe(Cube::eAxe::Column).getCardinality());
+
+		CPPUNIT_ASSERT_EQUAL(4, cube.getBody().getCellsNbs());
+		CPPUNIT_ASSERT_EQUAL(1, cube.getBody().getColNbrs());
+		CPPUNIT_ASSERT_EQUAL(4, cube.getBody().getRowNbrs());
+	}
+	{
+		Cube cube;	
+		cube.setStorage(storage);
+		cube.addDim(Cube::eAxe::Row, Object("DimA"));
 		cube.addDim(Cube::eAxe::Column, Object("DimB"));
 		cube.addMeas("Meas0");
 		cube.addMeas("Meas1");
+		cube.materialyze();
 
 		CPPUNIT_ASSERT_EQUAL(2, cube.getAxe(Cube::eAxe::Row).getCardinality());
 		CPPUNIT_ASSERT_EQUAL(3, cube.getAxe(Cube::eAxe::Column).getCardinality());
@@ -88,6 +107,7 @@ int main()
 		cube.addDim(Cube::eAxe::Row, Object("DimB"));
 		cube.addMeas("Meas0");
 		cube.addMeas("Meas1");
+		cube.materialyze();
 
 		CPPUNIT_ASSERT_EQUAL(4, cube.getAxe(Cube::eAxe::Row).getCardinality());
 		CPPUNIT_ASSERT_EQUAL(0, cube.getAxe(Cube::eAxe::Column).getCardinality());
