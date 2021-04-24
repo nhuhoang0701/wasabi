@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <set>
 
 namespace calculator
 {
@@ -26,16 +27,23 @@ namespace calculator
 		Axe(const Cube& cube) : m_cube(cube) {};
 		~Axe() = default;
 
+		void   materialyze();
+
 		size_t getCardinality() const;
 
 	private:
-		const Cube& m_cube;
+		const Cube&                  m_cube;
+		std::set<std::vector<Value>> m_tuples;
+
+		bool  m_materialyzed = false;
 	};
 
 	class Body : public std::vector<Object>
 	{
 	public:
 		Body(const Cube& cube, const Axe& row,const Axe& col);
+
+		void    materialyze();
 
 		size_t  getCellsNbs() const;
 		size_t  getRowNbrs() const;
