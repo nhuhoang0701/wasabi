@@ -20,8 +20,8 @@ namespace calculator
 		return card;
 	}
 
-	Body::Body(const Axe& row, const Axe& col)
-		: m_axeRow(row), m_axeCol(col)
+	Body::Body(const Cube& cube, const Axe& row, const Axe& col)
+		: m_cube(cube), m_axeRow(row), m_axeCol(col)
 	{
 	}
 
@@ -40,7 +40,7 @@ namespace calculator
 		if(empty())
 			return 0;
 		else if(m_axeRow.empty() && m_axeCol.empty())
-			return 1;
+			return m_cube.getStorage().getRowNbrs()==0?0:1;
 		else if(!m_axeRow.empty() && !m_axeCol.empty())
 			return m_axeRow.getCardinality() * m_axeCol.getCardinality();
 		else if(!m_axeRow.empty() && m_axeCol.empty())
@@ -52,7 +52,7 @@ namespace calculator
 	}
 
 	Cube::Cube()
-		: m_AxeRows(*this), m_AxeColumns(*this), m_body(m_AxeRows, m_AxeColumns)
+		: m_AxeRows(*this), m_AxeColumns(*this), m_body(*this, m_AxeRows, m_AxeColumns)
 	{
 	}
 	void Cube::setStorage(std::shared_ptr<const DataStorage> data)

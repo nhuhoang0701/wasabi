@@ -18,6 +18,20 @@ int main()
 	storage->addColumn("DimB", eDataType::String, eColumnType::Indexed);
 	storage->addColumn("Meas0", eDataType::Number, eColumnType::NoneIndexed);
 	storage->addColumn("Meas1", eDataType::Number, eColumnType::NoneIndexed);
+
+	{
+		Cube cube;	
+		cube.setStorage(storage);
+		cube.addMeas("Meas0");
+		cube.addMeas("Meas1");
+
+		CPPUNIT_ASSERT_EQUAL(0, cube.getAxe(Cube::eAxe::Row).getCardinality());
+		CPPUNIT_ASSERT_EQUAL(0, cube.getAxe(Cube::eAxe::Column).getCardinality());
+		CPPUNIT_ASSERT_EQUAL(0, cube.getBody().getCellsNbs());
+		CPPUNIT_ASSERT_EQUAL(2, cube.getBody().getColNbrs());
+		CPPUNIT_ASSERT_EQUAL(0, cube.getBody().getRowNbrs());
+	}
+
 	{
 		storage->insertRow({"A", "val0","val0","1","2"});
 		storage->insertRow({"B", "val1","val0","2","2"});
@@ -61,6 +75,21 @@ int main()
 		CPPUNIT_ASSERT_EQUAL(12, cube.getBody().getCellsNbs());
 		CPPUNIT_ASSERT_EQUAL(2, cube.getBody().getColNbrs());
 		CPPUNIT_ASSERT_EQUAL(6, cube.getBody().getRowNbrs());
+	}
+	{
+		Cube cube;	
+		cube.setStorage(storage);
+		cube.addDim(Cube::eAxe::Row, Object("Dim"));
+		cube.addDim(Cube::eAxe::Row, Object("DimA"));
+		cube.addDim(Cube::eAxe::Row, Object("DimB"));
+		cube.addMeas("Meas0");
+		cube.addMeas("Meas1");
+
+		CPPUNIT_ASSERT_EQUAL(4, cube.getAxe(Cube::eAxe::Row).getCardinality());
+		CPPUNIT_ASSERT_EQUAL(0, cube.getAxe(Cube::eAxe::Column).getCardinality());
+		CPPUNIT_ASSERT_EQUAL(8, cube.getBody().getCellsNbs());
+		CPPUNIT_ASSERT_EQUAL(2, cube.getBody().getColNbrs());
+		CPPUNIT_ASSERT_EQUAL(4, cube.getBody().getRowNbrs());
 	}
 
 	return TEST_HAVEERROR();
