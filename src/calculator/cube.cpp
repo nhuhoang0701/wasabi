@@ -51,6 +51,26 @@ namespace calculator
 		return 0; // TODO: Error
 	}
 
+	calculator::eDataType Body::getValueDatatype(size_t col, size_t row) const
+	{
+		if(m_cube.getStorage().getRowNbrs() != getRowNbrs())
+			throw std::runtime_error("Local agregation, NYI");
+		const std::string& nameCol = at(col).getName();
+		const auto& column = m_cube.getStorage()[m_cube.getStorage().getColIndex(nameCol)];
+		return std::get<0>(column);
+	}
+
+	const Value& Body::getValue(size_t col, size_t row) const
+	{
+		if(m_cube.getStorage().getRowNbrs() != getRowNbrs())
+			throw std::runtime_error("Local agregation, NYI");
+		const std::string& nameCol = at(col).getName();
+		const auto& column = m_cube.getStorage()[m_cube.getStorage().getColIndex(nameCol)];
+		const auto& columnData = std::get<2>(column);
+		const auto& data = (*columnData)[row];
+		return data;
+	}
+
 	Cube::Cube()
 		: m_AxeRows(*this), m_AxeColumns(*this), m_body(*this, m_AxeRows, m_AxeColumns)
 	{
