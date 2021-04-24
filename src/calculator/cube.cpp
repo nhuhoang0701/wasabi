@@ -2,27 +2,48 @@
 
 #include <stdexcept>
 
+
 namespace calculator
 {
 	Object::Object(const std::string& name)
 		: m_name(name)
 	{
 	}
+
+	void Axe::materialyze()
+	{
+		for(size_t row = 0; row <m_cube.m_data->getRowNbrs(); row++)
+		{
+			std::vector<Value> tuple;
+			for(const auto& obj : *this)
+			{
+				const auto& column = (*m_cube.m_data)[m_cube.getStorage().getColIndex(obj.getName())];
+				const auto& columnData = std::get<2>(column);
+				const auto& data = (*columnData)[row];
+
+				tuple.push_back(data);
+			}
+			if(!tuple.empty())
+				m_tuples.insert(tuple);
+		}
+		m_materialyzed = true;
+	}
+
 	size_t Axe::getCardinality() const
 	{
-		size_t card = 0;
-		for(const auto& obj : *this)
-		{
-			size_t colIdx = m_cube.m_data->getColIndex(obj.getName());
-			card = std::max(card, std::get<2>((*m_cube.m_data)[colIdx])->getNbDistinctVals());
-		}
-
-		return card;
+		if(!m_materialyzed)
+			throw std::runtime_error("Axe: materialyze() not called");
+		return m_tuples.size();
 	}
 
 	Body::Body(const Cube& cube, const Axe& row, const Axe& col)
 		: m_cube(cube), m_axeRow(row), m_axeCol(col)
 	{
+	}
+
+	void Body::materialyze()
+	{
+		// TODO
 	}
 
 	size_t  Body::getCellsNbs() const
@@ -80,6 +101,13 @@ namespace calculator
 		m_data = data;
 	}
 	
+	void Cube::materialyze()
+	{
+		m_AxeRows.materialyze();
+		m_AxeColumns.materialyze();
+		m_body.materialyze();
+	}
+	
 	const DataStorage&  Cube::getStorage() const
 	{
 		if(!m_data)
@@ -128,9 +156,5 @@ namespace calculator
 		default:
 		throw std::runtime_error("Unknow eAxe");
 		}
-	}
-	
-	void materialyze()
-	{
 	}
 } // namespace calculator

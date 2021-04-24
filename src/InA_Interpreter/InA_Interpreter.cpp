@@ -165,6 +165,7 @@ namespace ina_interpreter
 						}
 					}
 				}
+				cube.materialyze();
 
 				size_t rowDataStart = 0;
 				size_t columnDataStart = 0;
