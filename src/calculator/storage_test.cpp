@@ -22,16 +22,14 @@ int main()
 	CPPUNIT_ASSERT_EQUAL(0,storage.getColIndex("col0"));
 	CPPUNIT_ASSERT_EQUAL(1,storage.getColIndex("col1"));
 
-	const auto& col0 = storage[0];
-	CPPUNIT_ASSERT_EQUAL(eDataType::String,std::get<0>(col0));
-	CPPUNIT_ASSERT_EQUAL(eColumnType::Indexed,std::get<1>(col0));
+	const auto& col0Data = storage[0];
+	CPPUNIT_ASSERT_EQUAL(eDataType::String,col0Data->getDataType());
+	CPPUNIT_ASSERT(dynamic_cast<ColumnIndexed*>(col0Data.get()) != nullptr);
 
-	const auto& col1 = storage[1];
-	CPPUNIT_ASSERT_EQUAL(eDataType::Number,std::get<0>(col1));
-	CPPUNIT_ASSERT_EQUAL(eColumnType::NoneIndexed,std::get<1>(col1));
+	const auto& col1Data = storage[1];
+	CPPUNIT_ASSERT_EQUAL(eDataType::Number,col1Data->getDataType());
+	CPPUNIT_ASSERT(dynamic_cast<ColumnNoneIndexed*>(col1Data.get()) != nullptr);
 
-	const auto& col0Data = std::get<2>(col0);
-	const auto& col1Data = std::get<2>(col1);
 	{
 		storage.insertRow({"col0val0", "1.0"});
 		CPPUNIT_ASSERT_EQUAL(1,col0Data->getNbDistinctVals());
