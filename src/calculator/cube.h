@@ -31,6 +31,9 @@ namespace calculator
 
 		size_t getCardinality() const;
 
+		calculator::eDataType  getValueDatatype(size_t colIdx) const;
+		const Value&           getValue(size_t colIdx, size_t row) const;
+
 	private:
 		const Cube&                  m_cube;
 		std::set<std::vector<Value>> m_tuples;
@@ -49,8 +52,8 @@ namespace calculator
 		size_t  getRowNbrs() const;
 		size_t  getColNbrs() const;
 
-		calculator::eDataType  getValueDatatype(size_t col, size_t row) const;
-		const Value&           getValue(size_t col, size_t row) const;
+		calculator::eDataType  getValueDatatype(size_t colIdx) const;
+		const Value&           getValue(size_t colIdx, size_t row) const;
 
 	private:
 		const Cube& m_cube;
