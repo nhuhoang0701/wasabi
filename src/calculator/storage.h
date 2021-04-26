@@ -20,8 +20,10 @@ namespace calculator
 	class ColumnData
 	{
 	public:
-		ColumnData(const std::string& name)
-		: m_name(name) {}
+		ColumnData(const std::string& name, eDataType dt)
+		: m_name(name), m_datatype(dt) {}
+
+		eDataType    getDataType() const {return m_datatype;}
 
 		virtual void push_back(const Value& value) = 0;
 
@@ -32,12 +34,13 @@ namespace calculator
 
 	private:
 		const std::string  m_name;
+		const eDataType    m_datatype;
 	};
 	class ColumnNoneIndexed : public ColumnData
 	{
 	public:
-		ColumnNoneIndexed(const std::string& name)
-			: ColumnData(name) {}
+		ColumnNoneIndexed(const std::string& name, eDataType dt)
+			: ColumnData(name, dt) {}
 
 		void push_back(const Value& value)
 		{
@@ -57,8 +60,8 @@ namespace calculator
 	class ColumnIndexed : public ColumnData
 	{
 	public:
-		ColumnIndexed(const std::string& name)
-			: ColumnData(name) {}
+		ColumnIndexed(const std::string& name, eDataType dt)
+			: ColumnData(name, dt) {}
 
 		size_t getNbVals() const {return m_indexes.size();}
 		size_t getNbDistinctVals() const {return m_values.size();}
@@ -91,7 +94,7 @@ namespace calculator
 	class DataStorage
 	{
 	public:
-		typedef std::tuple<eDataType, eColumnType, std::shared_ptr<ColumnData>> Column;
+		typedef std::shared_ptr<ColumnData> Column;
 
 	public:
 		DataStorage() = default;
@@ -109,14 +112,14 @@ namespace calculator
 			if(m_colsIdxByName.find(name) != m_colsIdxByName.end())
 				throw std::runtime_error("Column already exist:" + name);
 
-			std::shared_ptr<ColumnData> colData;
+			Column colData;
 			if(type == eColumnType::Indexed)
-				colData = std::make_shared<ColumnIndexed>(name);
+				colData = std::make_shared<ColumnIndexed>(name, dt);
 			else if(type == eColumnType::NoneIndexed)
-				colData = std::make_shared<ColumnNoneIndexed>(name);
+				colData = std::make_shared<ColumnNoneIndexed>(name, dt);
 			else
 				throw std::runtime_error("unknow column type");
-			m_cols.emplace_back(dt, type, colData);
+			m_cols.emplace_back(colData);
 
 			m_colsIdxByName[name] = m_cols.size()-1;
 		}
@@ -127,11 +130,9 @@ namespace calculator
 				throw std::runtime_error("row size didn't match column size input:" + std::to_string(row.size()) + " expected" + std::to_string(m_cols.size()));
 
 			size_t idx = 0;
-			for(auto& col : m_cols)
+			for(auto& colData : m_cols)
 			{
-				auto& colData = std::get<2>(col);
-				const eColumnType type = std::get<1>(col);
-				const eDataType dt = std::get<0>(col);
+				const eDataType dt = colData->getDataType();
 
 				if(dt == eDataType::String)
 					colData->push_back(row[idx].getString());
