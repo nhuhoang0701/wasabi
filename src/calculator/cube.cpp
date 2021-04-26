@@ -17,8 +17,7 @@ namespace calculator
 			std::vector<Value> tuple;
 			for(const auto& obj : *this)
 			{
-				const auto& column = (*m_cube.m_data)[m_cube.getStorage().getColIndex(obj.getName())];
-				const auto& columnData = std::get<2>(column);
+				const auto& columnData = (*m_cube.m_data)[m_cube.getStorage().getColIndex(obj.getName())];
 				const auto& data = (*columnData)[row];
 
 				tuple.push_back(data);
@@ -77,8 +76,8 @@ namespace calculator
 		if(m_cube.getStorage().getRowNbrs() != getRowNbrs())
 			throw std::runtime_error("Local agregation, NYI");
 		const std::string& nameCol = at(col).getName();
-		const auto& column = m_cube.getStorage()[m_cube.getStorage().getColIndex(nameCol)];
-		return std::get<0>(column);
+		const auto& columnData = m_cube.getStorage()[m_cube.getStorage().getColIndex(nameCol)];
+		return columnData->getDataType();
 	}
 
 	const Value& Body::getValue(size_t col, size_t row) const
@@ -86,10 +85,8 @@ namespace calculator
 		if(m_cube.getStorage().getRowNbrs() != getRowNbrs())
 			throw std::runtime_error("Local agregation, NYI");
 		const std::string& nameCol = at(col).getName();
-		const auto& column = m_cube.getStorage()[m_cube.getStorage().getColIndex(nameCol)];
-		const auto& columnData = std::get<2>(column);
-		const auto& data = (*columnData)[row];
-		return data;
+		const auto& columnData = m_cube.getStorage()[m_cube.getStorage().getColIndex(nameCol)];
+		return (*columnData)[row];
 	}
 
 	Cube::Cube()
