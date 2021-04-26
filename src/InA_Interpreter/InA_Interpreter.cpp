@@ -185,7 +185,7 @@ namespace ina_interpreter
 									for(size_t colIndex = 0; colIndex < cube.getBody().getColNbrs(); colIndex++)
 									{
 										const auto& data = cube.getBody().getValue(colIndex, rowIndex);
-										switch (cube.getBody().getValueDatatype(colIndex, rowIndex))
+										switch (cube.getBody().getValueDatatype(colIndex))
 										{
 										case calculator::eDataType::String:
 										{
