@@ -20,12 +20,14 @@ namespace calculator
 		{
 			for(size_t row = 0; row <m_cube.m_data->getRowNbrs(); row++)
 			{
+				// Get the tuple
 				std::vector<Value> tuple;
 				for(const auto& obj : *this)
 				{
-					const auto& columnData = (*m_cube.m_data)[m_cube.getStorage().getColIndex(obj.getName())];
+					const auto& columnData = m_cube.getStorage().getColumn(obj.getName());
 					tuple.push_back((*columnData)[row]);
 				}
+				// Get the list of pre aggreagted indexes
 				if(m_tuples.find(tuple) != m_tuples.end())
 					m_tuples[tuple].push_back(row);
 				else
@@ -45,7 +47,7 @@ namespace calculator
 	calculator::eDataType Axe::getValueDatatype(size_t dimIdx) const
 	{
 		const std::string& nameCol = at(dimIdx).getName();
-		const auto& columnData = m_cube.getStorage()[m_cube.getStorage().getColIndex(nameCol)];
+		const auto& columnData = m_cube.getStorage().getColumn(nameCol);
 		return columnData->getDataType();
 	}
 
@@ -121,7 +123,7 @@ namespace calculator
 			values.resize(getRowNbrs());
 	
 			const std::string& measName = at(measIdx++).getName();
-			const auto& columnData = *m_cube.getStorage()[m_cube.getStorage().getColIndex(measName)];
+			const auto& columnData = *m_cube.getStorage().getColumn(measName);
 
 			// Full aggreagtion on the 2 axes
 			if(m_axeRow.getCardinality() == 0 && m_axeCol.getCardinality() == 0 )
@@ -212,7 +214,7 @@ namespace calculator
 	calculator::eDataType Body::getValueDatatype(size_t measIdx) const
 	{
 		const std::string& nameCol = at(measIdx).getName();
-		const auto& columnData = m_cube.getStorage()[m_cube.getStorage().getColIndex(nameCol)];
+		const auto& columnData = m_cube.getStorage().getColumn(nameCol);
 		return columnData->getDataType();
 	}
 
