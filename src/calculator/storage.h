@@ -1,6 +1,6 @@
 #pragma once
 
-#include <dbproxy/dbproxy.h>
+#include <dbproxy/dbproxy.h>  // For dbproxy::Row
 
 #include <memory>
 #include <stdexcept>

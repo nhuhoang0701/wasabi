@@ -21,6 +21,7 @@ namespace calculator
 	};
 
 	class Cube;
+	class Body;
 	class Axe : public std::vector<Object>
 	{
 	public:
@@ -31,13 +32,17 @@ namespace calculator
 
 		size_t getCardinality() const;
 
-		calculator::eDataType  getValueDatatype(size_t colIdx) const;
-		const Value&           getValue(size_t colIdx, size_t row) const;
+		calculator::eDataType  getValueDatatype(size_t dimIdx) const;
+		const Value&           getValue(size_t dimIdx, size_t row) const;
 
 	private:
+		friend class Body;
+		const std::vector<size_t>&     getParentIndexes(size_t row) const;
+	
+	private:
 		const Cube&                  m_cube;
-		std::set<std::vector<Value>> m_tuples;
 
+		std::map<std::vector<Value>, std::vector<size_t>> m_tuples;
 		bool  m_materialyzed = false;
 	};
 
@@ -52,13 +57,18 @@ namespace calculator
 		size_t  getRowNbrs() const;
 		size_t  getColNbrs() const;
 
-		calculator::eDataType  getValueDatatype(size_t colIdx) const;
-		const Value&           getValue(size_t colIdx, size_t row) const;
+		calculator::eDataType  getValueDatatype(size_t measIdx) const;
+		const Value&           getValue(size_t measIdx, size_t col, size_t row) const;
 
 	private:
 		const Cube& m_cube;
 		const Axe& m_axeRow;
 		const Axe& m_axeCol;
+
+		typedef std::vector<std::vector<Value>>  Values;
+
+		std::vector<Values> m_Body;
+		bool  m_materialyzed = false;
 	};
 	class Cube
 	{
