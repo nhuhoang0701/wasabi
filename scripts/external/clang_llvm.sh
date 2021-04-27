@@ -5,11 +5,12 @@ echo ---------- install clang ----------
 echo "start at $(date +"%T")"
 echo "LLVM version: $LLVM_VERSION"
 echo "LLVM WASABI_LLVM: $WASABI_LLVM"
-if [ "$LLVM_DIR" != "$WASABI_EXTERNAL_DIR/llvm" ]
+if [ "$WASABI_LLVM" = "local" ]
 then
 	echo "    - use the local one '$LLVM_DIR'"
 elif [ "$WASABI_LLVM" = "compiled" ]
 then
+	echo "    - clone/compile clang '$LLVM_VERSION'"
 	cd $WASABI_EXTERNAL_DIR
 	mkdir -p llvm4build
 	cd llvm4build
@@ -47,21 +48,16 @@ elif [ ! -f "$LLVM_DIR/$LLVM_VERSION.$WASABI_LLVM.flag" ]
 then
 	if [ "$WASABI_LLVM" = "external" ]
 	then
-		LLVM_ARCH=${LLVM_ARCH:-x86_64}
-		LLVM_OS=${LLVM_OS:-linux-gnu-ubuntu-20.04}
-		LLVMFile=clang+llvm-$LLVM_VERSION-$LLVM_ARCH-$LLVM_OS
+		echo "    - download clang '$LLVM_VERSION'"
 		rm -rf $LLVM_DIR
 		rm -rf $WASABI_EXTERNAL_DIR/$LLVMFile
-		wget -qO - https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVM_VERSION/$LLVMFile.tar.xz | tar xfJ - -C $WASABI_EXTERNAL_DIR/ && \rm -rf $LLVM_DIR && cp -rf $WASABI_EXTERNAL_DIR/$LLVMFile $LLVM_DIR
-		rm -rf $WASABI_EXTERNAL_DIR/$LLVMFile
+		wget -qO - https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVM_VERSION/$LLVMFile.tar.xz | tar xfJ - -C $WASABI_EXTERNAL_DIR/
 	elif [ "$WASABI_LLVM" = "git" ]
 	then
+		echo "    - extract clang '$LLVM_VERSION' from git"
 		cd $WASABI_EXTERNAL_DIR
 		rm -rf $LLVM_DIR
 		tar --extract --file=llvm-$LLVM_VERSION.tar.gz
-	elif [ "$WASABI_LLVM" = "local" ]
-	then
-		echo "    - LLVM will be used from: '$LLVM_DIR'" 
 	else
 		echo "ERROR: WASABI_LLVM should be one of {compiled|external|git|local} not '$WASABI_LLVM'"
 		return 1;
@@ -72,12 +68,12 @@ else
 fi
 echo -----------------------------------
 echo "clang version:"
-$LLVM_DIR/bin/clang --version || true
+$LLVM_DIR/bin/clang --version
 echo --------------
 ldd $LLVM_DIR/bin/clang || true
 echo -----------------------------------
 echo "lld version:"
-$LLVM_DIR/bin/lld --version || true
+$LLVM_DIR/bin/lld --version
 echo --------------
 ldd $LLVM_DIR/bin/lld || true
 echo -----------------------------------
