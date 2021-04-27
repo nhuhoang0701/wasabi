@@ -3,6 +3,10 @@
 #include <ostream>
 #include <string_view>
 #include <vector>
+#include <cmath>  // For isnan
+
+//TODO: Rewrite and use a stable tp instead
+
 using namespace std;
 namespace wasabiUtils{
   struct JsonWriterImpl{
@@ -278,5 +282,8 @@ void JSONWriter::value(double theValue){
       aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1) = true;
     }
   }
-  aImpl.itsStream<<theValue;
+  if(std::isnan(theValue))
+    aImpl.itsStream<<"null";
+  else
+    aImpl.itsStream<<theValue;
 }
