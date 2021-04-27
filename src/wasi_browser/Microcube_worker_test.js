@@ -18,7 +18,12 @@ function _startWorkerTest() {
 		}
 		else
 		{
-			console.log("Worker: Message executed: value='" + response_value.substring(0, 150) + "'");
+			console.log("Worker: Message executed:");
+			try {
+				console.log(JSON.parse(response_value));
+			} catch(e) {
+				console.log(response_value);
+			}
 			if(response_ID == 0 && response_Action=="load")
 			{
 				worker.postMessage([ID_msg++, "GetServerInfo", ""]);
@@ -33,7 +38,7 @@ function _startWorkerTest() {
 			}
 			else if(response_ID == 3 && response_Action=="GetResponse")
 			{
-				worker.postMessage([ID_msg++, "GetResponse",'{"Analytics":{"DataSource":{"ObjectName":"Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma","PackageName":"local:sqlite:efashion","Type":"Wasabi"},"Definition":{"Dimensions":[{"Name":"Yr","Axis":"Rows"},{"Name":"Month_name","Axis":"Rows"},{"Name":"CustomDimension1","Axis":"Columns","Members":[{"Description":"Measure 1","Name":"Sales_revenue", "Aggregation":"SUM"}]}]}}}']);
+				worker.postMessage([ID_msg++, "GetResponse",'{"Analytics":{"DataSource":{"ObjectName":"Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma","PackageName":"local:sqlite:efashion","Type":"Wasabi"},"Definition":{"Dimensions":[{"Name":"Yr","Axis":"Rows"},{"Name":"Month_name","Axis":"Columns"},{"Name":"CustomDimension1","Axis":"Columns","Members":[{"Description":"Measure 1","Name":"Sales_revenue", "Aggregation":"SUM"}]}]}}}']);
 			}
 			else if(response_ID == 4 && response_Action=="GetResponse")
 			{

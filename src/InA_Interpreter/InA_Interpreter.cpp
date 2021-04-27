@@ -54,11 +54,19 @@ const char* json_getResponse_json(const char* InA)
 	
 	std::ostringstream osstream;
 	JSONWriter writer(osstream);
-	for(const auto& query : queries)
 	{
-		const char* response = ina_interpreter::processRequest(*query, writer);
-		if(response != nullptr )
-			return response;
+		JSON_MAP(writer);
+		writer.key("Grids");
+		{
+			JSON_LIST(writer);
+			for(const auto& query : queries)
+			{
+				JSON_MAP(writer);
+				const char* response = ina_interpreter::processRequest(*query, writer);
+				if(response != nullptr )
+					return response;
+			}
+		}
 	}
 
 	static std::string static_str;
@@ -134,6 +142,7 @@ namespace ina_interpreter
 			}
 			case (ina::query_model::Query::qAnalytics):
 			{
+				const ina::query_model::Dimension* measDim = nullptr; // TODO: Workaround waiting to have a grid
 				calculator::Cube cube;
 				{
 					const query_generator::query_generator& queryGen = query_generator::query_generator(query);
@@ -160,6 +169,7 @@ namespace ina_interpreter
 						}
 						else
 						{
+							measDim = &dimension;
 							for(const auto& member : dimension.getMembers())
 								cube.addMeas(member.getName());
 						}
@@ -168,6 +178,13 @@ namespace ina_interpreter
 				cube.materialyze();
 				{
 					JSON_MAP(writer);
+					
+					writer.key("CellArraySizes");
+					{
+						JSON_LIST(writer);
+						writer.value(cube.getBody().getColNbrs() * (measDim && measDim->getAxe()==ina::query_model::Dimension::eAxe::Columns? measDim->getMembers().size():1 ));
+						writer.value(cube.getBody().getRowNbrs() * (measDim && measDim->getAxe()==ina::query_model::Dimension::eAxe::Rows? measDim->getMembers().size():1 ));
+					}
 					writer.key("Cells");
 					{
 						JSON_MAP(writer);
@@ -203,6 +220,8 @@ namespace ina_interpreter
 							}
 						}
 					}
+					writer.pair("ResultSetState", 0);
+					writer.pair("HasErrors", false);
 				}
 
 				break;
