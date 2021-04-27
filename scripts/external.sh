@@ -22,7 +22,6 @@ echo " Installing external tools into $WASABI_EXTERNAL_DIR" > $outfile
 
 $WASABI_ROOT_DIR/scripts/external/cmake.sh | tee -a $outfile
 $WASABI_ROOT_DIR/scripts/external/ninja.sh | tee -a $outfile
-export LLVM_VERSION=11.0.0
 $WASABI_ROOT_DIR/scripts/external/clang_llvm.sh | tee -a $outfile
 if [ "$WASABI_TOOLCHAIN" = "yes" ]
 then
