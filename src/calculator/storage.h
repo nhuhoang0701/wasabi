@@ -27,9 +27,10 @@ namespace calculator
 
 		virtual void push_back(const Value& value) = 0;
 
-		virtual size_t getNbVals() const = 0;
-		virtual size_t getNbDistinctVals() const = 0;
+		virtual size_t       getNbDistinctVals() const = 0;
+		virtual const Value& getDistinctValue(size_t index) const = 0;
 
+		virtual size_t getNbVals() const = 0;
 		virtual const Value& operator[](size_t index) const = 0;
 
 	private:
@@ -47,9 +48,10 @@ namespace calculator
 			m_data.push_back(value);
 		}
 
-		size_t getNbVals() const {return m_data.size();}
-		size_t getNbDistinctVals() const {return m_data.size();}
+		virtual size_t       getNbDistinctVals() const {return m_data.size();}
+		virtual const Value& getDistinctValue(size_t index) const {return m_data[index];}
 
+		size_t getNbVals() const {return m_data.size();}
 		const Value& operator[](size_t index) const {return m_data[index];}
 
 	private:
@@ -63,9 +65,10 @@ namespace calculator
 		ColumnIndexed(const std::string& name, eDataType dt)
 			: ColumnData(name, dt) {}
 
-		size_t getNbVals() const {return m_indexes.size();}
-		size_t getNbDistinctVals() const {return m_values.size();}
-		
+		virtual size_t       getNbDistinctVals() const {return m_values.size();}
+		virtual const Value& getDistinctValue(size_t index) const {return m_values[index];}
+
+		size_t getNbVals() const {return m_indexes.size();}		
 		const Value& operator[](size_t index) const {return m_values[m_indexes[index]];}
 
 		void push_back(const Value& value)
@@ -103,6 +106,7 @@ namespace calculator
 		size_t        getColIndex(const std::string& col_name) const {return m_colsIdxByName.at(col_name);}
 
 		size_t        getColNbrs() const {return m_cols.size();}
+		const Column& getColumn(const std::string& col_name) const {return m_cols[getColIndex(col_name)];}
 		const Column& operator[](size_t index) const {return m_cols[index];}
 
 		size_t        getRowNbrs() const {return m_rowsNb;}
