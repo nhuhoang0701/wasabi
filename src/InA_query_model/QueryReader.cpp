@@ -37,11 +37,8 @@ namespace ina::query_model
 
 			if (metadata.haveValue("Language"))
 			{
-				if(metadata.isNull("Language"))
-				{
-					//TODO: Should be an error
+				if(metadata.isNull("Language")) //TODO: Should be an error TMP for FireFly side POC
 					query->m_language = "EN";
-				}
 				else
 					query->m_language = metadata.getString("Language");
 			}
@@ -75,7 +72,12 @@ namespace ina::query_model
 			query->m_type = Query::qAnalytics;
 
 			if (analytics.haveValue("Language"))
-				query->m_language = analytics.getString("Language");
+			{
+				if(metadata.isNull("Language")) //TODO: Should be an error TMP for FireFly side POC
+					query->m_language = "EN";
+				else
+					query->m_language = analytics.getString("Language");
+			}
 			else
 				;//TODO throw TRACED_InA_EXCEPTION("Missing Language value in Analytics query");
 

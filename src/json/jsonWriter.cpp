@@ -246,6 +246,23 @@ void JSONWriter::value(uint64_t theValue){
   }
   aImpl.itsStream<<theValue;
 }
+void JSONWriter::value(size_t theValue){
+  wasabiUtils::JsonWriterImpl& aImpl = *itsPimpl;
+  if(aImpl.itsWroteKey){
+    aImpl.itsStream << ":";
+    aImpl.itsWroteKey = false;
+  }
+  if(aImpl.itsOpenTags.size()>0){
+    if(
+       aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1)
+       ){
+      aImpl.itsStream<< ",";
+    } else{
+      aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1) = true;
+    }
+  }
+  aImpl.itsStream<<theValue;
+}
 void JSONWriter::value(double theValue){
   wasabiUtils::JsonWriterImpl& aImpl = *itsPimpl;
   if(aImpl.itsWroteKey){
