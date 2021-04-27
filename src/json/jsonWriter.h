@@ -37,6 +37,7 @@ public:
 	void value(const char* s);
 	void value(bool theValue);
 	void value(double val);
+	void value(size_t val);
 	void value(int64_t val);
 	void value(int val);
 	void value(unsigned val);
