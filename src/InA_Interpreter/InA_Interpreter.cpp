@@ -166,9 +166,6 @@ namespace ina_interpreter
 					}
 				}
 				cube.materialyze();
-
-				size_t rowDataStart = 0;
-				size_t columnDataStart = 0;
 				{
 					JSON_MAP(writer);
 					writer.key("Cells");
@@ -179,26 +176,27 @@ namespace ina_interpreter
 							writer.pair("Encoding", "None");
 							writer.key("Values");
 							{
-								JSON_LIST(writer);
-								for(size_t rowIndex = rowDataStart; rowIndex < cube.getBody().getRowNbrs(); rowIndex++)
+								JSON_LIST(writer);	
+								for(size_t colIndex = 0; colIndex < cube.getBody().getColNbrs(); colIndex++)
 								{
-									for(size_t colIndex = 0; colIndex < cube.getBody().getColNbrs(); colIndex++)
+									for(size_t rowIndex = 0; rowIndex < cube.getBody().getRowNbrs(); rowIndex++)
 									{
-										const auto& data = cube.getBody().getValue(colIndex, rowIndex);
-										switch (cube.getBody().getValueDatatype(colIndex))
+										for(size_t measIndex = 0; measIndex < cube.getBody().size(); measIndex++)
 										{
-										case calculator::eDataType::String:
-										{
-											const auto& val = std::get<std::string>(data);
-											writer.value(val);
-											break;
-										}
-										case calculator::eDataType::Number:
-										{
-											const auto& val = std::get<double>(data);
-											writer.value(val);
-											break;
-										}
+											const auto& data = cube.getBody().getValue(measIndex, colIndex, rowIndex);
+											switch (cube.getBody().getValueDatatype(measIndex))
+											{
+											case calculator::eDataType::String:
+											{
+												writer.value(std::get<std::string>(data));
+												break;
+											}
+											case calculator::eDataType::Number:
+											{
+												writer.value(std::get<double>(data));
+												break;
+											}
+											}
 										}
 									}
 								}

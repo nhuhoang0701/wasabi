@@ -1,7 +1,5 @@
 #include "storage.h"
 
-#include <dbproxy/dbproxy.h>
-
 #include <test_tools/TestAssert.h>
 
 int main()

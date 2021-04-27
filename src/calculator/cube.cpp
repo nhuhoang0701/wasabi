@@ -1,6 +1,9 @@
 #include "cube.h"
 
 #include <stdexcept>
+#include <numeric>    // For iota
+
+#include <iostream>
 
 
 namespace calculator
@@ -12,18 +15,22 @@ namespace calculator
 
 	void Axe::materialyze()
 	{
-		for(size_t row = 0; row <m_cube.m_data->getRowNbrs(); row++)
+		m_tuples.clear();
+		if(empty() == false)
 		{
-			std::vector<Value> tuple;
-			for(const auto& obj : *this)
+			for(size_t row = 0; row <m_cube.m_data->getRowNbrs(); row++)
 			{
-				const auto& columnData = (*m_cube.m_data)[m_cube.getStorage().getColIndex(obj.getName())];
-				const auto& data = (*columnData)[row];
-
-				tuple.push_back(data);
+				std::vector<Value> tuple;
+				for(const auto& obj : *this)
+				{
+					const auto& columnData = (*m_cube.m_data)[m_cube.getStorage().getColIndex(obj.getName())];
+					tuple.push_back((*columnData)[row]);
+				}
+				if(m_tuples.find(tuple) != m_tuples.end())
+					m_tuples[tuple].push_back(row);
+				else
+					m_tuples[tuple] = std::vector(1, row);
 			}
-			if(!tuple.empty())
-				m_tuples.insert(tuple);
 		}
 		m_materialyzed = true;
 	}
@@ -35,24 +42,37 @@ namespace calculator
 		return m_tuples.size();
 	}
 
-	calculator::eDataType Axe::getValueDatatype(size_t colIdx) const
+	calculator::eDataType Axe::getValueDatatype(size_t dimIdx) const
 	{
-		const std::string& nameCol = at(colIdx).getName();
+		const std::string& nameCol = at(dimIdx).getName();
 		const auto& columnData = m_cube.getStorage()[m_cube.getStorage().getColIndex(nameCol)];
 		return columnData->getDataType();
 	}
 
-	const Value& Axe::getValue(size_t colIdx, size_t row) const
+	const Value& Axe::getValue(size_t dimIdx, size_t row) const
 	{
+		if(!m_materialyzed)
+			throw std::runtime_error("Axe: materialyze() not called");
+
 		if(row >= m_tuples.size())
-			throw std::out_of_range("Axe::getValue col");
+			throw std::out_of_range("Axe::getValue row");
 
-		const auto& tuple = *std::next(m_tuples.begin(), row);
+		const auto& tuple = std::next(m_tuples.begin(), row)->first;
+		if(dimIdx >= tuple.size())
+			throw std::out_of_range("Axe::getValue dimIdx");
 
-		if(colIdx >= tuple.size())
-			throw std::out_of_range("Axe::getValue col");
+		return tuple[dimIdx];
+	}
 
-		return tuple[colIdx];
+	const std::vector<size_t>& Axe::getParentIndexes(size_t row) const
+	{
+		if(!m_materialyzed)
+			throw std::runtime_error("Axe: materialyze() not called");
+
+		if(row >= m_tuples.size())
+			throw std::out_of_range("Axe::getValue row");
+
+		return std::next(m_tuples.begin(), row)->second;
 	}
 
 
@@ -61,53 +81,147 @@ namespace calculator
 	{
 	}
 
+	void agg(Value& value, const ColumnData& columnData, const std::vector<size_t>& indexes)
+	{
+		if(indexes.empty())
+		{
+			const calculator::eDataType datatype = columnData.getDataType();
+			if(datatype == eDataType::Number)
+				value = std::nan("0");
+			else
+				value = "##NULL##";
+		}
+		else if(indexes.size() > 1 )
+		{
+			/*throw*/ std::cerr << ("ERROR: Local agregation, NYI hardcoded to sum\n");
+
+			const calculator::eDataType datatype = columnData.getDataType();
+			if(datatype == eDataType::Number)
+			{
+				double sum = 0;
+				for(const auto& i : indexes)
+					sum +=  std::get<double>(columnData[i]);
+				value = sum;
+			}
+			else
+			{
+				value = "#MULTIVALUE";
+			}
+		}
+		else
+			value = columnData[indexes.at(0)];
+	}
+
 	void Body::materialyze()
 	{
-		// TODO
+		m_Body.resize(size());
+		size_t measIdx = 0;
+		for(auto& values : m_Body)
+		{
+			values.resize(getRowNbrs());
+	
+			const std::string& measName = at(measIdx++).getName();
+			const auto& columnData = *m_cube.getStorage()[m_cube.getStorage().getColIndex(measName)];
+
+			// Full aggreagtion on the 2 axes
+			if(m_axeRow.getCardinality() == 0 && m_axeCol.getCardinality() == 0 )
+			{
+				values[0].resize(1);
+				std::vector<size_t> indexes(m_cube.getStorage().getRowNbrs());
+				std::iota(indexes.begin(), indexes.end(), 0);
+				agg(values[0][0], columnData, indexes);
+			}
+			else
+			{
+				// Full aggreagtion on row axis
+				if(m_axeRow.getCardinality() == 0)
+				{
+					values[0].resize(getColNbrs());
+					size_t col = 0;
+					for(auto& value : values[0])
+					{
+						agg(value, columnData, m_axeCol.getParentIndexes(col++));
+					}
+				}
+				else
+				{
+					size_t row = 0;
+					for(auto& rowValues : values)
+					{
+						rowValues.resize(getColNbrs());
+						std::vector<size_t> rowIdxs = m_axeRow.getParentIndexes(row++);
+
+						// Full aggreagtion on col axis
+						if(m_axeCol.getCardinality() == 0)
+						{
+							agg(rowValues[0], columnData, rowIdxs);
+						}
+						else
+						{
+							std::sort (rowIdxs.begin(),rowIdxs.end());
+							
+							size_t col = 0;
+							for(auto& value : rowValues)
+							{
+								std::vector<size_t> indexes;
+								const std::vector<size_t>& colParentIdxs = m_axeCol.getParentIndexes(col++);
+								{
+									std::vector<size_t> colIdxs = colParentIdxs;
+									std::sort (colIdxs.begin(),colIdxs.end());
+										
+									indexes.resize(std::min(rowIdxs.size(), colIdxs.size()));
+									std::vector<size_t>::iterator it=std::set_intersection (rowIdxs.begin(), rowIdxs.end(), colIdxs.begin(), colIdxs.end(), indexes.begin());
+									indexes.resize(it-indexes.begin());
+								}
+
+								agg(value, columnData, indexes);
+							}
+						}
+					}
+				}
+			}
+		}
+		m_materialyzed = true;
 	}
 
 	size_t  Body::getCellsNbs() const
 	{
-		return getRowNbrs() * getColNbrs();
+		return getRowNbrs() * getColNbrs() * size();
 	}
 
 	size_t  Body::getColNbrs() const
 	{
-		return std::vector<Object>::size();
+		if(empty())
+			return 0;
+		else if(m_axeCol.empty())
+			return m_cube.getStorage().getRowNbrs()==0?0:1;
+
+		return m_axeCol.getCardinality();
 	}
 
 	size_t  Body::getRowNbrs() const
 	{
 		if(empty())
 			return 0;
-		else if(m_axeRow.empty() && m_axeCol.empty())
+		else if(m_axeRow.empty())
 			return m_cube.getStorage().getRowNbrs()==0?0:1;
-		else if(!m_axeRow.empty() && !m_axeCol.empty())
-			return m_axeRow.getCardinality() * m_axeCol.getCardinality();
-		else if(!m_axeRow.empty() && m_axeCol.empty())
-			return m_axeRow.getCardinality();
-		else if(m_axeRow.empty() && !m_axeCol.empty())
-			return m_axeCol.getCardinality();
-
-		return 0; // TODO: Error
+		
+		return m_axeRow.getCardinality();
 	}
 
-	calculator::eDataType Body::getValueDatatype(size_t colIdx) const
+	calculator::eDataType Body::getValueDatatype(size_t measIdx) const
 	{
-		if(m_cube.getStorage().getRowNbrs() != getRowNbrs())
-			throw std::runtime_error("Local agregation, NYI");
-		const std::string& nameCol = at(colIdx).getName();
+		const std::string& nameCol = at(measIdx).getName();
 		const auto& columnData = m_cube.getStorage()[m_cube.getStorage().getColIndex(nameCol)];
 		return columnData->getDataType();
 	}
 
-	const Value& Body::getValue(size_t colIdx, size_t row) const
+	const Value& Body::getValue(size_t measIdx, size_t col, size_t row) const
 	{
-		if(m_cube.getStorage().getRowNbrs() != getRowNbrs())
-			throw std::runtime_error("Local agregation, NYI");
-		const std::string& nameCol = at(colIdx).getName();
-		const auto& columnData = m_cube.getStorage()[m_cube.getStorage().getColIndex(nameCol)];
-		return (*columnData)[row];
+		if(!m_materialyzed)
+			throw std::runtime_error("Body: materialyze() not called");
+
+		return m_Body[measIdx][row][col];
 	}
 
 	Cube::Cube()
@@ -124,6 +238,18 @@ namespace calculator
 		m_AxeRows.materialyze();
 		m_AxeColumns.materialyze();
 		m_body.materialyze();
+		/*
+		std::cout << "Cube::materialyze()" << std::endl;
+		std::cout << " Row axis card:" << m_AxeRows.getCardinality() << std::endl;
+		std::cout << "  nb dim:" << m_AxeRows.size() << std::endl;
+		std::cout << " Col axis card:" << m_AxeColumns.getCardinality() << std::endl;
+		std::cout << "  nb dim:" << m_AxeColumns.size() << std::endl;
+
+		std::cout << " Body cells nbr:" << m_body.getCellsNbs() << std::endl;
+		std::cout << "  nb meas:" << m_body.size() << std::endl;
+		std::cout << "  nb getColNbrs:" << m_body.getColNbrs() << std::endl;
+		std::cout << "  nb getRowNbrs:" << m_body.getRowNbrs() << std::endl;
+		*/
 	}
 	
 	const DataStorage&  Cube::getStorage() const
