@@ -28,6 +28,8 @@ namespace ina::query_model
 			return TypeUniverse;
 		if ("CatalogView" == str)
 			return TypeCatalogView;
+		if ("View" == str)
+			return TypeView;
 		throw TRACED_InA_EXCEPTION(std::string("Unknown datasource type: ") + str);
 	}
 
