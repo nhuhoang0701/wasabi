@@ -56,6 +56,8 @@ const char* json_getResponse_json(const char* InA)
 	JSONWriter writer(osstream);
 	{
 		JSON_MAP(writer);
+		if(queries.empty() == false)
+			write(queries[0]->getDataSource(), writer);
 		writer.key("Grids");
 		{
 			JSON_LIST(writer);
@@ -73,6 +75,59 @@ const char* json_getResponse_json(const char* InA)
 	static_str = osstream.str();
 	
 	return static_str.c_str();
+}
+
+void writeDimensions(JSONWriter& writer, std::vector<const ina::query_model::Dimension*>& dims, const calculator::Cube& cube)
+{
+	{
+		JSON_LIST(writer);
+		size_t idxDim = 0;
+		for(const auto& dim : dims)
+		{
+			JSON_MAP(writer);
+			writer.pair("Name", dim->getName());
+			{
+				writer.key("Attributes");
+				JSON_LIST(writer);
+				{
+					JSON_MAP(writer);
+					writer.pair("Name", dim->getName());
+					writer.key("values");
+					{
+						JSON_LIST(writer);
+						if(!ina::query_model::Dimension::isDimensionOfMeasures(*dim) )
+						{
+							const auto& col = *cube.getStorage().getColumn(dim->getName());
+							//TODO: false should dump the dimension value
+							for(size_t rowIdx = 0; rowIdx < col.getNbDistinctVals(); rowIdx++)
+							{
+								const auto& data = col.getDistinctValue(rowIdx);
+								switch (col.getDataType())
+								{
+								case calculator::eDataType::String:
+								{
+									writer.value(std::get<std::string>(data));
+									break;
+								}
+								case calculator::eDataType::Number:
+								{
+									writer.value(std::get<double>(data));
+									break;
+								}
+								}
+							}
+						}
+						else
+						{
+							for(const auto& member : dim->getMembers())
+								writer.value(member.getName());
+						}
+					}
+				}
+			}
+			idxDim++;
+		}
+	}
 }
 
 namespace ina_interpreter
@@ -143,6 +198,8 @@ namespace ina_interpreter
 			case (ina::query_model::Query::qAnalytics):
 			{
 				const ina::query_model::Dimension* measDim = nullptr; // TODO: Workaround waiting to have a grid
+				std::vector<const ina::query_model::Dimension*> rowDims; // TODO: Workaround waiting to have a grid
+				std::vector<const ina::query_model::Dimension*> colDims; // TODO: Workaround waiting to have a grid
 				calculator::Cube cube;
 				{
 					const query_generator::query_generator& queryGen = query_generator::query_generator(query);
@@ -159,6 +216,11 @@ namespace ina_interpreter
 					cube.setStorage(data);
 					for (const auto& dimension : query.getDefinition().getDimensions()) 
 					{
+						if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Rows)
+							rowDims.push_back(&dimension);
+						else if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Columns)
+							colDims.push_back(&dimension);
+
 						if(!ina::query_model::Dimension::isDimensionOfMeasures(dimension) )
 						{
 							if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Rows)
@@ -177,7 +239,26 @@ namespace ina_interpreter
 				}
 				cube.materialyze();
 				{
-					JSON_MAP(writer);
+					writer.key("Axes");
+					{
+						JSON_LIST(writer);
+						if(!rowDims.empty())
+						{
+							JSON_MAP(writer);
+							writer.pair("Type", "Rows");
+							writer.pair("Name", "ROWS");
+							writer.key("Dimensions");
+							writeDimensions(writer, rowDims, cube);
+						}
+						if(!colDims.empty())
+						{
+							JSON_MAP(writer);
+							writer.pair("Type", "Columns");
+							writer.pair("Name", "COLUMNS");
+							writer.key("Dimensions");
+							writeDimensions(writer, colDims, cube);
+						}
+					}
 					
 					writer.key("CellArraySizes");
 					{
@@ -190,6 +271,7 @@ namespace ina_interpreter
 						JSON_MAP(writer);
 						writer.key("Values");
 						{
+							JSON_MAP(writer);
 							writer.pair("Encoding", "None");
 							writer.key("Values");
 							{
