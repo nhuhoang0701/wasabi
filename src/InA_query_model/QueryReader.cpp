@@ -8,6 +8,8 @@
 
 #include <exceptions/InA_Exception.h>
 
+#include <iostream>
+
 namespace ina::query_model
 {
 	void read(std::vector<std::shared_ptr<const Query>>& queries, const JSONGenericObject& jsonQuery)
@@ -38,12 +40,15 @@ namespace ina::query_model
 			if (metadata.haveValue("Language"))
 			{
 				if(metadata.isNull("Language")) //TODO: Should be an error TMP for FireFly side POC
+				{
+					std::cerr << "Bad InA request Language is null" << std::endl;
 					query->m_language = "EN";
+				}
 				else
 					query->m_language = metadata.getString("Language");
 			}
 			else
-				;//TODO throw TRACED_InA_EXCEPTION("Missing Language value in Metadata query");
+				;//throw TRACED_InA_EXCEPTION("Missing Language value in Metadata query");
 
 			if (JSONGenericObject capabilities = metadata.getArray("Capabilities"))
 				;//TODO
@@ -74,7 +79,10 @@ namespace ina::query_model
 			if (analytics.haveValue("Language"))
 			{
 				if(metadata.isNull("Language")) //TODO: Should be an error TMP for FireFly side POC
+				{
+					std::cerr << "Bad InA request Language is null" << std::endl;
 					query->m_language = "EN";
+				}
 				else
 					query->m_language = analytics.getString("Language");
 			}
