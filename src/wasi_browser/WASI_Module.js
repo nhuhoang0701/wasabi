@@ -31,7 +31,7 @@ function start(response, filename) {
 		moduleWASI = module;
 		setModuleInstance(module.instance);
 		filesystem = ["/resources/response_getSerververInfo.json",
-					 "/resources/response_getResponse_Metadat_expand_cube_catalog.json",
+					 "/resources/response_getResponse_Metadata_expand_cube_catalog.json",
 					 "/resources/text.txt",
 					 "/resources/sqlite/efashion/efashion.db",
 					 "/resources/sqlite/onetable_datatype/onetable_datatype.db"];
