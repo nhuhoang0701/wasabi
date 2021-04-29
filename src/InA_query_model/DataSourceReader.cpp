@@ -15,21 +15,13 @@ namespace ina::query_model
 			ds.setPackageName(dataSource.getString("PackageName"));
 
 		if (dataSource.haveValue("Type"))
-		{
-			DataSource::Type type = DataSource::fromString(dataSource.getString("Type"));
-			ds.setType(type);
-		}
-		else if(ds.getObjectName() == "$$DataSource$$")
-			ds.setType(DataSource::Type::TypeCatalogView);
-
+			ds.setType(DataSource::fromString(dataSource.getString("Type")));
 
 		if (JSONGenericObject customProperties = dataSource.getObject("CustomProperties"))
 		{
-			{
-				const std::string querySpecJSON = customProperties.getString("sourceQuery");
-				JSONReader reader;
-				JSONGenericObject root = reader.parse(querySpecJSON);
-			}
+			const std::string querySpecJSON = customProperties.getString("sourceQuery");
+			JSONReader reader;
+			JSONGenericObject root = reader.parse(querySpecJSON);
 		}
 	}
 } // ina::query_model

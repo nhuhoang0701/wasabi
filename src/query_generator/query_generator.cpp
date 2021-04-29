@@ -15,12 +15,10 @@ namespace query_generator
     std::string query_generator::getSQL() const
     {
         std::string delim;
-        std::ostringstream sql;
+		std::ostringstream selected;
 		std::ostringstream where;
         std::ostringstream group_by;
 		std::ostringstream order_by;
-        
-        sql << "SELECT ";
 
         for (const auto& dimension : m_query.getDefinition().getDimensions())
         {
@@ -28,15 +26,15 @@ namespace query_generator
 			{
 				for(const auto& member : m_query.getDefinition().getVisibleMembers(dimension) )
 				{
-					sql << delim;
-					sql << member.getAggregation() << "(" << member.getName() << ")";
+					selected << delim;
+					selected << member.getAggregation() << "(" << member.getName() << ")";
 				}
 			}
 			else
 			{
 				const std::string& dimensionName = dimension.getName();
-				sql << delim;
-				sql << dimensionName;
+				selected << delim;
+				selected << dimensionName;
 				if (!group_by.str().empty())
 				{
 					group_by << delim;
@@ -46,9 +44,6 @@ namespace query_generator
 
             delim = ", ";
         }
-
-        const std::string& table = m_query.getDataSource().getObjectName();
-        sql << " FROM " << table;
 
 		for(const auto & filter : m_query.getDefinition().getQueryFilters())
 		{
@@ -67,14 +62,6 @@ namespace query_generator
 				where << generateSQL(filter);
 			}
 		}
-		if (!where.str().empty())
-		{
-			sql << where.str();
-		}
-        if(!group_by.str().empty())
-        {
-            sql << " GROUP BY " << group_by.str();
-        }
 
 		if (!m_query.getDefinition().getQuerySorts().empty())
 		{
@@ -88,13 +75,28 @@ namespace query_generator
 			}
 		}
 
-		if(!order_by.str().empty())
-        {
-            sql << " ORDER BY " << order_by.str();
-        }
+        std::ostringstream sql;
+		if(!selected.str().empty())
+		{
+        	sql << "SELECT ";
+        	sql << selected.str();
+			const std::string& table = m_query.getDataSource().getObjectName();
+			sql << " FROM " << table;
+			if (!where.str().empty())
+			{
+				sql << where.str();
+			}
+			if(!group_by.str().empty())
+			{
+				sql << " GROUP BY " << group_by.str();
+			}
+			if(!order_by.str().empty())
+			{
+				sql << " ORDER BY " << order_by.str();
+			}
 
-        sql << ";";
-
+			sql << ";";
+		}
         return sql.str();
     }
 

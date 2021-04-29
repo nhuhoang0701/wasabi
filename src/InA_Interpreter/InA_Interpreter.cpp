@@ -113,6 +113,8 @@ void writeDimensions(JSONWriter& writer, std::vector<const ina::query_model::Dim
 								writer.value(std::get<double>(data));
 								break;
 							}
+							default:
+								throw std::runtime_error("InA_Interpreter => Unsupported datatype.");
 							}
 						}
 					}
@@ -146,6 +148,8 @@ void writeTuples(JSONWriter &writer, calculator::Axe &axis, size_t &axisIndex)
 				writer.value(std::get<double>(value));
 				break;
 			}
+			default:
+				throw std::runtime_error("InA_Interpreter => Unsupported datatype.");
 		}
 	}
 }
@@ -177,13 +181,11 @@ void writeTuples(JSONWriter& writer, const ina::query_model::Definition & defini
 					JSON_LIST(writer);
 					{
 						if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Rows)
-						{
 							writeTuples(writer, rowAxis, rowAxisIndex);
-						}
 						else if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Columns)
-						{
 							writeTuples(writer, columnAxis, columnAxisIndex);
-						}
+						else
+							throw std::runtime_error("InA_Interpreter => Unknow axis type.");
 					}
 				}
 			}
@@ -205,8 +207,7 @@ namespace ina_interpreter
 				{
 					static std::string static_str_response;
 					static_str_response.clear();
-					if(query.getDataSource().getType() == ina::query_model::DataSource::Type::TypeCatalogView 
-					  || query.getDataSource().getType() == ina::query_model::DataSource::Type::TypeView )
+					if(query.getDataSource().getObjectName() == "$$DataSource$$" )
 					{
 						if(static_str_response.empty() )
 						{
@@ -225,35 +226,37 @@ namespace ina_interpreter
 
 						std::shared_ptr<metadata::Catalog> catalog = std::shared_ptr<metadata::Catalog>(new metadata::Catalog(cnxString));
 						
-						std::ostringstream results;
-
-						const auto& colNames = catalog->getTable(tableName).getColumnNames();
-
-						results << "Object name" << std::endl;
-						for(auto& colName : colNames)
-							results << "  " << std::setw(10) << catalog->getTable(tableName).getColumn(colName).getName() << "  |  ";
-						results << std::endl;
-
-						results << "SQL Name" << std::endl;
-						for(auto& colName : colNames)
-							results << "  " << std::setw(10) << catalog->getTable(tableName).getColumn(colName).getSQLName() << "  |  ";
-						results << std::endl;
-
-						results << "Datatype" << std::endl;
-						for(auto& colName : colNames)
-							results << "  " << std::setw(10) << catalog->getTable(tableName).getColumn(colName).getDataType() << "  |  ";
-						results << std::endl;
-
-						results << "Agg" << std::endl;
-						for(auto& colName : colNames)
-							results << "  " << std::setw(10) << catalog->getTable(tableName).getColumn(colName).getAggregation() << "  |  ";
-						results << std::endl;
-
-						static_str_response = results.str();
-						std::cout << static_str_response << std::endl;
-						return static_str_response.c_str();
+						{
+							const auto& colNames = catalog->getTable(tableName).getColumnNames();
+							{
+								writer.key("Object name");
+								JSON_LIST(writer);
+								for(auto& colName : colNames)
+									writer.value(catalog->getTable(tableName).getColumn(colName).getName());
+							}
+							{
+								writer.key("Object SQL name");
+								JSON_LIST(writer);
+								for(auto& colName : colNames)
+									writer.value(catalog->getTable(tableName).getColumn(colName).getSQLName());
+							}
+							{
+								writer.key("Datatype");
+								JSON_LIST(writer);
+								for(auto& colName : colNames)
+									writer.value(catalog->getTable(tableName).getColumn(colName).getDataType());
+							}
+							{
+								writer.key("Agg");
+								JSON_LIST(writer);
+								for(auto& colName : colNames)
+									writer.value(catalog->getTable(tableName).getColumn(colName).getAggregation());
+							}
+						}
 					}
 				}
+				else
+					throw std::runtime_error("InA_Interpreter => Unsupported InA request");
 				break;
 			}
 			case (ina::query_model::Query::qAnalytics):
@@ -361,6 +364,8 @@ namespace ina_interpreter
 												writer.value(std::get<double>(data));
 												break;
 											}
+											default:
+												throw std::runtime_error("InA_Interpreter => Unsupported datatype.");
 											}
 										}
 									}
@@ -376,7 +381,7 @@ namespace ina_interpreter
 			}
 			default:
 			{
-				std::cerr << "InA_Interpreter => Unsupported InA request" << std::endl;
+				throw std::runtime_error("InA_Interpreter => Unsupported InA request");
 			}
 		}
 		return nullptr;
