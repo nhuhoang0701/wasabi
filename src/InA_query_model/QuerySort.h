@@ -10,6 +10,7 @@ namespace ina::query_model
     class QuerySort {
         public:
             enum class SortType {
+                Undef,
                 MemberKey,
                 MemberText,
                 Field,
@@ -60,8 +61,8 @@ namespace ina::query_model
 
             private:
                 std::string     _objectName;
-                Direction       _direction;
-                SortType        _sortType;
+                Direction       _direction = Direction::Default;
+                SortType        _sortType = SortType::Undef;
 
     };
 }

@@ -205,10 +205,10 @@ namespace ina_interpreter
 			{
 				if(query.haveExpandCube())
 				{
-					static std::string static_str_response;
-					static_str_response.clear();
 					if(query.getDataSource().getObjectName() == "$$DataSource$$" )
 					{
+						static std::string static_str_response;
+						static_str_response.clear();
 						if(static_str_response.empty() )
 						{
 							std::ifstream ifs("./resources/response_getResponse_Metadata_expand_cube_catalog.json");
@@ -216,6 +216,20 @@ namespace ina_interpreter
 								static_str_response = std::string((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
 							else
 								throw std::runtime_error("Could not open file ./resources/response_getResponse_Metadata_expand_cube_catalog.json");
+						}
+						return static_str_response.c_str();
+					}
+					else if(query.getDataSource().getObjectName() == "Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma" )
+					{
+						static std::string static_str_response;
+						static_str_response.clear();
+						if(static_str_response.empty() )
+						{
+							std::ifstream ifs("./resources/response_getResponse_Metadata_expand_cube.json");
+							if(ifs.is_open() )
+								static_str_response = std::string((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+							else
+								throw std::runtime_error("Could not open file ./resources/response_getResponse_Metadata_expand_cube.json");
 						}
 						return static_str_response.c_str();
 					}
