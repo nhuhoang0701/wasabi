@@ -211,11 +211,11 @@ namespace ina_interpreter
 					{
 						if(static_str_response.empty() )
 						{
-							std::ifstream ifs("./resources/response_getResponse_Metadat_expand_cube_catalog.json");
+							std::ifstream ifs("./resources/response_getResponse_Metadata_expand_cube_catalog.json");
 							if(ifs.is_open() )
 								static_str_response = std::string((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
 							else
-								throw std::runtime_error("Could not open file ./resources/response_getResponse_Metadat_expand_cube_catalog.json");
+								throw std::runtime_error("Could not open file ./resources/response_getResponse_Metadata_expand_cube_catalog.json");
 						}
 						return static_str_response.c_str();
 					}
