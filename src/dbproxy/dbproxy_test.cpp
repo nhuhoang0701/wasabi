@@ -48,5 +48,16 @@ int main()
 		//std::cout << "line:" << line << std::endl;
 		CPPUNIT_ASSERT_EQUAL(line,1);
 	}
+	
+	{
+		size_t line = 0;
+		std::function<void(const Row&)> lambda = [&line](const Row& row)
+		{
+			line++;
+		};
+		dbProxy->executeSQL("", &lambda);
+		//std::cout << "line:" << line << std::endl;
+		CPPUNIT_ASSERT_EQUAL(line,0);
+	}
 	return TEST_HAVEERROR();
 }

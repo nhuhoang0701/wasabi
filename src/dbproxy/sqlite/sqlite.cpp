@@ -136,7 +136,7 @@ namespace dbproxy
 		//std::cout << ">>" << __func__ << ": " << SQL << std::endl;
 		if (sqlite3_exec(m_sqlite_db, SQL.c_str(), sqlite_callback, const_cast<void*>(reinterpret_cast<const void*>(calback)), &sqlite_err_msg) != SQLITE_OK )
 		{ 
-			std::cerr <<  "Failed to execute SQL, SQL error: '" <<  sqlite_err_msg << "'" << std::endl;
+			std::cerr <<  "Failed to execute SQL '" << SQL << "', SQL error: '" <<  sqlite_err_msg << "'" << std::endl;
 			const std::string err_msd(sqlite_err_msg);
 			sqlite3_free(sqlite_err_msg);
 			throw std::runtime_error(err_msd);
