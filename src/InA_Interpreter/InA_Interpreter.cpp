@@ -79,53 +79,114 @@ const char* json_getResponse_json(const char* InA)
 
 void writeDimensions(JSONWriter& writer, std::vector<const ina::query_model::Dimension*>& dims, const calculator::Cube& cube)
 {
+	JSON_LIST(writer);
+	size_t idxDim = 0;
+	for(const auto& dim : dims)
 	{
-		JSON_LIST(writer);
-		size_t idxDim = 0;
-		for(const auto& dim : dims)
+		JSON_MAP(writer);
+		writer.pair("Name", dim->getName());
 		{
-			JSON_MAP(writer);
-			writer.pair("Name", dim->getName());
+			writer.key("Attributes");
+			JSON_LIST(writer);
 			{
-				writer.key("Attributes");
-				JSON_LIST(writer);
+				JSON_MAP(writer);
+				writer.pair("Name", dim->getName());
+				writer.key("Values");
 				{
-					JSON_MAP(writer);
-					writer.pair("Name", dim->getName());
-					writer.key("values");
+					JSON_LIST(writer);
+					if(!ina::query_model::Dimension::isDimensionOfMeasures(*dim) )
 					{
-						JSON_LIST(writer);
-						if(!ina::query_model::Dimension::isDimensionOfMeasures(*dim) )
+						const auto& col = *cube.getStorage().getColumn(dim->getName());
+						//TODO: false should dump the dimension value
+						for(size_t rowIdx = 0; rowIdx < col.getNbDistinctVals(); rowIdx++)
 						{
-							const auto& col = *cube.getStorage().getColumn(dim->getName());
-							//TODO: false should dump the dimension value
-							for(size_t rowIdx = 0; rowIdx < col.getNbDistinctVals(); rowIdx++)
+							const auto& data = col.getDistinctValue(rowIdx);
+							switch (col.getDataType())
 							{
-								const auto& data = col.getDistinctValue(rowIdx);
-								switch (col.getDataType())
-								{
-								case calculator::eDataType::String:
-								{
-									writer.value(std::get<std::string>(data));
-									break;
-								}
-								case calculator::eDataType::Number:
-								{
-									writer.value(std::get<double>(data));
-									break;
-								}
-								}
+							case calculator::eDataType::String:
+							{
+								writer.value(std::get<std::string>(data));
+								break;
+							}
+							case calculator::eDataType::Number:
+							{
+								writer.value(std::get<double>(data));
+								break;
+							}
 							}
 						}
-						else
+					}
+					else
+					{
+						for(const auto& member : dim->getMembers())
+							writer.value(member.getName());
+					}
+				}
+			}
+		}
+		idxDim++;
+	}
+}
+
+void writeTuples(JSONWriter &writer, calculator::Axe &axis, size_t &axisIndex) 
+{
+	for (size_t rowIndex = 0; rowIndex < axis.getCardinality(); rowIndex++) 
+	{
+		auto valueDataType = axis.getValueDatatype(axisIndex);
+		auto value = axis.getValue(axisIndex, rowIndex);
+		switch (valueDataType) 
+		{
+			case calculator::eDataType::String: 
+			{
+				writer.value(std::get<std::string>(value));
+				break;
+			}
+			case calculator::eDataType::Number: 
+			{
+				writer.value(std::get<double>(value));
+				break;
+			}
+		}
+	}
+}
+
+void writeTuples(JSONWriter& writer, const ina::query_model::Definition & definition , const calculator::Cube& cube)
+{
+	JSON_LIST(writer);
+	{
+		auto rowAxis 		= cube.getAxe(calculator::Cube::eAxe::Row);
+		size_t rowAxisIndex = 0;
+
+		auto columnAxis 		= cube.getAxe(calculator::Cube::eAxe::Column);
+		size_t columnAxisIndex 	= 0;
+
+		for(auto dimension  : definition.getDimensions())
+		{
+			if(ina::query_model::Dimension::isDimensionOfMeasures(dimension) )
+			{
+				// Done in Cells
+				continue;
+			}
+			JSON_MAP(writer);
+			{
+				writer.key("TupleElementIds");
+				JSON_MAP(writer);
+				{
+					writer.pair("Encoding","None");
+					writer.key("Values");
+					JSON_LIST(writer);
+					{
+						if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Rows)
 						{
-							for(const auto& member : dim->getMembers())
-								writer.value(member.getName());
+							writeTuples(writer, rowAxis, rowAxisIndex);
+						}
+						else if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Columns)
+						{
+							writeTuples(writer, columnAxis, columnAxisIndex);
 						}
 					}
 				}
 			}
-			idxDim++;
 		}
 	}
 }
@@ -259,6 +320,11 @@ namespace ina_interpreter
 							writeDimensions(writer, colDims, cube);
 						}
 					}
+					writer.key("Tuples");
+					{
+						writeTuples(writer, query.getDefinition(), cube);
+					}
+					
 					
 					writer.key("CellArraySizes");
 					{
