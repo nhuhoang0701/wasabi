@@ -17,6 +17,22 @@ int main()
 		queryInA.setDataSource(ds);
 		
 		ina::query_model::Definition definition;
+		queryInA.setDefinition(definition);
+
+		const query_generator::query_generator& queryGen = query_generator::query_generator(queryInA);
+		std::string sql = queryGen.getSQL();
+
+		std::cout << "Generated SQL: " << sql << std::endl;
+		CPPUNIT_ASSERT_EQUAL("", sql);
+	}
+	{
+		ina::query_model::DataSource ds;
+		ds.setObjectName("MyTable");
+
+		ina::query_model::Query queryInA;
+		queryInA.setDataSource(ds);
+		
+		ina::query_model::Definition definition;
 		definition.addDimension(ina::query_model::Dimension("dim_A", ina::query_model::Dimension::eAxe::Rows));
 		
 		definition.addDimension(ina::query_model::Dimension("dim_B", ina::query_model::Dimension::eAxe::Rows));

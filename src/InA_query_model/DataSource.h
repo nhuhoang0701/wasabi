@@ -23,7 +23,8 @@ namespace ina::query_model
 			TypeUniverse,
 			TypeWasabi,
 			TypeCatalogView,
-			TypeView
+			TypeView,
+			Query
 		};
 		static std::string toString(Type type);
 		static Type        fromString(const std::string& str);

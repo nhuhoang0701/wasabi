@@ -30,11 +30,11 @@ function _startWorkerTest() {
 			}
 			else if(response_ID == 1 && response_Action=="GetServerInfo")
 			{
-				worker.postMessage([ID_msg++, "GetResponse", '{"Metadata":{"DataSource": {"ObjectName": "$$DataSource$$","PackageName":"local:sqlite:efashion"}, "Expand":["Cubes"]}}']);
+				worker.postMessage([ID_msg++, "GetResponse", '{"Metadata":{"Context":"Analytics","Language":null,"DataSource":{"Type":"View","ObjectName":"undefined","PackageName":"local:sqlite:efashion","SchemaName":"db","InstanceId":"f707cc74-c553-eee9-c39f-d3a5b3978856"},"Capabilities":["AggregationNOPNULL","AggregationNOPNULLZERO","AttributeHierarchy","AttributeValueLookup","AverageCountIgnoreNullZero","CalculatedDimension","ClientCapabilities","Conditions","DatasourceAtService","DimensionValuehelpProperty","ExceptionAggregationDimsAndFormulas","ExceptionSettings","Exceptions","ExtendedDimensions","ExtendedDimensionsFieldMapping","ExtendedDimensionsJoinColumns","ExtendedDimensionsOuterJoin","HierarchyKeyTextName","HierarchyLevelOffsetFilter","HierarchyPath","HierarchyPathUniqueName","MaxResultRecords","MetadataCubeQuery","MetadataDataCategory","MetadataHierarchyLevels","MetadataHierarchyStructure","MetadataIsDisplayAttribute","Obtainability","OrderBy","ResultSetAxisType","ResultSetInterval","ResultSetState","ReturnedDataSelection","SupportsCalculatedKeyFigures","SupportsComplexFilters","SupportsEncodedResultSet","SupportsEncodedResultSet2","SupportsExtendedSort","SupportsIgnoreExternalDimensions","SupportsMemberValueExceptions","SupportsMemberVisibility","SupportsRestrictedKeyFigures","SupportsSetOperand","TechnicalAxis","Totals","TotalsAfterVisibilityFilter","Variables","VisibilityFilter"],"Expand":["Cube"]}}']);
 			}
 			else if(response_ID == 2 && response_Action=="GetResponse")
 			{
-				worker.postMessage([ID_msg++, "GetResponse", '{"Metadata":{"DataSource": {"ObjectName": "Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma","PackageName":"local:sqlite:efashion"}, "Expand":["Cubes"]}}']);
+				worker.postMessage([ID_msg++, "GetResponse", '{"Metadata":{"DataSource": {"ObjectName": "Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma","PackageName":"local:sqlite:efashion"}, "Expand":["Cube"]}}']);
 			}
 			else if(response_ID == 3 && response_Action=="GetResponse")
 			{

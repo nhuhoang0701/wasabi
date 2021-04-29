@@ -64,7 +64,7 @@ namespace ina::query_model
 			{
 				for(size_t i = 0; i < expand.size() ; i ++ )
 				{
-					if(expand.getString(i) == "Cubes")
+					if(expand.getString(i) == "Cube")
 					{
 						query->m_isExpandCube = true;
 						break;

@@ -28,8 +28,12 @@ onmessage = function(e) {
 
 	console.log("******************************************");
 	console.log("Worker: Message received: ID '" + ID + "' Action:'" + action + "'");
-	console.log("Worker: Message received: param='" + param.substring(0, 150) + "'");
-	
+	console.log("Worker: Message received: param");
+	try {
+		console.log(JSON.parse(param));
+	} catch(e) {
+		console.log(param);
+	}
 
 	switch(action){
     case WorkerEvent.eLoad:
@@ -70,7 +74,7 @@ onmessage = function(e) {
 				{
 					console.log('Worker: no _start entry point');
 				}
-				postMessage([ID, WorkerEvent.eLoad, "Worker: Library well loaded"]);
+				postMessage([ID, WorkerEvent.eLoad, "{\"message\": \"Library well loaded\"}"]);
 				isLoaded = true;
 			});
 		}).catch(error=>{
