@@ -13,6 +13,7 @@ namespace ina::query_model
 			case TypeUniverse: return "Universe";
 			case TypeCatalogView:  return "CatalogView";
 			case TypeView:     return "View";
+			case Query:        return "Query";
 			case TypeUndef:    return "Undefined";
 			default: throw TRACED_InA_EXCEPTION("Unknown datasource type");
 		}
@@ -30,6 +31,8 @@ namespace ina::query_model
 			return TypeCatalogView;
 		if ("View" == str)
 			return TypeView;
+		if("" == str)
+			return Query;
 		throw TRACED_InA_EXCEPTION(std::string("Unknown datasource type: ") + str);
 	}
 
