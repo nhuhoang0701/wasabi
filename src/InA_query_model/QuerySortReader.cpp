@@ -4,8 +4,13 @@ namespace ina::query_model
 {
 	void read(QuerySort & querySort, const JSONGenericObject& jsonQuerySort)
     {
-        std::string direction = jsonQuerySort.getString("Direction");        
-        querySort.setDirection(QuerySort::getDirection(direction));
+        if(jsonQuerySort.haveValue("Direction"))
+        {
+            std::string direction = jsonQuerySort.getString("Direction");
+            querySort.setDirection(QuerySort::getDirection(direction));
+        }
+        else
+            ;//TODO: Error ?
 
         std::string sortType = jsonQuerySort.getString("SortType");
         querySort.setSortType(QuerySort::getSortType(sortType));    
@@ -36,7 +41,9 @@ namespace ina::query_model
             {
                 querySort.setObjectName(jsonQuerySort.getString("MeasureName"));
                 break;
-            }        
+            } 
+            default:
+            ;//TODO:: Error     
         }
     }
 }
