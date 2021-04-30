@@ -163,19 +163,12 @@ void writeTuples(JSONWriter& writer, const ina::query_model::Definition & defini
 
 		for(auto dimension  : definition.getDimensions())
 		{
-			if(ina::query_model::Dimension::isDimensionOfMeasures(dimension) )
-			{
-				// Done in Cells
-				continue;
-			}
 			if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Rows && eAxe != calculator::Cube::eAxe::Row)
-			{
 				continue;
-			}
+
 			if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Columns && eAxe != calculator::Cube::eAxe::Column)
-			{
 				continue;
-			}
+				
 			JSON_MAP(writer);
 			{
 				writer.key("TupleElementIds");
@@ -185,11 +178,19 @@ void writeTuples(JSONWriter& writer, const ina::query_model::Definition & defini
 					writer.key("Values");
 					JSON_LIST(writer);
 					{
-						writeTuples(writer, axis, axisIndex);
-						axisIndex ++;
-						if (axisIndex == axis.size())
+						if(ina::query_model::Dimension::isDimensionOfMeasures(dimension) )
 						{
-							break;
+							for(const auto& member : dimension.getMembers())
+								writer.value(member.getName());
+						}
+						else
+						{
+							writeTuples(writer, axis, axisIndex);
+							axisIndex ++;
+							if (axisIndex == axis.size())
+							{
+								break;
+							}
 						}
 					}
 				}
