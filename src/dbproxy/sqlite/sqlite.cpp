@@ -49,7 +49,7 @@ namespace dbproxy
 		if (res != SQLITE_OK)
 		{
 			const std::string err = sqlite3_errmsg(m_sqlite_db);
-			std::cerr << "Cannot open database: '" << err << std::endl;
+			std::cerr << "WASABI: Cannot open database: '" << err << std::endl;
 			sqlite3_close(m_sqlite_db);
 			
 			throw std::runtime_error("Cannot open database:" + err);
@@ -136,7 +136,7 @@ namespace dbproxy
 		//std::cout << ">>" << __func__ << ": " << SQL << std::endl;
 		if (sqlite3_exec(m_sqlite_db, SQL.c_str(), sqlite_callback, const_cast<void*>(reinterpret_cast<const void*>(calback)), &sqlite_err_msg) != SQLITE_OK )
 		{ 
-			std::cerr <<  "Failed to execute SQL '" << SQL << "', SQL error: '" <<  sqlite_err_msg << "'" << std::endl;
+			std::cerr <<  "WASABI: Failed to execute SQL '" << SQL << "', SQL error: '" <<  sqlite_err_msg << "'" << std::endl;
 			const std::string err_msd(sqlite_err_msg);
 			sqlite3_free(sqlite_err_msg);
 			throw std::runtime_error(err_msd);
@@ -169,7 +169,7 @@ namespace dbproxy
 					std::cout <<  g_tableDescr->getName()<< ": '" << azColName[i] << "' = '" << (pzDataType ? pzDataType : "NULL") << "'" << std::endl;
 				}
 				else
-					std::cerr << "ERROR :sqlite3_table_column_metadata" << std::endl;
+					std::cerr << "WASABI: ERROR :sqlite3_table_column_metadata" << std::endl;
 			}
 #endif
 
