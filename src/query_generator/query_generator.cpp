@@ -86,7 +86,11 @@ namespace query_generator
 				if (ina::query_model::Dimension::DIMENSION_OF_MEASURES_NAME != querySort.getObjectName())
 				{
 					order_by << generateSQL(querySort);
-				}				
+				}
+				else
+				{
+					std::cerr << "WASABI: Sort on member NYI" << std::endl;
+				}
 			}
 		}
 

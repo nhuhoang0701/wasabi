@@ -41,7 +41,7 @@ namespace ina::query_model
 			{
 				if(metadata.isNull("Language")) //TODO: Should be an error TMP for FireFly side POC
 				{
-					std::cerr << "Bad InA request Language is null" << std::endl;
+					std::cerr << "WASABI: Bad InA request Language is null" << std::endl;
 					query->m_language = "EN";
 				}
 				else
@@ -80,7 +80,7 @@ namespace ina::query_model
 			{
 				if(metadata.isNull("Language")) //TODO: Should be an error TMP for FireFly side POC
 				{
-					std::cerr << "Bad InA request Language is null" << std::endl;
+					std::cerr << "WASABI: Bad InA request Language is null" << std::endl;
 					query->m_language = "EN";
 				}
 				else
