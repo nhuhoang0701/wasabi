@@ -130,7 +130,7 @@ void writeDimensions(JSONWriter& writer, std::vector<const ina::query_model::Dim
 	}
 }
 
-void writeTuples(JSONWriter &writer, calculator::Axe &axis, size_t &axisIndex) 
+void writeTuples(JSONWriter &writer, const calculator::Axe &axis, size_t axisIndex) 
 {
 	for (size_t rowIndex = 0; rowIndex < axis.getCardinality(); rowIndex++) 
 	{
@@ -154,21 +154,26 @@ void writeTuples(JSONWriter &writer, calculator::Axe &axis, size_t &axisIndex)
 	}
 }
 
-void writeTuples(JSONWriter& writer, const ina::query_model::Definition & definition , const calculator::Cube& cube)
+void writeTuples(JSONWriter& writer, const ina::query_model::Definition & definition , const calculator::Cube& cube, calculator::Cube::eAxe eAxe)
 {
 	JSON_LIST(writer);
 	{
-		auto rowAxis 		= cube.getAxe(calculator::Cube::eAxe::Row);
-		size_t rowAxisIndex = 0;
-
-		auto columnAxis 		= cube.getAxe(calculator::Cube::eAxe::Column);
-		size_t columnAxisIndex 	= 0;
+		auto axis 		= cube.getAxe(eAxe);
+		size_t axisIndex = 0;
 
 		for(auto dimension  : definition.getDimensions())
 		{
 			if(ina::query_model::Dimension::isDimensionOfMeasures(dimension) )
 			{
 				// Done in Cells
+				continue;
+			}
+			if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Rows && eAxe != calculator::Cube::eAxe::Row)
+			{
+				continue;
+			}
+			if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Columns && eAxe != calculator::Cube::eAxe::Column)
+			{
 				continue;
 			}
 			JSON_MAP(writer);
@@ -180,12 +185,12 @@ void writeTuples(JSONWriter& writer, const ina::query_model::Definition & defini
 					writer.key("Values");
 					JSON_LIST(writer);
 					{
-						if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Rows)
-							writeTuples(writer, rowAxis, rowAxisIndex);
-						else if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Columns)
-							writeTuples(writer, columnAxis, columnAxisIndex);
-						else
-							throw std::runtime_error("InA_Interpreter => Unknow axis type.");
+						writeTuples(writer, axis, axisIndex);
+						axisIndex ++;
+						if (axisIndex == axis.size())
+						{
+							break;
+						}
 					}
 				}
 			}
@@ -327,6 +332,10 @@ namespace ina_interpreter
 							writer.pair("Name", "ROWS");
 							writer.key("Dimensions");
 							writeDimensions(writer, rowDims, cube);
+							writer.key("Tuples");
+							{
+								writeTuples(writer, query.getDefinition(), cube, calculator::Cube::eAxe::Row);
+							}
 						}
 						if(!colDims.empty())
 						{
@@ -335,11 +344,11 @@ namespace ina_interpreter
 							writer.pair("Name", "COLUMNS");
 							writer.key("Dimensions");
 							writeDimensions(writer, colDims, cube);
+							writer.key("Tuples");
+							{
+								writeTuples(writer, query.getDefinition(), cube, calculator::Cube::eAxe::Column);
+							}
 						}
-					}
-					writer.key("Tuples");
-					{
-						writeTuples(writer, query.getDefinition(), cube);
 					}
 					
 					
