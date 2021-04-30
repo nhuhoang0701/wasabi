@@ -20,6 +20,7 @@ namespace query_generator
         std::ostringstream group_by;
 		std::ostringstream order_by;
 
+		delim.clear();
         for (const auto& dimension : m_query.getDefinition().getDimensions())
         {
 			if(ina::query_model::Dimension::isDimensionOfMeasures(dimension))
@@ -27,6 +28,8 @@ namespace query_generator
 				for(const auto& member : m_query.getDefinition().getVisibleMembers(dimension) )
 				{
 					selected << delim;
+					if(delim.empty())
+						delim = ", ";
 					selected << member.getAggregation() << "(" << member.getName() << ")";
 				}
 			}
@@ -35,14 +38,21 @@ namespace query_generator
 				const std::string& dimensionName = dimension.getName();
 				selected << delim;
 				selected << dimensionName;
-				if (!group_by.str().empty())
-				{
-					group_by << delim;
-				}
+				if(delim.empty())
+					delim = ", ";
+			}
+        }
+		delim.clear();
+        for (const auto& dimension : m_query.getDefinition().getDimensions())
+        {
+			if( ! ina::query_model::Dimension::isDimensionOfMeasures(dimension))
+			{
+				group_by << delim;
+				if(delim.empty())
+					delim = ", ";
+				const std::string& dimensionName = dimension.getName();
 				group_by << dimensionName;
 			}
-
-            delim = ", ";
         }
 
 		for(const auto & filter : m_query.getDefinition().getQueryFilters())
