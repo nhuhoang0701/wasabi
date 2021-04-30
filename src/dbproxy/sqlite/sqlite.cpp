@@ -166,7 +166,7 @@ namespace dbproxy
 				if(SQLITE_OK ==sqlite3_table_column_metadata(g_db, nullptr, g_tableDescr->getName().c_str(), azColName[i], &pzDataType, &pzCollSeq, pNotNull, pPrimaryKey, pAutoinc) )
 				{
 					g_tableDescr->push_back(ColumnDescr(std::string(azColName[i]), std::string(pzDataType?pzDataType:"")));
-					std::cout <<  g_tableDescr->getName()<< ": '" << azColName[i] << "' = '" << (pzDataType ? pzDataType : "NULL") << "'" << std::endl;
+					//std::cout <<  g_tableDescr->getName()<< ": '" << azColName[i] << "' = '" << (pzDataType ? pzDataType : "NULL") << "'" << std::endl;
 				}
 				else
 					std::cerr << "WASABI: ERROR :sqlite3_table_column_metadata" << std::endl;
