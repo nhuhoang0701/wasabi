@@ -82,6 +82,7 @@ namespace query_generator
 					order_by << ", ";
 				}
 
+				// case of MemberSort, TODO: in the Grid
 				if (ina::query_model::Dimension::DIMENSION_OF_MEASURES_NAME != querySort.getObjectName())
 				{
 					order_by << generateSQL(querySort);
