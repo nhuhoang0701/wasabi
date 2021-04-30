@@ -172,12 +172,12 @@ void writeTuples(JSONWriter& writer, const ina::query_model::Definition & defini
 			JSON_MAP(writer);
 			{
 				writer.key("TupleElementIds");
-				JSON_MAP(writer);
 				{
+					JSON_MAP(writer);
 					writer.pair("Encoding","None");
 					writer.key("Values");
-					JSON_LIST(writer);
 					{
+						JSON_LIST(writer);
 						if(ina::query_model::Dimension::isDimensionOfMeasures(dimension) )
 						{
 							for(const auto& member : dimension.getMembers())
@@ -191,6 +191,27 @@ void writeTuples(JSONWriter& writer, const ina::query_model::Definition & defini
 							{
 								break;
 							}
+						}
+					}
+				}
+				writer.key("MemberIndexes");
+				{
+					JSON_MAP(writer);
+					writer.pair("Encoding","None");
+					writer.key("Values");
+					{
+						JSON_LIST(writer);
+						if(ina::query_model::Dimension::isDimensionOfMeasures(dimension) )
+						{
+							size_t index = 0;
+							for(const auto& member : dimension.getMembers())
+								writer.value(index++);
+						}
+						else
+						{
+							for (size_t rowIndex = 0; rowIndex < axis.getCardinality(); rowIndex++) 
+								writer.value(rowIndex);
+	
 						}
 					}
 				}
@@ -386,6 +407,40 @@ namespace ina_interpreter
 											case calculator::eDataType::Number:
 											{
 												writer.value(std::get<double>(data));
+												break;
+											}
+											default:
+												throw std::runtime_error("InA_Interpreter => Unsupported datatype.");
+											}
+										}
+									}
+								}
+							}
+						}
+						writer.key("CellValueTypes");
+						{
+							JSON_MAP(writer);
+							writer.pair("Encoding", "None");
+							writer.key("Values");
+							{
+								JSON_LIST(writer);	
+								for(size_t colIndex = 0; colIndex < cube.getBody().getColNbrs(); colIndex++)
+								{
+									for(size_t rowIndex = 0; rowIndex < cube.getBody().getRowNbrs(); rowIndex++)
+									{
+										for(size_t measIndex = 0; measIndex < cube.getBody().size(); measIndex++)
+										{
+											const auto& data = cube.getBody().getValue(measIndex, colIndex, rowIndex);
+											switch (cube.getBody().getValueDatatype(measIndex))
+											{
+											case calculator::eDataType::String:
+											{
+												writer.value(4);
+												break;
+											}
+											case calculator::eDataType::Number:
+											{
+												writer.value(10);
 												break;
 											}
 											default:
