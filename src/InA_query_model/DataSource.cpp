@@ -51,7 +51,7 @@ namespace ina::query_model
 		//TODO: Remove just to start dev.
 		if(m_objName.empty())
 		{
-			std::cerr << "Harcoded table will be used: " << table << std::endl;
+			std::cerr << "WASABI: Harcoded table will be used: " << table << std::endl;
 			return table;
 		}
 		return m_objName;
@@ -68,7 +68,7 @@ namespace ina::query_model
 		//TODO: Remove just to start dev.
 		if(m_packageName.empty())
 		{
-			std::cerr << "Harcoded connection string will be used: " << cnxstrg << std::endl;
+			std::cerr << "WASABI: Harcoded connection string will be used: " << cnxstrg << std::endl;
 			return cnxstrg;
 		}
 		return m_packageName;
