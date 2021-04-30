@@ -81,7 +81,11 @@ namespace query_generator
 				{
 					order_by << ", ";
 				}
-				order_by << generateSQL(querySort);
+
+				if (ina::query_model::Dimension::DIMENSION_OF_MEASURES_NAME != querySort.getObjectName())
+				{
+					order_by << generateSQL(querySort);
+				}				
 			}
 		}
 

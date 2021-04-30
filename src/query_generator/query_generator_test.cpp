@@ -128,5 +128,24 @@ int main()
 		std::cout << "Generated SQL: " << sql << std::endl;
 		CPPUNIT_ASSERT_EQUAL("SELECT SUM(OBJ_147), OBJ_166, OBJ_185, OBJ_186 FROM MyTable GROUP BY OBJ_166, OBJ_185, OBJ_186 ORDER BY OBJ_166 ASC, OBJ_185 DESC, OBJ_186 ASC;", sql);		
 	}
+	{
+		ina::query_model::DataSource ds;
+		ds.setObjectName("MyTable");
+
+		ina::query_model::Query queryInA;
+		queryInA.setDataSource(ds);
+
+		std::string request = R"({"Dimensions":[{"Name":"CustomDimension1","Axis":"Columns","Members":[{"MemberOperand":{"AttributeName":"Measures","Comparison":"=","Value":"Sales_revenue"},"Aggregation":"SUM","Visibility":"Visible"},{"MemberOperand":{"AttributeName":"Measures","Comparison":"=","Value":"Quantity_sold"},"Aggregation":"SUM","Visibility":"Visible"},{"MemberOperand":{"AttributeName":"Measures","Comparison":"=","Value":"Margin"},"Aggregation":"SUM","Visibility":"Visible"}],"Attributes":[{"Name":"[Measures].[Name]","Obtainability":"Always"},{"Name":"[Measures].[Measures]","Obtainability":"UserInterface"}]}],"Sort":[{"SortType":"MemberKey","PreserveGrouping":true,"Dimension":"CustomDimension1"}]})";
+		JSONReader reader;
+		JSONGenericObject root = reader.parse(request);
+		ina::query_model::Definition definition;
+		read(definition, root);
+		queryInA.setDefinition(definition);
+		const query_generator::query_generator& queryGen = query_generator::query_generator(queryInA);
+		std::string sql = queryGen.getSQL();
+		std::cout << "Generated SQL: " << sql << std::endl;
+		CPPUNIT_ASSERT_EQUAL("SELECT SUM(Sales_revenue), SUM(Quantity_sold), SUM(Margin) FROM MyTable;", sql);		
+
+	}	
 	return TEST_HAVEERROR();
 }
