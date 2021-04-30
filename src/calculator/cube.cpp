@@ -95,7 +95,7 @@ namespace calculator
 		}
 		else if(indexes.size() > 1 )
 		{
-			/*throw*/ std::cerr << ("ERROR: Local agregation, NYI hardcoded to sum\n");
+			std::cerr << "WASABI: ERROR: Local agregation, NYI hardcoded to sum" << std::endl;
 
 			const calculator::eDataType datatype = columnData.getDataType();
 			if(datatype == eDataType::Number)
