@@ -4,9 +4,12 @@
 	<script src="./WASI_API.js" type="text/javascript" charset="utf-8"></script>
 	<script src="./WASI_Module.js" type="text/javascript" charset="utf-8"></script>
 	<script src="./Microcube_worker_test.js" type="text/javascript" charset="utf-8"></script>
+	<script src="./cs_proto.js" type="text/javascript" charset="utf-8"></script>
+	<script src="./CS_test.js" type="text/javascript" charset="utf-8"></script>
 	
 
 	<p><strong>WASABI tests</strong></p>
+	<button  id='linkStartCS' onclick="_startCSTest();">Start CS test</button>
 	<button  id='linkStartWorker' onclick="_startWorkerTest();">Start worker test</button>
 	<div/>
 	<input type="file" id="inputOpenWasmFile" accept="application/wasm" multiple="multiple" onclick="this.value=null;" onchange="_handleFiles(this.files)">
