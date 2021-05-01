@@ -224,98 +224,27 @@ void ina::grid::writeGrid(const ina::query_model::Query& query, JSONWriter& writ
 				JSON_MAP(writer);
 				writer.pair("Name", "ROWS");
 				writeDimensions(writer, rowAxe, cube);
-				{
-					writeTuples(writer, query.getDefinition(), cube, calculator::eAxe::Row);
-				}
+
+				size_t tuplesCount = writeTuples(writer, query.getDefinition(), cube, calculator::eAxe::Row);
+				//writer.pair("TupleCount", tuplesCount);
 			}
 			if(!colAxe.empty())
 			{
 				JSON_MAP(writer);
 				writer.pair("Name", "COLUMNS");
 				writeDimensions(writer, colAxe, cube);
-				{
-					writeTuples(writer, query.getDefinition(), cube, calculator::eAxe::Column);
-				}
+
+				size_t tuplesCount = writeTuples(writer, query.getDefinition(), cube, calculator::eAxe::Column);
+				//writer.pair("TupleCount", tuplesCount);
 			}
 		}
 
+		auto cellsSize = writeCells(writer, cube, measDim);
 		writer.key("CellArraySizes");
 		{
 			JSON_LIST(writer);
-			writer.value(cube.getBody().getRowNbrs() * (measDim && measDim->getAxe()==ina::query_model::Dimension::eAxe::Rows? measDim->getMembers().size():1 ));
-			writer.value(cube.getBody().getColNbrs() * (measDim && measDim->getAxe()==ina::query_model::Dimension::eAxe::Columns? measDim->getMembers().size():1 ));
-		}
-		writer.key("Cells");
-		{
-			JSON_MAP(writer);
-			writer.key("Values");
-			{
-				JSON_MAP(writer);
-				writer.pair("Encoding", "None");
-				writer.key("Values");
-				{
-					JSON_LIST(writer);	
-					for(size_t colIndex = 0; colIndex < cube.getBody().getColNbrs(); colIndex++)
-					{
-						for(size_t rowIndex = 0; rowIndex < cube.getBody().getRowNbrs(); rowIndex++)
-						{
-							for(const auto& dim : cube.getBody())
-							{
-								const auto& data = cube.getBody().getValue(dim.getName(), colIndex, rowIndex);
-								switch (cube.getBody().getValueDatatype(dim.getName()))
-								{
-								case calculator::eDataType::String:
-								{
-									writer.value(std::get<std::string>(data));
-									break;
-								}
-								case calculator::eDataType::Number:
-								{
-									writer.value(std::get<double>(data));
-									break;
-								}
-								default:
-									throw std::runtime_error("InA_Interpreter => Unsupported datatype.");
-								}
-							}
-						}
-					}
-				}
-			}
-			writer.key("CellValueTypes");
-			{
-				JSON_MAP(writer);
-				writer.pair("Encoding", "None");
-				writer.key("Values");
-				{
-					JSON_LIST(writer);	
-					for(size_t colIndex = 0; colIndex < cube.getBody().getColNbrs(); colIndex++)
-					{
-						for(size_t rowIndex = 0; rowIndex < cube.getBody().getRowNbrs(); rowIndex++)
-						{
-							for(const auto& measName : cube.getBody())
-							{
-								const auto& data = cube.getBody().getValue(measName.getName(), colIndex, rowIndex);
-								switch (cube.getBody().getValueDatatype(measName.getName()))
-								{
-								case calculator::eDataType::String:
-								{
-									writer.value(4);
-									break;
-								}
-								case calculator::eDataType::Number:
-								{
-									writer.value(10);
-									break;
-								}
-								default:
-									throw std::runtime_error("InA_Interpreter => Unsupported datatype.");
-								}
-							}
-						}
-					}
-				}
-			}
+			writer.value(cellsSize.first);
+			writer.value(cellsSize.second);
 		}
 		writer.pair("ResultSetState", 0);
 		writer.pair("HasErrors", false);
@@ -344,9 +273,9 @@ void ina::grid::writeDimensions(JSONWriter& writer, std::vector<const ina::query
 					{
 						const auto& col = *cube.getStorage().getColumn(dim->getName());
 						//TODO: false should dump the dimension value
-						for(size_t rowIdx = 0; rowIdx < col.getNbDistinctVals(); rowIdx++)
+						for(size_t rowIdx = 0; rowIdx < col.getNumberOfValues(); rowIdx++)
 						{
-							const auto& data = col.getDistinctValue(rowIdx);
+							const auto& data = col.getValueAtValueIdx(rowIdx);
 							switch (col.getDataType())
 							{
 							case calculator::eDataType::String:
@@ -376,12 +305,12 @@ void ina::grid::writeDimensions(JSONWriter& writer, std::vector<const ina::query
 	}
 }
 
-void ina::grid::writeTuples(JSONWriter& writer, const ina::query_model::Definition & definition , const calculator::Cube& cube, calculator::eAxe eAxe)
+size_t ina::grid::writeTuples(JSONWriter& writer, const ina::query_model::Definition & definition , const calculator::Cube& cube, calculator::eAxe eAxe)
 {
+	size_t tuplesCount = 0;
 	writer.key("Tuples");
-	JSON_LIST(writer);
 	{
-		auto axis 		= cube.getAxe(eAxe);
+		JSON_LIST(writer);
 		for(auto dimension  : definition.getDimensions())
 		{
 			if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Rows && eAxe != calculator::eAxe::Row)
@@ -392,10 +321,11 @@ void ina::grid::writeTuples(JSONWriter& writer, const ina::query_model::Definiti
 				
 			JSON_MAP(writer);
 			{
-				writer.key("TupleElementIds");
+				auto const& axis = cube.getAxe(eAxe);
+				/*writer.key("TupleElementIds");
 				{
 					writeTupleValues(writer, axis, dimension);
-				}
+				}*/
 				writer.key("MemberIndexes");
 				{
 					JSON_MAP(writer);
@@ -408,18 +338,24 @@ void ina::grid::writeTuples(JSONWriter& writer, const ina::query_model::Definiti
 							size_t index = 0;
 							for(const auto& member : dimension.getMembers())
 								writer.value(index++);
+							tuplesCount = dimension.getMembers().size();
 						}
 						else
 						{
-							for (size_t rowIndex = 0; rowIndex < axis.getCardinality(); rowIndex++) 
-								writer.value(rowIndex);
-	
+							for (size_t rowIndex = 0; rowIndex < axis.getCardinality(); rowIndex++)
+							{
+								const auto& col = *cube.getStorage().getColumn(dimension.getName());
+								writer.value(col.getValueIndexFromRowIdx(rowIndex));
+							}
+							tuplesCount = axis.getCardinality();
 						}
 					}
 				}
 			}
 		}
 	}
+	
+	return tuplesCount;
 }
 
 void ina::grid::writeTupleValues(JSONWriter &writer, const calculator::Axe& axis, const ina::query_model::Dimension& dimension) 
@@ -439,7 +375,7 @@ void ina::grid::writeTupleValues(JSONWriter &writer, const calculator::Axe& axis
 		for (size_t rowIndex = 0; rowIndex < axis.getCardinality(); rowIndex++) 
 		{
 			auto valueDataType = axis.getValueDatatype(dimName);
-			auto value = axis.getValue(dimName, rowIndex);
+			const auto& value = axis.getValue(dimName, rowIndex);
 			switch (valueDataType) 
 			{
 				case calculator::eDataType::String: 
@@ -457,4 +393,88 @@ void ina::grid::writeTupleValues(JSONWriter &writer, const calculator::Axe& axis
 			}
 		}
 	}
+}
+
+std::pair<size_t, size_t> ina::grid::writeCells(JSONWriter& writer, const calculator::Cube& cube, const ina::query_model::Dimension* measDim)
+{
+	writer.key("Cells");
+	{
+		JSON_MAP(writer);
+		writer.key("Values");
+		{
+			JSON_MAP(writer);
+			writer.pair("Encoding", "None");
+			writer.key("Values");
+			{
+				JSON_LIST(writer);	
+				for(size_t colIndex = 0; colIndex < cube.getBody().getColNbrs(); colIndex++)
+				{
+					for(size_t rowIndex = 0; rowIndex < cube.getBody().getRowNbrs(); rowIndex++)
+					{
+						for(const auto& dim : cube.getBody())
+						{
+							const auto& data = cube.getBody().getValue(dim.getName(), colIndex, rowIndex);
+							switch (cube.getBody().getValueDatatype(dim.getName()))
+							{
+							case calculator::eDataType::String:
+							{
+								writer.value(std::get<std::string>(data));
+								break;
+							}
+							case calculator::eDataType::Number:
+							{
+								writer.value(std::get<double>(data));
+								break;
+							}
+							default:
+								throw std::runtime_error("InA_Interpreter => Unsupported datatype.");
+							}
+						}
+					}
+				}
+			}
+		}
+		writer.key("CellValueTypes");
+		{
+			JSON_MAP(writer);
+			writer.pair("Encoding", "None");
+			writer.key("Values");
+			{
+				JSON_LIST(writer);	
+				for(size_t colIndex = 0; colIndex < cube.getBody().getColNbrs(); colIndex++)
+				{
+					for(size_t rowIndex = 0; rowIndex < cube.getBody().getRowNbrs(); rowIndex++)
+					{
+						for(const auto& measName : cube.getBody())
+						{
+							const auto& data = cube.getBody().getValue(measName.getName(), colIndex, rowIndex);
+							switch (cube.getBody().getValueDatatype(measName.getName()))
+							{
+							case calculator::eDataType::String:
+							{
+								writer.value(4);
+								break;
+							}
+							case calculator::eDataType::Number:
+							{
+								writer.value(10);
+								break;
+							}
+							default:
+								throw std::runtime_error("InA_Interpreter => Unsupported datatype.");
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	std::pair<size_t, size_t> cellsSize = std::make_pair(cube.getBody().getRowNbrs(), cube.getBody().getColNbrs());
+	if(measDim && measDim->getAxe()==ina::query_model::Dimension::eAxe::Rows)
+		cellsSize.first *= measDim->getMembers().size();
+	if(measDim && measDim->getAxe()==ina::query_model::Dimension::eAxe::Columns)
+		cellsSize.second *= measDim->getMembers().size();
+
+	return cellsSize;
 }
