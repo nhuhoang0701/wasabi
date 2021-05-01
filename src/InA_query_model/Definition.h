@@ -15,9 +15,6 @@
 
 class JSONGenericObject;    // #include <json/jsonReader.h>
 
-namespace grid {class Grid;}
-
-
 namespace ina::query_model
 {
 	using namespace wasabi;
@@ -47,8 +44,6 @@ namespace ina::query_model
 
 		const std::vector<QuerySort>& getQuerySorts() const;
 		void addQuerySort(const QuerySort& querySort);
-
-		void prepareGrid(grid::Grid& grid);
 		
 		inline static Datatype getModelDatatype(const metadata::Column::DataType& datatype)
 		{
