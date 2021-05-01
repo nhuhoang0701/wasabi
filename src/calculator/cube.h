@@ -8,6 +8,7 @@
 
 namespace calculator
 {
+	enum class eAxe {Row, Column};
 	class Object
 	{
 	public:
@@ -86,7 +87,6 @@ namespace calculator
 		void                setStorage(std::shared_ptr<const DataStorage> data);
 		const DataStorage&  getStorage() const;
 		
-		enum class eAxe {Row, Column};
 		void         addDim(eAxe eAxe, const Object& obj);
 		void         addMeas(const std::string& name);
 
