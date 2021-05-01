@@ -74,7 +74,7 @@ namespace query_generator
 				}
 			}
 
-			for(const auto & filter : m_query.getDefinition().getQueryFilters())
+			for(const auto& filter : m_query.getDefinition().getQueryFilters())
 			{
 				if (!("[Measures].[Measures]" == filter.getFieldName()))
 				{
@@ -94,7 +94,7 @@ namespace query_generator
 
 			if (!m_query.getDefinition().getQuerySorts().empty())
 			{
-				for(const auto & querySort : m_query.getDefinition().getQuerySorts())
+				for(const auto& querySort : m_query.getDefinition().getQuerySorts())
 				{
 					if (!order_by.str().empty())
 					{

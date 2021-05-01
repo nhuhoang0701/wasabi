@@ -47,7 +47,9 @@ namespace calculator
 	private:
 		const Cube&                  m_cube;
 
-		std::map<std::vector<Value>, std::vector<size_t>> m_tuples;
+		// Tuple of value index
+		typedef std::vector<size_t> Tuple;
+		std::map<Tuple, std::vector<size_t> /*row index tp aggregated*/> m_tuples;
 		bool  m_materialyzed = false;
 	};
 

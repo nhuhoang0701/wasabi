@@ -40,9 +40,9 @@ namespace ina::query_model
         if (!m_filters.empty())
         {
             std::vector<Member> visibleMembers;
-            for(const auto & member : dimension.getMembers())
+            for(const auto& member : dimension.getMembers())
             {
-                for(const auto & filter : m_filters)
+                for(const auto& filter : m_filters)
                 {
                     /* 
                     MDS_TheDefinitveGuide_2_1 page 237
@@ -52,7 +52,7 @@ namespace ina::query_model
                         Even some virtual attributes (e.g. hierarchy key or description) can be used.
                     */
                     bool matchFieldName = false;                    
-                    for(const auto & attribute : dimension.getAttributes())
+                    for(const auto& attribute : dimension.getAttributes())
                     {
                         if (filter.getFieldName()  == attribute.getName())
                         {

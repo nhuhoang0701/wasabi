@@ -18,20 +18,20 @@ namespace calculator
 		m_tuples.clear();
 		if(empty() == false)
 		{
-			for(size_t row = 0; row <m_cube.m_data->getRowNbrs(); row++)
+			for(size_t rowIndex = 0; rowIndex <m_cube.m_data->getRowNbrs(); rowIndex++)
 			{
 				// Get the tuple
-				std::vector<Value> tuple;
+				std::vector<size_t> tuple;
 				for(const auto& obj : *this)
 				{
 					const auto& columnData = m_cube.getStorage().getColumn(obj.getName());
-					tuple.push_back((*columnData)[row]);
+					tuple.push_back(columnData->getValueIndexFromRowIdx(rowIndex));
 				}
 				// Get the list of pre aggreagted indexes
 				if(m_tuples.find(tuple) != m_tuples.end())
-					m_tuples[tuple].push_back(row);
+					m_tuples[tuple].push_back(rowIndex);
 				else
-					m_tuples[tuple] = std::vector(1, row);
+					m_tuples[tuple] = std::vector(1, rowIndex);
 			}
 		}
 		m_materialyzed = true;
@@ -83,7 +83,9 @@ namespace calculator
 		if(dimIdx >= tuple.size())
 			throw std::out_of_range("Axe::getValue dimIdx");
 
-		return tuple[dimIdx];
+		const std::string& nameCol = at(dimIdx).getName();
+		const auto& columnData = m_cube.getStorage().getColumn(nameCol);
+		return columnData->getValueAtValueIdx(tuple[dimIdx]);
 	}
 
 	const std::vector<size_t>& Axe::getParentIndexes(size_t row) const
@@ -122,7 +124,7 @@ namespace calculator
 			{
 				double sum = 0;
 				for(const auto& i : indexes)
-					sum +=  std::get<double>(columnData[i]);
+					sum +=  std::get<double>(columnData.getValueAtRowIdx(i));
 				value = sum;
 			}
 			else
@@ -131,7 +133,7 @@ namespace calculator
 			}
 		}
 		else
-			value = columnData[indexes.at(0)];
+			value = columnData.getValueAtRowIdx(indexes.at(0));
 	}
 
 	void Body::materialyze()
