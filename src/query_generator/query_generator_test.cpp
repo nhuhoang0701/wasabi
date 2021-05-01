@@ -9,6 +9,8 @@ int main()
 {
 	TEST_INIT();
 
+	std::shared_ptr<calculator::DataStorage> data(new calculator::DataStorage());
+
 	{
 		ina::query_model::DataSource ds;
 		ds.setObjectName("MyTable");
@@ -20,7 +22,8 @@ int main()
 		queryInA.setDefinition(definition);
 
 		const query_generator::query_generator& queryGen = query_generator::query_generator(queryInA);
-		std::string sql = queryGen.getSQL();
+		queryGen.prepareStorage(*data);
+		std::string sql = queryGen.getSQL(*data);
 
 		std::cout << "Generated SQL: " << sql << std::endl;
 		CPPUNIT_ASSERT_EQUAL("", sql);
@@ -45,7 +48,8 @@ int main()
 		queryInA.setDefinition(definition);
 
 		const query_generator::query_generator& queryGen = query_generator::query_generator(queryInA);
-		std::string sql = queryGen.getSQL();
+		queryGen.prepareStorage(*data);
+		std::string sql = queryGen.getSQL(*data);
 
 		std::cout << "Generated SQL: " << sql << std::endl;
 		CPPUNIT_ASSERT_EQUAL("SELECT dim_A, dim_B, SUM(meas_1), SUM(meas_2) FROM MyTable GROUP BY dim_A, dim_B;", sql);
@@ -66,7 +70,8 @@ int main()
 		queryInA.setDefinition(definition);
 
 		const query_generator::query_generator& queryGen = query_generator::query_generator(queryInA);
-		std::string sql = queryGen.getSQL();
+		queryGen.prepareStorage(*data);
+		std::string sql = queryGen.getSQL(*data);
 		std::cout << "Generated SQL: " << sql << std::endl;
 		CPPUNIT_ASSERT_EQUAL("SELECT OBJ_188, SUM(OBJ_262) FROM MyTable WHERE OBJ_188 = 2014 GROUP BY OBJ_188;", sql);
 	}
@@ -86,7 +91,8 @@ int main()
 		queryInA.setDefinition(definition);
 
 		const query_generator::query_generator& queryGen = query_generator::query_generator(queryInA);
-		std::string sql = queryGen.getSQL();
+		queryGen.prepareStorage(*data);
+		std::string sql = queryGen.getSQL(*data);
 		std::cout << "Generated SQL: " << sql << std::endl;
 		CPPUNIT_ASSERT_EQUAL("SELECT OBJ_188 FROM MyTable WHERE OBJ_188 IS NULL OR NOT ( OBJ_188 = 2014 ) GROUP BY OBJ_188;", sql);
 	}
@@ -106,7 +112,8 @@ int main()
 		CPPUNIT_ASSERT_EQUAL(definition.getDimensions().size(),3);
 		queryInA.setDefinition(definition);
 		const query_generator::query_generator& queryGen = query_generator::query_generator(queryInA);
-		std::string sql = queryGen.getSQL();
+		queryGen.prepareStorage(*data);
+		std::string sql = queryGen.getSQL(*data);
 		std::cout << "Generated SQL: " << sql << std::endl;
 		CPPUNIT_ASSERT_EQUAL("SELECT Yr, Month_name, SUM(Sales_revenue) FROM MyTable GROUP BY Yr, Month_name;", sql);		
 	}	
@@ -124,7 +131,8 @@ int main()
 		read(definition, root);
 		queryInA.setDefinition(definition);
 		const query_generator::query_generator& queryGen = query_generator::query_generator(queryInA);
-		std::string sql = queryGen.getSQL();
+		queryGen.prepareStorage(*data);
+		std::string sql = queryGen.getSQL(*data);
 		std::cout << "Generated SQL: " << sql << std::endl;
 		CPPUNIT_ASSERT_EQUAL("SELECT SUM(OBJ_147), OBJ_166, OBJ_185, OBJ_186 FROM MyTable GROUP BY OBJ_166, OBJ_185, OBJ_186 ORDER BY OBJ_166 ASC, OBJ_185 DESC, OBJ_186 ASC;", sql);		
 	}
@@ -142,7 +150,8 @@ int main()
 		read(definition, root);
 		queryInA.setDefinition(definition);
 		const query_generator::query_generator& queryGen = query_generator::query_generator(queryInA);
-		std::string sql = queryGen.getSQL();
+		queryGen.prepareStorage(*data);
+		std::string sql = queryGen.getSQL(*data);
 		std::cout << "Generated SQL: " << sql << std::endl;
 		CPPUNIT_ASSERT_EQUAL("SELECT SUM(Sales_revenue), SUM(Quantity_sold), SUM(Margin) FROM MyTable;", sql);		
 

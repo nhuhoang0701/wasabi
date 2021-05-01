@@ -27,7 +27,7 @@
 WASM_EXPORT
 const char* json_getServerInfo()
 {
-	std::cout << "InA_Interpreter => json_getServerInfo call received" << std::endl;
+	//std::cout << "InA_Interpreter => json_getServerInfo call received" << std::endl;
 	static std::string static_str_getserverinfo;
 	if(static_str_getserverinfo.empty() )
 	{
@@ -43,14 +43,14 @@ const char* json_getServerInfo()
 WASM_EXPORT
 const char* json_getResponse_json(const char* InA)
 {
-	std::cout << "InA_Interpreter => getResponse call received: '" << InA << "'" << std::endl;
+	//std::cout << "InA_Interpreter => getResponse call received: '" << InA << "'" << std::endl;
 	JSONReader reader;
 	JSONGenericObject root = reader.parse(InA);
 	
-	std::cout << "InA_Interpreter => getResponse JSON to object model" << std::endl;
+	//std::cout << "InA_Interpreter => getResponse JSON to object model" << std::endl;
 	std::vector<std::shared_ptr<const ina::query_model::Query>> queries;
 	read(queries, root);
-	std::cout << "                   nb of queries: '" << queries.size() << "'" << std::endl;
+	//std::cout << "                   nb of queries: '" << queries.size() << "'" << std::endl;
 	
 	std::ostringstream osstream;
 	JSONWriter writer(osstream);
@@ -309,7 +309,7 @@ namespace ina_interpreter
 						data->insertRow(row);
 					};
 					const std::string& cnxString = query.getDataSource().getPackageName();
-					dbproxy::DBProxy::getDBProxy(cnxString)->executeSQL(queryGen.getSQL(), &lambda);
+					dbproxy::DBProxy::getDBProxy(cnxString)->executeSQL(queryGen.getSQL(*data), &lambda);
 
 					cube.setStorage(data);
 					for (const auto& dimension : query.getDefinition().getDimensions()) 
@@ -421,10 +421,10 @@ namespace ina_interpreter
 								{
 									for(size_t rowIndex = 0; rowIndex < cube.getBody().getRowNbrs(); rowIndex++)
 									{
-										for(size_t measIndex = 0; measIndex < cube.getBody().size(); measIndex++)
+										for(const auto& measName : cube.getBody())
 										{
-											const auto& data = cube.getBody().getValue(measIndex, colIndex, rowIndex);
-											switch (cube.getBody().getValueDatatype(measIndex))
+											const auto& data = cube.getBody().getValue(measName.getName(), colIndex, rowIndex);
+											switch (cube.getBody().getValueDatatype(measName.getName()))
 											{
 											case calculator::eDataType::String:
 											{
