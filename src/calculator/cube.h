@@ -32,6 +32,9 @@ namespace calculator
 
 		size_t getCardinality() const;
 
+		calculator::eDataType  getValueDatatype(const std::string& dimName) const;
+		const Value&           getValue(const std::string& dimName, size_t row) const;
+
 		calculator::eDataType  getValueDatatype(size_t dimIdx) const;
 		const Value&           getValue(size_t dimIdx, size_t row) const;
 
@@ -56,6 +59,9 @@ namespace calculator
 		size_t  getCellsNbs() const;
 		size_t  getRowNbrs() const;
 		size_t  getColNbrs() const;
+
+		calculator::eDataType  getValueDatatype(const std::string& measName) const;
+		const Value&           getValue(const std::string& measName, size_t col, size_t row) const;
 
 		calculator::eDataType  getValueDatatype(size_t measIdx) const;
 		const Value&           getValue(size_t measIdx, size_t col, size_t row) const;

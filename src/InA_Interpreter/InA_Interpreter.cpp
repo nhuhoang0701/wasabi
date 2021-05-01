@@ -130,12 +130,12 @@ void writeDimensions(JSONWriter& writer, std::vector<const ina::query_model::Dim
 	}
 }
 
-void writeTuples(JSONWriter &writer, const calculator::Axe &axis, size_t axisIndex) 
+void writeTuples(JSONWriter &writer, const calculator::Axe &axis, const std::string& dimName) 
 {
 	for (size_t rowIndex = 0; rowIndex < axis.getCardinality(); rowIndex++) 
 	{
-		auto valueDataType = axis.getValueDatatype(axisIndex);
-		auto value = axis.getValue(axisIndex, rowIndex);
+		auto valueDataType = axis.getValueDatatype(dimName);
+		auto value = axis.getValue(dimName, rowIndex);
 		switch (valueDataType) 
 		{
 			case calculator::eDataType::String: 
@@ -159,8 +159,6 @@ void writeTuples(JSONWriter& writer, const ina::query_model::Definition & defini
 	JSON_LIST(writer);
 	{
 		auto axis 		= cube.getAxe(eAxe);
-		size_t axisIndex = 0;
-
 		for(auto dimension  : definition.getDimensions())
 		{
 			if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Rows && eAxe != calculator::Cube::eAxe::Row)
@@ -185,12 +183,7 @@ void writeTuples(JSONWriter& writer, const ina::query_model::Definition & defini
 						}
 						else
 						{
-							writeTuples(writer, axis, axisIndex);
-							axisIndex ++;
-							if (axisIndex == axis.size())
-							{
-								break;
-							}
+							writeTuples(writer, axis, dimension.getName());
 						}
 					}
 				}
@@ -394,10 +387,10 @@ namespace ina_interpreter
 								{
 									for(size_t rowIndex = 0; rowIndex < cube.getBody().getRowNbrs(); rowIndex++)
 									{
-										for(size_t measIndex = 0; measIndex < cube.getBody().size(); measIndex++)
+										for(const auto& dim : cube.getBody())
 										{
-											const auto& data = cube.getBody().getValue(measIndex, colIndex, rowIndex);
-											switch (cube.getBody().getValueDatatype(measIndex))
+											const auto& data = cube.getBody().getValue(dim.getName(), colIndex, rowIndex);
+											switch (cube.getBody().getValueDatatype(dim.getName()))
 											{
 											case calculator::eDataType::String:
 											{
