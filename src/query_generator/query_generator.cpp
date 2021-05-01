@@ -12,7 +12,7 @@
 
 namespace query_generator
 {
-    std::string query_generator::getSQL() const
+    std::string query_generator::getSQL(const calculator::DataStorage& data) const
     {
         std::string delim;
 		std::ostringstream selected;
@@ -21,6 +21,7 @@ namespace query_generator
 		std::ostringstream order_by;
 
 		delim.clear();
+		size_t idxInData = 0;
         for (const auto& dimension : m_query.getDefinition().getDimensions())
         {
 			if(ina::query_model::Dimension::isDimensionOfMeasures(dimension))
@@ -31,6 +32,13 @@ namespace query_generator
 					if(delim.empty())
 						delim = ", ";
 					selected << member.getAggregation() << "(" << member.getName() << ")";
+					
+					// Integrity check beetwen query and data storage columns
+					{
+						if(data.getColIndex(member.getName()) != idxInData)
+							throw std::runtime_error("Missmatch col. index in data with query");
+						idxInData++;
+					}
 				}
 			}
 			else
@@ -40,13 +48,20 @@ namespace query_generator
 				selected << dimensionName;
 				if(delim.empty())
 					delim = ", ";
+				
+				// Integrity check beetwen query and data storage columns
+				{
+					if(data.getColIndex(dimension.getName()) != idxInData)
+						throw std::runtime_error("Missmatch col. index in data with query");
+					idxInData++;
+				}
 			}
         }
 
         std::ostringstream sql;
 		if(!selected.str().empty())
 		{
-						delim.clear();
+			delim.clear();
 			for (const auto& dimension : m_query.getDefinition().getDimensions())
 			{
 				if( ! ina::query_model::Dimension::isDimensionOfMeasures(dimension))
@@ -123,6 +138,7 @@ namespace query_generator
 
 	void query_generator::prepareStorage(calculator::DataStorage& data) const
 	{
+		data.clear();
         for (const auto& dimension : m_query.getDefinition().getDimensions())
         {
 			if(ina::query_model::Dimension::isDimensionOfMeasures(dimension))

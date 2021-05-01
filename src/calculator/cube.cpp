@@ -44,6 +44,26 @@ namespace calculator
 		return m_tuples.size();
 	}
 
+	calculator::eDataType Axe::getValueDatatype(const std::string& dimName) const
+	{
+		for(size_t i = 0; i < size(); i++ )
+		{
+			if(this->at(i).getName() == dimName)
+				return getValueDatatype(i);
+		}
+		throw std::runtime_error("Axe: getValueDatatype() dimemsion not found");
+	}
+
+	const Value& Axe::getValue(const std::string& dimName, size_t row) const
+	{
+		for(size_t i = 0; i < size(); i++ )
+		{
+			if(this->at(i).getName() == dimName)
+				return getValue(i, row);
+		}
+		throw std::runtime_error("Axe: getValue() dimemsion not found");
+	}
+
 	calculator::eDataType Axe::getValueDatatype(size_t dimIdx) const
 	{
 		const std::string& nameCol = at(dimIdx).getName();
@@ -209,6 +229,26 @@ namespace calculator
 			return m_cube.getStorage().getRowNbrs()==0?0:1;
 		
 		return m_axeRow.getCardinality();
+	}
+
+	calculator::eDataType Body::getValueDatatype(const std::string& measName) const
+	{
+		for(size_t i = 0; i < size(); i++ )
+		{
+			if(this->at(i).getName() == measName)
+				return getValueDatatype(i);
+		}
+		throw std::runtime_error("Body: getValueDatatype() measure not found");
+	}
+
+	const Value& Body::getValue(const std::string& measName, size_t col, size_t row) const
+	{
+		for(size_t i = 0; i < size(); i++ )
+		{
+			if(this->at(i).getName() == measName)
+				return getValue(i, col, row);
+		}
+		throw std::runtime_error("Body: getValue() measure not found");
 	}
 
 	calculator::eDataType Body::getValueDatatype(size_t measIdx) const
