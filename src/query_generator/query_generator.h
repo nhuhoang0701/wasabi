@@ -15,7 +15,7 @@ namespace query_generator
 
 		void prepareStorage(calculator::DataStorage& cube) const;
 
-		std::string getSQL() const;
+		std::string getSQL(const calculator::DataStorage& data) const;
 
 	private:
 		const ina::query_model::Query& m_query;

@@ -23,7 +23,8 @@ namespace calculator
 		ColumnData(const std::string& name, eDataType dt)
 		: m_name(name), m_datatype(dt) {}
 
-		eDataType    getDataType() const {return m_datatype;}
+		eDataType            getDataType() const {return m_datatype;}
+		const std::string    getName() const {return m_name;}
 
 		virtual void push_back(const Value& value) = 0;
 
@@ -101,6 +102,8 @@ namespace calculator
 
 	public:
 		DataStorage() = default;
+
+		void clear() {m_rowsNb=0;m_cols.clear();m_colsIdxByName.clear();}
 
 		bool          haveCol(const std::string& col_name) const {return m_colsIdxByName.find(col_name) != m_colsIdxByName.end();}
 		size_t        getColIndex(const std::string& col_name) const {return m_colsIdxByName.at(col_name);}

@@ -180,7 +180,9 @@ namespace dbproxy
 				else
 					row.push_back(Value(argv[i]));
 			}
+			//std::cout <<   azColName[i] << "' = '" << (argv[i] ? argv[i] : "NULL") << "'" << std::endl;
 		}
+		//std::cout << "****************************************" << std::endl;
 		if(calback != nullptr)
 			(*calback)(row);
 		
