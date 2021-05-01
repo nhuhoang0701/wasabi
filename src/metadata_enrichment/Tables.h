@@ -1,4 +1,5 @@
 #pragma once
+
 #include <string>
 #include <string_view>
 #include <ostream>
@@ -22,12 +23,12 @@ namespace wasabi{
     class Column{
       friend class Table;
     public:
-      enum DataType{
+      enum class DataType {
         String=1,
         Numeric=2,
         DateTime=3
       };
-      enum Aggregation{
+      enum class Aggregation {
         None=0,
         Sum=1,
         Max=2,

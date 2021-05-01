@@ -37,11 +37,9 @@ public:
 	void value(const char* s);
 	void value(bool theValue);
 	void value(double val);
-	void value(size_t val);
-	void value(int64_t val);
-	void value(int val);
-	void value(unsigned val);
-	void value(uint64_t val);
+	void value(std::int64_t val);
+	void value(std::uint64_t val);
+	void value(std::uint32_t val);
 
 	template<typename T> void pair(std::string_view name, const T & val)
 	{
