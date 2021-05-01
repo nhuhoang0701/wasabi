@@ -35,14 +35,12 @@ onmessage = function(e) {
 		console.log(param);
 	}
 
+	let valret = null;
 	try {
 		switch(action){
 		case WorkerEvent.eLoad:
-			if(isLoaded == true){
-				console.error("Worker: Already loaded");
-				postMessage([ID, action, {error: "Already loaded"}]);
-				return;
-			}
+			if(isLoaded == true)
+				throw new Error("Worker: Already loaded");
 
 			var importObject =
 			{
@@ -76,7 +74,7 @@ onmessage = function(e) {
 					{
 						console.log('Worker: no _start entry point');
 					}
-					postMessage([ID, WorkerEvent.eLoad, "{\"message\": \"Library well loaded\"}"]);
+					postMessage([ID, action, '{"message": "Library well loaded"}']);
 					isLoaded = true;
 				});
 			}).catch(error=>{
@@ -85,44 +83,39 @@ onmessage = function(e) {
 
 			return;
 		case WorkerEvent.eGetServerInfo:
-			if(isLoaded == false){
-				console.error("Worker: Not loaded");
-				postMessage([ID, WorkerEvent.eGetServerInfo, {error: "Not loaded"}]);
-				return;
-			}
+			if(isLoaded == false)
+				throw new Error("Not loaded");
 
 			var wasmRes = moduleWASI.instance.exports.json_getServerInfo();
-			var res = convertWAsmStr2JSStr(wasmRes, moduleWASI.instance.exports.memory);
-
-			console.log([WorkerEvent.eGetServerInfo, 'Worker: GetServerInfo executed']);
-			postMessage([ID, WorkerEvent.eGetServerInfo, res]);
-			
-			return;
+			valret = convertWAsmStr2JSStr(wasmRes, moduleWASI.instance.exports.memory);		
+			break;
 		case WorkerEvent.eGetResponse:
-			if(isLoaded == false){
-				console.error("Worker: Not loaded");
-				postMessage([ID, WorkerEvent.eGetResponse, {error: "Not loaded"}]);
-				return;
-			}
+			if(isLoaded == false)
+				throw new Error("Not loaded");
 
 			var queryJS = message[indexMsgParam];
 			var queryWAsm = convertJSStr2WAsm(queryJS, moduleWASI);
 			var wasmRes = moduleWASI.instance.exports.json_getResponse_json(queryWAsm);
 			moduleWASI.instance.exports.free(queryWAsm);
-			var res = convertWAsmStr2JSStr(wasmRes, moduleWASI.instance.exports.memory);
-
-			console.log([WorkerEvent.eGetResponse, 'Worker: GetServerInfo executed']);
-			postMessage([ID, WorkerEvent.eGetResponse, res]);
-			
-			return;
+			valret = convertWAsmStr2JSStr(wasmRes, moduleWASI.instance.exports.memory);			
+			break;
+		default:
+			throw  new Error('Unknow action:' + action);
 		}
 	} catch(error) {
 		console.log('Worker: error: ', error);
 		console.log("stack: ", error.stack),
-		postMessage([ID, action, {"message": error+""}]);
+		valret = '{"Messages": [{"Number":0,"Type":"Error","Text:'+error+'}]';
 	}
+	console.log('Worker: return value:');
+	try {
+		console.log(JSON.parse(valret));
+	} catch(e) {
+		console.error(e);
+		console.log(valret);
+	}
+	postMessage([ID, action, valret]);
 	
-	postMessage([ID, action, new Error('Unknow action:' + action)]);
 }
 }());
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
