@@ -150,6 +150,7 @@ namespace calculator
 			// Full aggreagtion on the 2 axes
 			if(m_axeRow.getCardinality() == 0 && m_axeCol.getCardinality() == 0 )
 			{
+				values.resize(1);
 				values[0].resize(1);
 				std::vector<size_t> indexes(m_cube.getStorage().getRowNbrs());
 				std::iota(indexes.begin(), indexes.end(), 0);
