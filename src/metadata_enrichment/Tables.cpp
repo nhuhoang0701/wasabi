@@ -140,7 +140,7 @@ namespace wasabi{
                  [ this, &theWriter](const string& theName) -> void
 				 {
                    theWriter.key(theName);
-                   const auto & aTable =getTable(theName);
+                   const auto& aTable =getTable(theName);
                    aTable.write(theWriter);
                  }
                  );
