@@ -19,18 +19,13 @@ function _startWorkerTest() {
 		else
 		{
 			console.log("Worker: Message executed:");
-			try {
-				console.log(JSON.parse(response_value));
-			} catch(e) {
-				console.log(response_value);
-			}
 			if(response_ID == 0 && response_Action=="load")
 			{
 				worker.postMessage([ID_msg++, "GetServerInfo", ""]);
 			}
 			else if(response_ID == 1 && response_Action=="GetServerInfo") 
 			{
-				worker.postMessage([ID_msg++, "GetResponse", '{"Metadata":{"DataSource": {"ObjectName": "$$DataSource$$","PackageName":"local:sqlite:efashion"}, "Expand":["Cube"]}}']);
+				worker.postMessage([ID_msg++, "GetResponse", '{"Metadata":{"Context":"Analytics","Language":null,"DataSource":{"Type":"View","ObjectName":"Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma","PackageName":"local:sqlite:efashion","SchemaName":"db","InstanceId":"abc85ce0-eb21-9ac5-52d1-cd23007b89d1"},"Capabilities":["AggregationNOPNULL","AggregationNOPNULLZERO","AttributeHierarchy","AttributeValueLookup","AverageCountIgnoreNullZero","CalculatedDimension","ClientCapabilities","Conditions","DatasourceAtService","DimensionValuehelpProperty","ExceptionAggregationDimsAndFormulas","ExceptionSettings","Exceptions","ExtendedDimensions","ExtendedDimensionsFieldMapping","ExtendedDimensionsJoinColumns","ExtendedDimensionsOuterJoin","HierarchyKeyTextName","HierarchyLevelOffsetFilter","HierarchyPath","HierarchyPathUniqueName","MaxResultRecords","MetadataCubeQuery","MetadataDataCategory","MetadataHierarchyLevels","MetadataHierarchyStructure","MetadataIsDisplayAttribute","Obtainability","OrderBy","ResultSetAxisType","ResultSetInterval","ResultSetState","ReturnedDataSelection","SupportsCalculatedKeyFigures","SupportsComplexFilters","SupportsEncodedResultSet","SupportsEncodedResultSet2","SupportsExtendedSort","SupportsIgnoreExternalDimensions","SupportsMemberValueExceptions","SupportsMemberVisibility","SupportsRestrictedKeyFigures","SupportsSetOperand","TechnicalAxis","Totals","TotalsAfterVisibilityFilter","Variables","VisibilityFilter"],"Expand":["Cube"]}}']);
 			}
 			else if(response_ID == 2 && response_Action=="GetResponse")
 			{
