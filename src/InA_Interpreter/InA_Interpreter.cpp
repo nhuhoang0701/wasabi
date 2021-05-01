@@ -149,18 +149,6 @@ const char*ina::grid::writeCube(const ina::query_model::Query& query, JSONWriter
 					for(auto& colName : colNames)
 						writer.value(catalog->getTable(tableName).getColumn(colName).getSQLName());
 				}
-				{
-					writer.key("Datatype");
-					JSON_LIST(writer);
-					for(auto& colName : colNames)
-						writer.value(catalog->getTable(tableName).getColumn(colName).getDataType());
-				}
-				{
-					writer.key("Agg");
-					JSON_LIST(writer);
-					for(auto& colName : colNames)
-						writer.value(catalog->getTable(tableName).getColumn(colName).getAggregation());
-				}
 			}
 		}
 	}
@@ -243,10 +231,10 @@ void ina::grid::writeGrid(const ina::query_model::Query& query, JSONWriter& writ
 		writer.key("CellArraySizes");
 		{
 			JSON_LIST(writer);
-			writer.value(cellsSize.first);
-			writer.value(cellsSize.second);
+			writer.value(static_cast<uint32_t>(cellsSize.first));
+			writer.value(static_cast<uint32_t>(cellsSize.second));
 		}
-		writer.pair("ResultSetState", 0);
+		writer.pair("ResultSetState", 0u);
 		writer.pair("HasErrors", false);
 	}
 }
@@ -337,7 +325,7 @@ size_t ina::grid::writeTuples(JSONWriter& writer, const ina::query_model::Defini
 						{
 							size_t index = 0;
 							for(const auto& member : dimension.getMembers())
-								writer.value(index++);
+								writer.value(static_cast<uint32_t>(index++));
 							tuplesCount = dimension.getMembers().size();
 						}
 						else
@@ -345,7 +333,7 @@ size_t ina::grid::writeTuples(JSONWriter& writer, const ina::query_model::Defini
 							for (size_t rowIndex = 0; rowIndex < axis.getCardinality(); rowIndex++)
 							{
 								const auto& col = *cube.getStorage().getColumn(dimension.getName());
-								writer.value(col.getValueIndexFromRowIdx(rowIndex));
+								writer.value(static_cast<uint32_t>(col.getValueIndexFromRowIdx(rowIndex)));
 							}
 							tuplesCount = axis.getCardinality();
 						}
@@ -452,12 +440,12 @@ std::pair<size_t, size_t> ina::grid::writeCells(JSONWriter& writer, const calcul
 							{
 							case calculator::eDataType::String:
 							{
-								writer.value(4);
+								writer.value(4u);
 								break;
 							}
 							case calculator::eDataType::Number:
 							{
-								writer.value(10);
+								writer.value(10u);
 								break;
 							}
 							default:

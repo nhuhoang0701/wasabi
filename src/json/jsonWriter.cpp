@@ -1,4 +1,6 @@
 #include "json/jsonWriter.h"
+#include <cstddef>
+#include <cstdint>
 #include <iomanip>
 #include <ostream>
 #include <string_view>
@@ -182,7 +184,7 @@ void JSONWriter::value(bool theValue){
   }
   aImpl.itsStream << (theValue?"true":"false");
 };
-void JSONWriter::value(int64_t theValue){
+void JSONWriter::value(std::int64_t theValue){
   wasabiUtils::JsonWriterImpl& aImpl = *itsPimpl;
   if(aImpl.itsWroteKey){
     aImpl.itsStream << ":";
@@ -199,7 +201,8 @@ void JSONWriter::value(int64_t theValue){
   }
   aImpl.itsStream << theValue;
 }
-void JSONWriter::value(int theValue){
+
+void JSONWriter::value(std::uint64_t theValue){
   wasabiUtils::JsonWriterImpl& aImpl = *itsPimpl;
   if(aImpl.itsWroteKey){
     aImpl.itsStream << ":";
@@ -216,24 +219,7 @@ void JSONWriter::value(int theValue){
   }
   aImpl.itsStream<<theValue;
 }
-void JSONWriter::value(unsigned theValue){
-  wasabiUtils::JsonWriterImpl& aImpl = *itsPimpl;
-  if(aImpl.itsWroteKey){
-    aImpl.itsStream << ":";
-    aImpl.itsWroteKey = false;
-  }
-  if(aImpl.itsOpenTags.size()>0){
-    if(
-       aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1)
-       ){
-      aImpl.itsStream<< ",";
-    } else{
-      aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1) = true;
-    }
-  }
-  aImpl.itsStream << theValue;
-}
-void JSONWriter::value(uint64_t theValue){
+void JSONWriter::value(std::uint32_t theValue){
   wasabiUtils::JsonWriterImpl& aImpl = *itsPimpl;
   if(aImpl.itsWroteKey){
     aImpl.itsStream << ":";
@@ -250,23 +236,7 @@ void JSONWriter::value(uint64_t theValue){
   }
   aImpl.itsStream<<theValue;
 }
-void JSONWriter::value(size_t theValue){
-  wasabiUtils::JsonWriterImpl& aImpl = *itsPimpl;
-  if(aImpl.itsWroteKey){
-    aImpl.itsStream << ":";
-    aImpl.itsWroteKey = false;
-  }
-  if(aImpl.itsOpenTags.size()>0){
-    if(
-       aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1)
-       ){
-      aImpl.itsStream<< ",";
-    } else{
-      aImpl.itsOpenTags.at(aImpl.itsOpenTags.size()-1) = true;
-    }
-  }
-  aImpl.itsStream<<theValue;
-}
+
 void JSONWriter::value(double theValue){
   wasabiUtils::JsonWriterImpl& aImpl = *itsPimpl;
   if(aImpl.itsWroteKey){
