@@ -370,8 +370,8 @@ namespace ina_interpreter
 					writer.key("CellArraySizes");
 					{
 						JSON_LIST(writer);
-						writer.value(cube.getBody().getColNbrs() * (measDim && measDim->getAxe()==ina::query_model::Dimension::eAxe::Columns? measDim->getMembers().size():1 ));
 						writer.value(cube.getBody().getRowNbrs() * (measDim && measDim->getAxe()==ina::query_model::Dimension::eAxe::Rows? measDim->getMembers().size():1 ));
+						writer.value(cube.getBody().getColNbrs() * (measDim && measDim->getAxe()==ina::query_model::Dimension::eAxe::Columns? measDim->getMembers().size():1 ));
 					}
 					writer.key("Cells");
 					{
