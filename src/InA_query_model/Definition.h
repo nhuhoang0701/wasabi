@@ -49,13 +49,13 @@ namespace ina::query_model
 		{
 			switch(datatype)
 			{
-				case 1:
+				case metadata::Column::DataType::String:
 					return "String";
 					break;
-				case 2:
+				case metadata::Column::DataType::Numeric:
 					return "Numeric";
 					break;
-				case 3:
+				case metadata::Column::DataType::DateTime:
 					return "DateTime";
 					break;
 			}
@@ -65,19 +65,19 @@ namespace ina::query_model
 		{
 			switch(aggregation)
 			{
-				case 0:
+				case metadata::Column::Aggregation::None :
 					return "";
 					break;
-				case 1:
+				case metadata::Column::Aggregation::Sum:
 					return "Sum";
 					break;
-				case 2:
+				case metadata::Column::Aggregation::Max:
 					return "Max";
 					break;
-				case 3:
+				case metadata::Column::Aggregation::Min:
 					return "Min";
 					break;
-				case 4:
+				case metadata::Column::Aggregation::Count:
 					return "Count";
 					break;
 			}

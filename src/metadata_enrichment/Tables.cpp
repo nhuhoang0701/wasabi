@@ -1,5 +1,6 @@
 #include "metadata_enrichment/Tables.h"
 
+#include <cstdint>
 #include <dbproxy/dbproxy.h>
 
 #include <json/jsonWriter.h>
@@ -220,7 +221,7 @@ namespace wasabi{
         return Column::Aggregation::None;
       }
       stringstream aStream;
-      aStream << "datatype " << theType << " not found" << endl;
+      aStream << "datatype " << static_cast<uint8_t>(theType) << " not found" << endl;
       throw out_of_range(aStream.str());
     }
     Column::DataType calcDataType( const string& theType)
@@ -274,8 +275,8 @@ namespace wasabi{
       JSON_MAP(theWriter);
       theWriter.pair("Name", getName());
       theWriter.pair("SQLName", getSQLName());
-      theWriter.pair("Aggregation", getAggregation());
-      theWriter.pair("DataType",getDataType());
+      theWriter.pair("Aggregation", static_cast<std::uint32_t>(getAggregation()));
+      theWriter.pair("DataType",static_cast<std::uint32_t>(getDataType()));
     }
     ostream& operator<<(ostream& theStream, const Column& theColumn)
 	{

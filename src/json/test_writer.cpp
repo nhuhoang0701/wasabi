@@ -12,7 +12,7 @@ void Test_writer()
     JSONWriter aWriter(aStream);
     {
       JSON_MAP(aWriter);
-      aWriter.pair("test1",1);
+      aWriter.pair("test1",1u);
       aWriter.pair("test2","2");
       aWriter.key("test3");
       aWriter.valueNull();
@@ -32,7 +32,7 @@ void Test_writer()
     {
       JSON_LIST(aWriter);
       aWriter.value("test1");
-      aWriter.value(2);
+      aWriter.value(2u);
       aWriter.valueNull();
     }
     //std::cout << aStream.str() << std::endl;
@@ -47,7 +47,7 @@ void Test_writer()
     {
       JSON_LIST(aWriter);
       aWriter.value("test1");
-      aWriter.value(2);
+      aWriter.value(2u);
       aWriter.valueNull();{
         JSON_MAP( aWriter );
         aWriter.pair( "test","3");
