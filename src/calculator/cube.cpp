@@ -1,5 +1,6 @@
 #include "cube.h"
 
+#include <cstddef>
 #include <stdexcept>
 #include <numeric>    // For iota
 
@@ -16,24 +17,36 @@ namespace calculator
 	void Axe::materialyze()
 	{
 		m_tuples.clear();
+		// << "*****************************************\n";
+		//std::cout << "Axe :\n";
+		//std::for_each(this->cbegin(), this->cend(), [] (const Object& obj) {std::cout << obj.getName() << "\t";} );
+		//std::cout << "\n";
+		//std::cout << "Tuples :\n";
 		if(empty() == false)
 		{
+			// Get the tuple
+			Tuple tuple;
+			tuple.reserve(size());
 			for(size_t rowIndex = 0; rowIndex <m_cube.m_data->getRowNbrs(); rowIndex++)
 			{
-				// Get the tuple
-				std::vector<size_t> tuple;
+				tuple.clear();
 				for(const auto& obj : *this)
 				{
 					const auto& columnData = m_cube.getStorage().getColumn(obj.getName());
 					tuple.push_back(columnData->getValueIndexFromRowIdx(rowIndex));
 				}
+				//std::for_each(tuple.cbegin(), tuple.cend(), [] (const size_t c) {std::cout << c << "\t";} );
+				//std::cout << "\n";
 				// Get the list of pre aggreagted indexes
 				if(m_tuples.find(tuple) != m_tuples.end())
 					m_tuples[tuple].push_back(rowIndex);
 				else
 					m_tuples[tuple] = std::vector(1, rowIndex);
 			}
+			//std::for_each(tuple.cbegin(), tuple.cend(), [] (const size_t c) {std::cout << c << "\t";} );
+			//std::cout << "\n";
 		}
+		//std::cout << "End Axe \n";
 		m_materialyzed = true;
 	}
 
@@ -64,6 +77,16 @@ namespace calculator
 		throw std::runtime_error("Axe: getValue() dimemsion not found");
 	}
 
+	size_t Axe::getValueIndex(const std::string& dimName, size_t row) const
+	{
+		for(size_t i = 0; i < size(); i++ )
+		{
+			if(this->at(i).getName() == dimName)
+				return getValueIndex(i, row);
+		}
+		throw std::runtime_error("Axe: getValue() dimemsion not found");
+	}
+
 	calculator::eDataType Axe::getValueDatatype(size_t dimIdx) const
 	{
 		const std::string& nameCol = at(dimIdx).getName();
@@ -72,6 +95,13 @@ namespace calculator
 	}
 
 	const Value& Axe::getValue(size_t dimIdx, size_t row) const
+	{
+		const std::string& nameCol = at(dimIdx).getName();
+		const auto& columnData = m_cube.getStorage().getColumn(nameCol);
+		return columnData->getValueAtValueIdx(getValueIndex(dimIdx, row));
+	}
+
+	size_t Axe::getValueIndex(size_t dimIdx, size_t row) const
 	{
 		if(!m_materialyzed)
 			throw std::runtime_error("Axe: materialyze() not called");
@@ -85,7 +115,7 @@ namespace calculator
 
 		const std::string& nameCol = at(dimIdx).getName();
 		const auto& columnData = m_cube.getStorage().getColumn(nameCol);
-		return columnData->getValueAtValueIdx(tuple[dimIdx]);
+		return tuple[dimIdx];
 	}
 
 	const std::vector<size_t>& Axe::getParentIndexes(size_t row) const
