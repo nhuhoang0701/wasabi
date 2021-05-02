@@ -1,6 +1,7 @@
 #pragma once
 
 #include "storage.h"
+#include <cstddef>
 #include <memory>
 #include <string>
 #include <vector>
@@ -35,10 +36,12 @@ namespace calculator
 
 		calculator::eDataType  getValueDatatype(const std::string& dimName) const;
 		const Value&           getValue(const std::string& dimName, size_t row) const;
+		size_t                 getValueIndex(const std::string& dimName, size_t row) const;
 
 	private:
 		calculator::eDataType  getValueDatatype(size_t dimIdx) const;
 		const Value&           getValue(size_t dimIdx, size_t row) const;
+		size_t                 getValueIndex(size_t dimIdx, size_t row) const;
 
 	private:
 		friend class Body;
