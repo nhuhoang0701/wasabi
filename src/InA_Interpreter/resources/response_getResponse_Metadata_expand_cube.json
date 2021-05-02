@@ -170,6 +170,16 @@
                         "[Measures].[Measures]": "Sales_revenue",
                         "[Measures].[Name]": "Sales revenue",
                         "[Measures].[Description]": "Sales revenue"
+                    },
+                    {
+                        "[Measures].[Measures]": "Quantity_sold",
+                        "[Measures].[Name]": "Quantity sold",
+                        "[Measures].[Description]": "Quantity sold"
+                    },
+                    {
+                        "[Measures].[Measures]": "Margin",
+                        "[Measures].[Name]": "Margin Name",
+                        "[Measures].[Description]": "Margin Description"
                     }
                 ],
                 "Name": "CustomDimension1",
