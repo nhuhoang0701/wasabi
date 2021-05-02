@@ -1,5 +1,6 @@
 #include "InA_Interpreter.h"
 
+#include <cstddef>
 #include <json/jsonReader.h>
 #include <json/jsonWriter.h>
 
@@ -213,18 +214,18 @@ void ina::grid::writeGrid(const ina::query_model::Query& query, JSONWriter& writ
 			{
 				JSON_MAP(writer);
 				writer.pair("Name", "ROWS");
-				writeDimensions(writer, rowAxe, cube);
+				writeDimensions(writer, cube, rowAxe);
 
-				size_t tuplesCount = writeTuples(writer, query.getDefinition(), cube, calculator::eAxe::Row);
+				size_t tuplesCount = writeTuples(writer, cube, calculator::eAxe::Row, rowAxe);
 				writer.pair("TupleCount", static_cast<uint32_t>(tuplesCount));
 			}
 			if(!colAxe.empty())
 			{
 				JSON_MAP(writer);
 				writer.pair("Name", "COLUMNS");
-				writeDimensions(writer, colAxe, cube);
+				writeDimensions(writer, cube, colAxe);
 
-				size_t tuplesCount = writeTuples(writer, query.getDefinition(), cube, calculator::eAxe::Column);
+				size_t tuplesCount = writeTuples(writer, cube, calculator::eAxe::Column, colAxe);
 				writer.pair("TupleCount", static_cast<uint32_t>(tuplesCount));
 			}
 		}
@@ -241,7 +242,7 @@ void ina::grid::writeGrid(const ina::query_model::Query& query, JSONWriter& writ
 	}
 }
 
-void ina::grid::writeDimensions(JSONWriter& writer, std::vector<const ina::query_model::Dimension*>& dims, const calculator::Cube& cube)
+void ina::grid::writeDimensions(JSONWriter& writer, const calculator::Cube& cube, std::vector<const ina::query_model::Dimension*>& dims)
 {
 	writer.key("Dimensions");
 	JSON_LIST(writer);
@@ -312,23 +313,37 @@ void ina::grid::writeDimensions(JSONWriter& writer, std::vector<const ina::query
 	}
 }
 
-size_t ina::grid::writeTuples(JSONWriter& writer, const ina::query_model::Definition & definition , const calculator::Cube& cube, calculator::eAxe eAxe)
+size_t ina::grid::writeTuples(JSONWriter& writer, const calculator::Cube& cube, const calculator::eAxe& eAxe, std::vector<const ina::query_model::Dimension*>& dims)
 {
-	size_t tuplesCount = 0;
+	//std::cout << "**************************************\n";
+	//std::cout << "writeTuples\n";
+	const ina::query_model::Dimension* measDim = nullptr;
+	for(const auto& dimension : dims)
+	{
+		//std::cout << " " << dimension->getName() << " | ";
+		if(ina::query_model::Dimension::isDimensionOfMeasures(*dimension) )
+			measDim = dimension;
+	}
+	//std::cout << "\n";
+
+	auto const& axis = cube.getAxe(eAxe);
+	size_t tuplesCount = axis.getCardinality();
+	if(measDim != nullptr)
+	{
+		if(tuplesCount == 0) // Only dim meas on this axe
+			tuplesCount = measDim->getMembers().size();
+		else
+			tuplesCount *= measDim->getMembers().size();
+	}
+	//std::cout << "tuplesCount: " << tuplesCount << "\n";
+
 	writer.key("Tuples");
 	{
 		JSON_LIST(writer);
-		for(auto dimension  : definition.getDimensions())
+		for(auto dimension : dims)
 		{
-			if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Rows && eAxe != calculator::eAxe::Row)
-				continue;
-
-			if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Columns && eAxe != calculator::eAxe::Column)
-				continue;
-				
 			JSON_MAP(writer);
 			{
-				auto const& axis = cube.getAxe(eAxe);
 				writer.key("MemberIndexes");
 				{
 					JSON_MAP(writer);
@@ -337,24 +352,41 @@ size_t ina::grid::writeTuples(JSONWriter& writer, const ina::query_model::Defini
 					{
 						JSON_LIST(writer);
 						{
-							for (size_t rowIndex = 0; rowIndex < axis.getCardinality(); rowIndex++)
+							if(ina::query_model::Dimension::isDimensionOfMeasures(*dimension) )
 							{
-								if(ina::query_model::Dimension::isDimensionOfMeasures(dimension) )
+								size_t maxRows = axis.getCardinality();
+								if(maxRows == 0)
+									maxRows = 1;
+								//std::cout << "maxRows: " << maxRows << "\n";
+								const auto& member = dimension->getMembers();
+								//std::cout << "member.size(): " << member.size() << "\n";
+								for (size_t rowIndex = 0; rowIndex < maxRows; rowIndex++)
 								{
-									if(dimension.getMembers().size() != 1)
-										std::cerr << "WASABI: Only one measure supported, dev. in progress" << std::endl;
-									writer.value(0u);
+									for(size_t i = 0; i < member.size(); i++)
+									{
+										writer.value(static_cast<uint32_t>(i));
+									}
 								}
-								else
+							}
+							else
+							{
+								//std::cout << "axis.getCardinality(): " << axis.getCardinality() << "\n";
+								for (size_t rowIndex = 0; rowIndex < axis.getCardinality(); rowIndex++)
 								{
-									const auto& col = *cube.getStorage().getColumn(dimension.getName());
-									writer.value(static_cast<uint32_t>(col.getValueIndexFromRowIdx(rowIndex)));
+									const auto idx = static_cast<uint32_t>(axis.getValueIndex(dimension->getName(), rowIndex));
+									if(measDim)
+									{
+										const auto& member = measDim->getMembers();
+										for(size_t i = 0; i < member.size(); i++)
+											writer.value(idx);
+									}
+									else
+										writer.value(idx);
 								}
 							}
 						}
 					}
 				}
-				tuplesCount = axis.getCardinality();
 			}
 		}
 	}
