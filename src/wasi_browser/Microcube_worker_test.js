@@ -18,7 +18,6 @@ function _startWorkerTest() {
 		}
 		else
 		{
-			console.log("Worker: Message executed:");
 			if(response_ID == 0 && response_Action=="load")
 			{
 				worker.postMessage([ID_msg++, "GetServerInfo", ""]);
