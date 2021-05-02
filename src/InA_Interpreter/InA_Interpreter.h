@@ -24,9 +24,8 @@ namespace ina::grid
 	const char* writeCube(const ina::query_model::Query& query, JSONWriter& writer);
 
 	void   writeGrid(const ina::query_model::Query& query, JSONWriter& writer);
-	void   writeDimensions(JSONWriter& writer, std::vector<const ina::query_model::Dimension*>& dims, const calculator::Cube& cube);
-	size_t writeTuples(JSONWriter& writer, const query_model::Definition & definition , const calculator::Cube& cube, calculator::eAxe eAxe);
-	void   writeTupleValues(JSONWriter &writer, const calculator::Axe& axis, const ina::query_model::Dimension& dimension) ;
+	void   writeDimensions(JSONWriter& writer, const calculator::Cube& cube, std::vector<const ina::query_model::Dimension*>& dims);
+	size_t writeTuples(JSONWriter& writer, const calculator::Cube& cube, const calculator::eAxe& axis, std::vector<const ina::query_model::Dimension*>& dims);
 	
 	std::pair<size_t, size_t>   writeCells(JSONWriter& writer, const calculator::Cube& cube, const ina::query_model::Dimension* measDim);
 }
