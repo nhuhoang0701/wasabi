@@ -1,355 +1,5 @@
 {
     "Cube": {
-        "Capabilities": [
-            {
-                "Capability": "ActionClose",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "AttributeHierarchy",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "AttributeHierarchyHierarchyField",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "AttributeValueLookup",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "CalculatedDimension",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "CellsValueFormated",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "ClientCapabilities",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "Complex",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "Conditions",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "DatasourceAtService",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "DimensionValuehelpProperty",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "ExceptionAggregationDimsAndFormulas",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "ExceptionSettings",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "Exceptions",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "ExtendedDimensions",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "ExtendedDimensionsFieldMapping",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "ExtendedDimensionsJoinColumns",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "ExtendedDimensionsOuterJoin",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "Filter",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "FilterCapability",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "FixedAndDynamicFilter",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "Hierarchies",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "HierarchyKeyTextName",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "HierarchyLevelOffsetFilter",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "HierarchyPath",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "HierarchyPathUniqueName",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "MaxResultRecords",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "Measure",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "MeasureOperand",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "MetadataCubeQuery",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "MetadataDataCategory",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "MetadataHierarchyLevels",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "MetadataHierarchyStructure",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "MetadataIsDisplayAttribute",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "MetadataSupportedHierarchyNavigationMode",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "Obtainability",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "OrderBy",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "ResultSetAxisType",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "ResultSetInterval",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "ResultSetState",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "ReturnedDataSelection",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "StatefulDataProvider",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "StatefulServer",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "SupportsCalculatedKeyFigures",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "SupportsComplexFilters",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "SupportsEncodedResultSet",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "SupportsEncodedResultSet2",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "SupportsExtendedSort",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "SupportsIgnoreExternalDimensions",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "SupportsMemberValueExceptions",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "SupportsMemberVisibility",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "SupportsRestrictedKeyFigures",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "SupportsSetOperand",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "TechnicalAxis",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "Totals",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "TotalsAfterVisibilityFilter",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "Variables",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            },
-            {
-                "Capability": "VisibilityFilter",
-                "MaxVersion": 100,
-                "MinVersion": 1,
-                "DefaultSchemaVersion": 0
-            }
-        ],
         "CatalogPackage": "Universes/InA Provider/Test Resources/AggregationTest",
         "CatalogSchema": "",
         "CatalogType": "OLAP",
@@ -366,25 +16,6 @@
         "Description": "",
         "Dimensions": [
             {
-                "AttributeHierarchy": {
-                    "AttributeNames": [
-                        "[Measures].[Measures]",
-                        "[Measures].[Name]",
-                        "[Measures].[Description]",
-                        "[Measures].[Aggregation]",
-                        "[Measures].[SQLType]",
-                        "[Measures].[SemanticType]"
-                    ],
-                    "Children": [],
-                    "DefaultDisplayKeyAttribute": "[Measures].[Name]",
-                    "DefaultKeyAttribute": "[Measures].[Measures]",
-                    "DefaultResultSetAttributes": [
-                        "[Measures].[Name]"
-                    ],
-                    "DefaultTextAttribute": "[Measures].[Name]",
-                    "Description": "Measures",
-                    "Name": "Root"
-                },
                 "Attributes": [
                     {
                         "AliasName": "[Measures].[Measures]",
@@ -393,7 +24,7 @@
                         "DataType": "String",
                         "DataTypeAsInt": 3,
                         "Description": "Measures",
-                        "DescriptionColumn": "[Measures].[Description]",
+                        "DescriptionColumn": "[Measures].[Name]",
                         "Digits": 0,
                         "DimensionName": "CustomDimension1",
                         "FilterCapability": {
@@ -418,7 +49,7 @@
                             }
                         },
                         "FractDigits": 0,
-                        "HasDescriptions": true,
+                        "HasDescriptions": false,
                         "HasFulltextIndex": false,
                         "IsDefaultText": false,
                         "IsDisplayAttribute": false,
@@ -440,7 +71,7 @@
                         "DataType": "String",
                         "DataTypeAsInt": 3,
                         "Description": "Name",
-                        "DescriptionColumn": "[Measures].[Description]",
+                        "DescriptionColumn": "[Measures].[Name]",
                         "Digits": 0,
                         "DimensionName": "CustomDimension1",
                         "FilterCapability": {
@@ -511,102 +142,6 @@
                         "Name": "[Measures].[Description]",
                         "PresentationType": "Text",
                         "SQLType": "VARCHAR"
-                    },
-                    {
-                        "AliasName": "[Measures].[Aggregation]",
-                        "Cardinality": 0,
-                        "ColumnType": 73,
-                        "DataType": "Long",
-                        "DataTypeAsInt": 1,
-                        "Description": "Aggregation",
-                        "DescriptionColumn": "Aggregation",
-                        "Digits": 0,
-                        "DimensionName": "CustomDimension1",
-                        "FilterCapability": {
-                            "Comparison": {
-                                "Excluding": [],
-                                "Including": []
-                            }
-                        },
-                        "FractDigits": 0,
-                        "HasDescriptions": true,
-                        "HasFulltextIndex": false,
-                        "IsDefaultText": false,
-                        "IsDisplayAttribute": false,
-                        "IsFilterable": false,
-                        "IsFreestyle": false,
-                        "IsKey": false,
-                        "IsMeasure": false,
-                        "IsNotNull": false,
-                        "IsVirtual": false,
-                        "Level": 0,
-                        "Name": "[Measures].[Aggregation]",
-                        "PresentationType": "Undefined",
-                        "SQLType": "INTEGER"
-                    },
-                    {
-                        "AliasName": "[Measures].[SQLType]",
-                        "Cardinality": 0,
-                        "ColumnType": 83,
-                        "DataType": "String",
-                        "DataTypeAsInt": 3,
-                        "Description": "SQLType",
-                        "DescriptionColumn": "SQLType",
-                        "Digits": 0,
-                        "DimensionName": "CustomDimension1",
-                        "FilterCapability": {
-                            "Comparison": {
-                                "Excluding": [],
-                                "Including": []
-                            }
-                        },
-                        "FractDigits": 0,
-                        "HasDescriptions": true,
-                        "HasFulltextIndex": false,
-                        "IsDefaultText": false,
-                        "IsDisplayAttribute": false,
-                        "IsFilterable": false,
-                        "IsFreestyle": false,
-                        "IsKey": false,
-                        "IsMeasure": false,
-                        "IsNotNull": false,
-                        "IsVirtual": false,
-                        "Level": 0,
-                        "Name": "[Measures].[SQLType]",
-                        "PresentationType": "Undefined",
-                        "SQLType": "VARCHAR"
-                    },
-                    {
-                        "AliasName": "[Measures].[SemanticType]",
-                        "Cardinality": 0,
-                        "ColumnType": 83,
-                        "DataType": "String",
-                        "DataTypeAsInt": 3,
-                        "Description": "SemanticType",
-                        "DescriptionColumn": "SemanticType",
-                        "Digits": 0,
-                        "DimensionName": "CustomDimension1",
-                        "FilterCapability": {
-                            "Comparison": {
-                                "Excluding": [],
-                                "Including": []
-                            }
-                        },
-                        "FractDigits": 0,
-                        "HasDescriptions": true,
-                        "HasFulltextIndex": false,
-                        "IsDefaultText": false,
-                        "IsDisplayAttribute": false,
-                        "IsFilterable": false,
-                        "IsFreestyle": false,
-                        "IsKey": false,
-                        "IsMeasure": false,
-                        "IsNotNull": false,
-                        "IsVirtual": false,
-                        "Level": 0,
-                        "Name": "[Measures].[SemanticType]",
-                        "PresentationType": "Undefined",
-                        "SQLType": "VARCHAR"
                     }
                 ],
                 "NumberOfHierarchies": 0,
@@ -634,26 +169,7 @@
                     {
                         "[Measures].[Measures]": "Sales_revenue",
                         "[Measures].[Name]": "Sales revenue",
-                        "[Measures].[Description]": "Sales revenue",
-                        "[Measures].[Aggregation]": 1,
-                        "[Measures].[SQLType]": "DECIMAL(13,2)",
-                        "[Measures].[SemanticType]": ""
-                    },
-                    {
-                        "[Measures].[Measures]": "Quantity_sold",
-                        "[Measures].[Name]": "Quantity sold",
-                        "[Measures].[Description]": "Quantity sold",
-                        "[Measures].[Aggregation]": 1,
-                        "[Measures].[SQLType]": "DECIMAL(13,2)",
-                        "[Measures].[SemanticType]": ""
-                    },
-                    {
-                        "[Measures].[Measures]": "Margin",
-                        "[Measures].[Name]": "Margin Name",
-                        "[Measures].[Description]": "Margin Description",
-                        "[Measures].[Aggregation]": 1,
-                        "[Measures].[SQLType]": "DECIMAL(13,2)",
-                        "[Measures].[SemanticType]": ""
+                        "[Measures].[Description]": "Sales revenue"
                     }
                 ],
                 "Name": "CustomDimension1",
@@ -665,7 +181,7 @@
                     "Master",
                     "Booked"
                 ],
-                "TextAttribute": "[Measures].[Description]",
+                "TextAttribute": "[Measures].[Name]",
                 "UniqueName": "CustomDimension1",
                 "IsModeled": true,
                 "DefaultResultSetAttributeNodes": [
@@ -675,20 +191,6 @@
                 "CanBeAggregated": false
             },
             {
-                "AttributeHierarchy": {
-                    "AttributeNames": [
-                        "Yr"
-                    ],
-                    "Children": [],
-                    "DefaultDisplayKeyAttribute": "Yr",
-                    "DefaultKeyAttribute": "Yr",
-                    "DefaultTextAttribute": "Yr",
-                    "DefaultResultSetAttributes": [
-                        "Yr"
-                    ],
-                    "Description": "Year",
-                    "Name": "Root"
-                },
                 "Attributes": [
                     {
                         "AliasName": "ID",
@@ -786,20 +288,6 @@
                 "CanBeAggregated": true
             },
             {
-                "AttributeHierarchy": {
-                    "AttributeNames": [
-                        "Qtr"
-                    ],
-                    "Children": [],
-                    "DefaultDisplayKeyAttribute": "Qtr",
-                    "DefaultKeyAttribute": "Qtr",
-                    "DefaultTextAttribute": "Qtr",
-                    "DefaultResultSetAttributes": [
-                        "Qtr"
-                    ],
-                    "Description": "Quarter",
-                    "Name": "Root"
-                },
                 "Attributes": [
                     {
                         "AliasName": "ID",
@@ -897,20 +385,6 @@
                 "CanBeAggregated": true
             },
             {
-                "AttributeHierarchy": {
-                    "AttributeNames": [
-                        "Month_name"
-                    ],
-                    "Children": [],
-                    "DefaultDisplayKeyAttribute": "Month_name",
-                    "DefaultKeyAttribute": "Month_name",
-                    "DefaultTextAttribute": "Month_name",
-                    "DefaultResultSetAttributes": [
-                        "Month_name"
-                    ],
-                    "Description": "Month name",
-                    "Name": "Root"
-                },
                 "Attributes": [
                     {
                         "AliasName": "ID",
@@ -1008,20 +482,6 @@
                 "CanBeAggregated": true
             },
             {
-                "AttributeHierarchy": {
-                    "AttributeNames": [
-                        "City"
-                    ],
-                    "Children": [],
-                    "DefaultDisplayKeyAttribute": "City",
-                    "DefaultKeyAttribute": "City",
-                    "DefaultTextAttribute": "City",
-                    "DefaultResultSetAttributes": [
-                        "City"
-                    ],
-                    "Description": "City",
-                    "Name": "Root"
-                },
                 "Attributes": [
                     {
                         "AliasName": "ID",
