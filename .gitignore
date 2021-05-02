@@ -9,6 +9,7 @@
 !external/llvm-*.tar.gz
 build*/
 install*/
+src/wasi_browser/Microcube_worker_WASI.js
 
 ##############################################
 # IDE
