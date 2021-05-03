@@ -34,8 +34,9 @@ namespace query_generator
         // In case of unary operator, now low/high value
         if (!filter.getLowValue().empty())
         {
-            filterSQL += " ";
+            filterSQL += " '";
             filterSQL += filter.getLowValue();
+            filterSQL += "'";
         }
         if (filter.isExcluding())
         {
