@@ -73,7 +73,7 @@ int main()
 		queryGen.prepareStorage(*data);
 		std::string sql = queryGen.getSQL(*data);
 		std::cout << "Generated SQL: " << sql << std::endl;
-		CPPUNIT_ASSERT_EQUAL("SELECT OBJ_188, SUM(OBJ_262) FROM MyTable WHERE OBJ_188 = 2014 GROUP BY OBJ_188;", sql);
+		CPPUNIT_ASSERT_EQUAL("SELECT OBJ_188, SUM(OBJ_262) FROM MyTable WHERE OBJ_188 = '2014' GROUP BY OBJ_188;", sql);
 	}
 	{
 		ina::query_model::DataSource ds;
@@ -94,7 +94,7 @@ int main()
 		queryGen.prepareStorage(*data);
 		std::string sql = queryGen.getSQL(*data);
 		std::cout << "Generated SQL: " << sql << std::endl;
-		CPPUNIT_ASSERT_EQUAL("SELECT OBJ_188 FROM MyTable WHERE OBJ_188 IS NULL OR NOT ( OBJ_188 = 2014 ) GROUP BY OBJ_188;", sql);
+		CPPUNIT_ASSERT_EQUAL("SELECT OBJ_188 FROM MyTable WHERE OBJ_188 IS NULL OR NOT ( OBJ_188 = '2014' ) GROUP BY OBJ_188;", sql);
 	}
 	{
 		ina::query_model::DataSource ds;
