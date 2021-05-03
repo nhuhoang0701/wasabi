@@ -18,15 +18,15 @@
             {
                 "Attributes": [
                     {
-                        "AliasName": "[Measures].[Measures]",
-                        "Cardinality": 0,
-                        "ColumnType": 83,
+                        "AliasName": "ID",
+                        "Cardinality": 10000,
+                        "ColumnType": 0,
                         "DataType": "String",
                         "DataTypeAsInt": 3,
-                        "Description": "Measures",
-                        "DescriptionColumn": "[Measures].[Name]",
+                        "Description": "index",
+                        "DescriptionColumn": "index",
                         "Digits": 0,
-                        "DimensionName": "CustomDimension1",
+                        "DimensionName": "agg1_id",
                         "FilterCapability": {
                             "Comparison": {
                                 "Excluding": [
@@ -35,7 +35,11 @@
                                     "<",
                                     ">=",
                                     "<=",
-                                    "<>"
+                                    "<>",
+                                    "BETWEEN",
+                                    "NOT_BETWEEN",
+                                    "LIKE",
+                                    "MATCH"
                                 ],
                                 "Including": [
                                     "=",
@@ -44,12 +48,15 @@
                                     ">=",
                                     "<=",
                                     "<>",
-                                    "BETWEEN"
+                                    "BETWEEN",
+                                    "NOT_BETWEEN",
+                                    "LIKE",
+                                    "MATCH"
                                 ]
                             }
                         },
                         "FractDigits": 0,
-                        "HasDescriptions": false,
+                        "HasDescriptions": true,
                         "HasFulltextIndex": false,
                         "IsDefaultText": false,
                         "IsDisplayAttribute": false,
@@ -57,91 +64,12 @@
                         "IsFreestyle": false,
                         "IsKey": true,
                         "IsMeasure": false,
-                        "IsNotNull": false,
+                        "IsNotNull": true,
                         "IsVirtual": false,
                         "Level": 0,
-                        "Name": "[Measures].[Measures]",
+                        "Name": "agg1_id",
                         "PresentationType": "Key",
-                        "SQLType": "VARCHAR"
-                    },
-                    {
-                        "AliasName": "[Measures].[Name]",
-                        "Cardinality": 0,
-                        "ColumnType": 83,
-                        "DataType": "String",
-                        "DataTypeAsInt": 3,
-                        "Description": "Name",
-                        "DescriptionColumn": "[Measures].[Name]",
-                        "Digits": 0,
-                        "DimensionName": "CustomDimension1",
-                        "FilterCapability": {
-                            "Comparison": {
-                                "Excluding": [
-                                    "=",
-                                    ">",
-                                    "<",
-                                    ">=",
-                                    "<=",
-                                    "<>"
-                                ],
-                                "Including": [
-                                    "=",
-                                    ">",
-                                    "<",
-                                    ">=",
-                                    "<=",
-                                    "<>",
-                                    "BETWEEN"
-                                ]
-                            }
-                        },
-                        "FractDigits": 0,
-                        "HasDescriptions": true,
-                        "HasFulltextIndex": false,
-                        "IsDefaultText": false,
-                        "IsDisplayAttribute": true,
-                        "IsFilterable": true,
-                        "IsFreestyle": false,
-                        "IsKey": false,
-                        "IsMeasure": false,
-                        "IsNotNull": false,
-                        "IsVirtual": false,
-                        "Level": 0,
-                        "Name": "[Measures].[Name]",
-                        "PresentationType": "Text",
-                        "SQLType": "VARCHAR"
-                    },
-                    {
-                        "AliasName": "[Measures].[Description]",
-                        "Cardinality": 0,
-                        "ColumnType": 83,
-                        "DataType": "String",
-                        "DataTypeAsInt": 3,
-                        "Description": "Description",
-                        "DescriptionColumn": "Description",
-                        "Digits": 0,
-                        "DimensionName": "CustomDimension1",
-                        "FilterCapability": {
-                            "Comparison": {
-                                "Excluding": [],
-                                "Including": []
-                            }
-                        },
-                        "FractDigits": 0,
-                        "HasDescriptions": true,
-                        "HasFulltextIndex": false,
-                        "IsDefaultText": false,
-                        "IsDisplayAttribute": false,
-                        "IsFilterable": false,
-                        "IsFreestyle": false,
-                        "IsKey": false,
-                        "IsMeasure": false,
-                        "IsNotNull": false,
-                        "IsVirtual": false,
-                        "Level": 0,
-                        "Name": "[Measures].[Description]",
-                        "PresentationType": "Text",
-                        "SQLType": "VARCHAR"
+                        "UpperBound": ""
                     }
                 ],
                 "NumberOfHierarchies": 0,
@@ -151,8 +79,8 @@
                     "Rows",
                     "Columns"
                 ],
-                "AxisDefault": "Columns",
-                "Cardinality": 3,
+                "AxisDefault": "Free",
+                "Cardinality": 10000,
                 "DefaultResultStructure": {
                     "ResultAlignment": "Bottom",
                     "ResultStructure": [
@@ -162,27 +90,11 @@
                         }
                     ]
                 },
-                "Description": "Measures",
-                "DimensionType": 2,
-                "KeyAttribute": "[Measures].[Measures]",
-                "Members": [
-                    {
-                        "[Measures].[Measures]": "Sales_revenue",
-                        "[Measures].[Name]": "Sales revenue",
-                        "[Measures].[Description]": "Sales revenue"
-                    },
-                    {
-                        "[Measures].[Measures]": "Quantity_sold",
-                        "[Measures].[Name]": "Quantity sold",
-                        "[Measures].[Description]": "Quantity sold"
-                    },
-                    {
-                        "[Measures].[Measures]": "Margin",
-                        "[Measures].[Name]": "Margin Name",
-                        "[Measures].[Description]": "Margin Description"
-                    }
-                ],
-                "Name": "CustomDimension1",
+                "Description": "index",
+                "DimensionType": 3,
+                "KeyAttribute": "index",
+                "Members": [],
+                "Name": "agg1_id",
                 "Private": false,
                 "ResultSetFixedAttributes": false,
                 "ResultSetMemberDefaultReadMode": "Master",
@@ -191,14 +103,14 @@
                     "Master",
                     "Booked"
                 ],
-                "TextAttribute": "[Measures].[Name]",
-                "UniqueName": "CustomDimension1",
+                "UniqueName": "agg1_id",
                 "IsModeled": true,
                 "DefaultResultSetAttributeNodes": [
                     "Root"
                 ],
-                "IsDimensionGroup": true,
-                "CanBeAggregated": false
+                "DimensionGroups": [],
+                "IsDimensionGroup": false,
+                "CanBeAggregated": true
             },
             {
                 "Attributes": [
@@ -499,8 +411,202 @@
                         "ColumnType": 0,
                         "DataType": "String",
                         "DataTypeAsInt": 3,
-                        "Description": "City",
-                        "DescriptionColumn": "City",
+                        "Description": "Month",
+                        "DescriptionColumn": "Month",
+                        "Digits": 0,
+                        "DimensionName": "Mth",
+                        "FilterCapability": {
+                            "Comparison": {
+                                "Excluding": [
+                                    "=",
+                                    ">",
+                                    "<",
+                                    ">=",
+                                    "<=",
+                                    "<>",
+                                    "BETWEEN",
+                                    "NOT_BETWEEN",
+                                    "LIKE",
+                                    "MATCH"
+                                ],
+                                "Including": [
+                                    "=",
+                                    ">",
+                                    "<",
+                                    ">=",
+                                    "<=",
+                                    "<>",
+                                    "BETWEEN",
+                                    "NOT_BETWEEN",
+                                    "LIKE",
+                                    "MATCH"
+                                ]
+                            }
+                        },
+                        "FractDigits": 0,
+                        "HasDescriptions": true,
+                        "HasFulltextIndex": false,
+                        "IsDefaultText": false,
+                        "IsDisplayAttribute": false,
+                        "IsFilterable": true,
+                        "IsFreestyle": false,
+                        "IsKey": true,
+                        "IsMeasure": false,
+                        "IsNotNull": true,
+                        "IsVirtual": false,
+                        "Level": 0,
+                        "Name": "Mth",
+                        "PresentationType": "Key",
+                        "UpperBound": ""
+                    }
+                ],
+                "NumberOfHierarchies": 0,
+                "HierarchiesPossible": false,
+                "AxisConstraints": [
+                    "Free",
+                    "Rows",
+                    "Columns"
+                ],
+                "AxisDefault": "Free",
+                "Cardinality": 10000,
+                "DefaultResultStructure": {
+                    "ResultAlignment": "Bottom",
+                    "ResultStructure": [
+                        {
+                            "Result": "Members",
+                            "Visibility": "Visible"
+                        }
+                    ]
+                },
+                "Description": "Month",
+                "DimensionType": 3,
+                "KeyAttribute": "Mth",
+                "Members": [],
+                "Name": "Mth",
+                "Private": false,
+                "ResultSetFixedAttributes": false,
+                "ResultSetMemberDefaultReadMode": "Master",
+                "ResultSetMemberReadMode": "Master",
+                "SupportedResultSetMemberReadModes": [
+                    "Master",
+                    "Booked"
+                ],
+                "UniqueName": "Mth",
+                "IsModeled": true,
+                "DefaultResultSetAttributeNodes": [
+                    "Root"
+                ],
+                "DimensionGroups": [],
+                "IsDimensionGroup": false,
+                "CanBeAggregated": true
+            },
+            {
+                "Attributes": [
+                    {
+                        "AliasName": "ID",
+                        "Cardinality": 10000,
+                        "ColumnType": 0,
+                        "DataType": "String",
+                        "DataTypeAsInt": 3,
+                        "Description": "Week",
+                        "DescriptionColumn": "Week",
+                        "Digits": 0,
+                        "DimensionName": "Wk",
+                        "FilterCapability": {
+                            "Comparison": {
+                                "Excluding": [
+                                    "=",
+                                    ">",
+                                    "<",
+                                    ">=",
+                                    "<=",
+                                    "<>",
+                                    "BETWEEN",
+                                    "NOT_BETWEEN",
+                                    "LIKE",
+                                    "MATCH"
+                                ],
+                                "Including": [
+                                    "=",
+                                    ">",
+                                    "<",
+                                    ">=",
+                                    "<=",
+                                    "<>",
+                                    "BETWEEN",
+                                    "NOT_BETWEEN",
+                                    "LIKE",
+                                    "MATCH"
+                                ]
+                            }
+                        },
+                        "FractDigits": 0,
+                        "HasDescriptions": true,
+                        "HasFulltextIndex": false,
+                        "IsDefaultText": false,
+                        "IsDisplayAttribute": false,
+                        "IsFilterable": true,
+                        "IsFreestyle": false,
+                        "IsKey": true,
+                        "IsMeasure": false,
+                        "IsNotNull": true,
+                        "IsVirtual": false,
+                        "Level": 0,
+                        "Name": "Wk",
+                        "PresentationType": "Key",
+                        "UpperBound": ""
+                    }
+                ],
+                "NumberOfHierarchies": 0,
+                "HierarchiesPossible": false,
+                "AxisConstraints": [
+                    "Free",
+                    "Rows",
+                    "Columns"
+                ],
+                "AxisDefault": "Free",
+                "Cardinality": 10000,
+                "DefaultResultStructure": {
+                    "ResultAlignment": "Bottom",
+                    "ResultStructure": [
+                        {
+                            "Result": "Members",
+                            "Visibility": "Visible"
+                        }
+                    ]
+                },
+                "Description": "Week",
+                "DimensionType": 3,
+                "KeyAttribute": "Wk",
+                "Members": [],
+                "Name": "Wk",
+                "Private": false,
+                "ResultSetFixedAttributes": false,
+                "ResultSetMemberDefaultReadMode": "Master",
+                "ResultSetMemberReadMode": "Master",
+                "SupportedResultSetMemberReadModes": [
+                    "Master",
+                    "Booked"
+                ],
+                "UniqueName": "Wk",
+                "IsModeled": true,
+                "DefaultResultSetAttributeNodes": [
+                    "Root"
+                ],
+                "DimensionGroups": [],
+                "IsDimensionGroup": false,
+                "CanBeAggregated": true
+            },
+            {
+                "Attributes": [
+                    {
+                        "AliasName": "ID",
+                        "Cardinality": 10000,
+                        "ColumnType": 0,
+                        "DataType": "String",
+                        "DataTypeAsInt": 3,
+                        "Description": "CityName",
+                        "DescriptionColumn": "CityName",
                         "Digits": 0,
                         "DimensionName": "City",
                         "FilterCapability": {
@@ -555,7 +661,7 @@
                     "Rows",
                     "Columns"
                 ],
-                "AxisDefault": "Columns",
+                "AxisDefault": "Free",
                 "Cardinality": 10000,
                 "DefaultResultStructure": {
                     "ResultAlignment": "Bottom",
@@ -566,7 +672,7 @@
                         }
                     ]
                 },
-                "Description": "City",
+                "Description": "CityName",
                 "DimensionType": 3,
                 "KeyAttribute": "City",
                 "Members": [],
@@ -587,6 +693,191 @@
                 "DimensionGroups": [],
                 "IsDimensionGroup": false,
                 "CanBeAggregated": true
+            },
+            {
+                "Attributes": [
+                    {
+                        "AliasName": "[Measures].[Measures]",
+                        "Cardinality": 0,
+                        "ColumnType": 83,
+                        "DataType": "String",
+                        "DataTypeAsInt": 3,
+                        "Description": "Measures",
+                        "DescriptionColumn": "[Measures].[Name]",
+                        "Digits": 0,
+                        "DimensionName": "CustomDimension1",
+                        "FilterCapability": {
+                            "Comparison": {
+                                "Excluding": [
+                                    "=",
+                                    ">",
+                                    "<",
+                                    ">=",
+                                    "<=",
+                                    "<>"
+                                ],
+                                "Including": [
+                                    "=",
+                                    ">",
+                                    "<",
+                                    ">=",
+                                    "<=",
+                                    "<>",
+                                    "BETWEEN"
+                                ]
+                            }
+                        },
+                        "FractDigits": 0,
+                        "HasDescriptions": false,
+                        "HasFulltextIndex": false,
+                        "IsDefaultText": false,
+                        "IsDisplayAttribute": false,
+                        "IsFilterable": true,
+                        "IsFreestyle": false,
+                        "IsKey": true,
+                        "IsMeasure": false,
+                        "IsNotNull": false,
+                        "IsVirtual": false,
+                        "Level": 0,
+                        "Name": "[Measures].[Measures]",
+                        "PresentationType": "Key",
+                        "SQLType": "VARCHAR"
+                    },
+                    {
+                        "AliasName": "[Measures].[Name]",
+                        "Cardinality": 0,
+                        "ColumnType": 83,
+                        "DataType": "String",
+                        "DataTypeAsInt": 3,
+                        "Description": "Name",
+                        "DescriptionColumn": "[Measures].[Name]",
+                        "Digits": 0,
+                        "DimensionName": "CustomDimension1",
+                        "FilterCapability": {
+                            "Comparison": {
+                                "Excluding": [
+                                    "=",
+                                    ">",
+                                    "<",
+                                    ">=",
+                                    "<=",
+                                    "<>"
+                                ],
+                                "Including": [
+                                    "=",
+                                    ">",
+                                    "<",
+                                    ">=",
+                                    "<=",
+                                    "<>",
+                                    "BETWEEN"
+                                ]
+                            }
+                        },
+                        "FractDigits": 0,
+                        "HasDescriptions": true,
+                        "HasFulltextIndex": false,
+                        "IsDefaultText": false,
+                        "IsDisplayAttribute": true,
+                        "IsFilterable": true,
+                        "IsFreestyle": false,
+                        "IsKey": false,
+                        "IsMeasure": false,
+                        "IsNotNull": false,
+                        "IsVirtual": false,
+                        "Level": 0,
+                        "Name": "[Measures].[Name]",
+                        "PresentationType": "Text",
+                        "SQLType": "VARCHAR"
+                    },
+                    {
+                        "AliasName": "[Measures].[Description]",
+                        "Cardinality": 0,
+                        "ColumnType": 83,
+                        "DataType": "String",
+                        "DataTypeAsInt": 3,
+                        "Description": "Description",
+                        "DescriptionColumn": "Description",
+                        "Digits": 0,
+                        "DimensionName": "CustomDimension1",
+                        "FilterCapability": {
+                            "Comparison": {
+                                "Excluding": [],
+                                "Including": []
+                            }
+                        },
+                        "FractDigits": 0,
+                        "HasDescriptions": true,
+                        "HasFulltextIndex": false,
+                        "IsDefaultText": false,
+                        "IsDisplayAttribute": false,
+                        "IsFilterable": false,
+                        "IsFreestyle": false,
+                        "IsKey": false,
+                        "IsMeasure": false,
+                        "IsNotNull": false,
+                        "IsVirtual": false,
+                        "Level": 0,
+                        "Name": "[Measures].[Description]",
+                        "PresentationType": "Text",
+                        "SQLType": "VARCHAR"
+                    }
+                ],
+                "NumberOfHierarchies": 0,
+                "HierarchiesPossible": false,
+                "AxisConstraints": [
+                    "Free",
+                    "Rows",
+                    "Columns"
+                ],
+                "AxisDefault": "Columns",
+                "Cardinality": 3,
+                "DefaultResultStructure": {
+                    "ResultAlignment": "Bottom",
+                    "ResultStructure": [
+                        {
+                            "Result": "Members",
+                            "Visibility": "Visible"
+                        }
+                    ]
+                },
+                "Description": "Measures",
+                "DimensionType": 2,
+                "KeyAttribute": "[Measures].[Measures]",
+                "Members": [
+                    {
+                        "[Measures].[Measures]": "Sales_revenue",
+                        "[Measures].[Name]": "Sales revenue",
+                        "[Measures].[Description]": "Sales revenue"
+                    },
+                    {
+                        "[Measures].[Measures]": "Quantity_sold",
+                        "[Measures].[Name]": "Quantity sold",
+                        "[Measures].[Description]": "Quantity sold"
+                    },
+                    {
+                        "[Measures].[Measures]": "Margin",
+                        "[Measures].[Name]": "Margin Name",
+                        "[Measures].[Description]": "Margin Description"
+                    }
+                ],
+                "Name": "CustomDimension1",
+                "Private": false,
+                "ResultSetFixedAttributes": false,
+                "ResultSetMemberDefaultReadMode": "Master",
+                "ResultSetMemberReadMode": "Master",
+                "SupportedResultSetMemberReadModes": [
+                    "Master",
+                    "Booked"
+                ],
+                "TextAttribute": "[Measures].[Name]",
+                "UniqueName": "CustomDimension1",
+                "IsModeled": true,
+                "DefaultResultSetAttributeNodes": [
+                    "Root"
+                ],
+                "IsDimensionGroup": true,
+                "CanBeAggregated": false
             }
         ],
         "ExtendedSortTypes": [
