@@ -10,6 +10,7 @@
 #include <InA_query_model/Query.h>
 #include <InA_query_model/DataSource.h>
 
+#include <ostream>
 #include <query_generator/query_generator.h>
 
 #include <dbproxy/dbproxy.h>
@@ -25,10 +26,8 @@
 #include <iomanip>
 #include <stdexcept>
 
-#define WASM_EXPORT extern "C"
 
-
-WASM_EXPORT
+extern "C"
 const char* json_getServerInfo()
 {
 	//std::cout << "InA_Interpreter => json_getServerInfo call received" << std::endl;
@@ -44,7 +43,7 @@ const char* json_getServerInfo()
 	return static_str_getserverinfo.c_str();
 }
 
-WASM_EXPORT
+extern "C"
 const char* json_getResponse_json(const char* InA)
 {
 	//std::cout << "InA_Interpreter => getResponse call received: '" << InA << "'" << std::endl;
@@ -94,7 +93,7 @@ const char* json_getResponse_json(const char* InA)
 	return static_str.c_str();
 }
 
-const char*ina::grid::writeCube(const ina::query_model::Query& query, JSONWriter& writer)
+const char* ina::grid::writeCube(const ina::query_model::Query& query, JSONWriter& writer)
 {
 	using namespace wasabi;
 
@@ -170,6 +169,18 @@ void ina::grid::writeGrid(const ina::query_model::Query& query, JSONWriter& writ
 	std::vector<const ina::query_model::Dimension*> colAxe; // TODO: Workaround waiting to have a grid
 	calculator::Cube cube;
 	{
+		{
+			const std::string& cnxString = query.getDataSource().getPackageName();
+			const std::string& tableName = query.getDataSource().getObjectName();
+			std::shared_ptr<wasabi::metadata::Catalog> catalog = std::shared_ptr<wasabi::metadata::Catalog>(new wasabi::metadata::Catalog(cnxString));
+			const auto& colNames = catalog->getTable(tableName).getColumnNames();
+			{
+				writer.key("Object name");
+				JSON_LIST(writer);
+				for(auto& colName : colNames)
+					writer.value(catalog->getTable(tableName).getColumn(colName).getName());
+			}
+		}
 		const query_generator::query_generator& queryGen = query_generator::query_generator(query);
 
 		std::shared_ptr<calculator::DataStorage> data(new calculator::DataStorage());
@@ -179,7 +190,10 @@ void ina::grid::writeGrid(const ina::query_model::Query& query, JSONWriter& writ
 			data->insertRow(row);
 		};
 		const std::string& cnxString = query.getDataSource().getPackageName();
-		dbproxy::DBProxy::getDBProxy(cnxString)->executeSQL(queryGen.getSQL(*data), &lambda);
+		const std::string sql = queryGen.getSQL(*data);
+		std::cout << "SQL: " << sql << std::endl;
+		dbproxy::DBProxy::getDBProxy(cnxString)->executeSQL(sql, &lambda);
+		std::cout << "    Nbrs of rows " << data->getRowNbrs() << std::endl;
 
 		cube.setStorage(data);
 		for (const auto& dimension : query.getDefinition().getDimensions()) 
@@ -200,13 +214,14 @@ void ina::grid::writeGrid(const ina::query_model::Query& query, JSONWriter& writ
 			else
 			{
 				measDim = &dimension;
-				for(const auto& member : dimension.getMembers())
+				for(const auto& member : query.getDefinition().getVisibleMembers(dimension))
 					cube.addMeas(member.getName());
 			}
 		}
 	}
 	cube.materialyze();
 	{
+		writer.pair("ResultFormat", "Version2");
 		writer.key("Axes");
 		{
 			JSON_LIST(writer);
@@ -401,6 +416,41 @@ std::pair<size_t, size_t> ina::grid::writeCells(JSONWriter& writer, const calcul
 		JSON_MAP(writer);
 		writer.key("Values");
 		{
+			JSON_MAP(writer);
+			writer.pair("Encoding", "None");
+			writer.key("Values");
+			{
+				JSON_LIST(writer);	
+				for(size_t colIndex = 0; colIndex < cube.getBody().getColNbrs(); colIndex++)
+				{
+					for(size_t rowIndex = 0; rowIndex < cube.getBody().getRowNbrs(); rowIndex++)
+					{
+						for(const auto& dim : cube.getBody())
+						{
+							const auto& data = cube.getBody().getValue(dim.getName(), colIndex, rowIndex);
+							switch (cube.getBody().getValueDatatype(dim.getName()))
+							{
+							case calculator::eDataType::String:
+							{
+								writer.value(std::get<std::string>(data));
+								break;
+							}
+							case calculator::eDataType::Number:
+							{
+								writer.value(std::get<double>(data));
+								break;
+							}
+							default:
+								throw std::runtime_error("InA_Interpreter => Unsupported datatype.");
+							}
+						}
+					}
+				}
+			}
+		}
+		writer.key("ValuesFormatted");
+		{
+			std::cerr << "WASABI: ERROR: Use harcoded format to dislay ValuesFormatted." << std::endl;
 			JSON_MAP(writer);
 			writer.pair("Encoding", "None");
 			writer.key("Values");
