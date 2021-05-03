@@ -1,5 +1,6 @@
 #include "query_generator.h"
 
+#include <algorithm>
 #include <calculator/storage.h>
 #include <InA_query_model/Query.h>
 #include <InA_query_model/Dimension.h>
@@ -14,13 +15,11 @@ namespace query_generator
 {
     std::string query_generator::getSQL(const calculator::DataStorage& data) const
     {
-        std::string delim;
-		std::ostringstream selected;
+		std::vector<std::string> selected;
 		std::ostringstream where;
-        std::ostringstream group_by;
-		std::ostringstream order_by;
+        std::vector<std::string> group_by;
+		std::vector<std::string> order_by;
 
-		delim.clear();
 		size_t idxInData = 0;
         for (const auto& dimension : m_query.getDefinition().getDimensions())
         {
@@ -28,26 +27,29 @@ namespace query_generator
 			{
 				for(const auto& member : m_query.getDefinition().getVisibleMembers(dimension) )
 				{
-					selected << delim;
-					if(delim.empty())
-						delim = ", ";
-					selected << member.getAggregation() << "(" << member.getName() << ")";
-					
 					// Integrity check beetwen query and data storage columns
 					{
 						if(data.getColIndex(member.getName()) != idxInData)
 							throw std::runtime_error("Missmatch col. index in data with query");
 						idxInData++;
 					}
+
+					std::string agg = member.getAggregation();
+					if(agg.empty())
+					{
+						std::string msg;
+						msg += "WASABI: ERROR: Missing aggreation in the InA request for member '" + member.getName() + "' hardcoded SUM will be used";
+						std::cerr << msg;
+						agg = "SUM";
+					}
+					std::string select = agg + "(" + member.getName() + ")";
+					selected.push_back(select);
+					
 				}
 			}
 			else
 			{
-				const std::string& dimensionName = dimension.getName();
-				selected << delim;
-				selected << dimensionName;
-				if(delim.empty())
-					delim = ", ";
+				selected.push_back(dimension.getName());
 				
 				// Integrity check beetwen query and data storage columns
 				{
@@ -59,18 +61,13 @@ namespace query_generator
         }
 
         std::ostringstream sql;
-		if(!selected.str().empty())
+		if(!selected.empty())
 		{
-			delim.clear();
 			for (const auto& dimension : m_query.getDefinition().getDimensions())
 			{
 				if( ! ina::query_model::Dimension::isDimensionOfMeasures(dimension))
 				{
-					group_by << delim;
-					if(delim.empty())
-						delim = ", ";
-					const std::string& dimensionName = dimension.getName();
-					group_by << dimensionName;
+					group_by.push_back(dimension.getName());
 				}
 			}
 
@@ -96,15 +93,10 @@ namespace query_generator
 			{
 				for(const auto& querySort : m_query.getDefinition().getQuerySorts())
 				{
-					if (!order_by.str().empty())
-					{
-						order_by << ", ";
-					}
-
 					// case of MemberSort, TODO: in the Grid
 					if (ina::query_model::Dimension::DIMENSION_OF_MEASURES_NAME != querySort.getObjectName())
 					{
-						order_by << generateSQL(querySort);
+						order_by.push_back(generateSQL(querySort));
 					}
 					else
 					{
@@ -114,21 +106,40 @@ namespace query_generator
 			}
 
 			// Generated statement
+			std::string delim;
         	sql << "SELECT ";
-        	sql << selected.str();
+			delim.clear();
+			for(const auto& s : selected)
+			{
+        		sql << delim << s;
+				if(delim.empty()) delim = ", ";
+			}
+
 			const std::string& table = m_query.getDataSource().getObjectName();
 			sql << " FROM " << table;
 			if (!where.str().empty())
 			{
 				sql << where.str();
 			}
-			if(!group_by.str().empty())
+			if(!group_by.empty())
 			{
-				sql << " GROUP BY " << group_by.str();
+				sql << " GROUP BY ";
+				delim.clear();
+				for(const auto& s : group_by)
+				{
+					sql << delim << s;
+					if(delim.empty()) delim = ", ";
+				}
 			}
-			if(!order_by.str().empty())
+			if(!order_by.empty())
 			{
-				sql << " ORDER BY " << order_by.str();
+				sql << " ORDER BY ";
+				delim.clear();
+				for(const auto& s : order_by)
+				{
+					sql << delim << s;
+					if(delim.empty()) delim = ", ";
+				}
 			}
 
 			sql << ";";
