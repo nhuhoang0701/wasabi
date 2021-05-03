@@ -43,12 +43,11 @@ The dev. env. is tested on Ubuntu 20 in WSL1
   - `run_server`
   - Open your browser at http://localhost:8080 and select your wasm file  
       for example \\wsl$\Ubuntu\home\ghislain\wasabi\install\bin\InA_Interpreter_test.wasm  
-  - If you want to debug c++ in your browser :
-      - Install [canary](https://www.google.com/chrome/canary/)
-      - Inside Canary install this [extension](https://chrome.google.com/webstore/detail/cc%20%20-devtools-support-dwa/pdcpmagijalfljmkmjngeonclgbbannb), in extension option add a path subtitution rule :  
-          "/home/$user" -> "\\\wsl$\Ubuntu\home\\$user" (replace $user by your Linux user) 
-      - Enable WebAssemblyDebugging in Canary: https://developers.google.com/web/updates/2020/12/webassembly
-      - Now use Canary browser and his debugger to debug the c++ code :)
+  - If you want to debug c++ in your Chrome browser (version >= 90):
+      - Inside Chrome install this [extension](https://chrome.google.com/webstore/detail/cc%20%20-devtools-support-dwa/pdcpmagijalfljmkmjngeonclgbbannb), in extension option add a path subtitution rule :  
+          "/home/" -> "\\\wsl$\Ubuntu\home\\"
+      - Enable WebAssemblyDebugging in Chrome: https://developers.google.com/web/updates/2020/12/webassembly
+      - Now use the Chrome debugger to debug the c++ code in a similar way than JS :)
  
  # Execute wasm/WASI binary locally on your machine:  
    - `$WASMTIME ~/wasabi/install/bin/InA_Interpreter_test.wasm`
