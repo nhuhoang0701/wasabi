@@ -6,8 +6,6 @@
 
 #include <InA_query_model/Dimension.h>
 
-#define WASM_EXPORT extern "C"
-
 void getServerInfo();
 void getResponse();
 
