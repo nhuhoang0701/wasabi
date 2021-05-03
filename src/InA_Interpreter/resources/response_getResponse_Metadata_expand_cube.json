@@ -264,7 +264,7 @@
                     "Rows",
                     "Columns"
                 ],
-                "AxisDefault": "Free",
+                "AxisDefault": "Rows",
                 "Cardinality": 10000,
                 "DefaultResultStructure": {
                     "ResultAlignment": "Bottom",
@@ -361,7 +361,7 @@
                     "Rows",
                     "Columns"
                 ],
-                "AxisDefault": "Free",
+                "AxisDefault": "Rows",
                 "Cardinality": 10000,
                 "DefaultResultStructure": {
                     "ResultAlignment": "Bottom",
@@ -555,7 +555,7 @@
                     "Rows",
                     "Columns"
                 ],
-                "AxisDefault": "Free",
+                "AxisDefault": "Columns",
                 "Cardinality": 10000,
                 "DefaultResultStructure": {
                     "ResultAlignment": "Bottom",
@@ -624,7 +624,7 @@
                     "CellDataType": false,
                     "CellFormat": false,
                     "CellMeasure": false,
-                    "CellValueTypes": false,
+                    "CellValueTypes": true,
                     "ExceptionAlertLevel": false,
                     "ExceptionName": false,
                     "ExceptionSettings": false,
@@ -641,7 +641,7 @@
                     "UnitDescriptions": false,
                     "UnitTypes": false,
                     "Units": false,
-                    "Values": false,
+                    "Values": true,
                     "ValuesFormatted": false,
                     "ValuesRounded": false
                 }

@@ -1,5 +1,44 @@
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 // Microcube_worker.js
+
+
+importScripts('./WASI_API.js');
+moduleWASI = null;
+
+const indexMsgId = 0;
+const indexMsgAction = 1;
+const indexMsgParam = 2;
+
+function initWasmModule(module, ID, action, param){
+	console.log('Worker: initWasmModule');
+	moduleWASI = module;
+	setModuleInstance(module.instance);
+	
+	filesystem = [	"/resources/response_getSerververInfo.json",
+					"/resources/response_getResponse_Metadata_expand_cube_catalog.json",
+					"/resources/response_getResponse_Metadata_expand_cube.json",
+					"/resources/sqlite/efashion/efashion.db"];
+	WASI_API.wasabi_initFS(param, filesystem).then(() => 
+	{
+		if(getModuleInstance()._initialize)
+		{
+			console.log('Worker: execute _initialize');
+			getModuleInstance()._initialize();
+		}
+		else if(getModuleInstance()._start)
+		{
+			console.log('Worker: execute _start');
+			getModuleInstance()._start();
+		}
+		else
+		{
+			console.log('Worker: no _start entry point');
+		}
+		postMessage([ID, action, '{"message": "Library well loaded"}']);
+		return true;
+	});
+}
+
 (function(){
 var isLoaded = false;
 
@@ -8,13 +47,6 @@ var WorkerEvent = {
     eGetServerInfo: 'GetServerInfo',
     eGetResponse: 'GetResponse'
 }
-
-importScripts('./WASI_API.js');
-moduleWASI = null;
-
-const indexMsgId = 0;
-const indexMsgAction = 1;
-const indexMsgParam = 2;
 
 onmessage = function(e) {
 	var message = e.data;
@@ -48,37 +80,25 @@ onmessage = function(e) {
 				env: {},
 				js : {mem: new WebAssembly.Memory({initial: 2,maximum: 100})}
 			};
-			WebAssembly.instantiateStreaming(fetch("./InA_Interpreter.wasm"), importObject).then(module =>
-			{
-				console.log('Worker: Library well loaded');
-				moduleWASI = module;
-				setModuleInstance(module.instance);
-				
-				filesystem = ["/resources/response_getSerververInfo.json",
-				"/resources/response_getResponse_Metadata_expand_cube_catalog.json",
-				"/resources/response_getResponse_Metadata_expand_cube.json",
-							"/resources/sqlite/efashion/efashion.db"];
-				WASI_API.wasabi_initFS(param, filesystem).then(() => 
-				{
-					if(getModuleInstance()._initialize)
-					{
-						console.log('Worker: execute _initialize');
-						getModuleInstance()._initialize();
-					}
-					else if(getModuleInstance()._start)
-					{
-						console.log('Worker: execute _start');
-						getModuleInstance()._start();
-					}
-					else
-					{
-						console.log('Worker: no _start entry point');
-					}
-					postMessage([ID, action, '{"message": "Library well loaded"}']);
-					isLoaded = true;
-				});
-			}).catch(error=>{
-				throw error;
+
+			fetch("http://localhost:8080/InA_Interpreter.wasm").then(response =>
+					response.arrayBuffer()
+				).then(bytes =>
+					WebAssembly.instantiate(bytes, importObject)
+				).then(module => {
+					console.log("Worker: InA_Interpreter.wasm loaded from localhost:8080");
+					isLoaded = initWasmModule(module, ID, action, "http://localhost:8080");
+				}).catch(error=>{
+					fetch(param+"/InA_Interpreter.wasm").then(response =>
+						response.arrayBuffer()
+					).then(bytes =>
+						WebAssembly.instantiate(bytes, importObject)
+					).then(module => {
+						console.log("Worker: InA_Interpreter.wasm loaded from " + param);
+						isLoaded = initWasmModule(module, ID, action, param);
+					}).catch(error=>{
+						throw error;
+					});
 			});
 
 			return;
