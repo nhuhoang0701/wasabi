@@ -64,10 +64,6 @@ export WASABI_NINJA_DIR=$WASABI_EXTERNAL_DIR/ninja
 export NINJA=${NINJA:-$WASABI_NINJA_DIR/ninja}
 echo -e "NINJA: "  "\t\t'"$NINJA"'";
 
-
-export HTTP_SERVER="python3 -m http.server 8080"
-echo -e "HTTP_SERVER: " "\t\t'"$HTTP_SERVER"'";
-
 export WASABI_NEXUS_EXPORT=no
 echo -e "WASABI_NEXUS_EXPORT: " "\t\t'"$WASABI_NEXUS_EXPORT"'";
 
@@ -88,7 +84,7 @@ echo -e  "build                to compile test the current cmake folder";
 echo -e  "rebuild              to clean compile test the current cmake folder";
 
 alias setenv='unset WASABI_ROOT_DIR && source ./scripts/set_env.sh'
-alias run_server='cd $WASABI_INSTAL_DIR; $HTTP_SERVER;cd -'
+alias run_server='python3 -m http.server 8080 -d $WASABI_INSTAL_DIR'
 alias clean='$CMAKE --build ./$WASABI_BUILD_DIR_NAME --target clean'
 alias compile='$CMAKE --build ./$WASABI_BUILD_DIR_NAME'
 alias test='(cd "$WASABI_BUILD_DIR_NAME" && $CTEST -j8 -T test --output-on-failure)'
