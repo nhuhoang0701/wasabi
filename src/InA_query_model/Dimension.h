@@ -7,18 +7,14 @@
 #include <vector>
 
 
-
 class JSONGenericObject; // From <json/jsonReader.h>
-class JSONWriter;        // From <json/jsonWriter.h>
 
 namespace ina::query_model
 {
 	class Definition;
-
 	class Dimension;
 
 	void read(Dimension& obj, const JSONGenericObject& jsonNode);
-	void write(const Dimension& obj, JSONWriter& jsonNode);
 
 	class Dimension
 	{
@@ -35,17 +31,20 @@ namespace ina::query_model
 
 			Dimension() = default;
 
-			//TODO: Remove this constructor obj should only be createa from a InA json
+			//TODO: Remove this constructor, ina::query_model::Dimension should only be calles from a InA json query
 			Dimension(const std::string & name, eAxe axename);
 			
-			const std::string & getName() const;
+			const std::string&  getName() const;
 			eAxe                getAxe() const;
 
-			const std::vector<Member> & getMembers() const;
-			void                        addMember(const Member & member);
+			const std::vector<Member>&    getMembers() const;
 
 			const std::vector<Attribute>& getAttributes() const;
-			void                          addAttribute(const Attribute &att);
+		
+		//private:
+		// Only for test units
+			void                        addMember(const Member & member);
+			void                        addAttribute(const Attribute &att);
 
 		private:
 			std::string _name; 
@@ -54,9 +53,7 @@ namespace ina::query_model
 			std::vector<Member>     _members;
 			std::vector<Attribute>  _attributes;
 
-			friend void read(Dimension& obj, const JSONGenericObject& jsonNode);
-			friend void write(const Dimension& obj, JSONWriter& jsonNode);
-			
+			friend void read(Dimension& obj, const JSONGenericObject& jsonNode);			
 			friend void read(Definition& obj, const JSONGenericObject& jsonNode);
 	};
 }
