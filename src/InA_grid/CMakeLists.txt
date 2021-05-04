@@ -5,27 +5,27 @@ if (NOT DEFINED WASABI_ROOT_DIR AND DEFINED ENV{WASABI_ROOT_DIR})
 endif()
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.cmake)
 
-project(grid VERSION 1.0)
+project(InA_grid VERSION 1.0)
 
 ################################################
-# grid
-add_library(grid grid.cpp)
-set_target_properties(grid PROPERTIES PUBLIC_HEADER grid.h)
+# InA_grid
+add_library(InA_grid grid.cpp)
+set_target_properties(InA_grid PROPERTIES PUBLIC_HEADER grid.h)
 
-target_link_libraries(grid PUBLIC exceptions)
-target_link_directories(grid PUBLIC ${WASABI_LIBS})
+target_link_libraries(InA_grid PUBLIC exceptions)
+target_link_directories(InA_grid PUBLIC ${WASABI_LIBS})
 
 ################################################
 # test
-add_executable(grid_test grid_test.cpp)
-target_link_libraries(grid_test grid)
-target_include_directories(grid_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
+add_executable(InA_grid_test grid_test.cpp)
+target_link_libraries(InA_grid_test InA_grid)
+target_include_directories(InA_grid_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
 
 ## [main]
-add_test(NAME grid_test COMMAND grid_test)
+add_test(NAME InA_grid COMMAND InA_grid)
 
 ## [installation]
-install(TARGETS grid 
+install(TARGETS InA_grid 
 		LIBRARY DESTINATION ${WASABI_LIBS}
 		PUBLIC_HEADER DESTINATION ${WASABI_INCLUDES})
 
