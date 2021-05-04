@@ -33,55 +33,17 @@ namespace ina::query_model
 	public:
 		Definition() = default;
 		
-		void addDimension(const Dimension & dimension);
-
+		void                          addDimension(const Dimension & dimension);
 		const std::vector<Dimension>& getDimensions() const;
 
+		//TODO: Should not be here, workaround due to the missing queryspec like or Grid object
 		const std::vector<Member>    getVisibleMembers(const Dimension& dimension) const;
 
 		const std::vector<QueryFilterComparison>& getQueryFilters() const;
-		void                                          addQueryFilter(const QueryFilterComparison & queryFilterComparison);
+		void                                      addQueryFilter(const QueryFilterComparison & queryFilterComparison);
 
 		const std::vector<QuerySort>& getQuerySorts() const;
-		void addQuerySort(const QuerySort& querySort);
-		
-		inline static Datatype getModelDatatype(const metadata::Column::DataType& datatype)
-		{
-			switch(datatype)
-			{
-				case metadata::Column::DataType::String:
-					return "String";
-					break;
-				case metadata::Column::DataType::Numeric:
-					return "Numeric";
-					break;
-				case metadata::Column::DataType::DateTime:
-					return "DateTime";
-					break;
-			}
-		}
-
-		inline static Aggregation getModelAggregation(const metadata::Column::Aggregation& aggregation)
-		{
-			switch(aggregation)
-			{
-				case metadata::Column::Aggregation::None :
-					return "";
-					break;
-				case metadata::Column::Aggregation::Sum:
-					return "Sum";
-					break;
-				case metadata::Column::Aggregation::Max:
-					return "Max";
-					break;
-				case metadata::Column::Aggregation::Min:
-					return "Min";
-					break;
-				case metadata::Column::Aggregation::Count:
-					return "Count";
-					break;
-			}
-		}
+		void                          addQuerySort(const QuerySort& querySort);
 
 	private:
 		std::vector<Dimension> m_objs;
