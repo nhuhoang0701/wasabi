@@ -93,6 +93,11 @@ const char* json_getResponse_json(const char* InA)
 	return static_str.c_str();
 }
 
+void writeDimension()
+{
+	
+}
+
 const char* ina::grid::writeCube(const ina::query_model::Query& query, JSONWriter& writer)
 {
 	using namespace wasabi;
@@ -130,25 +135,21 @@ const char* ina::grid::writeCube(const ina::query_model::Query& query, JSONWrite
 		}
 		else
 		{
-			std::cerr << "WASABI: Analytics expnad cube NYI, please use datasource objectname='Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma'" << std::endl;
-			const std::string& cnxString = query.getDataSource().getPackageName();
-			const std::string& tableName = query.getDataSource().getObjectName();
-
-			std::shared_ptr<metadata::Catalog> catalog = std::shared_ptr<metadata::Catalog>(new metadata::Catalog(cnxString));
-			
+			JSON_MAP(writer);
+			writer.key("Cube");
 			{
-				const auto& colNames = catalog->getTable(tableName).getColumnNames();
+				JSON_MAP(writer);
+				writer.pair("Description", "");
+				writer.pair("CatalogPackage", "");
+				writer.pair("CatalogSchema", "");
+				writer.pair("CatalogType", "");
+				writer.pair("CatalogView", "");
+				writer.pair("CreatedBy", "");
+				writer.pair("CreatedOn", "");
+				write(query.getDataSource(), writer);
 				{
-					writer.key("Object name");
+					writer.key("Dimensions");
 					JSON_LIST(writer);
-					for(auto& colName : colNames)
-						writer.value(catalog->getTable(tableName).getColumn(colName).getName());
-				}
-				{
-					writer.key("Object SQL name");
-					JSON_LIST(writer);
-					for(auto& colName : colNames)
-						writer.value(catalog->getTable(tableName).getColumn(colName).getSQLName());
 				}
 			}
 		}
