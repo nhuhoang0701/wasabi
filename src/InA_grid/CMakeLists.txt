@@ -22,7 +22,7 @@ target_link_libraries(InA_grid_test InA_grid)
 target_include_directories(InA_grid_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include)
 
 ## [main]
-add_test(NAME InA_grid COMMAND InA_grid)
+add_test(NAME InA_grid COMMAND InA_grid_test)
 
 ## [installation]
 install(TARGETS InA_grid 

@@ -2,11 +2,8 @@
 
 #include <json/jsonWriter.h>
 
-namespace ina::query_model
+namespace ina::metadata
 {
-	static void writeAttributeHierarchy(JSONWriter& writer, const Dimension& dim);
-	static void writeAttributeChildrens(JSONWriter& writer, const Dimension& dim);
-	static void writeHierarchies(JSONWriter& writer, const Dimension& dim);
 	static void writeAttributes(JSONWriter& writer, const Dimension& dim);
 	static void writeMembers(JSONWriter& writer, const Dimension& dim);
 	static void writeAttribute(JSONWriter& writer, const Attribute& att);
@@ -19,7 +16,7 @@ namespace ina::query_model
 		NoNumericMeasure = 83,
 		NoMeasure = 0
 	};
-	static std::string  toString(AttributeColumnType);
+	static std::string               toString(AttributeColumnType);
 	static const AttributeColumnType getColumnType(const Attribute& att);
 
 	void write(const Dimension& dim, JSONWriter& writer)
@@ -28,10 +25,10 @@ namespace ina::query_model
 
 		JSON_MAP(writer);
 		writer.pair("Name", dim.getName());
-		writer.pair("UniqueName", dim.getName());
-		writer.pair("NameExternal", dim.getName() + "_E");
-		writer.pair("Description", dim.getName() + "_D");
-		writer.pair("DimensionType", isMeasure ? dimTypeMeasure : dimTypeAttribute);
+		writer.pair("UniqueName", dim.getUniqueName());
+		writer.pair("NameExternal", dim.getNameExternal());
+		writer.pair("Description", dim.getDescription());
+		writer.pair("DimensionType", dim.getDimensionType());
 
 		writeAttributes(writer, dim);
 
@@ -45,12 +42,9 @@ namespace ina::query_model
 			writer.value("Rows");
 			writer.value("Columns");
 		}
-		if (isMeasure)
-			writer.pair("AxisDefault", "Columns");
-		else
-			writer.pair("AxisDefault", "Free");
+		writer.pair("AxisDefault", getAxisDefault());
 
-		writer.pair("Cardinality", dim.countMembers()!=0 ? dim.countMembers() : DefaultAttributeCardinality);
+		writer.pair("Cardinality", dim.getCardinality());
 		writer.key("DefaultResultStructure");
 		{
 			JSON_MAP(writer);
@@ -81,19 +75,20 @@ namespace ina::query_model
 			writer.value("Booked");
 		}
 
-		writer.pair("IsModeled", dim.isModeled());
 		writer.key("DefaultResultSetAttributeNodes");
 		{
 			JSON_LIST(writer);
 			writer.value("Root");
 		}
+		writer.pair("IsModeled", dim.isModeled());
+		writer.pair("CanBeAggregated", dim.canBeAggregated());
+
+		writer.pair("IsDimensionGroup", dim.isDimensionGroup());
 		if (!isMeasure)
 		{
 			writer.key("DimensionGroups");
 			{ JSON_LIST(writer); }
 		}
-		writer.pair("IsDimensionGroup", isMeasure);
-		writer.pair("CanBeAggregated", !isMeasure);
 	}
 
 	void writeMembers(JSONWriter & writer, const Dimension & dim)
@@ -117,13 +112,15 @@ namespace ina::query_model
 	void writeAttributes(JSONWriter & writer, const Dimension & dim)
 	{
 		writer.pair("KeyAttribute", dim.getKeyAttribute().getName());
-		writer.pair("TextAttribute", dim.getTextAttribute().getName());
+		if(dim.haveTextAttribute())
+			writer.pair("TextAttribute", dim.getTextAttribute().getName());
 		writer.key("Attributes");
-		JSON_LIST(writer);
-
-		for (std::vector<Attribute>::const_iterator iter = dim.beginAttributes(); iter != dim.endAttributes(); ++iter)
 		{
-			writeAttribute(writer, *iter);
+			JSON_LIST(writer);
+			for (std::vector<Attribute>::const_iterator iter = dim.beginAttributes(); iter != dim.endAttributes(); ++iter)
+			{
+				writeAttribute(writer, *iter);
+			}
 		}
 	}
 
@@ -132,7 +129,6 @@ namespace ina::query_model
 		const Dimension& dim = att.getDimension();
 
 		const bool isMeasure = dim.getDimensionType() == Dimension::MeasuresDimension;
-		const bool isVariable = dim.getDimensionType() == Dimension::VariableDimension;
 
 		const std::string& dataType = att.getDataTypeAsString();
 		const AttributeColumnType columnType = getColumnType(att);
