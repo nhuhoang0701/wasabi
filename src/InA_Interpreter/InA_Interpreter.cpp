@@ -85,6 +85,14 @@ const char* json_getResponse_json(const char* InA)
 				}
 			}
 		}
+		writer.key("Messages");
+		{
+			JSON_LIST(writer);
+			JSON_MAP(writer);
+			writer.pair("Number", 0u);
+			writer.pair("Text", "This the text of the Error 0 from root");
+			writer.pair("Type", "Error");
+		}
 	}
 
 	static std::string static_str;
@@ -254,7 +262,15 @@ void ina::grid::writeGrid(const ina::query_model::Query& query, JSONWriter& writ
 			writer.value(static_cast<uint32_t>(cellsSize.second));
 		}
 		writer.pair("ResultSetState", 0u);
-		writer.pair("HasErrors", false);
+		writer.pair("HasErrors", true);
+		writer.key("Messages");
+		{
+			JSON_LIST(writer);
+			JSON_MAP(writer);
+			writer.pair("Number", 1u);
+			writer.pair("Text", "This the text of the Error 1 from Grid");
+			writer.pair("Type", "Error");
+		}
 	}
 }
 
@@ -309,7 +325,7 @@ void ina::grid::writeDimensions(const ina::query_model::Query& query, JSONWriter
 					{
 						JSON_LIST(writer);
 						for(const auto& member : query.getDefinition().getVisibleMembers(*dim))
-							writer.value(member.getName());
+							writer.value(member.getName() + " (value [Measures].[Name])");
 					}
 				}
 				{
@@ -449,6 +465,7 @@ std::pair<size_t, size_t> ina::grid::writeCells(const ina::query_model::Query& q
 				}
 			}
 		}
+		//TODO: Not sure why this is needed
 		writer.key("ValuesFormatted");
 		{
 			std::cerr << "WASABI: ERROR: Use harcoded format to dislay ValuesFormatted." << std::endl;
@@ -479,6 +496,26 @@ std::pair<size_t, size_t> ina::grid::writeCells(const ina::query_model::Query& q
 							default:
 								throw std::runtime_error("InA_Interpreter => Unsupported datatype.");
 							}
+						}
+					}
+				}
+			}
+		}
+		// TODO: Strange need some Markus explaination, without that chart didn't works in his tools 
+		writer.key("QueryDataCellReferences");
+		{
+			JSON_MAP(writer);
+			writer.pair("Encoding", "None");
+			writer.key("Values");
+			{
+				JSON_LIST(writer);	
+				for(size_t colIndex = 0; colIndex < cube.getBody().getColNbrs(); colIndex++)
+				{
+					for(size_t rowIndex = 0; rowIndex < cube.getBody().getRowNbrs(); rowIndex++)
+					{
+						for(const auto& dim : cube.getBody())
+						{
+							writer.value("1");
 						}
 					}
 				}
