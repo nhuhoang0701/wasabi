@@ -1,4 +1,7 @@
 #include "InA_query_model/Dimension.h"
+#include "InA_query_model/Formula.h"
+#include "InA_query_model/Member.h"
+#include "InA_query_model/Parameter.h"
 #include "InA_query_model/QuerySort.h"
 #include "Query.h"
 #include "Definition.h"
@@ -110,6 +113,36 @@ int main()
 		CPPUNIT_ASSERT_EQUAL("Week ?", definition.getQuerySorts().at(0).getObjectName());
 		CPPUNIT_ASSERT_EQUAL(ina::query_model::QuerySort::SortType::MemberKey, definition.getQuerySorts().at(0).getSortType());
 		CPPUNIT_ASSERT_EQUAL(ina::query_model::QuerySort::Direction::None, definition.getQuerySorts().at(0).getDirection());
+	}
+	{
+		std::string request = R"({"Dimensions": [{"Members": [{"Description": "Calculated Measure 1","Formula": {"Function": {"Name": "+","Parameters": [{"Member": {"Name": "OBJ_147"}},{"Function": {"Name": "decfloat","Parameters": [{"Constant": {"Value": "1","ValueType": "String"}}]}}]}},"Name": "70027803-5182-4685-b851-864623689423","NumericScale": 7,"Visibility": "Visible"}],"Axis": "Columns","Name": "CustomDimension1"}]})";
+		JSONReader reader;
+		JSONGenericObject root = reader.parse(request);
+		ina::query_model::Definition definition;
+		read(definition, root);
+		auto dimension 		= definition.getDimensions().at(0);
+		CPPUNIT_ASSERT_EQUAL(1, definition.getDimensions().size());
+
+		CPPUNIT_ASSERT_EQUAL(1, dimension.getMembers().size())
+		CPPUNIT_ASSERT_EQUAL(ina::query_model::Member::eMemberType::eFormula, dimension.getMembers().at(0).getType())
+
+		auto member = dimension.getMembers().at(0);
+		
+		CPPUNIT_ASSERT_EQUAL(2, member.getFormula().getFunction().getChildrenCount());
+
+		auto param1  =member.getFormula().getFunction().getChild(0);
+		auto param2  =member.getFormula().getFunction().getChild(1);
+		CPPUNIT_ASSERT_EQUAL(ina::query_model::Parameter::eMember, param1.getType());
+		CPPUNIT_ASSERT_EQUAL(ina::query_model::Parameter::eFunction, param2.getType());
+
+		auto func = param2.getFunction();
+		CPPUNIT_ASSERT_EQUAL(ina::query_model::Function::eDecFloat, func.getFunctionType());
+
+		CPPUNIT_ASSERT_EQUAL(1, func.getChildrenCount());
+
+		auto param = func.getChild(0);
+		CPPUNIT_ASSERT_EQUAL(ina::query_model::Parameter::eConstant, param.getType());
+		
 	}	
 
 	return TEST_HAVEERROR();
