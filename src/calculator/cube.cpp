@@ -4,6 +4,18 @@
 #include <stdexcept>
 #include <numeric>    // For iota
 
+#include <unordered_set>
+struct TupleHash {
+    size_t operator()(const std::vector<size_t>& v) const {
+        std::hash<int> hasher;
+        size_t seed = 0;
+        for (int i : v) {
+            seed ^= hasher(i) + 0x9e3779b9 + (seed<<6) + (seed>>2);
+        }
+        return seed;
+    }
+};
+
 #include <iostream>
 
 
@@ -24,6 +36,7 @@ namespace calculator
 		//std::cout << "Tuples :\n";
 		if(empty() == false)
 		{
+			std::unordered_set<Tuple, TupleHash> tuplesSet;
 			// Get the tuple
 			Tuple tuple;
 			tuple.reserve(size());
@@ -38,10 +51,15 @@ namespace calculator
 				//std::for_each(tuple.cbegin(), tuple.cend(), [] (const size_t c) {std::cout << c << "\t";} );
 				//std::cout << "\n";
 				// Get the list of pre aggreagted indexes
-				if(m_tuples.find(tuple) != m_tuples.end())
-					m_tuples[tuple].push_back(rowIndex);
+				if(tuplesSet.find(tuple) == tuplesSet.end())
+				{
+					tuplesSet.insert(tuple);
+					m_tuples.push_back(std::make_pair(tuple, std::vector(1, rowIndex)));
+				}
 				else
-					m_tuples[tuple] = std::vector(1, rowIndex);
+				{
+					m_tuples.back().second.push_back(rowIndex);
+				}
 			}
 			//std::for_each(tuple.cbegin(), tuple.cend(), [] (const size_t c) {std::cout << c << "\t";} );
 			//std::cout << "\n";
@@ -109,7 +127,7 @@ namespace calculator
 		if(row >= m_tuples.size())
 			throw std::out_of_range("Axe::getValue row");
 
-		const auto& tuple = std::next(m_tuples.begin(), row)->first;
+		const auto& tuple = m_tuples[row].first;
 		if(dimIdx >= tuple.size())
 			throw std::out_of_range("Axe::getValue dimIdx");
 
@@ -126,7 +144,7 @@ namespace calculator
 		if(row >= m_tuples.size())
 			throw std::out_of_range("Axe::getValue row");
 
-		return std::next(m_tuples.begin(), row)->second;
+		return m_tuples[row].second;
 	}
 
 

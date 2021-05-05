@@ -52,7 +52,8 @@ namespace calculator
 
 		// Tuple of value index
 		typedef std::vector<size_t> Tuple;
-		std::map<Tuple, std::vector<size_t> /*row index tp aggregated*/> m_tuples;
+		/*Tuple / row indexes in the parent data table for this tuple, will be use for the aggreagtion*/
+		std::vector<std::pair<Tuple, std::vector<size_t>>> m_tuples;
 		bool  m_materialyzed = false;
 	};
 
