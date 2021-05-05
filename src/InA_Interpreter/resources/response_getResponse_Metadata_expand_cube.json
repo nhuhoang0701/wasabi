@@ -13,19 +13,20 @@
             "PackageName": "local:sqlite:efashion",
             "Type": "Universe"
         },
-        "Description": "",
+        "Description": "Cube answer of 'Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma' from 'local:sqlite:efashion'",
         "Dimensions": [
             {
                 "Name": "agg1_id",
                 "UniqueName": "agg1_id",
-                "NameExternal" : "agg1_id",
-                "Description": "index",
+                "NameExternal" : "index (NameExternal)",
+                "Description": "index (Description)",
                 "DimensionType": 3,
                 "KeyAttribute": "index",
                 "Attributes": [
                     {
                         "Name": "agg1_id",
-                        "Description": "index",
+                        "NameExternal" : "index att. (NameExternal)",
+                        "Description": "index att. (Description)",
                         "AliasName": "ID",
                         "DimensionName": "agg1_id",
                         "HasDescriptions": true,
@@ -116,14 +117,15 @@
             {
                 "Name": "Yr",
                 "UniqueName": "Yr",
-                "NameExternal" : "Yr",
-                "Description": "Year",
+                "NameExternal" : "Year (NameExternal)",
+                "Description": "Year (Description)",
                 "DimensionType": 3,
                 "KeyAttribute": "Yr",
                 "Attributes": [
                     {
                         "Name": "Yr",
-                        "Description": "Year",
+                        "NameExternal" : "Year att. (NameExternal)",
+                        "Description": "Year att. (Description)",
                         "AliasName": "ID",
                         "DimensionName": "Yr",
                         "HasDescriptions": true,
@@ -213,15 +215,16 @@
             },
             {
                 "Name": "Qtr",
-                "Description": "Quarter",
                 "UniqueName": "Qtr",
-                "NameExternal" : "Qtr",
+                "NameExternal" : "Quarter (NameExternal)",
+                "Description": "Quarter (Description)",
                 "DimensionType": 3,
                 "KeyAttribute": "Qtr",
                 "Attributes": [
                     {
                         "Name": "Qtr",
-                        "Description": "Quarter",
+                        "NameExternal" : "Quarter att. (NameExternal)",
+                        "Description": "Quarter att. (Description)",
                         "AliasName": "ID",
                         "DimensionName": "Qtr",
                         "HasDescriptions": true,
@@ -312,14 +315,15 @@
             {
                 "Name": "Month_name",
                 "UniqueName": "Month_name",
-                "NameExternal" : "Month_name",
-                "Description": "Month name",
+                "NameExternal" : "Month name (NameExternal)",
+                "Description": "Month name (Description)",
                 "DimensionType": 3,
                 "KeyAttribute": "Month_name",
                 "Attributes": [
                     {
                         "Name": "Month_name",
-                        "Description": "Month name",
+                        "NameExternal" : "Month name att. (NameExternal)",
+                        "Description": "Month name att. (Description)",
                         "AliasName": "ID",
                         "DimensionName": "Month_name",
                         "HasDescriptions": true,
@@ -410,18 +414,20 @@
             {
                 "Name": "Mth",
                 "UniqueName": "Mth",
-                "NameExternal" : "Mth",
-                "Description": "Month",
+                "NameExternal" : "Month number (NameExternal)",
+                "Description": "Month number (Description)",
                 "DimensionType": 3,
                 "KeyAttribute": "Mth",
                 "Attributes": [
                     {
+                        "Name": "Mth",
+                        "NameExternal" : "Month number att. (NameExternal)",
+                        "Description": "Month number att. (Description)",
                         "AliasName": "ID",
                         "Cardinality": 10000,
                         "ColumnType": 0,
                         "DataType": "String",
                         "DataTypeAsInt": 3,
-                        "Description": "Month",
                         "DescriptionColumn": "Month",
                         "Digits": 0,
                         "DimensionName": "Mth",
@@ -465,7 +471,6 @@
                         "IsNotNull": true,
                         "IsVirtual": false,
                         "Level": 0,
-                        "Name": "Mth",
                         "PresentationType": "Key",
                         "UpperBound": ""
                     }
@@ -508,19 +513,20 @@
             {
                 "Name": "Wk",
                 "UniqueName": "Wk",
-                "NameExternal" : "Wk",
-                "Description": "Week",
+                "NameExternal" : "Week (NameExternal)",
+                "Description": "Week (Description)",
                 "DimensionType": 3,
                 "KeyAttribute": "Wk",
                 "Attributes": [
                     {
                         "Name": "Wk",
+                        "NameExternal" : "Week att. (NameExternal)",
+                        "Description": "Week att. (Description)",
                         "AliasName": "ID",
                         "Cardinality": 10000,
                         "ColumnType": 0,
                         "DataType": "String",
                         "DataTypeAsInt": 3,
-                        "Description": "Week",
                         "DescriptionColumn": "Week",
                         "Digits": 0,
                         "DimensionName": "Wk",
@@ -606,18 +612,20 @@
             {
                 "Name": "City",
                 "UniqueName": "City",
-                "NameExternal" : "City",
-                "Description": "CityName",
+                "NameExternal" : "City mame (NameExternal)",
+                "Description": "City mame (Description)",
                 "DimensionType": 3,
                 "KeyAttribute": "City",
                 "Attributes": [
                     {
+                        "Name": "City",
+                        "NameExternal" : "City name att. (NameExternal)",
+                        "Description": "City name att. (Description)",
                         "AliasName": "ID",
                         "Cardinality": 10000,
                         "ColumnType": 0,
                         "DataType": "String",
                         "DataTypeAsInt": 3,
-                        "Description": "CityName",
                         "DescriptionColumn": "CityName",
                         "Digits": 0,
                         "DimensionName": "City",
@@ -661,7 +669,6 @@
                         "IsNotNull": true,
                         "IsVirtual": false,
                         "Level": 0,
-                        "Name": "City",
                         "PresentationType": "Key",
                         "UpperBound": ""
                     }
@@ -704,15 +711,16 @@
             {
                 "Name": "CustomDimension1",
                 "UniqueName": "CustomDimension1",
-                "NameExternal" : "Measures",
-                "Description": "Measures",
+                "NameExternal" : "Measures (NameExternal)",
+                "Description": "Measures (Description)",
                 "DimensionType": 2,
                 "KeyAttribute": "[Measures].[Measures]",
                 "TextAttribute": "[Measures].[Name]",
                 "Attributes": [
                     {
                         "Name": "[Measures].[Measures]",
-                        "Description": "Measures",
+                        "NameExternal" : "[Measures].[Measures] att. (NameExternal)",
+                        "Description": "[Measures].[Measures] att. (Description)",
                         "AliasName": "[Measures].[Measures]",
                         "DimensionName": "CustomDimension1",
                         "HasDescriptions": false,
@@ -759,7 +767,8 @@
                     },
                     {
                         "Name": "[Measures].[Name]",
-                        "Description": "Name",
+                        "NameExternal" : "[Measures].[Name] att. (NameExternal)",
+                        "Description": "[Measures].[Name] att. (Description)",
                         "AliasName": "[Measures].[Name]",
                         "DimensionName": "CustomDimension1",
                         "HasDescriptions": true,
@@ -806,7 +815,7 @@
                     },
                     {
                         "Name": "[Measures].[Description]",
-                        "Description": "Description",
+                        "Description": "[Measures].[Description] att. (Description)",
                         "AliasName": "[Measures].[Description]",
                         "DimensionName": "CustomDimension1",
                         "DescriptionColumn": "Description",
@@ -858,18 +867,18 @@
                 "Members": [
                     {
                         "[Measures].[Measures]": "Sales_revenue",
-                        "[Measures].[Name]": "Sales revenue",
-                        "[Measures].[Description]": "Sales revenue"
+                        "[Measures].[Name]": "Sales_revenue ([Measures].[Name])",
+                        "[Measures].[Description]": "Sales revenue ([Measures].[Description])"
                     },
                     {
                         "[Measures].[Measures]": "Quantity_sold",
-                        "[Measures].[Name]": "Quantity sold",
-                        "[Measures].[Description]": "Quantity sold"
+                        "[Measures].[Name]": "Quantity sold ([Measures].[Name])",
+                        "[Measures].[Description]": "Quantity sold ([Measures].[Description])"
                     },
                     {
                         "[Measures].[Measures]": "Margin",
-                        "[Measures].[Name]": "Margin Name",
-                        "[Measures].[Description]": "Margin Description"
+                        "[Measures].[Name]": "Margin Name ([Measures].[Name])",
+                        "[Measures].[Description]": "Margin Description ([Measures].[Description])"
                     }
                 ],
                 "Private": false,
@@ -975,27 +984,27 @@
             {
                 "Calls": 1,
                 "Description": "QueryParsing",
-                "Time": 0.005
+                "Time": 0
             },
             {
                 "Calls": 1,
                 "Description": "DataSource.prepareToRefresh",
-                "Time": 0.82
+                "Time": 0
             },
             {
                 "Calls": 1,
                 "Description": "CubeMetadata2InA",
-                "Time": 1.282
+                "Time": 0
             },
             {
                 "Calls": 1,
                 "Description": "Metadata_Run",
-                "Time": 1.282
+                "Time": 0
             },
             {
                 "Calls": 1,
                 "Description": "Metadata_WriteResult",
-                "Time": 0.003
+                "Time": 0
             }
         ]
     }
