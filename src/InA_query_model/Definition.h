@@ -8,6 +8,7 @@
 #include "Dimension.h"
 #include "QueryFilter.h"
 #include "QueryFilterComparison.h"
+#include "Formula.h"
 
 #include <string>
 #include <vector>

@@ -40,3 +40,9 @@ To get it to work:
         - devServer.port: this is the port the webpack proxy operates on (in the default configuration, it is different from the public adress port because the proxy runs in a docker container, so this is the port in the docker container. The port in the public address is the port as mapped from the container to the host)
 
         - devServer.proxy: this maps the calls to /sap/cs to the backend server
+
+# Using the CS API in the DBProxy
+
+Server : http://lde-docker-3.dataaccess.c.eu-de-1.cloud.sap:20180/sap/cs.
+
+To get more information on how the CS API is used, see https://github.wdf.sap.corp/cs/proto-cs-js-client/blob/master/test.js.
