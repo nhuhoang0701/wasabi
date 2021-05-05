@@ -9,7 +9,7 @@
   <artifactId>Microcube.wasm</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>${project.groupId}.${project.artifactId}</name>
-  <description>Wasabi microcube in wasm</description>
+  <description>microcube in wasm (dev. in progress)</description>
   <packaging>pom</packaging>
 
   <distributionManagement>
