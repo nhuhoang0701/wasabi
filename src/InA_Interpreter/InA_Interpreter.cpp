@@ -325,7 +325,7 @@ void ina::grid::writeDimensions(const ina::query_model::Query& query, JSONWriter
 					{
 						JSON_LIST(writer);
 						for(const auto& member : query.getDefinition().getVisibleMembers(*dim))
-							writer.value(member.getName() + " (value [Measures].[Name])");
+							writer.value(member.getName() + " (val. [].[Name])");
 					}
 				}
 				{
