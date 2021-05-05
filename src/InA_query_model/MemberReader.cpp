@@ -8,9 +8,9 @@ namespace ina::query_model
 {
 	void read(Member& obj, const JSONGenericObject& jsonNode)
 	{
-		if(jsonNode.haveValue("Aggregation"))
+		//if(jsonNode.haveValue("Aggregation"))
 		{
-			obj._aggregation = jsonNode.getString("Aggregation");
+			//obj._aggregation = jsonNode.getString("Aggregation");
 			obj._type = Member::eAggregation;
 			// MDS_TheDefinitveGuide_2_1 
 			// MemberOperand is deprecated, but, in MANY examples
@@ -50,6 +50,7 @@ namespace ina::query_model
 				obj._name = jsonNode.getString("Name");
 			}
 		}
+		/*
 		else if(jsonNode.haveValue("Description"))
 		{
 			obj._name = jsonNode.getString("Description");
@@ -65,5 +66,6 @@ namespace ina::query_model
 			}
 
 		}
+		*/
 	}
 }
