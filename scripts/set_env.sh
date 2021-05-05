@@ -64,9 +64,6 @@ export WASABI_NINJA_DIR=$WASABI_EXTERNAL_DIR/ninja
 export NINJA=${NINJA:-$WASABI_NINJA_DIR/ninja}
 echo -e "NINJA: "  "\t\t'"$NINJA"'";
 
-export WASABI_NEXUS_EXPORT=no
-echo -e "WASABI_NEXUS_EXPORT: " "\t\t'"$WASABI_NEXUS_EXPORT"'";
-
 # Needed to get call with symbolsfrom 
 export ASAN_SYMBOLIZER_PATH=$LLVM_DIR/bin/llvm-symbolizer
 export MSAN_SYMBOLIZER_PATH=$ASAN_SYMBOLIZER_PATH
@@ -91,5 +88,6 @@ alias test='(cd "$WASABI_BUILD_DIR_NAME" && $CTEST -j8 -T test --output-on-failu
 alias install='$CMAKE --build ./$WASABI_BUILD_DIR_NAME --target install'
 alias build='$CMAKE -B ./$WASABI_BUILD_DIR_NAME . -G Ninja -DCMAKE_BUILD_TYPE=$WASABI_BUILD_TYPE -DCMAKE_MAKE_PROGRAM=$NINJA -DCMAKE_INSTALL_PREFIX:PATH=$WASABI_INSTAL_DIR && install && test'
 alias rebuild='rm -rf ./$WASABI_BUILD_DIR_NAME && mkdir $WASABI_BUILD_DIR_NAME && build'
+alias export2nexus='mvn clean deploy WORKING_DIRECTORY ${WASABI_ROOT_DIR}/nexus'
 
 echo
