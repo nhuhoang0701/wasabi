@@ -71,13 +71,13 @@ namespace calculator
 		virtual size_t       getNumberOfValues() const {return m_values.size();}
 		virtual const Value& getValueAtValueIdx(size_t valueIndex) const {return m_values[valueIndex];}
 
-		size_t         getRows() const {return m_rowIndexes.size();}		
-		const Value&   getValueAtRowIdx(size_t rowIndex) const {return m_values[m_rowIndexes[rowIndex]];}
-		virtual size_t getValueIndexFromRowIdx(size_t rowIndex) const {return m_idxByVal.at(m_values[m_rowIndexes[rowIndex]]);}
+		size_t         getRows() const {return m_valueIndexes.size();}		
+		const Value&   getValueAtRowIdx(size_t rowIndex) const {return m_values[m_valueIndexes[rowIndex]];}
+		virtual size_t getValueIndexFromRowIdx(size_t rowIndex) const {return m_valueIndexes[rowIndex];}
 
 		void push_back(const Value& value)
 		{
-			Index index;
+			Index index = 0;
 			if(m_idxByVal.find(value) != m_idxByVal.end())
 			{
 				index = m_idxByVal[value];
@@ -89,11 +89,11 @@ namespace calculator
 				m_values.push_back(value);
 			}
 
-			m_rowIndexes.push_back(index);
+			m_valueIndexes.push_back(index);
 		}
 
 	private:
-		std::vector<Index>      m_rowIndexes;
+		std::vector<Index>      m_valueIndexes;
 		std::vector<Value>      m_values;
 		std::map<Value, Index>  m_idxByVal;
 	};
@@ -117,7 +117,7 @@ namespace calculator
 
 		size_t        getRowNbrs() const {return m_rowsNb;}
 
-		void addColumn(const std::string name, eDataType dt, eColumnType type)
+		void addColumn(const std::string& name, eDataType dt, eColumnType type)
 		{
 			if(m_colsIdxByName.find(name) != m_colsIdxByName.end())
 				throw std::runtime_error("Column already exist:" + name);

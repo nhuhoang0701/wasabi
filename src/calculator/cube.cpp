@@ -4,13 +4,13 @@
 #include <stdexcept>
 #include <numeric>    // For iota
 
-#include <unordered_set>
+#include <unordered_map>
 struct TupleHash {
     size_t operator()(const std::vector<size_t>& v) const {
-        std::hash<int> hasher;
-        size_t seed = 0;
-        for (int i : v) {
-            seed ^= hasher(i) + 0x9e3779b9 + (seed<<6) + (seed>>2);
+        std::hash<size_t> hasher;
+        size_t seed = v.size();
+        for (size_t i : v) {
+            seed ^= i + 0x9e3779b9 + (seed<<6) + (seed>>2);
         }
         return seed;
     }
@@ -29,18 +29,18 @@ namespace calculator
 	void Axe::materialyze()
 	{
 		m_tuples.clear();
-		// << "*****************************************\n";
+		//std::cout << "*****************************************\n";
 		//std::cout << "Axe :\n";
 		//std::for_each(this->cbegin(), this->cend(), [] (const Object& obj) {std::cout << obj.getName() << "\t";} );
 		//std::cout << "\n";
 		//std::cout << "Tuples :\n";
 		if(empty() == false)
 		{
-			std::unordered_set<Tuple, TupleHash> tuplesSet;
+			std::unordered_map<Tuple, size_t, TupleHash> tuplesSet;
 			// Get the tuple
 			Tuple tuple;
 			tuple.reserve(size());
-			for(size_t rowIndex = 0; rowIndex <m_cube.m_data->getRowNbrs(); rowIndex++)
+			for(size_t rowIndex = 0; rowIndex <m_cube.getStorage().getRowNbrs(); rowIndex++)
 			{
 				tuple.clear();
 				for(const auto& obj : *this)
@@ -48,20 +48,23 @@ namespace calculator
 					const auto& columnData = m_cube.getStorage().getColumn(obj.getName());
 					tuple.push_back(columnData->getValueIndexFromRowIdx(rowIndex));
 				}
-				//std::for_each(tuple.cbegin(), tuple.cend(), [] (const size_t c) {std::cout << c << "\t";} );
-				//std::cout << "\n";
 				// Get the list of pre aggreagted indexes
 				if(tuplesSet.find(tuple) == tuplesSet.end())
 				{
-					tuplesSet.insert(tuple);
+					//std::cout << "+";
+					tuplesSet[tuple] = m_tuples.size();
 					m_tuples.push_back(std::make_pair(tuple, std::vector(1, rowIndex)));
 				}
 				else
 				{
-					m_tuples.back().second.push_back(rowIndex);
+					//std::cout << "=";
+					m_tuples[tuplesSet.at(tuple)].second.push_back(rowIndex);
 				}
+				//std::for_each(m_tuples[tuplesSet.at(tuple)].first.cbegin(), m_tuples[tuplesSet.at(tuple)].first.cend(), [] (const size_t c) {std::cout << c << "\t";} );
+				//std::cout << "\t|\t";
+				//std::for_each(m_tuples[tuplesSet.at(tuple)].second.cbegin(), m_tuples[tuplesSet.at(tuple)].second.cend(), [] (const size_t c) {std::cout << c << "\t";} );
+				//std::cout << "\n";
 			}
-			//std::for_each(tuple.cbegin(), tuple.cend(), [] (const size_t c) {std::cout << c << "\t";} );
 			//std::cout << "\n";
 		}
 		//std::cout << "End Axe \n";
