@@ -4,28 +4,41 @@ const networkLayer = "JDBC";
 const dbEngine = "SQLite for test - efashion";
 const xmlConnectionDesc = "<?xml version=\"1.0\"?><ConnectionDefinition><Parameter Category=\"IDENTIFICATION\" ID=\"NETWORKLAYER\" Type=\"String\">JDBC</Parameter><Parameter Category=\"IDENTIFICATION\" ID=\"DBMS\" Type=\"String\">SQLite for test - memory</Parameter><Parameter Category=\"IDENTIFICATION\" ID=\"CONNECTIVITY_TYPE\" Type=\"String\">Relational</Parameter><Parameter Category=\"CONFIGURATION\" ID=\"MAX_PARALLEL_QUERIES\" Type=\"Integer\">4</Parameter><Parameter Category=\"CREDENTIALS\" ID=\"PASSWORD\" Type=\"String\"></Parameter><Parameter Category=\"CREDENTIALS\" ID=\"DATASOURCE\" Type=\"String\"></Parameter><Parameter Category=\"CREDENTIALS\" ID=\"AUTHENTICATION_MODE\" Type=\"Enum\">ConfiguredIdentity</Parameter><Parameter Category=\"CREDENTIALS\" ID=\"USER\" Type=\"String\"></Parameter></ConnectionDefinition>";
 
-const sql = "SELECT Article_label, Sale_price FROM Article_lookup LIMIT 10;";
-
+function log(msg) {
+    if(typeof document !== 'undefined') {
+        let msgCR = msg + '\n';
+        document.getElementById('log').innerHTML += msgCR.replace(/\n( *)/g, function (match, p1) {
+            return '<br>' + '&nbsp;'.repeat(p1.length);
+        });
+    }
+    console.log(msg);
+}
 
 function _startCSTest() {
-    console.log("******************************************");
-    console.log("Start CS test.");
-    console.log("******************************************");
+    log("******************************************");
+    log("Start CS test.");
+    log("******************************************");
     
     let cs = new ProtoCS.ConnectionServer();
     cs.configure(endpoint);
-    createJob(cs).then((job) => {
+    cs_createJob(cs).then((job) => {
+        let sql = document.querySelector('#enter').value;
+        log("Execute SQL:" + sql);
         job.Execute(sql, undefined, undefined).then((result) => {
-            result.setSliceSize(10);
-            this.fetch(result);
-        });                                
+            result.setSliceSize(500);
+            this.cs_fetch(result);
+        }).catch(error=>{
+            log("ERROR: id:" + error.id);
+            log("       type:" + error.type);
+            log("       message:" + error.message);
+        });                            
     })
 }
 
-function createJob(cs){
-    console.log("******************************************");
-    console.log("Creating Job.");
-    console.log("******************************************");
+function cs_createJob(cs){
+    log("******************************************");
+    log("Creating Job.");
+    log("******************************************");
     return new Promise((resolve, reject) => {
         cs.JobProfile(networkLayer, dbEngine).then((jd) => {
             jd.Properties().then((jps) => {
@@ -41,24 +54,24 @@ function createJob(cs){
     })
 }
 
-async function fetch(result) {
-    console.log("******************************************");
-    console.log("Fetching Columns.");
-    console.log("******************************************");
+async function cs_fetch(result) {
+    log("******************************************");
+    log("Fetching Columns.");
+    log("******************************************");
     for(let i = 0; i < result.Descriptions().length; i++) {
         var cd = result.Descriptions()[i];
-        console.log(cd.name);
+        log(cd.name + " " + cd.typeName);
     }
-    console.log("******************************************");
-    console.log("Fetching Results.");
-    console.log("******************************************");
+    log("******************************************");
+    log("Fetching Results.");
+    log("******************************************");
 
     for await (let record of result.Records().asyncIterator()) {
         let line="";
         for(let i = 0; i < record.length; i++) {
             line += record[i].getValueAsString()+"\t";
         }
-        console.log(line);
+        log(line);
     }
-    console.log("All fetched!");
+    log("All fetched!");
 }
