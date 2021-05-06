@@ -18,15 +18,15 @@
             {
                 "Name": "agg1_id",
                 "UniqueName": "agg1_id",
-                "NameExternal" : "index (NameExternal)",
-                "Description": "index (Description)",
+                "NameExternal" : "index (N.E.)",
+                "Description": "index (D.)",
                 "DimensionType": 3,
                 "KeyAttribute": "index",
                 "Attributes": [
                     {
                         "Name": "agg1_id",
-                        "NameExternal" : "index att. (NameExternal)",
-                        "Description": "index att. (Description)",
+                        "NameExternal" : "index att. (N.E.)",
+                        "Description": "index att. (D.)",
                         "AliasName": "ID",
                         "DimensionName": "agg1_id",
                         "HasDescriptions": true,
@@ -117,15 +117,15 @@
             {
                 "Name": "Yr",
                 "UniqueName": "Yr",
-                "NameExternal" : "Year (NameExternal)",
-                "Description": "Year (Description)",
+                "NameExternal" : "Year (N.E.)",
+                "Description": "Year (D.)",
                 "DimensionType": 3,
                 "KeyAttribute": "Yr",
                 "Attributes": [
                     {
                         "Name": "Yr",
-                        "NameExternal" : "Year att. (NameExternal)",
-                        "Description": "Year att. (Description)",
+                        "NameExternal" : "Year att. (N.E.)",
+                        "Description": "Year att. (D.)",
                         "AliasName": "ID",
                         "DimensionName": "Yr",
                         "HasDescriptions": true,
@@ -216,15 +216,15 @@
             {
                 "Name": "Qtr",
                 "UniqueName": "Qtr",
-                "NameExternal" : "Quarter (NameExternal)",
-                "Description": "Quarter (Description)",
+                "NameExternal" : "Quarter (N.E.)",
+                "Description": "Quarter (D.)",
                 "DimensionType": 3,
                 "KeyAttribute": "Qtr",
                 "Attributes": [
                     {
                         "Name": "Qtr",
-                        "NameExternal" : "Quarter att. (NameExternal)",
-                        "Description": "Quarter att. (Description)",
+                        "NameExternal" : "Quarter att. (N.E.)",
+                        "Description": "Quarter att. (D.)",
                         "AliasName": "ID",
                         "DimensionName": "Qtr",
                         "HasDescriptions": true,
@@ -315,15 +315,15 @@
             {
                 "Name": "Month_name",
                 "UniqueName": "Month_name",
-                "NameExternal" : "Month name (NameExternal)",
-                "Description": "Month name (Description)",
+                "NameExternal" : "Month name (N.E.)",
+                "Description": "Month name (D.)",
                 "DimensionType": 3,
                 "KeyAttribute": "Month_name",
                 "Attributes": [
                     {
                         "Name": "Month_name",
-                        "NameExternal" : "Month name att. (NameExternal)",
-                        "Description": "Month name att. (Description)",
+                        "NameExternal" : "Month name att. (N.E.)",
+                        "Description": "Month name att. (D.)",
                         "AliasName": "ID",
                         "DimensionName": "Month_name",
                         "HasDescriptions": true,
@@ -414,15 +414,15 @@
             {
                 "Name": "Mth",
                 "UniqueName": "Mth",
-                "NameExternal" : "Month number (NameExternal)",
-                "Description": "Month number (Description)",
+                "NameExternal" : "Month nb (N.E.)",
+                "Description": "Month nb (D.)",
                 "DimensionType": 3,
                 "KeyAttribute": "Mth",
                 "Attributes": [
                     {
                         "Name": "Mth",
-                        "NameExternal" : "Month number att. (NameExternal)",
-                        "Description": "Month number att. (Description)",
+                        "NameExternal" : "Month nb att. (N.E.)",
+                        "Description": "Month nb att. (D.)",
                         "AliasName": "ID",
                         "Cardinality": 10000,
                         "ColumnType": 0,
@@ -513,15 +513,15 @@
             {
                 "Name": "Wk",
                 "UniqueName": "Wk",
-                "NameExternal" : "Week (NameExternal)",
-                "Description": "Week (Description)",
+                "NameExternal" : "Week (N.E.)",
+                "Description": "Week (D.)",
                 "DimensionType": 3,
                 "KeyAttribute": "Wk",
                 "Attributes": [
                     {
                         "Name": "Wk",
-                        "NameExternal" : "Week att. (NameExternal)",
-                        "Description": "Week att. (Description)",
+                        "NameExternal" : "Week att. (N.E.)",
+                        "Description": "Week att. (D.)",
                         "AliasName": "ID",
                         "Cardinality": 10000,
                         "ColumnType": 0,
@@ -612,15 +612,15 @@
             {
                 "Name": "City",
                 "UniqueName": "City",
-                "NameExternal" : "City mame (NameExternal)",
-                "Description": "City mame (Description)",
+                "NameExternal" : "City mame (N.E.)",
+                "Description": "City mame (D.)",
                 "DimensionType": 3,
                 "KeyAttribute": "City",
                 "Attributes": [
                     {
                         "Name": "City",
-                        "NameExternal" : "City name att. (NameExternal)",
-                        "Description": "City name att. (Description)",
+                        "NameExternal" : "City name att. (N.E.)",
+                        "Description": "City name att. (D.)",
                         "AliasName": "ID",
                         "Cardinality": 10000,
                         "ColumnType": 0,
@@ -711,16 +711,16 @@
             {
                 "Name": "CustomDimension1",
                 "UniqueName": "CustomDimension1",
-                "NameExternal" : "Measures (NameExternal)",
-                "Description": "Measures (Description)",
+                "NameExternal" : "Measures (N.E.)",
+                "Description": "Measures (D.)",
                 "DimensionType": 2,
                 "KeyAttribute": "[Measures].[Measures]",
                 "TextAttribute": "[Measures].[Name]",
                 "Attributes": [
                     {
                         "Name": "[Measures].[Measures]",
-                        "NameExternal" : "[Measures].[Measures] att. (NameExternal)",
-                        "Description": "[Measures].[Measures] att. (Description)",
+                        "NameExternal" : "[Measures].[Measures] att. (N.E.)",
+                        "Description": "[Measures].[Measures] att. (D.)",
                         "AliasName": "[Measures].[Measures]",
                         "DimensionName": "CustomDimension1",
                         "HasDescriptions": false,
@@ -767,8 +767,8 @@
                     },
                     {
                         "Name": "[Measures].[Name]",
-                        "NameExternal" : "[Measures].[Name] att. (NameExternal)",
-                        "Description": "[Measures].[Name] att. (Description)",
+                        "NameExternal" : "[Measures].[Name] att. (N.E.)",
+                        "Description": "[Measures].[Name] att. (D.)",
                         "AliasName": "[Measures].[Name]",
                         "DimensionName": "CustomDimension1",
                         "HasDescriptions": true,
@@ -815,7 +815,7 @@
                     },
                     {
                         "Name": "[Measures].[Description]",
-                        "Description": "[Measures].[Description] att. (Description)",
+                        "Description": "[Measures].[Description] att. (D.)",
                         "AliasName": "[Measures].[Description]",
                         "DimensionName": "CustomDimension1",
                         "DescriptionColumn": "Description",
