@@ -501,26 +501,6 @@ std::pair<size_t, size_t> ina::grid::writeCells(const ina::query_model::Query& q
 				}
 			}
 		}
-		// TODO: Strange need some Markus explaination, without that chart didn't works in his tools 
-		writer.key("QueryDataCellReferences");
-		{
-			JSON_MAP(writer);
-			writer.pair("Encoding", "None");
-			writer.key("Values");
-			{
-				JSON_LIST(writer);	
-				for(size_t colIndex = 0; colIndex < cube.getBody().getColNbrs(); colIndex++)
-				{
-					for(size_t rowIndex = 0; rowIndex < cube.getBody().getRowNbrs(); rowIndex++)
-					{
-						for(const auto& dim : cube.getBody())
-						{
-							writer.value("1");
-						}
-					}
-				}
-			}
-		}
 		writer.key("CellValueTypes");
 		{
 			JSON_MAP(writer);
