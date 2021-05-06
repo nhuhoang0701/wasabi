@@ -325,7 +325,7 @@ void ina::grid::writeDimensions(const ina::query_model::Query& query, JSONWriter
 					{
 						JSON_LIST(writer);
 						for(const auto& member : query.getDefinition().getVisibleMembers(*dim))
-							writer.value(member.getName() + " (val. [].[Name])");
+							writer.value(member.getName() + " (val.[M][N])");
 					}
 				}
 				{
@@ -442,10 +442,10 @@ std::pair<size_t, size_t> ina::grid::writeCells(const ina::query_model::Query& q
 				{
 					for(size_t rowIndex = 0; rowIndex < cube.getBody().getRowNbrs(); rowIndex++)
 					{
-						for(const auto& dim : cube.getBody())
+						for(const auto& measure : cube.getBody())
 						{
-							const auto& data = cube.getBody().getValue(dim.getName(), colIndex, rowIndex);
-							switch (cube.getBody().getValueDatatype(dim.getName()))
+							const auto& data = cube.getBody().getValue(measure.getName(), colIndex, rowIndex);
+							switch (cube.getBody().getValueDatatype(measure.getName()))
 							{
 							case calculator::eDataType::String:
 							{
@@ -528,9 +528,9 @@ std::pair<size_t, size_t> ina::grid::writeCells(const ina::query_model::Query& q
 			writer.key("Values");
 			{
 				JSON_LIST(writer);	
-				for(size_t colIndex = 0; colIndex < cube.getBody().getColNbrs(); colIndex++)
+				for(size_t rowIndex = 0; rowIndex < cube.getBody().getRowNbrs(); rowIndex++)
 				{
-					for(size_t rowIndex = 0; rowIndex < cube.getBody().getRowNbrs(); rowIndex++)
+					for(size_t colIndex = 0; colIndex < cube.getBody().getColNbrs(); colIndex++)
 					{
 						for(const auto& measName : cube.getBody())
 						{
