@@ -166,6 +166,10 @@ namespace calculator
 			else
 				value = "##NULL##";
 		}
+		else if(indexes.size() == 1)
+		{
+			value = columnData.getValueAtRowIdx(indexes.at(0));
+		}
 		else if(indexes.size() > 1 )
 		{
 			std::cerr << "WASABI: ERROR: Local agregation, NYI hardcoded to sum" << std::endl;
@@ -183,12 +187,13 @@ namespace calculator
 				value = "#MULTIVALUE";
 			}
 		}
-		else
-			value = columnData.getValueAtRowIdx(indexes.at(0));
 	}
 
 	void Body::materialyze()
 	{
+		//std::cout << "*****************************************\n";
+		//std::cout << "materialyze: \n";
+
 		m_Body.resize(size());
 		size_t measIdx = 0;
 		for(auto& values : m_Body)
@@ -225,7 +230,7 @@ namespace calculator
 					for(auto& rowValues : values)
 					{
 						rowValues.resize(getColNbrs());
-						std::vector<size_t> rowIdxs = m_axeRow.getParentIndexes(row++);
+						std::vector<size_t> rowIdxs = m_axeRow.getParentIndexes(row);
 
 						// Full aggreagtion on col axis
 						if(m_axeCol.getCardinality() == 0)
@@ -240,7 +245,7 @@ namespace calculator
 							for(auto& value : rowValues)
 							{
 								std::vector<size_t> indexes;
-								const std::vector<size_t>& colParentIdxs = m_axeCol.getParentIndexes(col++);
+								const std::vector<size_t>& colParentIdxs = m_axeCol.getParentIndexes(col);
 								{
 									std::vector<size_t> colIdxs = colParentIdxs;
 									std::sort (colIdxs.begin(),colIdxs.end());
@@ -249,10 +254,26 @@ namespace calculator
 									std::vector<size_t>::iterator it=std::set_intersection (rowIdxs.begin(), rowIdxs.end(), colIdxs.begin(), colIdxs.end(), indexes.begin());
 									indexes.resize(it-indexes.begin());
 								}
+								//std::cout << "[" << row << "]" << "[" << col << "] :" ;
+								//std::cout << " rows(";
+								//std::for_each(rowIdxs.cbegin(), rowIdxs.cend(), [] (const size_t c) {std::cout << c << ",";} );
+								//std::cout << ") cols(";
+								//std::for_each(colParentIdxs.cbegin(), colParentIdxs.cend(), [] (const size_t c) {std::cout << c << ",";} );
+								//std::cout << ") indexes(";
+								//std::for_each(indexes.cbegin(), indexes.cend(), [] (const size_t c) {std::cout << c << ",";} );
+								//std::cout << ")" <<  std::endl;
 
 								agg(value, columnData, indexes);
+								/*
+								if(columnData.getDataType() == eDataType::Number)
+									std::cout << "value:" << std::get<double>(values[row][col]) <<  std::endl;
+								else
+									std::cout << "value:" << std::get<std::string>(values[row][col]) <<  std::endl;
+								*/
+								col++;
 							}
 						}
+						row++;
 					}
 				}
 			}
