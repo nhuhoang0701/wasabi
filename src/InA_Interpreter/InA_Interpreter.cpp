@@ -438,9 +438,9 @@ std::pair<size_t, size_t> ina::grid::writeCells(const ina::query_model::Query& q
 			writer.key("Values");
 			{
 				JSON_LIST(writer);	
-				for(size_t colIndex = 0; colIndex < cube.getBody().getColNbrs(); colIndex++)
+				for(size_t rowIndex = 0; rowIndex < cube.getBody().getRowNbrs(); rowIndex++)
 				{
-					for(size_t rowIndex = 0; rowIndex < cube.getBody().getRowNbrs(); rowIndex++)
+					for(size_t colIndex = 0; colIndex < cube.getBody().getColNbrs(); colIndex++)
 					{
 						for(const auto& measure : cube.getBody())
 						{
@@ -474,9 +474,9 @@ std::pair<size_t, size_t> ina::grid::writeCells(const ina::query_model::Query& q
 			writer.key("Values");
 			{
 				JSON_LIST(writer);	
-				for(size_t colIndex = 0; colIndex < cube.getBody().getColNbrs(); colIndex++)
+				for(size_t rowIndex = 0; rowIndex < cube.getBody().getRowNbrs(); rowIndex++)
 				{
-					for(size_t rowIndex = 0; rowIndex < cube.getBody().getRowNbrs(); rowIndex++)
+					for(size_t colIndex = 0; colIndex < cube.getBody().getColNbrs(); colIndex++)
 					{
 						for(const auto& dim : cube.getBody())
 						{
