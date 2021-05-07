@@ -13,6 +13,7 @@ echo "start at $(date +"%T")"
 	echo ------------- cmake ---------------
 	$CMAKE -B ./$WASABI_BUILD_DIR_NAME \
 		-G Ninja -DCMAKE_MAKE_PROGRAM=$NINJA \
+		-DCMAKE_BUILD_TYPE=Release \
 		-DCMAKE_TOOLCHAIN_FILE=$WASABI_ROOT_DIR/scripts/cmake/wasabi.cmake \
 		-DCMAKE_C_FLAGS=-fno-stack-protector \
 		\
