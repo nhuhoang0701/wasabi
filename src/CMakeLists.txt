@@ -16,6 +16,8 @@ add_subdirectory(dbproxy)
 add_subdirectory(InA_query_model)
 add_subdirectory(query_generator)
 add_subdirectory(calculator)
+
+add_subdirectory(InA_metadata)
 add_subdirectory(InA_grid)
 
 add_subdirectory(metadata_enrichment)
