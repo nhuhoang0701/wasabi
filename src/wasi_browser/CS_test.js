@@ -11,7 +11,7 @@ function cs_log(msg) {
             return '<br>' + '&nbsp;'.repeat(p1.length);
         });
     }
-    console.cs_log(msg);
+    console.log(msg);
 }
 
 function _startCSTest() {
@@ -39,6 +39,7 @@ function cs_createJob(cs){
     cs_log("******************************************");
     cs_log("Creating Job.");
     cs_log("******************************************");
+
     return new Promise((resolve, reject) => {
         cs.JobProfile(networkLayer, dbEngine).then((jd) => {
             jd.Properties().then((jps) => {
