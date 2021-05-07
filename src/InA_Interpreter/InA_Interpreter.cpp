@@ -101,9 +101,67 @@ const char* json_getResponse_json(const char* InA)
 	return static_str.c_str();
 }
 
-void writeDimension()
+void writeDimensions(JSONWriter& writer)
 {
+	writer.key("Dimensions");
+	JSON_LIST(writer);
 	
+}
+
+void writeQuery(JSONWriter &writer)
+{
+	writer.key("Query");
+	{
+		JSON_MAP(writer);
+		writer.key("ResultStructureFeature");
+		{
+			JSON_MAP(writer);
+			writer.pair("ConditionalTotals", false);
+			writer.pair("ConditionalVisibility", false);
+			writer.pair("Enabled", true);
+			writer.key("ResultAlignment");
+			{
+				JSON_MAP(writer);
+				writer.pair("ConfigLevel", "Dimension");
+				writer.key("ResultAlignmentList");
+				{
+					JSON_LIST(writer);
+					writer.value("Top");
+					writer.value("Bottom");
+					writer.value("TopBottom");
+				}
+			}
+			writer.key("ReturnedDataSelection");
+			{
+				JSON_MAP(writer);
+				writer.pair("Actions", false);
+				writer.pair("CellDataType", false);
+				writer.pair("CellFormat", false);
+				writer.pair("CellMeasure", false);
+				writer.pair("CellValueTypes", true);
+				writer.pair("ExceptionAlertLevel", false);
+				writer.pair("ExceptionName", false);
+				writer.pair("ExceptionSettings", false);
+				writer.pair("Exceptions", false);
+				writer.pair("InputEnabled", false);
+				writer.pair("NumericRounding", false);
+				writer.pair("NumericShift", false);
+				writer.pair("TupleDisplayLevel", false);
+				writer.pair("TupleDrillState", false);
+				writer.pair("TupleElementIds", false);
+				writer.pair("TupleElementIndexes", false);
+				writer.pair("TupleLevel", false);
+				writer.pair("TupleParentIndexes", false);
+				writer.pair("UnitDescriptions", false);
+				writer.pair("UnitTypes", false);
+				writer.pair("Units", false);
+				writer.pair("Values", true);
+				writer.pair("ValuesFormatted", true);
+				writer.pair("ValuesRounded", false);
+			}
+		}
+	}
+
 }
 
 const char* ina::grid::writeCube(const ina::query_model::Query& query, JSONWriter& writer)
@@ -155,9 +213,37 @@ const char* ina::grid::writeCube(const ina::query_model::Query& query, JSONWrite
 				writer.pair("CreatedBy", "");
 				writer.pair("CreatedOn", "");
 				write(query.getDataSource(), writer);
+				writeDimensions(writer);
+				writer.key("ExtendedSortTypes");
 				{
-					writer.key("Dimensions");
 					JSON_LIST(writer);
+					writer.value("MemberKey");
+					writer.value("MemberText");
+					writer.value("Field");
+					writer.value("Measure");
+					writer.value("Complex");
+					writer.value("Datacell");
+				}
+				writer.pair("InputEnabled", false);
+				writer.pair("InstanceId", "");
+				writer.pair("IsSystem", false);
+				writer.pair("LastDataUpdateBy", "ghislain.hude@sap.com");
+				writer.pair("LastDataUpdateOn", "2021-05-07 22:22:22.022");
+				writer.pair("LevelOfDetails", 1u);
+				writer.pair("ObjectName", "eFashion-Simple2.unx");
+				writer.pair("PackageName", "Universes/InA Provider/Test Resources/AggregationTest");
+				writer.pair("SchemaName", "");
+				writeQuery(writer);
+				writer.key("Variables");{JSON_LIST(writer);}
+				writer.key("SortTypesBreakGrouping");
+				{
+					JSON_LIST(writer);
+					writer.value("MemberKey");
+					writer.value("MemberText");
+					writer.value("Field");
+					writer.value("Measure");
+					writer.value("Complex");
+					writer.value("Datacell");
 				}
 			}
 		}
