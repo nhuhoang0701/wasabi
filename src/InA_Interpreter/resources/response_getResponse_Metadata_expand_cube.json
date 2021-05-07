@@ -1,5 +1,6 @@
 {
     "Cube": {
+        "Description": "Cube answer of 'Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma' from 'local:sqlite:efashion'",
         "CatalogPackage": "Universes/InA Provider/Test Resources/AggregationTest",
         "CatalogSchema": "",
         "CatalogType": "OLAP",
@@ -13,7 +14,6 @@
             "PackageName": "local:sqlite:efashion",
             "Type": "Universe"
         },
-        "Description": "Cube answer of 'Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma' from 'local:sqlite:efashion'",
         "Dimensions": [
             {
                 "Name": "agg1_id",
