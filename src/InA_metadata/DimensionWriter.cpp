@@ -31,7 +31,7 @@ namespace ina::metadata
 			writer.value("Rows");
 			writer.value("Columns");
 		}
-		writer.pair("AxisDefault", dim.getAxisDefault());
+		//writer.pair("AxisDefault", dim.getAxisDefault());
 
 		writer.pair("Cardinality", dim.getCardinality());
 		writer.key("DefaultResultStructure");
