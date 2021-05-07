@@ -211,6 +211,7 @@ let WASI_API = {
 	// process
 	proc_exit: function(rval) {
 		log(Array.prototype.slice.call(arguments));
+		error("function proce_exit not yet implemented");
 		return WASI_ENOSYS;
 	},
 	
@@ -256,11 +257,13 @@ let WASI_API = {
 	path_filestat_get: function(fd, flags, path_ptr, path_len, buf) {
 		log(Array.prototype.slice.call(arguments));
 		log("vpath:'" + convertWAsmStr2JSStr(path_ptr, moduleInstanceExports.memory) +"'");
+		error("function path_filestat_get not yet implemented");
 		return WASI_ENOSYS;
 	},
 	path_unlink_file: function(fd, path_ptr, path_len) {
 		log(Array.prototype.slice.call(arguments));
 		log("vpath:'" + convertWAsmStr2JSStr(path_ptr, moduleInstanceExports.memory) +"'");
+		error("function path_unlink_file not yet implemented");
 		return WASI_ENOSYS;
 	},
 	
@@ -268,6 +271,7 @@ let WASI_API = {
 	// async stuff
 	poll_oneoff: function(in_, out, nsubscriptions, nevents) {
 		log(Array.prototype.slice.call(arguments));
+		error("function poll_oneoff not yet implemented");
 		return WASI_ENOSYS;
 	},
 	
@@ -276,6 +280,7 @@ let WASI_API = {
 	// file descriptor
 	fd_sync: function(fd) {
 		log(Array.prototype.slice.call(arguments));
+		error("function ifd_sync not yet implemented");
 		return WASI_ENOSYS;
 	},
 	fd_seek: function(fd, offset, whence, newoffset_ptr) {
@@ -351,7 +356,7 @@ let WASI_API = {
 		if (fd === WASI_STDOUT_FILENO) wasabi_log(String.fromCharCode.apply(null, bufferBytes));    
 		else if (fd === WASI_STDERR_FILENO) wasabi_error(String.fromCharCode.apply(null, bufferBytes));    
 		else {
-			error("fd_write NYI");
+			error("function fd_write Not Yet Implemented");
 			return WASI_ENOSYS;
 		}
 
