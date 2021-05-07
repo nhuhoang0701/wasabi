@@ -14,7 +14,7 @@ project(InA_Interpreter VERSION 1.0 LANGUAGES CXX)
 # InA_Interpreter as library
 add_library(InA_Interpreter_lib InA_Interpreter.cpp)
 target_include_directories(InA_Interpreter_lib PUBLIC ${WASABI_INCLUDES} ${PROJECT_SOURCE_DIR}/include)
-target_link_libraries(InA_Interpreter_lib PUBLIC cjson json exceptions InA_query_model query_generator dbproxy metadata_enrichment sqlite calculator)
+target_link_libraries(InA_Interpreter_lib PUBLIC cjson json exceptions InA_query_model InA_grid InA_metadata query_generator dbproxy metadata_enrichment sqlite calculator)
 target_link_directories(InA_Interpreter_lib PUBLIC ${cJSON_LIBRARY_DIRS} ${WASABI_LIBS})
 
 

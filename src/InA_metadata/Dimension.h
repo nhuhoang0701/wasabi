@@ -15,28 +15,26 @@ namespace ina::metadata
 
 	void write(const Dimension& obj, JSONWriter& jsonNode);
 
-	enum class eAxe {Uninit=0, Rows, Columns};
+	enum class eAxe {Uninit=0, Free, Rows, Columns};
 	enum class eDimType {Uninit=0, MeasuresDimension = 2, Dimension = 3};
 
 	class Dimension
 	{
 		public:
-
 			Dimension() = default;
-			Dimension(const std::string & name, eAxe axename);
-
-			eAxe                getAxe() const;
+			Dimension(const std::string& name, const std::string& description, eAxe defaultAxe = eAxe::Free);
 			
 			const std::string&  getName() const;
 			const std::string&  getUniqueName() const;
 			const std::string&  getNameExternal() const;
 			const std::string&  getDescription() const;
 
-			virtual eDimType             getDimensionType() const;
-			virtual bool                 isDimensionGroup() const;
-			virtual bool                 isModeled() const;
-			virtual bool                 canBeAggregated() const;
-			virtual const std::string&   getAxisDefault() const;
+			eAxe     getAxisDefault() const {return _defaultaxe;};
+
+			virtual eDimType             getDimensionType() const {return eDimType::Dimension;};
+			virtual bool                 isDimensionGroup() const {return false;};
+			virtual bool                 isModeled() const {return true;};
+			virtual bool                 canBeAggregated() const {return true;};
 
 			void                          addAttribute(const Attribute &att);
 			const std::vector<Attribute>& getAttributes() const;
@@ -44,14 +42,15 @@ namespace ina::metadata
 			bool                          haveTextAttribute() const;
 			const Attribute&              getTextAttribute() const;
 
-			uint32_t                        getCardinality() const;
+			virtual uint32_t              getCardinality() const {return 1000;};
 
 			void                          addMember(const Member & member);
 			const std::vector<Member>&    getMembers() const;
 
-		private:
+		protected:
 			std::string _name; 
-			eAxe        _axe = eAxe::Uninit;
+			std::string _description; 
+			eAxe        _defaultaxe = eAxe::Free;
 
 			std::vector<Member>     _members;
 			std::vector<Attribute>  _attributes;
@@ -65,12 +64,13 @@ namespace ina::metadata
 	{
 		public:
 			DimensionMeasures() = default;
-			DimensionMeasures(const std::string & name, eAxe axename);
+			DimensionMeasures(const std::string& name, const std::string& description, eAxe defaultAxe = eAxe::Free);
 
-			virtual eDimType             getDimensionType() const;
-			virtual bool                 isDimensionGroup() const;
-			virtual bool                 isModeled() const;
-			virtual bool                 canBeAggregated() const;
-			virtual const std::string&   getAxisDefault() const;
+			virtual uint32_t              getCardinality() const {return 0;};
+
+			virtual eDimType             getDimensionType() const {return eDimType::MeasuresDimension;};
+			virtual bool                 isDimensionGroup() const {return true;};
+			//virtual bool                 isModeled() const;
+			virtual bool                 canBeAggregated() const {return false;};
 	};
 }
