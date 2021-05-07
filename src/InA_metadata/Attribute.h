@@ -7,18 +7,18 @@ class JSONWriter;        // From <json/jsonWriter.h>
 namespace ina::metadata
 {
 	class Dimension;
-	class Attribut;
+	class Attribute;
 
-	void write(const Attribut& obj, JSONWriter& jsonNode);
+	void write(const Attribute& obj, JSONWriter& jsonNode);
 
 	enum class eDatatype {Uninit=-1, String = 2, Number = 3};
 	enum class ColumnType {Uninit=-1};
 
-	class Attribut
+	class Attribute
 	{
 		public:
 
-			Attribut(const Dimension& dimension);
+			Attribute(const Dimension& dimension);
 			
 			const std::string&  getName() const;
 			const std::string&  getUniqueName() const;
@@ -36,6 +36,6 @@ namespace ina::metadata
 		private:
 			std::string _name; 
 
-			friend void write(const Attribut& obj, JSONWriter& jsonNode);
+			friend void write(const Attribute& obj, JSONWriter& jsonNode);
 	};
 }
