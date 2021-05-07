@@ -33,7 +33,7 @@ namespace ina::metadata
 			const std::string&  getDescription() const;
 
 			virtual eDimType             getDimensionType() const;
-			virtual bool                 isDimensionGroup();
+			virtual bool                 isDimensionGroup() const;
 			virtual bool                 isModeled() const;
 			virtual bool                 canBeAggregated() const;
 			virtual const std::string&   getAxisDefault() const;
@@ -44,7 +44,7 @@ namespace ina::metadata
 			bool                          haveTextAttribute() const;
 			const Attribute&              getTextAttribute() const;
 
-			size_t                        getCardinality() const;
+			uint32_t                        getCardinality() const;
 
 			void                          addMember(const Member & member);
 			const std::vector<Member>&    getMembers() const;
@@ -65,10 +65,10 @@ namespace ina::metadata
 	{
 		public:
 			DimensionMeasures() = default;
-			DimensionMeasures(const std::string & name, eAxe axename) = default;
+			DimensionMeasures(const std::string & name, eAxe axename);
 
 			virtual eDimType             getDimensionType() const;
-			virtual bool                 isDimensionGroup();
+			virtual bool                 isDimensionGroup() const;
 			virtual bool                 isModeled() const;
 			virtual bool                 canBeAggregated() const;
 			virtual const std::string&   getAxisDefault() const;
