@@ -60,7 +60,13 @@ const char* json_getResponse_json(const char* InA)
 		JSON_MAP(writer);
 		if(queries.empty() == false)
 		{
-			write(queries[0]->getDataSource(), writer);
+			bool haveAnal = false;
+			for(const auto& query : queries)
+				if(query->getType() == ina::query_model::Query::qAnalytics)
+					haveAnal = true;
+			if(haveAnal == true)
+				write(queries[0]->getDataSource(), writer);
+
 			{
 				for(const auto& query : queries)
 				{
