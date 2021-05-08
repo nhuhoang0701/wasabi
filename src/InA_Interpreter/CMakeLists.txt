@@ -46,7 +46,6 @@ add_test(NAME InA_Interpreter_test COMMAND InA_Interpreter_test --dir=./  WORKIN
 install(TARGETS InA_Interpreter DESTINATION .)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/resources/response_getSerververInfo.json DESTINATION ./resources/)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/resources/response_getResponse_Metadata_expand_cube_catalog.json DESTINATION ./resources/)
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/resources/response_getResponse_Metadata_expand_cube.json DESTINATION ./resources/)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
 
