@@ -17,9 +17,6 @@ namespace ina::metadata
 
 	void writeDimensions(JSONWriter& writer)
 	{
-		writer.key("Dimensions");
-		JSON_LIST(writer);
-
 		Dimension dimIdx("agg1_id", "index");
 		Dimension dimYear("Yr", "Year", eAxe::Rows);
 		Dimension dimQuarter("Qtr", "Quarter");
@@ -29,9 +26,17 @@ namespace ina::metadata
 		Dimension dimMonthCityName("City", "City name");
 		DimensionMeasures dimCustomDimension1("CustomDimension1", "Measures", eAxe::Columns);
 
+		writer.key("Dimensions");
 		{
 			JSON_LIST(writer);
-			//write(dimIdx, writer);
+			write(dimIdx, writer);
+			write(dimYear, writer);
+			write(dimQuarter, writer);
+			write(dimMonthName, writer);
+			write(dimMonthNb, writer);
+			write(dimMonthWeek, writer);
+			write(dimMonthCityName, writer);
+			write(dimCustomDimension1, writer);
 		}
 	}
 
@@ -93,7 +98,6 @@ namespace ina::metadata
 
 	void write(const Cube& cube, JSONWriter& writer)
 	{				
-		JSON_MAP(writer);
 		writer.key("Cube");
 		{
 			JSON_MAP(writer);
