@@ -1,9 +1,23 @@
 #include "Dimension.h"
 #include "InA_metadata/Member.h"
+#include <stdexcept>
 
 
 namespace ina::metadata
 {
+    std::string toString(eAxe axe)
+    {
+        switch (axe)
+        {
+        case eAxe::Uninit : throw std::runtime_error("eAxe value not init.");
+        case eAxe::Free : return "Free";
+        case eAxe::Rows :return "Rows";
+        case eAxe::Columns : return "Columns";
+        default:
+            throw std::runtime_error("eAxe unknow value");
+        }
+    }
+
     Dimension::Dimension(const std::string& name, const std::string& description, eAxe defaultAxe)
         : _name(name), _description(description), _defaultaxe(defaultAxe)
     {
@@ -24,14 +38,14 @@ namespace ina::metadata
         return _name;
     }
 
-    const std::string&  Dimension::getNameExternal() const
+    const std::string  Dimension::getNameExternal() const
     {
-        return _description;
+        return _description + " (N.E.)";
     }
 
-    const std::string&  Dimension::getDescription() const
+    const std::string  Dimension::getDescription() const
     {
-        return _description;
+        return _description +" (D.)";
     }
 
     const std::vector<Attribute>& Dimension::getAttributes() const
@@ -41,7 +55,17 @@ namespace ina::metadata
 
     const Attribute& Dimension::getKeyAttribute() const
     {
-        return _attributes[_keyAttributes];
+        return _attributes.at(_keyAttributes);
+    }
+
+    const Attribute& Dimension::getTextAttribute() const
+    {
+        return _attributes.at(_textAttributes);
+    }
+
+    bool Dimension::haveTextAttribute() const
+    {
+        return _textAttributes >= 0;
     }
 
     const std::vector<Member>& Dimension::getMembers() const

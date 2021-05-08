@@ -16,6 +16,7 @@ namespace ina::metadata
 	void write(const Dimension& obj, JSONWriter& jsonNode);
 
 	enum class eAxe {Uninit=0, Free, Rows, Columns};
+	std::string toString(eAxe);
 	enum class eDimType {Uninit=0, MeasuresDimension = 2, Dimension = 3};
 
 	class Dimension
@@ -26,8 +27,8 @@ namespace ina::metadata
 			
 			const std::string&  getName() const;
 			const std::string&  getUniqueName() const;
-			const std::string&  getNameExternal() const;
-			const std::string&  getDescription() const;
+			const std::string   getNameExternal() const;
+			const std::string   getDescription() const;
 
 			eAxe     getAxisDefault() const {return _defaultaxe;};
 
@@ -42,7 +43,7 @@ namespace ina::metadata
 			bool                          haveTextAttribute() const;
 			const Attribute&              getTextAttribute() const;
 
-			virtual uint32_t              getCardinality() const {return 1000;};
+			virtual uint32_t              getCardinality() const {return 10000;};
 
 			void                          addMember(const Member & member);
 			const std::vector<Member>&    getMembers() const;
@@ -66,7 +67,7 @@ namespace ina::metadata
 			DimensionMeasures() = default;
 			DimensionMeasures(const std::string& name, const std::string& description, eAxe defaultAxe = eAxe::Free);
 
-			virtual uint32_t              getCardinality() const {return 0;};
+			virtual uint32_t              getCardinality() const {return _members.size();};
 
 			virtual eDimType             getDimensionType() const {return eDimType::MeasuresDimension;};
 			virtual bool                 isDimensionGroup() const {return true;};
