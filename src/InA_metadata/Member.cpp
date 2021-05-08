@@ -7,6 +7,7 @@ namespace ina::metadata
 			const std::pair<std::string, std::string>& uniqueName, 
 			const std::pair<std::string, std::string>& name, 
 			const std::pair<std::string, std::string>& description)
+            : m_uniquename(uniqueName), m_name(name), m_description(description)
     {
     }
 

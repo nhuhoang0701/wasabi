@@ -7,29 +7,26 @@
 
 namespace ina::metadata
 {
-	static void writeDefaultExcludingOperators(JSONWriter &writer, const Attribute& att);
-	static void writeDefaultIncludingOperators(JSONWriter &writer, const Attribute& att);
+	void writeDefaultExcludingOperators(JSONWriter &writer, const Attribute& att);
+	void writeDefaultIncludingOperators(JSONWriter &writer, const Attribute& att);
 
 	void write(const Attribute& att, JSONWriter& writer)
 	{
 		const Dimension& dim = att.getDimension();
 
-		//const std::string& dataType = att.getDataTypeAsString();
-		//const uint32_t dataTypeAsInt = att.getDataTypeAsInt();
-		//const uint32_t dataTypeSQL = att.getDataTypeAsInt();
-
-
 		JSON_MAP(writer);
 		writer.pair("Name", att.getName());
 		writer.pair("Description", att.getDescription());
+		writer.pair("NameExternal", att.getNameExternal());
 		writer.pair("AliasName", att.getAlias());
 		writer.pair("DimensionName", dim.getName());
 		writer.pair("HasDescriptions", true);
 		writer.pair("DescriptionColumn", att.getDescription());
 		writer.pair("Cardinality", att.getCardinality());
 		writer.pair("ColumnType", static_cast<std::uint32_t>(att.getColumnType()));
-		//writer.pair("DataType", dataType);
-		//writer.pair("DataTypeAsInt", dataTypeAsInt);
+		writer.pair("DataType", toString(att.getDatatype()));
+		writer.pair("DataTypeAsInt", static_cast<std::uint32_t>(att.getDatatype()));
+		writer.pair("SQLType", att.getSQLDataType());
 
 
 		writer.pair("Digits", 0u);
@@ -49,19 +46,12 @@ namespace ina::metadata
 		writer.pair("IsDisplayAttribute", att.isDisplayed());
 		writer.pair("IsFilterable", att.isFilterable());
 		writer.pair("IsFreestyle", false);
-		writer.pair("IsKey", att.isFlatKey());
+		writer.pair("IsKey", att.isKey());
+		writer.pair("PresentationType", att.getPresentationType());
 		writer.pair("IsMeasure", false);
 		writer.pair("IsNotNull", att.isNotNull());
 		writer.pair("IsVirtual", false);
 		writer.pair("Level", 0u);
-
-		//writer.pair("PresentationType", model::toString(att.getPresentationType()));
-
-		//if (isMeasure)
-		//	writer.pair("SQLType", att.getColumnType() == eColumnType::NumericMeasure ? "INTEGER" : "VARCHAR");
-
-		//if (!isMeasure)
-		//	writer.pair("UpperBound", "");// no present for measure
 	}
 
 	void writeDefaultExcludingOperators(JSONWriter& writer, const Attribute& att)
@@ -82,6 +72,32 @@ namespace ina::metadata
 				if (dim.getDimensionType() != eDimType::MeasuresDimension)
 				{
 					writer.value("BETWEEN");
+					writer.value("NOT_BETWEEN");
+					writer.value("LIKE");
+					writer.value("MATCH");
+				}
+			}
+		}
+	}
+
+	void writeDefaultIncludingOperators(JSONWriter& writer, const Attribute& att)
+	{
+		const bool isFilterable = att.isFilterable();
+		const Dimension& dim = att.getDimension();
+		writer.key("Including");
+		{
+			JSON_LIST(writer);
+			if (isFilterable)
+			{
+				writer.value("=");
+				writer.value(">");
+				writer.value("<");
+				writer.value(">=");
+				writer.value("<=");
+				writer.value("<>");
+				writer.value("BETWEEN");
+				if (dim.getDimensionType() != eDimType::MeasuresDimension)
+				{
 					writer.value("NOT_BETWEEN");
 					writer.value("LIKE");
 					writer.value("MATCH");
