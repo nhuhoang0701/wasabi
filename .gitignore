@@ -4,6 +4,7 @@
 
 ##############################################
 # wasabi
+*.flag
 /external/*
 !external/sqlite/
 !external/llvm-*.tar.gz
