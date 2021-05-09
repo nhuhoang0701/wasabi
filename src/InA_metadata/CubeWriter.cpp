@@ -6,41 +6,22 @@
 #include <InA_query_model/DataSource.h>
 
 #include <json/jsonWriter.h>
+#include <stdexcept>
+#include <vector>
 
 namespace ina::metadata
 {
-	Cube::Cube(const ina::query_model::DataSource& datasource)
-	 : m_datasource(datasource)
-	 {
-
-	 }
-
-	void writeDimensions(JSONWriter& writer)
+	void writeDimensions(const Cube& cube, JSONWriter& writer)
 	{
-		Dimension dimIdx("agg1_id", "index");
-		Dimension dimYear("Yr", "Year", eAxe::Rows);
-		Dimension dimQuarter("Qtr", "Quarter");
-		Dimension dimMonthName("Month_name", "Month name");
-		Dimension dimMonthNb("Mth", "Month nb");
-		Dimension dimMonthWeek("Wk", "Week");
-		Dimension dimMonthCityName("City", "City name");
-		DimensionMeasures dimCustomDimension1("CustomDimension1", "Measures", eAxe::Columns);
-
 		writer.key("Dimensions");
 		{
 			JSON_LIST(writer);
-			write(dimIdx, writer);
-			write(dimYear, writer);
-			write(dimQuarter, writer);
-			write(dimMonthName, writer);
-			write(dimMonthNb, writer);
-			write(dimMonthWeek, writer);
-			write(dimMonthCityName, writer);
-			write(dimCustomDimension1, writer);
+			for(const auto& dim : cube.getDimensions())
+				write(*dim, writer);
 		}
 	}
 
-	void writeQuery(JSONWriter &writer)
+	void writeQuery(const Cube& cube, JSONWriter &writer)
 	{
 		writer.key("Query");
 		{
@@ -97,7 +78,7 @@ namespace ina::metadata
 	}
 
 	void write(const Cube& cube, JSONWriter& writer)
-	{				
+	{
 		writer.key("Cube");
 		{
 			JSON_MAP(writer);
@@ -109,7 +90,7 @@ namespace ina::metadata
 			writer.pair("CreatedBy", "");
 			writer.pair("CreatedOn", "");
 			write(cube.m_datasource, writer);
-			writeDimensions(writer);
+			writeDimensions(cube, writer);
 			writer.key("ExtendedSortTypes");
 			{
 				JSON_LIST(writer);
@@ -129,7 +110,7 @@ namespace ina::metadata
 			writer.pair("ObjectName", "eFashion-Simple2.unx");
 			writer.pair("PackageName", "Universes/InA Provider/Test Resources/AggregationTest");
 			writer.pair("SchemaName", "");
-			writeQuery(writer);
+			writeQuery(cube, writer);
 			writer.key("Variables");{JSON_LIST(writer);}
 			writer.key("SortTypesBreakGrouping");
 			{
