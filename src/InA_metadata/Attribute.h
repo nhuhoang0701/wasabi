@@ -21,6 +21,8 @@ namespace ina::metadata
 		public:
 			Attribute() = default;
 			Attribute(const Dimension& dimension, const std::string name, const std::string& description);
+			Attribute(const Attribute& other);
+			Attribute& operator=(const Attribute& other);
 
 			const Dimension& getDimension() const;
 

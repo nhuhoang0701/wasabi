@@ -15,7 +15,6 @@ function initWasmModule(module, ID, action, param){
 	setModuleInstance(module.instance);
 	
 	filesystem = [	"/resources/response_getSerververInfo.json",
-					"/resources/response_getResponse_Metadata_expand_cube_catalog.json",
 					"/resources/sqlite/efashion/efashion.db"];
 	WASI_API.wasabi_initFS(param, filesystem).then(() => 
 	{
@@ -80,20 +79,21 @@ onmessage = function(e) {
 				js : {mem: new WebAssembly.Memory({initial: 2,maximum: 100})}
 			};
 
-			fetch("http://localhost:8080/InA_Interpreter.wasm").then(response =>
+			paramDev = "http://localhost:8080";
+			fetch(paramDev+"/InA_Interpreter.wasm").then(response =>
 					response.arrayBuffer()
 				).then(bytes =>
 					WebAssembly.instantiate(bytes, importObject)
 				).then(module => {
-					console.log("Worker: InA_Interpreter.wasm loaded from localhost:8080");
-					isLoaded = initWasmModule(module, ID, action, "http://localhost:8080");
+					console.log("Worker: InA_Interpreter.wasm loaded from '" + paramDev +"'");
+					isLoaded = initWasmModule(module, ID, action, paramDev);
 				}).catch(error=>{
 					fetch(param+"/InA_Interpreter.wasm").then(response =>
 						response.arrayBuffer()
 					).then(bytes =>
 						WebAssembly.instantiate(bytes, importObject)
 					).then(module => {
-						console.log("Worker: InA_Interpreter.wasm loaded from " + param);
+						console.log("Worker: InA_Interpreter.wasm loaded from '" + param + "'");
 						isLoaded = initWasmModule(module, ID, action, param);
 					}).catch(error=>{
 						throw error;

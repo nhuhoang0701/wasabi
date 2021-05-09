@@ -2,6 +2,8 @@
 
 #include "Dimension.h"
 
+#include <exception>
+
 
 namespace ina::metadata
 {
@@ -16,10 +18,22 @@ namespace ina::metadata
             throw std::runtime_error("eDatatype unknow value");
         }
     }
-
     Attribute::Attribute(const Dimension& dimension, const std::string name, const std::string& description)
         : m_dimension(&dimension),m_name(name), m_description(description)
     {
+    }
+
+	Attribute::Attribute(const Attribute& other)
+    {
+        m_dimension = other.m_dimension;
+        m_name = other.m_name;
+        m_description = other.m_description;
+    }
+	Attribute& Attribute::operator=(const Attribute& other)
+    {
+        m_dimension = other.m_dimension;
+        m_name = other.m_name;
+        m_description = other.m_description;
     }
 
     const Dimension& Attribute::getDimension() const
@@ -33,11 +47,19 @@ namespace ina::metadata
     }
     const std::string  Attribute::getNameExternal() const
     {
-        return m_description + " att. (N.E.)";
+        std::string val = m_description;
+        #ifdef DEBUG
+        val+=" att. (N.E.)";
+        #endif
+        return val;
     }
     const std::string  Attribute::getDescription() const
     {
-        return m_description + " att. (D.)";
+        std::string val = m_description;
+        #ifdef DEBUG
+        val+=" att. (D.)";
+        #endif
+        return val;
     }
 
 
