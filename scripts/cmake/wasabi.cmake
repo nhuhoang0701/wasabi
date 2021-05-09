@@ -56,16 +56,6 @@ else()
 	message(STATUS "Missing 'NINJA' definition")
 endif()
 
-
-if(DEFINED WASABI_NEXUS_EXPORT)
-	message(STATUS "- WASABI_NEXUS_EXPORT='${WASABI_NEXUS_EXPORT}'")
-elseif (DEFINED ENV{WASABI_NEXUS_EXPORT})
-	message(STATUS "- WASABI_NEXUS_EXPORT=ENV'$ENV{WASABI_NEXUS_EXPORT}' instead WASABI_NEXUS_EXPORT='${WASABI_NEXUS_EXPORT}'")
-    set (WASABI_NEXUS_EXPORT "$ENV{WASABI_NEXUS_EXPORT}")
-else()
-	message(STATUS "Missing 'WASABI_NEXUS_EXPORT' definition")
-endif()
-
 ###########################################
 # tools chain / xcompilation
 if ("${WASABI_PLATFORM_TARGET}" STREQUAL "wasm")
@@ -115,8 +105,8 @@ elseif ("${WASABI_PLATFORM_TARGET}" STREQUAL "linux")
 	set(CMAKE_C_COMPILER_RANLIB "${CMAKE_RANLIB}")
 	set(CMAKE_CXX_COMPILER_RANLIB "${CMAKE_RANLIB}")
 	
-	set(CMAKE_CXX_FLAGS           "-stdlib=libc++  -I${LLVM_DIR}/include/c++/v1")
-	set(CMAKE_EXE_LINKER_FLAGS    "-fuse-ld=lld -static-libstdc++ -rtlib=compiler-rt -stdlib=libc++ -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libunwind.a -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libc++abi.a")
+	set(CMAKE_CXX_FLAGS           "-gsplit-dwarf -stdlib=libc++  -I${LLVM_DIR}/include/c++/v1")
+	set(CMAKE_EXE_LINKER_FLAGS    "-gsplit-dwarf -fuse-ld=lld -static-libstdc++ -rtlib=compiler-rt -stdlib=libc++ -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libunwind.a -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libc++abi.a")
 
 	set(CMAKE_CXX_FLAGS           "${CMAKE_CXX_FLAGS} -fsanitize=address")
 	set(CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
@@ -150,7 +140,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 if ("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
 endif ()
-#add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-fwasm-exceptions>)
+add_compile_options("-Werror")
 
 
 ###########################################
