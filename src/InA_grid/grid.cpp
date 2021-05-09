@@ -22,18 +22,6 @@ namespace ina::grid
         std::vector<const ina::query_model::Dimension*> colAxe; // TODO: Workaround waiting to have a grid
         calculator::Cube cube;
         {
-            {
-                const std::string& cnxString = query.getDataSource().getPackageName();
-                const std::string& tableName = query.getDataSource().getObjectName();
-                std::shared_ptr<wasabi::metadata::Catalog> catalog = std::shared_ptr<wasabi::metadata::Catalog>(new wasabi::metadata::Catalog(cnxString));
-                const auto& colNames = catalog->getTable(tableName).getColumnNames();
-                {
-                    writer.key("Object name");
-                    JSON_LIST(writer);
-                    for(auto& colName : colNames)
-                        writer.value(catalog->getTable(tableName).getColumn(colName).getName());
-                }
-            }
             const query_generator::query_generator& queryGen = query_generator::query_generator(query);
 
             std::shared_ptr<calculator::DataStorage> data(new calculator::DataStorage());
