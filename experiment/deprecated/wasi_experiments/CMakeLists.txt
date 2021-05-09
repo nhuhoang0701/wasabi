@@ -13,14 +13,14 @@ set(CMAKE_CXX_COMPILER_WORKS 1)
 set(CLANG_TARGET_TRIPLE wasm32-unknown-wasi)
 set(CMAKE_SYSROOT ${WASABI_EXTERNAL}/wasi-sdk-12/wasi-sysroot)
 
-set(CMAKE_C_COMPILER ${WASABI_EXTERNAL}/llvm/bin/clang)
+set(CMAKE_C_COMPILER ${LLVM_DIR}/bin/clang)
 set(CMAKE_C_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
 
-set(CMAKE_CXX_COMPILER ${WASABI_EXTERNAL}/llvm/bin/clang++)
+set(CMAKE_CXX_COMPILER ${LLVM_DIR}/bin/clang++)
 set(CMAKE_CXX_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
 
-set(CMAKE_AR ${WASABI_EXTERNAL}/llvm/bin/llvm-ar)
-set(CMAKE_SPLIT ${WASABI_EXTERNAL}/llvm/bin/llvm-split)
+set(CMAKE_AR ${LLVM_DIR}/bin/llvm-ar)
+set(CMAKE_SPLIT ${LLVM_DIR}/bin/llvm-split)
 set(CMAKE_BUILD_TYPE Debug)    
 #set( CMAKE_VERBOSE_MAKEFILE on ) 
 
