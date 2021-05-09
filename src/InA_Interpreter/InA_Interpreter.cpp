@@ -72,9 +72,13 @@ const char* json_getResponse_json(const char* InA)
 				{
 					if(query->getType() == ina::query_model::Query::qMetadata)
 					{
-						const char* response = ina::metadata::writeCube(*query, writer);
-						if(response != nullptr )
-							return response;
+						if(query->haveExpandCube())
+						{
+							ina::metadata::Cube cube(query->getDataSource());
+							ina::metadata::write(cube, writer);
+						}
+						else
+							throw std::runtime_error("InA_Interpreter => Unsupported InA request, only expand cube for metadat query is supported");
 					}
 				}
 			}
@@ -104,36 +108,4 @@ const char* json_getResponse_json(const char* InA)
 	static_str = osstream.str();
 	
 	return static_str.c_str();
-}
-
-const char* ina::metadata::writeCube(const ina::query_model::Query& query, JSONWriter& writer)
-{
-	using namespace wasabi;
-
-	if(query.haveExpandCube())
-	{
-		if(query.getDataSource().getObjectName() == "$$DataSource$$" )
-		{
-			static std::string static_str_response;
-			static_str_response.clear();
-			if(static_str_response.empty() )
-			{
-				std::ifstream ifs("./resources/response_getResponse_Metadata_expand_cube_catalog.json");
-				if(ifs.is_open() )
-					static_str_response = std::string((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
-				else
-					throw std::runtime_error("Could not open file ./resources/response_getResponse_Metadata_expand_cube_catalog.json");
-			}
-			return static_str_response.c_str();
-		}
-		else
-		{
-			ina::metadata::Cube cube(query.getDataSource());
-			ina::metadata::write(cube, writer);
-		}
-	}
-	else
-		throw std::runtime_error("InA_Interpreter => Unsupported InA request, only expand cube for metadat query is supported");
-
-	return nullptr;
 }
