@@ -21,11 +21,9 @@ namespace ina::metadata
     Dimension::Dimension(const std::string& name, const std::string& description, eAxe defaultAxe)
         : _name(name), _description(description), _defaultaxe(defaultAxe)
     {
-        _attributes.resize(1);
-
-        Attribute keyAttribute(*this, _name, _description);
         _keyAttributes = 0;
-        _attributes[_keyAttributes] = keyAttribute;
+        _attributes.clear();
+        _attributes.push_back(Attribute(*this, name, description));
     }
 
     const std::string&  Dimension::getName() const
@@ -40,12 +38,20 @@ namespace ina::metadata
 
     const std::string  Dimension::getNameExternal() const
     {
-        return _description + " (N.E.)";
+        std::string val = _description;
+        #ifdef DEBUG
+        val+=" (N.E.)";
+        #endif
+        return val;
     }
 
     const std::string  Dimension::getDescription() const
     {
-        return _description +" (D.)";
+        std::string val = _description;
+        #ifdef DEBUG
+        val+=" (D.)";
+        #endif
+        return val;
     }
 
     const std::vector<Attribute>& Dimension::getAttributes() const
@@ -76,18 +82,16 @@ namespace ina::metadata
     DimensionMeasures::DimensionMeasures(const std::string& name, const std::string& description, eAxe defaultAxe)
     : Dimension(name, description, defaultAxe)
     {
-        _attributes.resize(2);
+        _attributes.clear();
 
-        Attribute keyAttribute(*this, "[Measures].[Measures]", "[Measures].[Measures]");
         _keyAttributes = 0; 
-        _attributes[_keyAttributes] = keyAttribute;
+        _attributes.push_back(Attribute(*this, "[Measures].[Measures]", "[Measures].[Measures]"));
 
-        Attribute textAttribute(*this, "[Measures].[Name]", "[Measures].[Name]");
         _textAttributes = 1; 
-        _attributes[_textAttributes] = textAttribute;
+        _attributes.push_back(Attribute(*this, "[Measures].[Name]", "[Measures].[Name]"));
 
-        _members.push_back(Member(*this, {"[Measures].[Measures]", "Sales_revenue"}, {"[Measures].[Name]", "Sales revenue"}, {"[Measures].[Description]", "Sales revenue"}));
-        _members.push_back(Member(*this, {"[Measures].[Measures]", "Quantity_sold"}, {"[Measures].[Name]", "Quantity sold"}, {"[Measures].[Description]", "Quantity sold"}));
-        _members.push_back(Member(*this, {"[Measures].[Measures]", "Margin"},        {"[Measures].[Name]", "Margin Name"}, {"[Measures].[Description]", "Margin Name"}));
+        _members.push_back(Member(*this, {"[Measures].[Measures]", "Sales_revenue"}, {"[Measures].[Name]", "Sales revenue (N.)"}, {"[Measures].[Description]", "Sales revenue (D.)"}));
+        _members.push_back(Member(*this, {"[Measures].[Measures]", "Quantity_sold"}, {"[Measures].[Name]", "Quantity sold (N.)"}, {"[Measures].[Description]", "Quantity sold (D.)"}));
+        _members.push_back(Member(*this, {"[Measures].[Measures]", "Margin"},        {"[Measures].[Name]", "Margin Name (N.)"}, {"[Measures].[Description]", "Margin Name (D.)"}));
     }
 }
