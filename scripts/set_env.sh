@@ -88,6 +88,7 @@ alias test='(cd "$WASABI_BUILD_DIR_NAME" && $CTEST -j8 -T test --output-on-failu
 alias install='$CMAKE --build ./$WASABI_BUILD_DIR_NAME --target install'
 alias build='$CMAKE -B ./$WASABI_BUILD_DIR_NAME . -G Ninja -DCMAKE_BUILD_TYPE=$WASABI_BUILD_TYPE -DCMAKE_MAKE_PROGRAM=$NINJA -DCMAKE_INSTALL_PREFIX:PATH=$WASABI_INSTAL_DIR && install && test'
 alias rebuild='rm -rf ./$WASABI_BUILD_DIR_NAME && mkdir $WASABI_BUILD_DIR_NAME && build'
-alias export2nexus='mvn -f $WASABI_ROOT_DIR/nexus/pom.xml clean deploy'
+
+alias export2nexus='(export LD_LIBRARY_PATH=$WASABI_INSTAL_DIR/ && $WASABI_INSTAL_DIR/wasm-opt $WASABI_INSTAL_DIR/InA_Interpreter.wasm -Oz -o $WASABI_INSTAL_DIR/InA_Interpreter.wasm && chmod 777 $WASABI_INSTAL_DIR/InA_Interpreter.wasm && mvn -f $WASABI_ROOT_DIR/nexus/pom.xml clean deploy)'
 
 echo
