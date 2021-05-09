@@ -3,22 +3,35 @@
 #include <vector>
 
 class JSONWriter;
-namespace ina::query_model { class Query; class Definition; class Dimension; };
-namespace calculator {enum class eAxe; };
-namespace calculator { class Cube; class Axe; };
+namespace ina::query_model { class Query; class Dimension; };
+
+
+#include <calculator/cube.h>
 
 namespace ina::grid
 {
-	void   writeGrid(const ina::query_model::Query& query, JSONWriter& writer);
-	void   writeDimensions(const ina::query_model::Query& query, JSONWriter& writer, const calculator::Cube& cube, std::vector<const ina::query_model::Dimension*>& dims);
-	size_t writeTuples(const ina::query_model::Query& query, JSONWriter& writer, const calculator::Cube& cube, const calculator::eAxe& axis, std::vector<const ina::query_model::Dimension*>& dims);
-	
-	std::pair<size_t, size_t>   writeCells(const ina::query_model::Query& query, JSONWriter& writer, const calculator::Cube& cube, const ina::query_model::Dimension* measDim);
+	class Grid;
+	void   write(const Grid& grid, JSONWriter& writer);
 
 	class Grid
 	{
 	public:
-		Grid();
+		Grid(const ina::query_model::Query& query, const calculator::Cube& cube);
+
+		const ina::query_model::Query& getQuery() const {return m_query;};
+		const calculator::Cube&        getCube() const {return m_cube;};
+
+		const ina::query_model::Dimension&   getMeasDim() const {return *measDim;}
+
+		const std::vector<const ina::query_model::Dimension*>& getRowDims() const {return rowAxe;};
+        const std::vector<const ina::query_model::Dimension*>& getColDims() const {return colAxe;};
+
 	private:
+		const ina::query_model::Query& m_query;
+		const calculator::Cube& m_cube;
+
+		const ina::query_model::Dimension* measDim = nullptr;
+		std::vector<const ina::query_model::Dimension*> rowAxe;
+        std::vector<const ina::query_model::Dimension*> colAxe;
 	};
 } // grid

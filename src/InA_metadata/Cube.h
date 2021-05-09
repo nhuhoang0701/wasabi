@@ -23,7 +23,7 @@ namespace ina::metadata
 		const std::vector<std::unique_ptr<Dimension>>&  getDimensions() const;
 
 		private:
-		const ina::query_model::DataSource& m_datasource;
+		const ina::query_model::DataSource&     m_datasource;
 		std::vector<std::unique_ptr<Dimension>> m_dimensions;
 
 		friend void write(const Cube& obj, JSONWriter& jsonNode);
