@@ -169,7 +169,13 @@ namespace ina::grid
                         {
                             JSON_LIST(writer);
                             for(const auto& member : query.getDefinition().getVisibleMembers(*dim))
+                            {
+                            #ifdef DEBUG
                                 writer.value(member.getName() + " (val.[M][N])");
+                            #else
+                                writer.value(member.getName());
+                            #endif
+                            }
                         }
                     }
                     {
