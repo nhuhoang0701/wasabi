@@ -8,6 +8,9 @@
 #include <InA_query_model/Query.h>
 #include <InA_query_model/DataSource.h>
 
+#include <calculator/storage.h>
+#include <query_generator/query_generator.h>
+
 #include <InA_grid/grid.h>
 
 #include <ostream>
@@ -89,7 +92,44 @@ const char* json_getResponse_json(const char* InA)
 				{
 					if(query->getType() == ina::query_model::Query::qAnalytics)
 					{
-						ina::grid::writeGrid(*query, writer);
+						calculator::Cube cube;
+						{
+							const query_generator::query_generator& queryGen = query_generator::query_generator(*query);
+
+							std::shared_ptr<calculator::DataStorage> data(new calculator::DataStorage());
+							queryGen.prepareStorage(*data);
+							std::function<void(const dbproxy::Row&)> lambda = [&data](const dbproxy::Row& row)
+							{
+								data->insertRow(row);
+							};
+							const std::string& cnxString = query->getDataSource().getPackageName();
+							const std::string sql = queryGen.getSQL(*data);
+							std::cout << "SQL: " << sql << std::endl;
+							dbproxy::DBProxy::getDBProxy(cnxString)->executeSQL(sql, &lambda);
+							std::cout << "    Nbrs of rows " << data->getRowNbrs() << std::endl;
+
+							cube.setStorage(data);
+							for (const auto& dimension : query->getDefinition().getDimensions()) 
+							{
+								if(!ina::query_model::Dimension::isDimensionOfMeasures(dimension) )
+								{
+									if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Rows)
+										cube.addDim(calculator::eAxe::Row, dimension.getName());
+									else if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Columns)
+										cube.addDim(calculator::eAxe::Column, dimension.getName());
+									else throw std::runtime_error("Unknow axis type");
+								}
+								else
+								{
+									for(const auto& member : query->getDefinition().getVisibleMembers(dimension))
+										cube.addMeas(member.getName());
+								}
+							}
+						}
+						cube.materialyze();
+
+						ina::grid::Grid grid(*query, cube);
+						ina::grid::write(grid, writer);
 					}
 				}
 			}
