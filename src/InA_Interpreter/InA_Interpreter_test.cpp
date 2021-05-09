@@ -41,17 +41,7 @@ void getResponse()
     const char* response = nullptr;
 	std::string request;
 
-    std::cout << "--------------------- getResponse ---------------------" << std::endl;
-
-    request = R"({"Metadata":{"DataSource": {"ObjectName": "$$DataSource$$","PackageName":"local:sqlite:onetable_datatype"}, "Expand":["Cube"]}})";
-
-    // std::cout << "InA_Interpreter_test => request: json_getResponse_json " << request << std::endl;
-
-    response = json_getResponse_json(request.c_str());
-
-    CPPUNIT_ASSERT(!std::string(response).empty());
-    // std::cout << "InA_Interpreter_test => response: " << response << std::endl;
-    std::cout << "--------------------- getResponse ---------------------" << std::endl;
+     std::cout << "--------------------- getResponse ---------------------" << std::endl;
 
     request = R"({"Metadata":{"DataSource": {"ObjectName": "onetable_datatype","PackageName":"local:sqlite:onetable_datatype"}, "Expand":["Cube"]}})";
 
@@ -60,18 +50,6 @@ void getResponse()
     response = json_getResponse_json(request.c_str());
 
     CPPUNIT_ASSERT(!std::string(response).empty());
-    // std::cout << "InA_Interpreter_test => response: " << response << std::endl;
-
-    std::cout << "------------------------" << std::endl << std::endl;
-
-    request = R"({"Batch": [{"Metadata":{"DataSource": {"ObjectName": "$$DataSource$$","PackageName":"local:sqlite:onetable_datatype"}, "Expand":["Cube"]}},{"Analytics": {}},{"Analytics": {}}]})";
-
-    // std::cout << "InA_Interpreter_test => request: json_getResponse_json " << request << std::endl;
-
-    response = json_getResponse_json(request.c_str());
-
-    CPPUNIT_ASSERT(!std::string(response).empty());
-    // std::cout << "InA_Interpreter_test => response: " << response << std::endl;
 
     std::cout << "------------------------" << std::endl << std::endl;
 
