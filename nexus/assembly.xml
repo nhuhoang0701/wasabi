@@ -15,7 +15,6 @@
          <include>Microcube_worker.js</include>
          <include>InA_Interpreter.wasm</include>
          <include>resources/response_getSerververInfo.json</include>
-         <include>resources/response_getResponse_Metadata_expand_cube_catalog.json</include>
          <include>resources/sqlite/efashion/efashion.db</include>
       </includes>
       <useDefaultExcludes>false</useDefaultExcludes>
