@@ -14,11 +14,11 @@ namespace ina::metadata
 	{
 		public:
 
-			Member(const Dimension& dimension, 
-			const std::pair<std::string, std::string>& uniqueName, 
-			const std::pair<std::string, std::string>& name, 
-			const std::pair<std::string, std::string>& description);
+			Member(const Dimension& dimension, const std::string& uniqueName, const std::string& name, const std::string& description);
 			
+			Member(const Member& other);
+			Member& operator=(const Member& other);
+
 			const std::pair<std::string, std::string>&  getName() const;
 			const std::pair<std::string, std::string>&  getUniqueName() const;
 			const std::pair<std::string, std::string>&  getDescription() const;

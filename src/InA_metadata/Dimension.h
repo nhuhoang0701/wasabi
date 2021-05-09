@@ -30,7 +30,7 @@ namespace ina::metadata
 			const std::string   getNameExternal() const;
 			const std::string   getDescription() const;
 
-			eAxe     getAxisDefault() const {return _defaultaxe;};
+			eAxe     getAxisDefault() const {return m_defaultaxe;};
 
 			virtual eDimType             getDimensionType() const {return eDimType::Dimension;};
 			virtual bool                 isDimensionGroup() const {return false;};
@@ -49,14 +49,14 @@ namespace ina::metadata
 			const std::vector<Member>&    getMembers() const;
 
 		protected:
-			std::string _name; 
-			std::string _description; 
-			eAxe        _defaultaxe = eAxe::Free;
+			std::string m_name; 
+			std::string m_description; 
+			eAxe        m_defaultaxe = eAxe::Free;
 
-			std::vector<Member>     _members;
-			std::vector<Attribute>  _attributes;
-			int8_t                  _keyAttributes = -1; // index in _attributes
-			int8_t                  _textAttributes = -1;// index in _attributes
+			std::vector<Member>     m_members;
+			std::vector<Attribute>  m_attributes;
+			int8_t                  m_keyAttributes = -1; // index in _attributes
+			int8_t                  m_textAttributes = -1;// index in _attributes
 
 			friend void write(const Dimension& obj, JSONWriter& jsonNode);
 	};
@@ -67,7 +67,7 @@ namespace ina::metadata
 			DimensionMeasures() = default;
 			DimensionMeasures(const std::string& name, const std::string& description, eAxe defaultAxe = eAxe::Free);
 
-			virtual uint32_t              getCardinality() const {return _members.size();};
+			virtual uint32_t              getCardinality() const {return m_members.size();};
 
 			virtual eDimType             getDimensionType() const {return eDimType::MeasuresDimension;};
 			virtual bool                 isDimensionGroup() const {return true;};
