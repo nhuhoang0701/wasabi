@@ -34,6 +34,8 @@ namespace ina::metadata
         m_dimension = other.m_dimension;
         m_name = other.m_name;
         m_description = other.m_description;
+
+        return *this;
     }
 
     const Dimension& Attribute::getDimension() const
