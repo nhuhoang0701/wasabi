@@ -5,9 +5,21 @@ namespace ina::metadata
 {
     Member::Member(const Dimension& dimension, const std::string& uniqueName, const std::string& name, const std::string& description)
     {
-        m_uniquename = {"[Measures].[Measures]", uniqueName};
-        m_name = {"[Measures].[Name]", name};
-        m_description ={"[Measures].[Description]", description};
+        std::string suffixName;
+        #ifdef DEBUG
+        std::string suffixName = " (N.)";
+        #endif
+        std::string suffixDesc;
+        #ifdef DEBUG
+        std::string suffixDesc = " (D.)";
+        #endif
+        std::string suffixUniqueNAme;
+        #ifdef DEBUG
+        std::string suffixUniqueNAme = " (U.N.)";
+        #endif
+        m_uniquename = {"[Measures].[Measures]", uniqueName+suffixUniqueNAme};
+        m_name = {"[Measures].[Name]", name+suffixName};
+        m_description ={"[Measures].[Description]", description+suffixDesc};
     }
 
     Member::Member(const Member& other)
