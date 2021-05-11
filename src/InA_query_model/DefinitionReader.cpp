@@ -4,6 +4,8 @@
 #include <json/jsonReader.h>
 #include <exceptions/InA_Exception.h>
 
+#include "ResultSetFeatureRequest.h"
+
 #include <iostream>
 
 namespace ina::query_model
@@ -27,6 +29,10 @@ namespace ina::query_model
 				read(dimensionObj, dims[i]);
 				definition.addDimension(dimensionObj);
 			}
+		}
+		if(const auto& resSetFeatJSon = definitionNode.getObject("ResultSetFeatureRequest"))
+		{
+			Read(definition.m_resultSetFeature, resSetFeatJSon);
 		}
 		if(const auto& subSelections = definitionNode.getObject("DynamicFilter").getObject("Selection").getObject("Operator").getArray("SubSelections"))
 		{

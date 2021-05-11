@@ -9,6 +9,7 @@
 #include "QueryFilter.h"
 #include "QueryFilterComparison.h"
 #include "Formula.h"
+#include "ResultSetFeatureRequest.h"
 
 #include <string>
 #include <vector>
@@ -46,10 +47,13 @@ namespace ina::query_model
 		const std::vector<QuerySort>& getQuerySorts() const;
 		void                          addQuerySort(const QuerySort& querySort);
 
+		const ResultSetFeatureRequest& getResultSetFeat() const;
+
 	private:
 		std::vector<Dimension> m_objs;
 		std::vector<QueryFilterComparison> m_filters;
 		std::vector<QuerySort> m_sorts;
+		ResultSetFeatureRequest m_resultSetFeature;
 		std::string m_table;
 		std::string m_cnxString;
 		
