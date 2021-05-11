@@ -145,7 +145,18 @@ int main()
 		auto param = func.getChild(0);
 		CPPUNIT_ASSERT_EQUAL(ina::query_model::Parameter::eConstant, param.getType());
 		
-	}	
+	}
+	{
+		std::string request = R"({"ResultSetFeatureRequest":{"SubSetDescription":{"RowFrom":1,"RowTo":2,"ColumnFrom":3,"ColumnTo":4}}})";
+		JSONReader reader;
+		JSONGenericObject root = reader.parse(request);
+		ina::query_model::Definition definition;
+		read(definition, root);
+		CPPUNIT_ASSERT_EQUAL(3, definition.getResultSetFeat().getSubSetDescription().m_ColumnFrom);
+		CPPUNIT_ASSERT_EQUAL(4, definition.getResultSetFeat().getSubSetDescription().m_ColumnTo);
+		CPPUNIT_ASSERT_EQUAL(1, definition.getResultSetFeat().getSubSetDescription().m_RowFrom);
+		CPPUNIT_ASSERT_EQUAL(2, definition.getResultSetFeat().getSubSetDescription().m_RowTo);
+	}
 
 	return TEST_HAVEERROR();
 }
