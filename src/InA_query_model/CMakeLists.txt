@@ -9,7 +9,7 @@ project(InA_query_model VERSION 1.0)
   
 ################################################
 # InA_query_model
-add_library(InA_query_model Definition.cpp DefinitionReader.cpp Parameter.cpp Function.cpp ParameterReader.cpp FunctionReader.cpp Formula.cpp FormulaReader.cpp Member.cpp MemberReader.cpp Attribute.cpp AttributeReader.cpp Dimension.cpp DimensionReader.cpp QueryFilter.cpp QueryFilterComparison.cpp DataSource.cpp DataSourceReader.cpp DataSourceWriter.cpp Query.cpp QueryReader.cpp QuerySort.cpp QuerySortReader.cpp )
+add_library(InA_query_model ResultSetFeatureRequest.cpp ResultSetFeatureRequestReader.cpp Definition.cpp DefinitionReader.cpp Parameter.cpp Function.cpp ParameterReader.cpp FunctionReader.cpp Formula.cpp FormulaReader.cpp Member.cpp MemberReader.cpp Attribute.cpp AttributeReader.cpp Dimension.cpp DimensionReader.cpp QueryFilter.cpp QueryFilterComparison.cpp DataSource.cpp DataSourceReader.cpp DataSourceWriter.cpp Query.cpp QueryReader.cpp QuerySort.cpp QuerySortReader.cpp )
 set_target_properties(InA_query_model PROPERTIES PUBLIC_HEADER Query.h)
 
 target_include_directories(InA_query_model PUBLIC ${WASABI_INCLUDES}})
