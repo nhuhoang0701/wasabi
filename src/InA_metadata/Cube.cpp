@@ -5,6 +5,7 @@
 #include <metadata_enrichment/Tables.h>
 
 #include <memory>
+#include <iostream>
 
 
 namespace ina::metadata
@@ -26,10 +27,11 @@ namespace ina::metadata
                 for(auto& colName : colNames)
                 {
                     const auto& column = catalog->getTable(tableName).getColumn(colName);
-                    //column.getName();
-                    //column.getSQLName();
-                    //static_cast<std::uint32_t>(column.getDataType());
-                    //static_cast<std::uint32_t>(column.getAggregation());
+                    //std::cout << "******************" << std::endl;
+                    //std::cout << "column.getName():" << column.getName() << std::endl;
+                    //std::cout << "column.getSQLName():" << column.getSQLName() << std::endl;
+                    //std::cout << "column.getDataType():" << static_cast<std::uint32_t>(column.getDataType()) << std::endl;
+                    //std::cout << "column.getAggregation():" << static_cast<std::uint32_t>(column.getAggregation()) << std::endl;
                 }
             }
         }
@@ -43,9 +45,9 @@ namespace ina::metadata
         m_dimensions.push_back(std::make_unique<Dimension>("City", "City name"));
 
         std::unique_ptr<Dimension> measuresDim = std::make_unique<DimensionMeasures>("CustomDimension1", "Measures", eAxe::Columns);
-        measuresDim->addMember(Member(*measuresDim, "Sales_revenue", "Sales revenue (N.)", "Sales revenue (D.)"));
-        measuresDim->addMember(Member(*measuresDim, "Quantity_sold", "Quantity sold (N.)", "Quantity sold (D.)"));
-        measuresDim->addMember(Member(*measuresDim, "Margin", "Margin Name (N.)", "Margin Name (D.)"));
+        measuresDim->addMember(Member(*measuresDim, "Sales_revenue", "Sales revenue", "Sales revenue"));
+        measuresDim->addMember(Member(*measuresDim, "Quantity_sold", "Quantity sold", "Quantity sold"));
+        measuresDim->addMember(Member(*measuresDim, "Margin", "Margin Name", "Margin Name"));
         m_dimensions.push_back(std::move(measuresDim));
 	 }
 
