@@ -2,13 +2,12 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 class JSONGenericObject; // From <json/jsonReader.h>
-class JSONWriter;        // From <json/jsonWriter.h>
 
 namespace ina::query_model
 {	
-
 	class Function;
 	class Parameter
 	{

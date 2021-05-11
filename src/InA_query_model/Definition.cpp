@@ -78,4 +78,8 @@ namespace ina::query_model
         }
     }
 
+    const ResultSetFeatureRequest& Definition::getResultSetFeat() const
+    {
+        return m_resultSetFeature;
+    }
 } //query_model
