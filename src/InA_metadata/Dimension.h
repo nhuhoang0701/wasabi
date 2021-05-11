@@ -55,8 +55,8 @@ namespace ina::metadata
 
 			std::vector<Member>     m_members;
 			std::vector<Attribute>  m_attributes;
-			int8_t                  m_keyAttributes = -1; // index in _attributes
-			int8_t                  m_textAttributes = -1;// index in _attributes
+			int8_t                  m_keyAttributes = -1; // index in m_attributes
+			int8_t                  m_textAttributes = -1;// index in m_attributes
 
 			friend void write(const Dimension& obj, JSONWriter& jsonNode);
 	};
