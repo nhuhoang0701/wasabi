@@ -1,7 +1,7 @@
 
 # wasabi
 POC to execute InA query in the Browser the goal is to have an engine which can process some computation (blending , totaux, scalar function, filtering, aggregation)
-This engine can would be also be plug to our CS client, in this case SQL woould be generate from InA and send to the SQL database in a Live and directway.
+This engine can also be plug to our CS client, in this case SQL woould be generate from InA and send to the SQL database in a Live and direct way.
 
 To execute it in the browser we will use webassembly https://webassembly.org/
 We will use c++ to have more chance to integrate some existing code MDS / Micro Cube code  
