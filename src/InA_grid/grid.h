@@ -54,9 +54,6 @@ namespace ina::grid
 		const ina::query_model::Query& getQuery() const {return m_query;};
 		const calculator::Cube&        getCube() const {return m_cube;};
 
-		const std::vector<const ina::query_model::Dimension*>& getRowDims() const;
-        const std::vector<const ina::query_model::Dimension*>& getColDims() const;
-
 		// Row first / Col second
 		std::pair<size_t, size_t>      getCellsSize() const;
 
