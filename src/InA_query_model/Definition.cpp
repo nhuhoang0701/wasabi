@@ -41,6 +41,10 @@ namespace ina::query_model
             std::vector<Member> visibleMembers;
             for(const auto& member : dimension.getMembers())
             {
+                //TODO: Use by sql genertor and Grid, should be take in account by grid...
+                // Don t take in account formula
+                if(member.getFormula() != nullptr)
+                    continue;
                 for(const auto& filter : m_filters)
                 {
                     /* 

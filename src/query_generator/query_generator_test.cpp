@@ -8,7 +8,8 @@
 int main()
 {
 	TEST_INIT();
-
+	
+	JSONReader reader;
 	std::shared_ptr<calculator::DataStorage> data(new calculator::DataStorage());
 
 	{
@@ -41,8 +42,12 @@ int main()
 		definition.addDimension(ina::query_model::Dimension("dim_B", ina::query_model::Dimension::eAxe::Rows));
 		
 		ina::query_model::Dimension dimensionMeasure(ina::query_model::Dimension::DIMENSION_OF_MEASURES_NAME, ina::query_model::Dimension::eAxe::Rows);
-		dimensionMeasure.addMember(ina::query_model::Member("meas_1", "SUM"));
-		dimensionMeasure.addMember(ina::query_model::Member("meas_2", "SUM"));
+		ina::query_model::Member member1;
+		read(member1, reader.parse(R"({"Description":"meas 1","Name":"meas_1", "Aggregation":"SUM"})"));
+		dimensionMeasure.addMember(member1);
+		ina::query_model::Member member2;
+		read(member2, reader.parse(R"({"Description":"meas 2","Name":"meas_2", "Aggregation":"SUM"})"));
+		dimensionMeasure.addMember(member2);
 		definition.addDimension(dimensionMeasure);
 
 		queryInA.setDefinition(definition);
@@ -62,7 +67,6 @@ int main()
 		queryInA.setDataSource(ds);
 
 		std::string request = R"({"Dimensions":[{"Attributes":[{"Name":"OBJ_188","Obtainability":"UserInterface"}],"Axis":"Rows","Name":"OBJ_188","NonEmpty":true,"ReadMode":"Booked","ResultStructure":[{"Result":"Members","Visibility":"Visible"}]},{"Attributes":[{"Name":"[Measures].[Measures]","Obtainability":"UserInterface"},{"Name":"[Measures].[Name]","Obtainability":"UserInterface"}],"Axis":"Columns","Members":[{"Aggregation":"SUM","MemberOperand":{"AttributeName":"Measures","Comparison":"=","Value":"OBJ_147"},"Visibility":"Visible"},{"Aggregation":"SUM","MemberOperand":{"AttributeName":"Measures","Comparison":"=","Value":"OBJ_262"},"Visibility":"Visible"}],"Name":"CustomDimension1","NonEmpty":false,"ReadMode":"Master"}],"DynamicFilter":{"Selection":{"Operator":{"Code":"And","SubSelections":[{"SetOperand":{"Elements":[{"Comparison":"=","Low":"OBJ_262"}],"FieldName":"[Measures].[Measures]"}},{"SetOperand":{"Elements":[{"Comparison":"=","Low":"2014"}],"FieldName":"OBJ_188"}}]}}},"ResultSetFeatureRequest":{"ResultEncoding":"None","ResultFormat":"Version2","ReturnedDataSelection":{"Actions":false,"CellDataType":false,"CellFormat":false,"CellMeasure":false,"CellValueTypes":false,"ExceptionAlertLevel":false,"ExceptionName":false,"ExceptionSettings":false,"Exceptions":false,"InputEnabled":false,"NumericRounding":false,"NumericShift":false,"TupleDisplayLevel":false,"TupleDrillState":false,"TupleElementIds":true,"TupleElementIndexes":false,"TupleLevel":false,"TupleParentIndexes":false,"UnitDescriptions":false,"UnitTypes":false,"Units":false,"Values":false,"ValuesFormatted":false,"ValuesRounded":false},"SubSetDescription":{"ColumnFrom":0,"ColumnTo":60,"RowFrom":0,"RowTo":500},"UseDefaultAttributeKey":false},"Sort":[]})";
-		JSONReader reader;
 		JSONGenericObject root = reader.parse(request);
 		ina::query_model::Definition definition;
 		read(definition, root);
@@ -83,7 +87,6 @@ int main()
 		queryInA.setDataSource(ds);
 
 		std::string request = R"({"Dimensions":[{"Attributes":[{"Name":"OBJ_188","Obtainability":"UserInterface"}],"Axis":"Rows","Name":"OBJ_188","NonEmpty":true,"ReadMode":"Booked","ResultStructure":[{"Result":"Members","Visibility":"Visible"}]},{"Attributes":[{"Name":"[Measures].[Measures]","Obtainability":"UserInterface"},{"Name":"[Measures].[Name]","Obtainability":"UserInterface"}],"Axis":"Columns","Members":[{"Aggregation":"SUM","MemberOperand":{"AttributeName":"Measures","Comparison":"=","Value":"OBJ_262"},"Visibility":"Visible"},{"Aggregation":"SUM","MemberOperand":{"AttributeName":"Measures","Comparison":"=","Value":"OBJ_147"},"Visibility":"Visible"}],"Name":"CustomDimension1","NonEmpty":false,"ReadMode":"Master"}],"DynamicFilter":{"Selection":{"Operator":{"Code":"And","SubSelections":[{"Operator":{"Code":"And","SubSelections":[{"Operator":{"Code":"Or","SubSelections":[{"SetOperand":{"Elements":[{"Comparison":"IS_NULL"}],"FieldName":"OBJ_188"}},{"SetOperand":{"Elements":[{"Comparison":"=","IsExcluding":true,"Low":"2014"}],"FieldName":"OBJ_188"}}]}}]}}]}}}})";
-		JSONReader reader;
 		JSONGenericObject root = reader.parse(request);
 		ina::query_model::Definition definition;
 		read(definition, root);
@@ -104,7 +107,6 @@ int main()
 		queryInA.setDataSource(ds);
 
 		std::string request = R"({"Dimensions":[{"Name":"Yr","Axis":"Rows"},{"Name":"Month_name","Axis":"Rows"},{"Name":"CustomDimension1","Axis":"Columns","Members":[{"Description":"Measure 1","Name":"Sales_revenue", "Aggregation":"SUM"}]}]})";
-		JSONReader reader;
 		JSONGenericObject root = reader.parse(request);
 		ina::query_model::Definition definition;
 		read(definition, root);
@@ -125,7 +127,6 @@ int main()
 		queryInA.setDataSource(ds);
 
 		std::string request = R"({"Dimensions":[{"Attributes":[{"Name":"[Measures].[Measures]","Obtainability":"UserInterface"},{"Name":"[Measures].[Name]","Obtainability":"UserInterface"}],"Axis":"Columns","Members":[{"Aggregation":"SUM","MemberOperand":{"AttributeName":"Measures","Comparison":"=","Value":"OBJ_147"},"Visibility":"Visible"},{"Aggregation":"SUM","MemberOperand":{"AttributeName":"Measures","Comparison":"=","Value":"OBJ_191"},"Visibility":"Visible"}],"Name":"CustomDimension1","NonEmpty":false,"ReadMode":"Master"},{"Attributes":[{"Name":"OBJ_166","Obtainability":"UserInterface"}],"Axis":"Columns","Name":"OBJ_166","NonEmpty":false,"ReadMode":"Master","ResultStructure":[{"Result":"Members","Visibility":"Visible"}]},{"Attributes":[{"Name":"OBJ_185","Obtainability":"UserInterface"}],"Axis":"Columns","Name":"OBJ_185","NonEmpty":false,"ReadMode":"Master","ResultStructure":[{"Result":"Members","Visibility":"Visible"}]},{"Attributes":[{"Name":"OBJ_186","Obtainability":"UserInterface"}],"Axis":"Columns","Name":"OBJ_186","NonEmpty":false,"ReadMode":"Master","ResultStructure":[{"Result":"Members","Visibility":"Visible"}]}],"DynamicFilter":{"Selection":{"Operator":{"Code":"And","SubSelections":[{"SetOperand":{"Elements":[{"Comparison":"=","Low":"OBJ_147"}],"FieldName":"[Measures].[Measures]"}}]}}},"Sort":[{"Direction":"Asc","FieldName":"OBJ_166","PreserveGrouping":false,"SortType":"Field"},{"Direction":"Desc","FieldName":"OBJ_185","PreserveGrouping":false,"SortType":"Field"},{"Direction":"Asc","FieldName":"OBJ_186","PreserveGrouping":false,"SortType":"Field"}]})";
-		JSONReader reader;
 		JSONGenericObject root = reader.parse(request);
 		ina::query_model::Definition definition;
 		read(definition, root);
@@ -144,7 +145,6 @@ int main()
 		queryInA.setDataSource(ds);
 
 		std::string request = R"({"Dimensions":[{"Name":"CustomDimension1","Axis":"Columns","Members":[{"MemberOperand":{"AttributeName":"Measures","Comparison":"=","Value":"Sales_revenue"},"Aggregation":"SUM","Visibility":"Visible"},{"MemberOperand":{"AttributeName":"Measures","Comparison":"=","Value":"Quantity_sold"},"Aggregation":"SUM","Visibility":"Visible"},{"MemberOperand":{"AttributeName":"Measures","Comparison":"=","Value":"Margin"},"Aggregation":"SUM","Visibility":"Visible"}],"Attributes":[{"Name":"[Measures].[Name]","Obtainability":"Always"},{"Name":"[Measures].[Measures]","Obtainability":"UserInterface"}]}],"Sort":[{"SortType":"MemberKey","PreserveGrouping":true,"Dimension":"CustomDimension1"}]})";
-		JSONReader reader;
 		JSONGenericObject root = reader.parse(request);
 		ina::query_model::Definition definition;
 		read(definition, root);

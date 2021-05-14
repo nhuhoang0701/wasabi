@@ -16,26 +16,23 @@ namespace ina::query_model
 	class Member
 	{
 		public:
-			enum  eMemberType {eAggregation=0, eFormula};
-			Member(const std::string & name, const Aggregation & aggregation);
-
-			Member(const std::string & name, const Formula & formula);
+			Member() = default;
+			Member(const Member& other);
+			Member(Member&& other);
+			
+			Member& operator =(const Member& other);
 
 			const std::string& getName() const;
 
 			const Aggregation & getAggregation() const;
 
-			const query_model::Formula & getFormula() const;
-
-			const eMemberType getType() const;
+			const Formula*     getFormula() const;
 
 		private:
-			Member() = default;
-
-			std::string _name; 
-			Aggregation _aggregation;
-			Formula 	_formula;
-			eMemberType _type = eAggregation;
+			std::unique_ptr<Formula>  m_formula;
+			std::string m_name; 
+			std::string m_description; 
+			Aggregation m_aggregation;
 
 			friend void read(Member& obj, const JSONGenericObject& jsonNode);
 
