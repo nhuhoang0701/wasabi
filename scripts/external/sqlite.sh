@@ -8,19 +8,19 @@ echo "start at $(date +"%T")"
 	echo --------------- git ---------------
 	#git clone https://github.com/wapm-packages/sqlite.git  >> $outfile
 	cd sqlite
-	mkdir -p $WASABI_BUILD_DIR_NAME
+	mkdir -p $WASABI_BUILD_DIR_NAME/sqlite >> $outfile
 
 	echo ------------- cmake ---------------
-	$CMAKE -B ./$WASABI_BUILD_DIR_NAME \
+	$CMAKE -B $WASABI_BUILD_DIR_NAME/sqlite \
 		-G Ninja -DCMAKE_MAKE_PROGRAM=$NINJA \
-		-DCMAKE_BUILD_TYPE=Release \
-		-DCMAKE_TOOLCHAIN_FILE=$WASABI_ROOT_DIR/scripts/cmake/wasabi.cmake \
-		-DCMAKE_C_FLAGS=-fno-stack-protector \
+		-Wno-dev \
+		-DCMAKE_INSTALL_PREFIX=$WASABI_INSTAL_DIR/sqlite \
 		\
-		-DCMAKE_INSTALL_PREFIX=$WASABI_INSTAL_DIR/sqlite >> $outfile
+		-DCMAKE_TOOLCHAIN_FILE=$WASABI_ROOT_DIR/scripts/cmake/wasabi.cmake \
+		-DCMAKE_C_FLAGS=-fno-stack-protector
 
 	echo ------------- build ---------------
-	$CMAKE --build ./$WASABI_BUILD_DIR_NAME --target install  >> $outfile
+	$CMAKE --build $WASABI_BUILD_DIR_NAME/sqlite --target install
 	touch $WASABI_INSTAL_DIR/sqlite/sqlite.flag
 #else
 #	echo "already installed in '$WASABI_INSTAL_DIR/sqlite'"
