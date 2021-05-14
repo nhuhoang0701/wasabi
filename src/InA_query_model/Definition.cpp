@@ -6,7 +6,7 @@ namespace ina::query_model
 {
     void Definition::addDimension(const Dimension& dimension)
     {
-        m_objs.push_back(dimension);
+        m_dimensions.push_back(dimension);
     }
 
     void Definition::addQueryFilter(const QueryFilterComparison& queryFilter)
@@ -14,7 +14,6 @@ namespace ina::query_model
         m_filters.push_back(queryFilter);
     }
 
-    
     void Definition::addQuerySort(const QuerySort& querySort)
     {
         m_sorts.push_back(querySort);
@@ -22,7 +21,7 @@ namespace ina::query_model
 
 	const std::vector<Dimension>& Definition::getDimensions() const
 	{
-		return m_objs;
+		return m_dimensions;
 	}
 	
 	const std::vector<QueryFilterComparison>& Definition::getQueryFilters() const
