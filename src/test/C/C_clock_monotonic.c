@@ -13,8 +13,6 @@
 
 EXPORT void CLOCK_GET_TIME()
 {
-
-    int result;
     clockid_t clk_id;
     struct timespec tp;
 
