@@ -50,12 +50,10 @@ namespace ina::query_model
 		const ResultSetFeatureRequest& getResultSetFeat() const;
 
 	private:
-		std::vector<Dimension> m_objs;
+		std::vector<Dimension>             m_dimensions;
 		std::vector<QueryFilterComparison> m_filters;
-		std::vector<QuerySort> m_sorts;
-		ResultSetFeatureRequest m_resultSetFeature;
-		std::string m_table;
-		std::string m_cnxString;
+		std::vector<QuerySort>             m_sorts;
+		ResultSetFeatureRequest            m_resultSetFeature;
 		
 		DataSource m_ds;
 		
