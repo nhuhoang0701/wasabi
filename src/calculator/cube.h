@@ -22,6 +22,7 @@ namespace calculator
 		std::string m_name;
 	};
 
+	class Column;
 	class Cube;
 	class Body;
 	class Axe : public std::vector<Object>
@@ -37,6 +38,8 @@ namespace calculator
 		calculator::eDataType  getValueDatatype(const std::string& dimName) const;
 		const Value&           getValue(const std::string& dimName, size_t row) const;
 		size_t                 getValueIndex(const std::string& dimName, size_t row) const;
+
+		const ColumnData&      getDataColumn(const std::string& dimName) const;
 
 	private:
 		calculator::eDataType  getValueDatatype(size_t dimIdx) const;
