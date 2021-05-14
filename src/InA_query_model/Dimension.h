@@ -31,7 +31,7 @@ namespace ina::query_model
 
 			Dimension() = default;
 
-			//TODO: Remove this constructor, ina::query_model::Dimension should only be calles from a InA json query
+			//Only for test units
 			Dimension(const std::string & name, eAxe axename);
 			
 			const std::string&  getName() const;
@@ -42,7 +42,7 @@ namespace ina::query_model
 			const std::vector<Attribute>& getAttributes() const;
 		
 		//private:
-		// Only for test units
+		// Not private Only for test units
 			void                        addMember(const Member & member);
 			void                        addAttribute(const Attribute &att);
 
