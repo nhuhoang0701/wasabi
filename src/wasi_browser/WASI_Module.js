@@ -37,8 +37,12 @@ function start(response, filename) {
 		WASI_API.wasabi_initFS(".", filesystem).then(() => {
 			WASI_API.wasabi_log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
 			WASI_API.wasabi_log(">> start: " + filename + "\n");
-			try {module.instance.exports._start();}
-			catch (e)
+			try {
+				if(module.instance.exports._initialize)
+					module.instance.exports._initialize();
+				else
+					module.instance.exports._start();
+			} catch (e)
 			{
 				console.log("Exception during execution:" + e);
 				console.log("stack" + e.stack);

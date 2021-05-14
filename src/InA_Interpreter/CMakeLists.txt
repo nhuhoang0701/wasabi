@@ -11,33 +11,22 @@ project(InA_Interpreter VERSION 1.0 LANGUAGES CXX)
 ################################################
 # InA_Interpreter
 
-# InA_Interpreter as library
-add_library(InA_Interpreter_lib InA_Interpreter.cpp)
-target_include_directories(InA_Interpreter_lib PUBLIC ${WASABI_INCLUDES} ${PROJECT_SOURCE_DIR}/include)
-target_link_libraries(InA_Interpreter_lib PUBLIC cjson json exceptions InA_query_model InA_grid InA_metadata query_generator dbproxy metadata_enrichment sqlite calculator)
-target_link_directories(InA_Interpreter_lib PUBLIC ${cJSON_LIBRARY_DIRS} ${WASABI_LIBS})
-
-
-# InA_Interpreter as reactor
-add_executable(InA_Interpreter InA_Interpreter_main.cpp)
-target_link_options(InA_Interpreter PUBLIC "-mexec-model=reactor")
+# InA_Interpreter
+add_library(InA_Interpreter InA_Interpreter.cpp)
+target_link_options(InA_Interpreter PRIVATE "-mexec-model=reactor")
+target_include_directories(InA_Interpreter PUBLIC ${WASABI_INCLUDES} ${PROJECT_SOURCE_DIR}/include)
+target_link_libraries(InA_Interpreter PUBLIC cjson json exceptions InA_query_model InA_grid InA_metadata query_generator dbproxy metadata_enrichment sqlite calculator)
+target_link_directories(InA_Interpreter PUBLIC ${cJSON_LIBRARY_DIRS} ${WASABI_LIBS})
 
 # External entries points
 if ("${WASABI_PLATFORM_TARGET}" STREQUAL "wasm")
 target_link_options( InA_Interpreter PRIVATE LINKER:--export=json_getServerInfo,--export=json_getResponse_json,--export=malloc,--export=free)
 endif()
-# To allow to link with InA_Interpreter executable
-set_property(TARGET InA_Interpreter PROPERTY ENABLE_EXPORTS 1)
-target_include_directories(InA_Interpreter PUBLIC ${PROJECT_SOURCE_DIR}/include)
-
-target_link_directories(InA_Interpreter PUBLIC ${cJSON_LIBRARY_DIRS})
-target_link_libraries(InA_Interpreter PUBLIC InA_Interpreter_lib)
-
 
 ################################################
 # test
 add_executable(InA_Interpreter_test InA_Interpreter_test.cpp)
-target_link_libraries(InA_Interpreter_test InA_Interpreter_lib)
+target_link_libraries(InA_Interpreter_test InA_Interpreter)
 target_include_directories(InA_Interpreter_test PRIVATE ${WASABI_INCLUDES} ${WASABI_ROOT_DIR}/src/test_tools/include)
 
 add_test(NAME InA_Interpreter_test COMMAND InA_Interpreter_test --dir=./  WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX})
