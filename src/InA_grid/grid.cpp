@@ -65,16 +65,6 @@ namespace ina::grid
             throw std::runtime_error("Cells and Axis have differnet size");
     }
 
-    const std::vector<const ina::query_model::Dimension*>& Grid::getRowDims() const
-    {
-        return m_rowAxe.m_dimensions;
-    }
-
-    const std::vector<const ina::query_model::Dimension*>& Grid::getColDims() const
-    {
-        return m_colAxe.m_dimensions;
-    }
-
     std::pair<size_t, size_t> Grid::getCellsSize() const
     {
         return m_cellsSize;
