@@ -13,12 +13,12 @@ echo -e "WASABI_BUILD_TYPE{Debug|Release}: " "\t'"$WASABI_BUILD_TYPE"'";
 
 export WASABI_ROOT_DIR=${WASABI_ROOT_DIR:-$(pwd)}
 echo -e "WASABI_ROOT_DIR: " "\t'"$WASABI_ROOT_DIR"'";
-export WASABI_INSTAL_DIR=$WASABI_ROOT_DIR/install_$WASABI_PLATFORM_TARGET'_'$WASABI_BUILD_TYPE
+export WASABI_INSTAL_DIR=$WASABI_ROOT_DIR/install/$WASABI_PLATFORM_TARGET'/'$WASABI_BUILD_TYPE
 echo -e "WASABI_INSTAL_DIR: " "\t'"$WASABI_INSTAL_DIR"'";
 export WASABI_EXTERNAL_DIR=$WASABI_ROOT_DIR/external
 echo -e "WASABI_EXTERNAL_DIR: " "\t'"$WASABI_EXTERNAL_DIR"'";
 
-export WASABI_BUILD_DIR_NAME=build_$WASABI_PLATFORM_TARGET'_'$WASABI_BUILD_TYPE
+export WASABI_BUILD_DIR_NAME=./build/$WASABI_PLATFORM_TARGET'/'$WASABI_BUILD_TYPE
 echo -e "WASABI_BUILD_DIR_NAME: " "\t'"$WASABI_BUILD_DIR_NAME"'";
 
 export LLVM_VERSION=11.0.0
@@ -82,12 +82,12 @@ echo -e  "rebuild              to clean compile test the current cmake folder";
 
 alias setenv='unset WASABI_ROOT_DIR && source ./scripts/set_env.sh'
 alias run_server='python3 -m http.server 8080 -d $WASABI_INSTAL_DIR'
-alias clean='$CMAKE --build ./$WASABI_BUILD_DIR_NAME --target clean'
-alias compile='$CMAKE --build ./$WASABI_BUILD_DIR_NAME'
+alias clean='$CMAKE --build $WASABI_BUILD_DIR_NAME --target clean'
+alias compile='$CMAKE --build $WASABI_BUILD_DIR_NAME'
 alias test='(cd "$WASABI_BUILD_DIR_NAME" && $CTEST -j8 -T test --output-on-failure)'
-alias install='$CMAKE --build ./$WASABI_BUILD_DIR_NAME --target install'
-alias build='$CMAKE -B ./$WASABI_BUILD_DIR_NAME . -G Ninja -DCMAKE_BUILD_TYPE=$WASABI_BUILD_TYPE -DCMAKE_MAKE_PROGRAM=$NINJA -DCMAKE_INSTALL_PREFIX:PATH=$WASABI_INSTAL_DIR && install && test'
-alias rebuild='rm -rf ./$WASABI_BUILD_DIR_NAME && mkdir $WASABI_BUILD_DIR_NAME && build'
+alias install='$CMAKE --build $WASABI_BUILD_DIR_NAME --target install'
+alias build='$CMAKE -B $WASABI_BUILD_DIR_NAME . -G Ninja -DCMAKE_BUILD_TYPE=$WASABI_BUILD_TYPE -DCMAKE_MAKE_PROGRAM=$NINJA -DCMAKE_INSTALL_PREFIX:PATH=$WASABI_INSTAL_DIR && install && test'
+alias rebuild='rm -rf $WASABI_BUILD_DIR_NAME && mkdir -p $WASABI_BUILD_DIR_NAME && build'
 
 alias export2nexus='(export LD_LIBRARY_PATH=$WASABI_INSTAL_DIR/ && $WASABI_INSTAL_DIR/wasm-opt $WASABI_INSTAL_DIR/InA_Interpreter.wasm -Oz -o $WASABI_INSTAL_DIR/InA_Interpreter.wasm && chmod 777 $WASABI_INSTAL_DIR/InA_Interpreter.wasm && mvn -f $WASABI_ROOT_DIR/nexus/pom.xml clean deploy)'
 
