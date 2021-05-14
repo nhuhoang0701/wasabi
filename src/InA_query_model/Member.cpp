@@ -4,34 +4,44 @@
 
 namespace ina::query_model
 {
-	Member::Member(const std::string & name, const Aggregation & aggregation) :
-	_name(name), _aggregation(aggregation), _type((eAggregation))
-	{	
+	Member::Member(Member&& other)
+	: m_formula(std::move(other.m_formula)),
+	  m_name(other.m_name),
+	  m_description(other.m_description),
+	  m_aggregation(other.m_aggregation)
+	{
 	}
 
-	Member::Member(const std::string & name, const Formula & formula) :
-	_name(name), _formula(formula),_type(eFormula)
+	Member::Member(const Member& other)
+	: m_formula(other.m_formula!=nullptr?new Formula(*other.m_formula):nullptr),
+	  m_name(other.m_name),
+	  m_description(other.m_description),
+	  m_aggregation(other.m_aggregation)
 	{
-
 	}
 
-	const Member::eMemberType Member::getType() const
+	Member& Member::operator =(const Member& other)
 	{
-		return _type;
+		m_formula.reset(other.m_formula!=nullptr?new Formula(*other.m_formula):nullptr);
+		m_name = other.m_name;
+		m_description = other.m_description;
+		m_aggregation = other.m_aggregation;
+
+		return *this;
 	}
 
-	const std::string & Member::getName() const
+	const std::string& Member::getName() const
 	{
-		return _name;
+		return m_name;
 	}
 	
-	const Aggregation & Member::getAggregation() const
+	const Aggregation& Member::getAggregation() const
 	{
-		return _aggregation;
+		return m_aggregation;
 	}
 
-	const Formula & Member::getFormula() const
+	const Formula* Member::getFormula() const
 	{
-		return _formula;
+		return m_formula.get();
 	}
 }
