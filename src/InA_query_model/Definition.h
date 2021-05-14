@@ -7,6 +7,7 @@
 #include "Member.h"
 #include "Dimension.h"
 #include "QueryFilter.h"
+#include "QuerySort.h"
 #include "QueryFilterComparison.h"
 #include "Formula.h"
 #include "ResultSetFeatureRequest.h"

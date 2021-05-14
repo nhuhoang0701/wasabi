@@ -7,7 +7,7 @@
 #include <unordered_map>
 struct TupleHash {
     size_t operator()(const std::vector<size_t>& v) const {
-        std::hash<size_t> hasher;
+        //std::hash<size_t> hasher;
         size_t seed = v.size();
         for (size_t i : v) {
             seed ^= i + 0x9e3779b9 + (seed<<6) + (seed>>2);
@@ -150,6 +150,10 @@ namespace calculator
 		return m_tuples[row].second;
 	}
 
+	const calculator::ColumnData& Axe::getDataColumn(const std::string& dimName) const
+	{
+		return *m_cube.getStorage().getColumn(dimName);
+	}
 
 	Body::Body(const Cube& cube, const Axe& row, const Axe& col)
 		: m_cube(cube), m_axeRow(row), m_axeCol(col)

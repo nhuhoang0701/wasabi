@@ -3,51 +3,41 @@
 #include <InA_query_model/Query.h>
 #include <calculator/cube.h>
 
+#include <cstdint>
 #include <json/jsonWriter.h>
 
 #include <iostream>
+#include <stdexcept>
 
 namespace ina::grid
 {
-	void                        writeDimensions(const Grid& grid, JSONWriter& writer, const std::vector<const ina::query_model::Dimension*>& dims);
-	size_t                      writeTuples(const Grid& grid, JSONWriter& writer, const calculator::eAxe& axis, const std::vector<const ina::query_model::Dimension*>& dims);
-	std::pair<size_t, size_t>   writeCells(const Grid& grid, JSONWriter& writer);
+	void    writeAxe(JSONWriter& writer, const Axis& axis);
+	void    writeDimensions(JSONWriter& writer, const Axis& axis);
+	void    writeTuples(JSONWriter& writer, const Axis& axis);
+	void    writeCells(const Grid& grid, JSONWriter& writer);
 
     void write(const ina::grid::Grid& grid, JSONWriter& writer)
     {
         JSON_MAP(writer);
         {
             writer.pair("ResultFormat", "Version2");
+            /*writer.key("SubSetDescription");
+            {
+                JSON_MAP(writer);
+                writer.pair("ColumnFrom", "ROWS");
+                writer.pair("ColumnTo", "ROWS");
+                writer.pair("RowFrom", "ROWS");
+                writer.pair("RowTo", "ROWS");
+            }*/
             writer.key("Axes");
             {
                 JSON_LIST(writer);
-                if(!grid.getRowDims().empty())
-                {
-                    JSON_MAP(writer);
-                    writer.pair("Name", "ROWS");
-                    writeDimensions(grid, writer, grid.getRowDims());
-
-                    size_t tuplesCount = writeTuples(grid, writer, calculator::eAxe::Row, grid.getRowDims());
-                    writer.pair("TupleCount", static_cast<uint32_t>(tuplesCount));
-                }
-                if(!grid.getColDims().empty())
-                {
-                    JSON_MAP(writer);
-                    writer.pair("Name", "COLUMNS");
-                    writeDimensions(grid, writer, grid.getColDims());
-
-                    size_t tuplesCount = writeTuples(grid, writer, calculator::eAxe::Column, grid.getColDims());
-                    writer.pair("TupleCount", static_cast<uint32_t>(tuplesCount));
-                }
+                writeAxe(writer, grid.m_rowAxe);
+                writeAxe(writer, grid.m_colAxe);
             }
 
-            auto cellsSize = writeCells(grid, writer);
-            writer.key("CellArraySizes");
-            {
-                JSON_LIST(writer);
-                writer.value(static_cast<uint32_t>(cellsSize.first));
-                writer.value(static_cast<uint32_t>(cellsSize.second));
-            }
+            writeCells(grid, writer);
+
             writer.pair("ResultSetState", 0u);
             writer.pair("HasErrors", true);
             writer.key("Messages");
@@ -60,27 +50,38 @@ namespace ina::grid
             }
         }
     }
+    
+	void    writeAxe(JSONWriter& writer, const Axis& axis)
+    {
+        if(!axis.getDimensions().empty())
+        {
+            JSON_MAP(writer);
+            writer.pair("Name", axis.getName());
+            writeDimensions(writer, axis);
+            writeTuples(writer, axis);
+        }
+    }
 
-    void writeDimensions(const Grid& grid, JSONWriter& writer, const std::vector<const ina::query_model::Dimension*>& dims)
+    void writeDimensions(JSONWriter& writer, const Axis& axis)
     {
         writer.key("Dimensions");
         JSON_LIST(writer);
         size_t idxDim = 0;
-        for(const auto& dim : dims)
+        for(const auto& dim : axis.getDimensions())
         {
             JSON_MAP(writer);
             writer.pair("Name", dim->getName());
             {
                 writer.key("Attributes");
                 JSON_LIST(writer);
-                if(!ina::query_model::Dimension::isDimensionOfMeasures(*dim) )
+                if(axis.getMeasureDimension() != dim )
                 {
                     JSON_MAP(writer);
                     writer.pair("Name", dim->getName());
                     writer.key("Values");
                     {
                         JSON_LIST(writer);
-                        const auto& col = *grid.getCube().getStorage().getColumn(dim->getName());
+                        const auto& col = axis.getCubeAxis().getDataColumn(dim->getName());
                         for(size_t valueIdx = 0; valueIdx < col.getNumberOfValues(); valueIdx++)
                         {
                             const auto& data = col.getValueAtValueIdx(valueIdx);
@@ -111,14 +112,8 @@ namespace ina::grid
                         writer.key("Values");
                         {
                             JSON_LIST(writer);
-                            for(const auto& member : grid.getQuery().getDefinition().getVisibleMembers(*dim))
-                            {
-                            #ifdef DEBUG
-                                writer.value(member.getName() + " (val.[M][N])");
-                            #else
+                            for(const auto& member : axis.getMeasureDimMembers())
                                 writer.value(member.getName());
-                            #endif
-                            }
                         }
                     }
                     {
@@ -128,7 +123,7 @@ namespace ina::grid
                         writer.key("Values");
                         {
                             JSON_LIST(writer);
-                            for(const auto& member : grid.getQuery().getDefinition().getVisibleMembers(*dim))
+                            for(const auto& member : axis.getMeasureDimMembers())
                                 writer.value(member.getName());
                         }
                     }
@@ -138,34 +133,16 @@ namespace ina::grid
         }
     }
 
-    size_t writeTuples(const Grid& grid, JSONWriter& writer, const calculator::eAxe& eAxe, const std::vector<const ina::query_model::Dimension*>& dims)
+    void writeTuples(JSONWriter& writer, const Axis& axis)
     {
         //std::cout << "**************************************\n";
         //std::cout << "writeTuples\n";
-        const ina::query_model::Dimension* measDim = nullptr;
-        for(const auto& dimension : dims)
-        {
-            //std::cout << " " << dimension->getName() << " | ";
-            if(ina::query_model::Dimension::isDimensionOfMeasures(*dimension) )
-                measDim = dimension;
-        }
-        //std::cout << "\n";
-
-        auto const& axis = grid.getCube().getAxe(eAxe);
-        size_t tuplesCount = axis.getCardinality();
-        if(measDim != nullptr)
-        {
-            if(tuplesCount == 0) // Only dim meas on this axe
-                tuplesCount = grid.getQuery().getDefinition().getVisibleMembers(*measDim).size();
-            else
-                tuplesCount *= grid.getQuery().getDefinition().getVisibleMembers(*measDim).size();
-        }
-        //std::cout << "tuplesCount: " << tuplesCount << "\n";
-
+        writer.pair("TupleCount", static_cast<uint32_t>(axis.getTupleCount()));
+        //writer.pair("TupleCountTotal", static_cast<uint32_t>(axis.getTupleCount()));
         writer.key("Tuples");
         {
             JSON_LIST(writer);
-            for(auto dimension : dims)
+            for(const auto& dimension : axis.getDimensions())
             {
                 JSON_MAP(writer);
                 {
@@ -177,17 +154,17 @@ namespace ina::grid
                         {
                             JSON_LIST(writer);
                             {
-                                if(ina::query_model::Dimension::isDimensionOfMeasures(*dimension) )
+                                if(dimension == axis.getMeasureDimension() )
                                 {
-                                    size_t maxRows = axis.getCardinality();
+                                    size_t maxRows = axis.getCubeAxis().getCardinality();
                                     if(maxRows == 0)
                                         maxRows = 1;
                                     //std::cout << "maxRows: " << maxRows << "\n";
-                                    const auto& member = grid.getQuery().getDefinition().getVisibleMembers(*dimension);
+                                    const auto& members = axis.getMeasureDimMembers();
                                     //std::cout << "member.size(): " << member.size() << "\n";
                                     for (size_t rowIndex = 0; rowIndex < maxRows; rowIndex++)
                                     {
-                                        for(size_t i = 0; i < member.size(); i++)
+                                        for(size_t i = 0; i < members.size(); i++)
                                         {
                                             writer.value(static_cast<uint32_t>(i));
                                         }
@@ -195,14 +172,14 @@ namespace ina::grid
                                 }
                                 else
                                 {
-                                    //std::cout << "axis.getCardinality(): " << axis.getCardinality() << "\n";
-                                    for (size_t rowIndex = 0; rowIndex < axis.getCardinality(); rowIndex++)
+                                    //std::cout << "axis.getCubeAxis().getCardinality(): " << axis.getCubeAxis().getCardinality() << "\n";
+                                    for (size_t rowIndex = 0; rowIndex < axis.getCubeAxis().getCardinality(); rowIndex++)
                                     {
-                                        const auto idx = static_cast<uint32_t>(axis.getValueIndex(dimension->getName(), rowIndex));
-                                        if(measDim)
+                                        const auto idx = static_cast<uint32_t>(axis.getCubeAxis().getValueIndex(dimension->getName(), rowIndex));
+                                        if(axis.getMeasureDimension() != nullptr)
                                         {
-                                            const auto& member = grid.getQuery().getDefinition().getVisibleMembers(*measDim);
-                                            for(size_t i = 0; i < member.size(); i++)
+                                            const auto& members = axis.getMeasureDimMembers();
+                                            for(size_t i = 0; i < members.size(); i++)
                                                 writer.value(idx);
                                         }
                                         else
@@ -215,12 +192,16 @@ namespace ina::grid
                 }
             }
         }
-        
-        return tuplesCount;
     }
 
-    std::pair<size_t, size_t> writeCells(const Grid& grid, JSONWriter& writer)
+    void writeCells(const Grid& grid, JSONWriter& writer)
     {
+        writer.key("CellArraySizes");
+        {
+            JSON_LIST(writer);
+            writer.value(static_cast<uint32_t>(grid.getCellsSize().first));
+            writer.value(static_cast<uint32_t>(grid.getCellsSize().second));
+        }
         writer.key("Cells");
         {
             JSON_MAP(writer);
@@ -271,10 +252,10 @@ namespace ina::grid
                     {
                         for(size_t colIndex = 0; colIndex < grid.getCube().getBody().getColNbrs(); colIndex++)
                         {
-                            for(const auto& dim : grid.getCube().getBody())
+                            for(const auto& measure : grid.getCube().getBody())
                             {
-                                const auto& data = grid.getCube().getBody().getValue(dim.getName(), colIndex, rowIndex);
-                                switch (grid.getCube().getBody().getValueDatatype(dim.getName()))
+                                const auto& data = grid.getCube().getBody().getValue(measure.getName(), colIndex, rowIndex);
+                                switch (grid.getCube().getBody().getValueDatatype(measure.getName()))
                                 {
                                 case calculator::eDataType::String:
                                 {
@@ -305,10 +286,9 @@ namespace ina::grid
                     {
                         for(size_t colIndex = 0; colIndex < grid.getCube().getBody().getColNbrs(); colIndex++)
                         {
-                            for(const auto& measName : grid.getCube().getBody())
+                            for(const auto& measure : grid.getCube().getBody())
                             {
-                                const auto& data = grid.getCube().getBody().getValue(measName.getName(), colIndex, rowIndex);
-                                switch (grid.getCube().getBody().getValueDatatype(measName.getName()))
+                                switch (grid.getCube().getBody().getValueDatatype(measure.getName()))
                                 {
                                 case calculator::eDataType::String:
                                 {
@@ -329,13 +309,5 @@ namespace ina::grid
                 }
             }
         }
-        
-        std::pair<size_t, size_t> cellsSize = std::make_pair(grid.getCube().getBody().getRowNbrs(), grid.getCube().getBody().getColNbrs());
-        if( grid.getMeasDim().getAxe()==ina::query_model::Dimension::eAxe::Rows)
-            cellsSize.first *= grid.getQuery().getDefinition().getVisibleMembers(grid.getMeasDim()).size();
-        if(grid.getMeasDim().getAxe()==ina::query_model::Dimension::eAxe::Columns)
-            cellsSize.second *= grid.getQuery().getDefinition().getVisibleMembers(grid.getMeasDim()).size();
-
-        return cellsSize;
     }
 }
