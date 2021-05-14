@@ -7,7 +7,7 @@ Extension :
  - https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools  
 "cmake.configureArgs": [
   "-DCMAKE_MAKE_PROGRAM=${workspaceFolder}/external/ninja/ninja",
-  "-DCMAKE_INSTALL_PREFIX:PATH=${workspaceFolder}/install_wasm_Debug/",
+  "-DCMAKE_INSTALL_PREFIX:PATH=${workspaceFolder}/install/wasm/Debug/",
   "-DLLVM_DIR=${workspaceFolder}/external/clang+llvm-11.0.0-x86_64-linux-gnu-ubuntu-20.04",
   "-DSYSROOT_DIR=${workspaceFolder}/external/wasi-sdk-12/wasi-sysroot",
   "-DWASMTIME=${workspaceFolder}/external/wasmtime-v0.22.0/wasmtime",
