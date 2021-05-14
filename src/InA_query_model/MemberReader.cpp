@@ -3,69 +3,54 @@
 
 
 #include <json/jsonReader.h>    // For JSONGenericObject
+#include <memory>
 
 namespace ina::query_model
 {
 	void read(Member& obj, const JSONGenericObject& jsonNode)
 	{
-		//if(jsonNode.haveValue("Aggregation"))
+		if(jsonNode.haveValue("Aggregation"))
+			obj.m_aggregation = jsonNode.getString("Aggregation");
+
+		if(jsonNode.haveValue("Name"))
+			obj.m_name = jsonNode.getString("Name");
+
+		if(jsonNode.haveValue("Description"))
+			obj.m_description = jsonNode.getString("Description");
+						
+		if(JSONGenericObject formulaNode = jsonNode.getObject("Formula"))
 		{
-			//obj._aggregation = jsonNode.getString("Aggregation");
-			obj._type = Member::eAggregation;
-			// MDS_TheDefinitveGuide_2_1 
-			// MemberOperand is deprecated, but, in MANY examples
-			if (jsonNode.getObject("MemberOperand")) 
+			obj.m_formula = std::make_unique<query_model::Formula>();
+			read(*obj.m_formula, formulaNode);		
+		}
+	
+		// MDS_TheDefinitveGuide_2_1 
+		// MemberOperand is deprecated, but, in MANY examples
+		if (JSONGenericObject memberOperandNode = jsonNode.getObject("MemberOperand")) 
+		{
+			std::string attributeName = memberOperandNode.getString("AttributeName");
+			if (attributeName == "Measures")
 			{
-				std::string attributeName = jsonNode.getObject("MemberOperand").getString("AttributeName");
-				if (attributeName == "Measures")
-				{
-					/*
-					"MemberOperand": {
-					"Comparison": "=",
-					"AttributeName": "Measures",
-					"Value": "SIGNEDDATA"
-					}
-					*/				
-					obj._name = jsonNode.getObject("MemberOperand").getString("Value");
+				/*
+				"MemberOperand": {
+				"Comparison": "=",
+				"AttributeName": "Measures",
+				"Value": "SIGNEDDATA"
 				}
-				else
-				{
-					/*
-					"MemberOperand": {
-					"Comparison": "=",
-					"AttributeName": "YEAR",
-					"Value": "2015"
-					}
-					*/
-					obj._name = jsonNode.getObject("MemberOperand").getString("AttributeName");
-				}
+				*/				
+				obj.m_name = memberOperandNode.getString("Value");
 			}
 			else
 			{
 				/*
-				"Member": {
-				"Name": "SD_2015"
+				"MemberOperand": {
+				"Comparison": "=",
+				"AttributeName": "YEAR",
+				"Value": "2015"
 				}
 				*/
-				obj._name = jsonNode.getString("Name");
+				obj.m_name = memberOperandNode.getString("AttributeName");
 			}
 		}
-		/*
-		else if(jsonNode.haveValue("Description"))
-		{
-			obj._name = jsonNode.getString("Description");
-			JSONGenericObject formulaNode = jsonNode.getObject("Formula");
-
-			if(formulaNode)
-			{
-				query_model::Formula formulaObj;
-				read(formulaObj, formulaNode);
-
-				obj._formula = formulaObj;	
-				obj._type = Member::eFormula;			
-			}
-
-		}
-		*/
 	}
 }
