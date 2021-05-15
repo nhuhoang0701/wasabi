@@ -23,6 +23,7 @@ namespace calculator
 
 		calculator::eDataType  getDataType() const;
 
+		size_t                 getRowCount() const;
 		const Value&           getValueAtRowIdx(size_t rowIndex) const;
 
 		size_t                 getValueIndexFromRowIdx(size_t rowIndex) const;
@@ -32,8 +33,7 @@ namespace calculator
 		Value                  aggregate(const std::vector<size_t>& rowIndexes) const;
 
 	private:
-		std::string m_name;
-		const Cube* m_cube = nullptr;
+		std::string       m_name;
 		const ColumnData* m_dataColumn = nullptr;
 	};
 
@@ -79,9 +79,9 @@ namespace calculator
 
 		void    materialyze();
 
-		size_t  getCellsNbs() const;
-		size_t  getRowNbrs() const;
-		size_t  getColNbrs() const;
+		size_t  getCellCount() const;
+		size_t  getRowCount() const;
+		size_t  getColumnCount() const;
 
 		const Object&          getMeasure(const std::string& measureName) const;
 		const Value&           getValue(const std::string& measureName, size_t col, size_t row) const;
@@ -90,9 +90,9 @@ namespace calculator
 		const Value&           getValue(size_t measIdx, size_t col, size_t row) const;
 
 	private:
-		const Cube& m_cube;
-		const Axe& m_axeRow;
-		const Axe& m_axeCol;
+		const Cube&  m_cube;
+		const Axe&   m_axeRow;
+		const Axe&   m_axeCol;
 
 		typedef std::vector<std::vector<Value>>  Values;
 

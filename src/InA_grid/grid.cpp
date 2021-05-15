@@ -55,7 +55,7 @@ namespace ina::grid
         m_rowAxe.init();
         m_colAxe.init();
 
-        m_cellsSize = std::make_pair(getCube().getBody().getRowNbrs(), getCube().getBody().getColNbrs());
+        m_cellsSize = std::make_pair(getCube().getBody().getRowCount(), getCube().getBody().getColumnCount());
         if( m_rowAxe.m_measDim != nullptr)
             m_cellsSize.first *= m_rowAxe.m_measureDimensionMembers.size();
         if( m_colAxe.m_measDim != nullptr)

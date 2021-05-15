@@ -72,7 +72,7 @@ namespace ina::metadata
         const static std::string ID = "ID";
         return ID;
     }
-	eDatatype            Attribute::getDatatype() const
+	eDatatype            Attribute::getDataType() const
     {
         //TODO
         return eDatatype::String;

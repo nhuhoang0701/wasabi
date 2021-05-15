@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <stdexcept>
 #include <numeric>    // For iota
+#include <limits>
 
 #include <unordered_map>
 struct TupleHash {
@@ -28,8 +29,7 @@ namespace calculator
 
 	void Object::materialyze(const Cube& cube)
 	{
-		m_cube = &cube;
-		m_dataColumn = &*m_cube->getStorage().getColumn(m_name);
+		m_dataColumn = &*cube.getStorage().getColumn(m_name);
 	}
 
 	calculator::eDataType  Object::getDataType() const
@@ -37,6 +37,13 @@ namespace calculator
 		if(!m_dataColumn)
 			throw std::runtime_error("Object: materialyze() not called");
 		return m_dataColumn->getDataType();
+	}
+
+	size_t Object::getRowCount() const
+	{
+		if(!m_dataColumn)
+			throw std::runtime_error("Object: materialyze() not called");
+		return m_dataColumn->getRowCount();	
 	}
 
 	const Value& Object::getValueAtRowIdx(size_t rowIndex) const
@@ -105,8 +112,15 @@ namespace calculator
 
 	void Axe::materialyze()
 	{
+		size_t rowCount = std::numeric_limits<size_t>::max();
 		for(auto& object : *this)
+		{
 			object.materialyze(m_cube);
+			if(rowCount == std::numeric_limits<size_t>::max())
+				rowCount = object.getRowCount();
+			else if(rowCount != object.getRowCount())	 
+				throw std::runtime_error("Some column have different row count...");
+		}
 
 		m_tuples.clear();
 		//std::cout << "*****************************************\n";
@@ -120,7 +134,7 @@ namespace calculator
 			// Get the tuple
 			Tuple tuple;
 			tuple.reserve(size());
-			for(size_t rowIndex = 0; rowIndex <m_cube.getStorage().getRowNbrs(); rowIndex++)
+			for(size_t rowIndex = 0; rowIndex < rowCount; rowIndex++)
 			{
 				tuple.clear();
 				for(const auto& obj : *this)
@@ -229,14 +243,21 @@ namespace calculator
 		//std::cout << "*****************************************\n";
 		//std::cout << "materialyze: \n";
 
+		size_t rowCount = std::numeric_limits<size_t>::max();
 		for(auto& object : *this)
+		{
 			object.materialyze(m_cube);
+			if(rowCount == std::numeric_limits<size_t>::max())
+				rowCount = object.getRowCount();
+			else if(rowCount != object.getRowCount())	 
+				throw std::runtime_error("Some column have different row count...");
+		}
 
 		m_Body.resize(size());
 		size_t measIdx = 0;
 		for(auto& values : m_Body)
 		{
-			values.resize(getRowNbrs());
+			values.resize(getRowCount());
 	
 			const Object& measure = at(measIdx++);
 
@@ -245,7 +266,7 @@ namespace calculator
 			{
 				values.resize(1);
 				values[0].resize(1);
-				std::vector<size_t> indexes(m_cube.getStorage().getRowNbrs());
+				std::vector<size_t> indexes(rowCount);
 				std::iota(indexes.begin(), indexes.end(), 0);
 				values[0][0] = measure.aggregate(indexes);
 			}
@@ -254,7 +275,7 @@ namespace calculator
 				// Full aggreagtion on row axis
 				if(m_axeRow.getCardinality() == 0)
 				{
-					values[0].resize(getColNbrs());
+					values[0].resize(getColumnCount());
 					size_t col = 0;
 					for(auto& value : values[0])
 					{
@@ -266,7 +287,7 @@ namespace calculator
 					size_t row = 0;
 					for(auto& rowValues : values)
 					{
-						rowValues.resize(getColNbrs());
+						rowValues.resize(getColumnCount());
 						std::vector<size_t> rowIdxs = m_axeRow.getParentIndexes(row);
 
 						// Full aggreagtion on col axis
@@ -317,27 +338,27 @@ namespace calculator
 		m_materialyzed = true;
 	}
 
-	size_t  Body::getCellsNbs() const
+	size_t  Body::getCellCount() const
 	{
-		return getRowNbrs() * getColNbrs() * size();
+		return getRowCount() * getColumnCount() * size();
 	}
 
-	size_t  Body::getColNbrs() const
+	size_t  Body::getColumnCount() const
 	{
 		if(empty())
 			return 0;
 		else if(m_axeCol.empty())
-			return m_cube.getStorage().getRowNbrs()==0?0:1;
+			return m_cube.getStorage().haveData()?1:0;
 
 		return m_axeCol.getCardinality();
 	}
 
-	size_t  Body::getRowNbrs() const
+	size_t  Body::getRowCount() const
 	{
 		if(empty())
 			return 0;
 		else if(m_axeRow.empty())
-			return m_cube.getStorage().getRowNbrs()==0?0:1;
+			return m_cube.getStorage().haveData()?1:0;
 		
 		return m_axeRow.getCardinality();
 	}
