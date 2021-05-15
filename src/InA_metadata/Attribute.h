@@ -33,7 +33,7 @@ namespace ina::metadata
 
 			const std::string&   getAlias() const;
 
-			eDatatype            getDatatype() const;
+			eDatatype            getDataType() const;
 			const std::string&   getSQLDataType() const;
 			
 			bool                 isKey() const;

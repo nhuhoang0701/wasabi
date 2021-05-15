@@ -162,7 +162,7 @@ namespace ina::grid
                                     //std::cout << "maxRows: " << maxRows << "\n";
                                     const auto& members = axis.getMeasureDimMembers();
                                     //std::cout << "member.size(): " << member.size() << "\n";
-                                    for (size_t rowIndex = 0; rowIndex < maxRows; rowIndex++)
+                                    for (size_t tupleIndex = 0; tupleIndex < maxRows; tupleIndex++)
                                     {
                                         for(size_t i = 0; i < members.size(); i++)
                                         {
@@ -173,9 +173,9 @@ namespace ina::grid
                                 else
                                 {
                                     //std::cout << "axis.getCubeAxis().getCardinality(): " << axis.getCubeAxis().getCardinality() << "\n";
-                                    for (size_t rowIndex = 0; rowIndex < axis.getCubeAxis().getCardinality(); rowIndex++)
+                                    for (size_t tupleIndex = 0; tupleIndex < axis.getCubeAxis().getCardinality(); tupleIndex++)
                                     {
-                                        const auto idx = static_cast<uint32_t>(axis.getCubeAxis().getValueIndex(dimension->getName(), rowIndex));
+                                        const auto idx = static_cast<uint32_t>(axis.getCubeAxis().getValueIndex(dimension->getName(), tupleIndex));
                                         if(axis.getMeasureDimension() != nullptr)
                                         {
                                             const auto& members = axis.getMeasureDimMembers();
@@ -212,9 +212,9 @@ namespace ina::grid
                 writer.key("Values");
                 {
                     JSON_LIST(writer);	
-                    for(size_t rowIndex = 0; rowIndex < grid.getCube().getBody().getRowNbrs(); rowIndex++)
+                    for(size_t rowIndex = 0; rowIndex < grid.getCube().getBody().getRowCount(); rowIndex++)
                     {
-                        for(size_t colIndex = 0; colIndex < grid.getCube().getBody().getColNbrs(); colIndex++)
+                        for(size_t colIndex = 0; colIndex < grid.getCube().getBody().getColumnCount(); colIndex++)
                         {
                             for(const auto& measure : grid.getCube().getBody())
                             {
@@ -248,9 +248,9 @@ namespace ina::grid
                 writer.key("Values");
                 {
                     JSON_LIST(writer);	
-                    for(size_t rowIndex = 0; rowIndex < grid.getCube().getBody().getRowNbrs(); rowIndex++)
+                    for(size_t rowIndex = 0; rowIndex < grid.getCube().getBody().getRowCount(); rowIndex++)
                     {
-                        for(size_t colIndex = 0; colIndex < grid.getCube().getBody().getColNbrs(); colIndex++)
+                        for(size_t colIndex = 0; colIndex < grid.getCube().getBody().getColumnCount(); colIndex++)
                         {
                             for(const auto& measure : grid.getCube().getBody())
                             {
@@ -282,9 +282,9 @@ namespace ina::grid
                 writer.key("Values");
                 {
                     JSON_LIST(writer);	
-                    for(size_t rowIndex = 0; rowIndex < grid.getCube().getBody().getRowNbrs(); rowIndex++)
+                    for(size_t rowIndex = 0; rowIndex < grid.getCube().getBody().getRowCount(); rowIndex++)
                     {
-                        for(size_t colIndex = 0; colIndex < grid.getCube().getBody().getColNbrs(); colIndex++)
+                        for(size_t colIndex = 0; colIndex < grid.getCube().getBody().getColumnCount(); colIndex++)
                         {
                             for(const auto& measure : grid.getCube().getBody())
                             {
