@@ -404,6 +404,8 @@ namespace calculator
 
 	void Cube::addMeas(const std::string& name)
 	{
+		if(name.empty())
+				throw std::runtime_error("Measure with empty name not supported.");
 		if(!getStorage().haveCol(name))
 			throw std::runtime_error("Object " + name + " not found in datastorage");
 

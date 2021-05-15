@@ -4,8 +4,39 @@
 
 namespace ina::query_model
 {
+	std::string Member::getName(const Member& member)
+	{
+		/*
+		"MemberOperand": {
+		"Comparison": "=",
+		"AttributeName": "Measures",
+		"Value": "SIGNEDDATA"
+		}
+		*/	
+		
+		/*
+		"MemberOperand": {
+		"Comparison": "=",
+		"AttributeName": "YEAR",
+		"Value": "2015"
+		}
+		*/
+		std::string name;
+		if(member.getMemberOperand() != nullptr)
+			name = member.getMemberOperand()->getValue();
+		else
+			name = member.getName();
+
+		return name;
+	}
+	const std::string&  MemberOperand::getValue() const
+	{
+		return m_value;
+	}
+
 	Member::Member(Member&& other)
-	: m_formula(std::move(other.m_formula)),
+	: m_memberOperand(std::move(other.m_memberOperand)),
+	  m_formula(std::move(other.m_formula)),
 	  m_name(other.m_name),
 	  m_description(other.m_description),
 	  m_aggregation(other.m_aggregation)
@@ -13,7 +44,8 @@ namespace ina::query_model
 	}
 
 	Member::Member(const Member& other)
-	: m_formula(other.m_formula!=nullptr?new Formula(*other.m_formula):nullptr),
+	: m_memberOperand(other.m_memberOperand!=nullptr?new MemberOperand(*other.m_memberOperand):nullptr),
+	  m_formula(other.m_formula!=nullptr?new Formula(*other.m_formula):nullptr),
 	  m_name(other.m_name),
 	  m_description(other.m_description),
 	  m_aggregation(other.m_aggregation)
@@ -22,6 +54,7 @@ namespace ina::query_model
 
 	Member& Member::operator =(const Member& other)
 	{
+		m_memberOperand.reset(other.m_memberOperand!=nullptr?new MemberOperand(*other.m_memberOperand):nullptr);
 		m_formula.reset(other.m_formula!=nullptr?new Formula(*other.m_formula):nullptr);
 		m_name = other.m_name;
 		m_description = other.m_description;
@@ -29,7 +62,7 @@ namespace ina::query_model
 
 		return *this;
 	}
-
+	
 	const std::string& Member::getName() const
 	{
 		return m_name;
@@ -43,5 +76,10 @@ namespace ina::query_model
 	const Formula* Member::getFormula() const
 	{
 		return m_formula.get();
+	}
+
+	const MemberOperand* Member::getMemberOperand() const
+	{
+		return m_memberOperand.get();
 	}
 }
