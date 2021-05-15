@@ -30,9 +30,9 @@ int main()
 		CPPUNIT_ASSERT_EQUAL(0, cube.getAxe(calculator::eAxe::Column).getCardinality());
 
 		CPPUNIT_ASSERT_EQUAL(2, cube.getBody().size());
-		CPPUNIT_ASSERT_EQUAL(0, cube.getBody().getCellsNbs());
-		CPPUNIT_ASSERT_EQUAL(0, cube.getBody().getColNbrs());
-		CPPUNIT_ASSERT_EQUAL(0, cube.getBody().getRowNbrs());
+		CPPUNIT_ASSERT_EQUAL(0, cube.getBody().getCellCount());
+		CPPUNIT_ASSERT_EQUAL(0, cube.getBody().getColumnCount());
+		CPPUNIT_ASSERT_EQUAL(0, cube.getBody().getRowCount());
 	}
 
 	{
@@ -56,9 +56,9 @@ int main()
 		CPPUNIT_ASSERT_EQUAL(0, cube.getAxe(calculator::eAxe::Column).getCardinality());
 
 		CPPUNIT_ASSERT_EQUAL(0, cube.getBody().size());
-		CPPUNIT_ASSERT_EQUAL(0, cube.getBody().getCellsNbs());
-		CPPUNIT_ASSERT_EQUAL(0, cube.getBody().getColNbrs());
-		CPPUNIT_ASSERT_EQUAL(0, cube.getBody().getRowNbrs());
+		CPPUNIT_ASSERT_EQUAL(0, cube.getBody().getCellCount());
+		CPPUNIT_ASSERT_EQUAL(0, cube.getBody().getColumnCount());
+		CPPUNIT_ASSERT_EQUAL(0, cube.getBody().getRowCount());
 	}
 	{
 		Cube cube;	
@@ -71,9 +71,9 @@ int main()
 		CPPUNIT_ASSERT_EQUAL(0, cube.getAxe(calculator::eAxe::Column).getCardinality());
 
 		CPPUNIT_ASSERT_EQUAL(2, cube.getBody().size());
-		CPPUNIT_ASSERT_EQUAL(2, cube.getBody().getCellsNbs());
-		CPPUNIT_ASSERT_EQUAL(1, cube.getBody().getColNbrs());
-		CPPUNIT_ASSERT_EQUAL(1, cube.getBody().getRowNbrs());
+		CPPUNIT_ASSERT_EQUAL(2, cube.getBody().getCellCount());
+		CPPUNIT_ASSERT_EQUAL(1, cube.getBody().getColumnCount());
+		CPPUNIT_ASSERT_EQUAL(1, cube.getBody().getRowCount());
 		CPPUNIT_ASSERT_EQUAL(calculator::eDataType::Number, cube.getBody().getMeasure("Meas0").getDataType());
 		CPPUNIT_ASSERT_EQUAL(9, std::get<double>(cube.getBody().getValue("Meas0", 0, 0)));
 	}
@@ -97,9 +97,9 @@ int main()
 		CPPUNIT_ASSERT_EQUAL(0, cube.getAxe(calculator::eAxe::Column).getCardinality());
 
 		CPPUNIT_ASSERT_EQUAL(1, cube.getBody().size());
-		CPPUNIT_ASSERT_EQUAL(4, cube.getBody().getCellsNbs());
-		CPPUNIT_ASSERT_EQUAL(1, cube.getBody().getColNbrs());
-		CPPUNIT_ASSERT_EQUAL(4, cube.getBody().getRowNbrs());
+		CPPUNIT_ASSERT_EQUAL(4, cube.getBody().getCellCount());
+		CPPUNIT_ASSERT_EQUAL(1, cube.getBody().getColumnCount());
+		CPPUNIT_ASSERT_EQUAL(4, cube.getBody().getRowCount());
 	}
 	{
 		Cube cube;	
@@ -119,9 +119,9 @@ int main()
 			CPPUNIT_ASSERT_EQUAL("val2", std::get<std::string>(cube.getAxe(calculator::eAxe::Column).getValue("DimB", 2)) );
 
 		CPPUNIT_ASSERT_EQUAL(2, cube.getBody().size());
-		CPPUNIT_ASSERT_EQUAL(12, cube.getBody().getCellsNbs());
-		CPPUNIT_ASSERT_EQUAL(3, cube.getBody().getColNbrs());
-		CPPUNIT_ASSERT_EQUAL(2, cube.getBody().getRowNbrs());
+		CPPUNIT_ASSERT_EQUAL(12, cube.getBody().getCellCount());
+		CPPUNIT_ASSERT_EQUAL(3, cube.getBody().getColumnCount());
+		CPPUNIT_ASSERT_EQUAL(2, cube.getBody().getRowCount());
 			CPPUNIT_ASSERT_EQUAL("##NULL##", std::get<std::string>(cube.getBody().getValue("Meas1", 1, 0)));
 	}
 	{
@@ -150,9 +150,9 @@ int main()
 		CPPUNIT_ASSERT_EQUAL(0, cube.getAxe(calculator::eAxe::Column).getCardinality());
 
 		CPPUNIT_ASSERT_EQUAL(2, cube.getBody().size());
-		CPPUNIT_ASSERT_EQUAL(8, cube.getBody().getCellsNbs());
-		CPPUNIT_ASSERT_EQUAL(4, cube.getBody().getRowNbrs());
-		CPPUNIT_ASSERT_EQUAL(1, cube.getBody().getColNbrs());
+		CPPUNIT_ASSERT_EQUAL(8, cube.getBody().getCellCount());
+		CPPUNIT_ASSERT_EQUAL(4, cube.getBody().getRowCount());
+		CPPUNIT_ASSERT_EQUAL(1, cube.getBody().getColumnCount());
 			CPPUNIT_ASSERT_EQUAL(calculator::eDataType::Number, cube.getBody().getMeasure("Meas0").getDataType());
 			CPPUNIT_ASSERT_EQUAL(calculator::eDataType::String, cube.getBody().getMeasure("Meas1").getDataType());
 			CPPUNIT_ASSERT_EQUAL(1,        std::get<double>(cube.getBody().getValue("Meas0", 0, 0)));
