@@ -24,8 +24,8 @@ namespace ina::metadata
 		writer.pair("DescriptionColumn", att.getDescription());
 		writer.pair("Cardinality", att.getCardinality());
 		writer.pair("ColumnType", static_cast<std::uint32_t>(att.getColumnType()));
-		writer.pair("DataType", toString(att.getDatatype()));
-		writer.pair("DataTypeAsInt", static_cast<std::uint32_t>(att.getDatatype()));
+		writer.pair("DataType", toString(att.getDataType()));
+		writer.pair("DataTypeAsInt", static_cast<std::uint32_t>(att.getDataType()));
 		writer.pair("SQLType", att.getSQLDataType());
 
 

@@ -31,7 +31,7 @@ namespace calculator
 		virtual size_t       getNumberOfValues() const = 0;
 		virtual const Value& getValueAtValueIdx(size_t valueIndex) const = 0;
 
-		virtual size_t       getRows() const = 0;
+		virtual size_t       getRowCount() const = 0;
 		virtual const Value& getValueAtRowIdx(size_t rowIndex) const = 0;
 		virtual size_t       getValueIndexFromRowIdx(size_t rowIndex) const = 0;
 
@@ -53,7 +53,7 @@ namespace calculator
 		virtual size_t       getNumberOfValues() const {return m_values.size();}
 		virtual const Value& getValueAtValueIdx(size_t valueIndex) const {return m_values[valueIndex];}
 
-		size_t         getRows() const {return m_values.size();}
+		size_t         getRowCount() const {return m_values.size();}
 		const Value&   getValueAtRowIdx(size_t rowIndex) const {return m_values[rowIndex];}
 		virtual size_t getValueIndexFromRowIdx(size_t rowIndex) const {return rowIndex;}
 
@@ -71,7 +71,7 @@ namespace calculator
 		virtual size_t       getNumberOfValues() const {return m_values.size();}
 		virtual const Value& getValueAtValueIdx(size_t valueIndex) const {return m_values[valueIndex];}
 
-		size_t         getRows() const {return m_valueIndexes.size();}		
+		size_t         getRowCount() const {return m_valueIndexes.size();}		
 		const Value&   getValueAtRowIdx(size_t rowIndex) const {return m_values[m_valueIndexes[rowIndex]];}
 		virtual size_t getValueIndexFromRowIdx(size_t rowIndex) const {return m_valueIndexes[rowIndex];}
 
@@ -111,11 +111,12 @@ namespace calculator
 		bool          haveCol(const std::string& col_name) const {return m_colsIdxByName.find(col_name) != m_colsIdxByName.end();}
 		size_t        getColIndex(const std::string& col_name) const {return m_colsIdxByName.at(col_name);}
 
-		size_t        getColNbrs() const {return m_cols.size();}
+		size_t        getColumnCount() const {return m_cols.size();}
 		const Column& getColumn(const std::string& col_name) const {return m_cols[getColIndex(col_name)];}
 		const Column& getColumn(size_t index) const {return m_cols[index];}
 
-		size_t        getRowNbrs() const {return m_rowsNb;}
+		bool          haveData() const {return m_rowsNb!=0;}
+		size_t        getRowCount() const {return m_rowsNb;}
 
 		void addColumn(const std::string& name, eDataType dt, eColumnType type)
 		{

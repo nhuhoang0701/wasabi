@@ -147,7 +147,7 @@ void getDataCube(const ina::query_model::Query& query, const ina::metadata::Cube
 	const std::string sql = queryGen.getSQL(*data);
 	std::cout << "SQL: " << sql << std::endl;
 	dbproxy::DBProxy::getDBProxy(cnxString)->executeSQL(sql, &lambda);
-	std::cout << "    Nbrs of rows " << data->getRowNbrs() << std::endl;
+	std::cout << "    Nbrs of rows " << data->getRowCount() << std::endl;
 
 	cube.setStorage(data);
 	for (const auto& dimension : query.getDefinition().getDimensions()) 
