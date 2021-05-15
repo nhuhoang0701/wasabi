@@ -119,6 +119,8 @@ namespace calculator
 
 		void addColumn(const std::string& name, eDataType dt, eColumnType type)
 		{
+			if(name.empty())
+				throw std::runtime_error("Column with empty name not supported.");
 			if(m_colsIdxByName.find(name) != m_colsIdxByName.end())
 				throw std::runtime_error("Column already exist:" + name);
 

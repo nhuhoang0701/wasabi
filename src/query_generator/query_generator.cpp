@@ -27,9 +27,10 @@ namespace query_generator
 			{
 				for(const auto& member : m_query.getDefinition().getVisibleMembers(dimension) )
 				{
+					std::string memberName = ina::query_model::Member::getName(member);
 					// Integrity check beetwen query and data storage columns
 					{
-						if(data.getColIndex(member.getName()) != idxInData)
+						if(data.getColIndex(memberName) != idxInData)
 							throw std::runtime_error("Missmatch col. index in data with query");
 						idxInData++;
 					}
@@ -38,11 +39,11 @@ namespace query_generator
 					if(agg.empty())
 					{
 						std::string msg;
-						msg += "WASABI: ERROR: Missing aggreation in the InA request for member '" + member.getName() + "' hardcoded SUM will be used";
+						msg += "WASABI: ERROR: Missing aggreation in the InA request for member '" + memberName + "' hardcoded SUM will be used";
 						std::cerr << msg;
 						agg = "SUM";
 					}
-					std::string select = agg + "(" + member.getName() + ")";
+					std::string select = agg + "(" + memberName + ")";
 					selected.push_back(select);
 					
 				}
@@ -155,7 +156,10 @@ namespace query_generator
 			if(ina::query_model::Dimension::isDimensionOfMeasures(dimension))
 			{
 				for(const auto& member : m_query.getDefinition().getVisibleMembers(dimension) )
-					data.addColumn(member.getName(),calculator::eDataType::Number, calculator::eColumnType::NoneIndexed);
+				{
+					std::string memberName = ina::query_model::Member::getName(member);
+					data.addColumn(memberName,calculator::eDataType::Number, calculator::eColumnType::NoneIndexed);
+				}
 			}
 			else
 			{

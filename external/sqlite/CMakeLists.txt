@@ -21,7 +21,7 @@ add_library(sqlite
     src/sqlite3.c
 )
 
-if (NOT "${WASABI_PLATFORM_TARGET}" STREQUAL "wasm")
+if (0)
 add_executable(sqlite.exe src/shell.c)
 target_link_libraries(sqlite.exe PUBLIC sqlite)
 endif()

@@ -113,7 +113,7 @@ namespace ina::grid
                         {
                             JSON_LIST(writer);
                             for(const auto& member : axis.getMeasureDimMembers())
-                                writer.value(member.getName());
+                                writer.value(ina::query_model::Member::getName(member));
                         }
                     }
                     {
@@ -124,7 +124,7 @@ namespace ina::grid
                         {
                             JSON_LIST(writer);
                             for(const auto& member : axis.getMeasureDimMembers())
-                                writer.value(member.getName());
+                                writer.value(ina::query_model::Member::getName(member));
                         }
                     }
                 }
