@@ -163,7 +163,7 @@ void getDataCube(const ina::query_model::Query& query, const ina::metadata::Cube
 		else
 		{
 			for(const auto& member : query.getDefinition().getVisibleMembers(dimension))
-				cube.addMeas(member.getName());
+				cube.addMeas(ina::query_model::Member::getName(member));
 		}
 	}
 }

@@ -28,29 +28,10 @@ namespace ina::query_model
 		// MemberOperand is deprecated, but, in MANY examples
 		if (JSONGenericObject memberOperandNode = jsonNode.getObject("MemberOperand")) 
 		{
-			std::string attributeName = memberOperandNode.getString("AttributeName");
-			if (attributeName == "Measures")
-			{
-				/*
-				"MemberOperand": {
-				"Comparison": "=",
-				"AttributeName": "Measures",
-				"Value": "SIGNEDDATA"
-				}
-				*/				
-				obj.m_name = memberOperandNode.getString("Value");
-			}
-			else
-			{
-				/*
-				"MemberOperand": {
-				"Comparison": "=",
-				"AttributeName": "YEAR",
-				"Value": "2015"
-				}
-				*/
-				obj.m_name = memberOperandNode.getString("AttributeName");
-			}
+			obj.m_memberOperand = std::make_unique<MemberOperand>();
+			obj.m_memberOperand->m_attributeName = memberOperandNode.getString("AttributeName");
+			obj.m_memberOperand->m_value = memberOperandNode.getString("Value");
+			obj.m_memberOperand->m_comparison = memberOperandNode.getString("Comparison");
 		}
 	}
 }
