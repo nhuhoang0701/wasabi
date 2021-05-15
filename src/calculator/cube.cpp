@@ -26,8 +26,88 @@ namespace calculator
 	{
 	}
 
+	void Object::materialyze(const Cube& cube)
+	{
+		m_cube = &cube;
+		m_dataColumn = &*m_cube->getStorage().getColumn(m_name);
+	}
+
+	calculator::eDataType  Object::getDataType() const
+	{
+		if(!m_dataColumn)
+			throw std::runtime_error("Object: materialyze() not called");
+		return m_dataColumn->getDataType();
+	}
+
+	const Value& Object::getValueAtRowIdx(size_t rowIndex) const
+	{
+		if(!m_dataColumn)
+			throw std::runtime_error("Object: materialyze() not called");
+		return m_dataColumn->getValueAtRowIdx(rowIndex);
+	}
+
+	size_t Object::getValueIndexFromRowIdx(size_t rowIndex) const
+	{
+		if(!m_dataColumn)
+			throw std::runtime_error("Object: materialyze() not called");
+		return m_dataColumn->getValueIndexFromRowIdx(rowIndex);
+	}
+
+	const Value& Object::getValueAtValueIdx(size_t valueIndex) const
+	{
+		if(!m_dataColumn)
+			throw std::runtime_error("Object: materialyze() not called");
+		return m_dataColumn->getValueAtValueIdx(valueIndex);
+	}
+
+	size_t Object::getNumberOfValues() const
+	{
+		if(!m_dataColumn)
+			throw std::runtime_error("Object: materialyze() not called");
+		return m_dataColumn->getNumberOfValues();
+	}
+
+	
+	Value Object::aggregate(const std::vector<size_t>& indexes) const
+	{
+		Value value;
+		if(indexes.empty())
+		{
+			const calculator::eDataType datatype = m_dataColumn->getDataType();
+			if(datatype == eDataType::Number)
+				value = std::nan("0");
+			else
+				value = "##NULL##";
+		}
+		else if(indexes.size() == 1)
+		{
+			value = m_dataColumn->getValueAtRowIdx(indexes.at(0));
+		}
+		else if(indexes.size() > 1 )
+		{
+			std::cerr << "WASABI: ERROR: Local agregation, NYI hardcoded to sum" << std::endl;
+
+			const calculator::eDataType datatype = m_dataColumn->getDataType();
+			if(datatype == eDataType::Number)
+			{
+				double sum = 0;
+				for(const auto& i : indexes)
+					sum +=  std::get<double>(m_dataColumn->getValueAtRowIdx(i));
+				value = sum;
+			}
+			else
+			{
+				value = "#MULTIVALUE";
+			}
+		}
+		return value;
+	}
+
 	void Axe::materialyze()
 	{
+		for(auto& object : *this)
+			object.materialyze(m_cube);
+
 		m_tuples.clear();
 		//std::cout << "*****************************************\n";
 		//std::cout << "Axe :\n";
@@ -45,11 +125,11 @@ namespace calculator
 				tuple.clear();
 				for(const auto& obj : *this)
 				{
-					const auto& columnData = m_cube.getStorage().getColumn(obj.getName());
-					tuple.push_back(columnData->getValueIndexFromRowIdx(rowIndex));
+					tuple.push_back(obj.getValueIndexFromRowIdx(rowIndex));
 				}
 				// Get the list of pre aggreagted indexes
-				if(tuplesSet.find(tuple) == tuplesSet.end())
+				auto iterUtplesSet = tuplesSet.find(tuple);
+				if(iterUtplesSet == tuplesSet.end())
 				{
 					//std::cout << "+";
 					tuplesSet[tuple] = m_tuples.size();
@@ -58,7 +138,7 @@ namespace calculator
 				else
 				{
 					//std::cout << "=";
-					m_tuples[tuplesSet.at(tuple)].second.push_back(rowIndex);
+					m_tuples[iterUtplesSet->second].second.push_back(rowIndex);
 				}
 				//std::for_each(m_tuples[tuplesSet.at(tuple)].first.cbegin(), m_tuples[tuplesSet.at(tuple)].first.cend(), [] (const size_t c) {std::cout << c << "\t";} );
 				//std::cout << "\t|\t";
@@ -78,81 +158,65 @@ namespace calculator
 		return m_tuples.size();
 	}
 
-	calculator::eDataType Axe::getValueDatatype(const std::string& dimName) const
+	const Object& Axe::getDimension(const std::string& dimName) const
 	{
-		for(size_t i = 0; i < size(); i++ )
+		for(const auto& dim : (*this))
 		{
-			if(this->at(i).getName() == dimName)
-				return getValueDatatype(i);
+			if(dim.getName() == dimName)
+				return dim;
 		}
-		throw std::runtime_error("Axe: getValueDatatype() dimemsion not found");
+		throw std::runtime_error("Axe: getDimension() dimemsion not found:" + dimName);
 	}
 
-	const Value& Axe::getValue(const std::string& dimName, size_t row) const
+	const Value& Axe::getValue(const std::string& dimName, size_t tupleIndex) const
 	{
-		for(size_t i = 0; i < size(); i++ )
+		for(size_t dimIdx = 0; dimIdx < size(); dimIdx++ )
 		{
-			if(this->at(i).getName() == dimName)
-				return getValue(i, row);
+			if((*this)[dimIdx].getName() == dimName)
+				return getValue(dimIdx, tupleIndex);
 		}
-		throw std::runtime_error("Axe: getValue() dimemsion not found");
+		throw std::runtime_error("Axe: getValue() dimemsion not found:" + dimName);
 	}
 
-	size_t Axe::getValueIndex(const std::string& dimName, size_t row) const
+	size_t Axe::getValueIndex(const std::string& dimName, size_t tupleIndex) const
 	{
-		for(size_t i = 0; i < size(); i++ )
+		for(size_t dimIdx = 0; dimIdx < size(); dimIdx++ )
 		{
-			if(this->at(i).getName() == dimName)
-				return getValueIndex(i, row);
+			if((*this)[dimIdx].getName() == dimName)
+				return getValueIndex(dimIdx, tupleIndex);
 		}
-		throw std::runtime_error("Axe: getValue() dimemsion not found");
+		throw std::runtime_error("Axe: getValue() dimemsion not found:" + dimName);
 	}
 
-	calculator::eDataType Axe::getValueDatatype(size_t dimIdx) const
+	const Value& Axe::getValue(size_t dimIdx, size_t tupleIndex) const
 	{
-		const std::string& nameCol = at(dimIdx).getName();
-		const auto& columnData = m_cube.getStorage().getColumn(nameCol);
-		return columnData->getDataType();
+		return at(dimIdx).getValueAtValueIdx(getValueIndex(dimIdx, tupleIndex));
 	}
 
-	const Value& Axe::getValue(size_t dimIdx, size_t row) const
-	{
-		const std::string& nameCol = at(dimIdx).getName();
-		const auto& columnData = m_cube.getStorage().getColumn(nameCol);
-		return columnData->getValueAtValueIdx(getValueIndex(dimIdx, row));
-	}
-
-	size_t Axe::getValueIndex(size_t dimIdx, size_t row) const
+	size_t Axe::getValueIndex(size_t dimIdx, size_t tupleIndex) const
 	{
 		if(!m_materialyzed)
 			throw std::runtime_error("Axe: materialyze() not called");
 
-		if(row >= m_tuples.size())
+		if(tupleIndex >= m_tuples.size())
 			throw std::out_of_range("Axe::getValue row");
 
-		const auto& tuple = m_tuples[row].first;
+		const auto& tuple = m_tuples[tupleIndex].first;
 		if(dimIdx >= tuple.size())
 			throw std::out_of_range("Axe::getValue dimIdx");
 
-		const std::string& nameCol = at(dimIdx).getName();
-		const auto& columnData = m_cube.getStorage().getColumn(nameCol);
 		return tuple[dimIdx];
 	}
 
-	const std::vector<size_t>& Axe::getParentIndexes(size_t row) const
+	const std::vector<size_t>& Axe::getParentIndexes(size_t tupleIndex) const
 	{
 		if(!m_materialyzed)
 			throw std::runtime_error("Axe: materialyze() not called");
 
-		if(row >= m_tuples.size())
+		if(tupleIndex >= m_tuples.size())
 			throw std::out_of_range("Axe::getValue row");
 
-		return m_tuples[row].second;
-	}
-
-	const calculator::ColumnData& Axe::getDataColumn(const std::string& dimName) const
-	{
-		return *m_cube.getStorage().getColumn(dimName);
+		return m_tuples[tupleIndex].second;
 	}
 
 	Body::Body(const Cube& cube, const Axe& row, const Axe& col)
@@ -160,43 +224,13 @@ namespace calculator
 	{
 	}
 
-	void agg(Value& value, const ColumnData& columnData, const std::vector<size_t>& indexes)
-	{
-		if(indexes.empty())
-		{
-			const calculator::eDataType datatype = columnData.getDataType();
-			if(datatype == eDataType::Number)
-				value = std::nan("0");
-			else
-				value = "##NULL##";
-		}
-		else if(indexes.size() == 1)
-		{
-			value = columnData.getValueAtRowIdx(indexes.at(0));
-		}
-		else if(indexes.size() > 1 )
-		{
-			std::cerr << "WASABI: ERROR: Local agregation, NYI hardcoded to sum" << std::endl;
-
-			const calculator::eDataType datatype = columnData.getDataType();
-			if(datatype == eDataType::Number)
-			{
-				double sum = 0;
-				for(const auto& i : indexes)
-					sum +=  std::get<double>(columnData.getValueAtRowIdx(i));
-				value = sum;
-			}
-			else
-			{
-				value = "#MULTIVALUE";
-			}
-		}
-	}
-
 	void Body::materialyze()
 	{
 		//std::cout << "*****************************************\n";
 		//std::cout << "materialyze: \n";
+
+		for(auto& object : *this)
+			object.materialyze(m_cube);
 
 		m_Body.resize(size());
 		size_t measIdx = 0;
@@ -204,8 +238,7 @@ namespace calculator
 		{
 			values.resize(getRowNbrs());
 	
-			const std::string& measName = at(measIdx++).getName();
-			const auto& columnData = *m_cube.getStorage().getColumn(measName);
+			const Object& measure = at(measIdx++);
 
 			// Full aggreagtion on the 2 axes
 			if(m_axeRow.getCardinality() == 0 && m_axeCol.getCardinality() == 0 )
@@ -214,7 +247,7 @@ namespace calculator
 				values[0].resize(1);
 				std::vector<size_t> indexes(m_cube.getStorage().getRowNbrs());
 				std::iota(indexes.begin(), indexes.end(), 0);
-				agg(values[0][0], columnData, indexes);
+				values[0][0] = measure.aggregate(indexes);
 			}
 			else
 			{
@@ -225,7 +258,7 @@ namespace calculator
 					size_t col = 0;
 					for(auto& value : values[0])
 					{
-						agg(value, columnData, m_axeCol.getParentIndexes(col++));
+						value = measure.aggregate(m_axeCol.getParentIndexes(col++));
 					}
 				}
 				else
@@ -239,7 +272,7 @@ namespace calculator
 						// Full aggreagtion on col axis
 						if(m_axeCol.getCardinality() == 0)
 						{
-							agg(rowValues[0], columnData, rowIdxs);
+							rowValues[0] = measure.aggregate(rowIdxs);
 						}
 						else
 						{
@@ -266,8 +299,7 @@ namespace calculator
 								//std::cout << ") indexes(";
 								//std::for_each(indexes.cbegin(), indexes.cend(), [] (const size_t c) {std::cout << c << ",";} );
 								//std::cout << ")" <<  std::endl;
-
-								agg(value, columnData, indexes);
+								value = measure.aggregate(indexes);
 								/*
 								if(columnData.getDataType() == eDataType::Number)
 									std::cout << "value:" << std::get<double>(values[row][col]) <<  std::endl;
@@ -310,31 +342,24 @@ namespace calculator
 		return m_axeRow.getCardinality();
 	}
 
-	calculator::eDataType Body::getValueDatatype(const std::string& measName) const
+	const Object& Body::getMeasure(const std::string& measureName) const
 	{
 		for(size_t i = 0; i < size(); i++ )
 		{
-			if(this->at(i).getName() == measName)
-				return getValueDatatype(i);
+			if(this->at(i).getName() == measureName)
+				return this->at(i);
 		}
-		throw std::runtime_error("Body: getValueDatatype() measure not found");
+		throw std::runtime_error("Body: getMeasure() measure not found:" + measureName);
 	}
 
-	const Value& Body::getValue(const std::string& measName, size_t col, size_t row) const
+	const Value& Body::getValue(const std::string& measureName, size_t col, size_t row) const
 	{
 		for(size_t i = 0; i < size(); i++ )
 		{
-			if(this->at(i).getName() == measName)
+			if(this->at(i).getName() == measureName)
 				return getValue(i, col, row);
 		}
-		throw std::runtime_error("Body: getValue() measure not found");
-	}
-
-	calculator::eDataType Body::getValueDatatype(size_t measIdx) const
-	{
-		const std::string& nameCol = at(measIdx).getName();
-		const auto& columnData = m_cube.getStorage().getColumn(nameCol);
-		return columnData->getDataType();
+		throw std::runtime_error("Body: getValue() measure not found:" + measureName);
 	}
 
 	const Value& Body::getValue(size_t measIdx, size_t col, size_t row) const
@@ -385,34 +410,38 @@ namespace calculator
 		if(!getStorage().haveCol(obj.getName()))
 			throw std::runtime_error("Object " + obj.getName() + " not found in datastorage");
 
+		getAxe(axe).push_back(obj);
+	}
+
+	void Cube::addMeasure(const Object& obj)
+	{
+		if(!getStorage().haveCol(obj.getName()))
+			throw std::runtime_error("Object " + obj.getName() + " not found in datastorage");
+
+		m_body.push_back(obj);
+	}
+
+	void Cube::addFunction(const Object& obj)
+	{
+		if(getStorage().haveCol(obj.getName()))
+			throw std::runtime_error("Function Object " + obj.getName() + " already found in datastorage");
+
+		m_body.push_back(obj);
+	}
+	
+	const Axe &Cube::getAxe(eAxe axe) const
+	{
 		switch (axe)
 		{
 		case eAxe::Row:
-		{
-			m_AxeRows.push_back(obj);
-			break;
-		}
+			return m_AxeRows;
 		case eAxe::Column:
-		{
-			m_AxeColumns.push_back(obj);
-			break;
-		}
+			return m_AxeColumns;
 		default:
 		throw std::runtime_error("Unknow eAxe");
 		}
 	}
-
-	void Cube::addMeas(const std::string& name)
-	{
-		if(name.empty())
-				throw std::runtime_error("Measure with empty name not supported.");
-		if(!getStorage().haveCol(name))
-			throw std::runtime_error("Object " + name + " not found in datastorage");
-
-		m_body.push_back(name);
-	}
-	
-	const Axe &Cube::getAxe(eAxe axe) const
+	Axe &Cube::getAxe(eAxe axe)
 	{
 		switch (axe)
 		{
