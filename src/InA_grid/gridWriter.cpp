@@ -81,11 +81,11 @@ namespace ina::grid
                     writer.key("Values");
                     {
                         JSON_LIST(writer);
-                        const auto& col = axis.getCubeAxis().getDataColumn(dim->getName());
-                        for(size_t valueIdx = 0; valueIdx < col.getNumberOfValues(); valueIdx++)
+                        const auto& dimension = axis.getCubeAxis().getDimension(dim->getName());
+                        for(size_t valueIdx = 0; valueIdx < dimension.getNumberOfValues(); valueIdx++)
                         {
-                            const auto& data = col.getValueAtValueIdx(valueIdx);
-                            switch (col.getDataType())
+                            const auto& data = dimension.getValueAtValueIdx(valueIdx);
+                            switch (dimension.getDataType())
                             {
                             case calculator::eDataType::String:
                             {
@@ -219,7 +219,7 @@ namespace ina::grid
                             for(const auto& measure : grid.getCube().getBody())
                             {
                                 const auto& data = grid.getCube().getBody().getValue(measure.getName(), colIndex, rowIndex);
-                                switch (grid.getCube().getBody().getValueDatatype(measure.getName()))
+                                switch (measure.getDataType())
                                 {
                                 case calculator::eDataType::String:
                                 {
@@ -255,7 +255,7 @@ namespace ina::grid
                             for(const auto& measure : grid.getCube().getBody())
                             {
                                 const auto& data = grid.getCube().getBody().getValue(measure.getName(), colIndex, rowIndex);
-                                switch (grid.getCube().getBody().getValueDatatype(measure.getName()))
+                                switch (measure.getDataType())
                                 {
                                 case calculator::eDataType::String:
                                 {
@@ -288,7 +288,7 @@ namespace ina::grid
                         {
                             for(const auto& measure : grid.getCube().getBody())
                             {
-                                switch (grid.getCube().getBody().getValueDatatype(measure.getName()))
+                                switch (measure.getDataType())
                                 {
                                 case calculator::eDataType::String:
                                 {

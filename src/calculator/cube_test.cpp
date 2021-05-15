@@ -22,8 +22,8 @@ int main()
 	{
 		Cube cube;	
 		cube.setStorage(storage);
-		cube.addMeas("Meas0");
-		cube.addMeas("Meas1");
+		cube.addMeasure(Object("Meas0"));
+		cube.addMeasure(Object("Meas1"));
 		cube.materialyze();
 
 		CPPUNIT_ASSERT_EQUAL(0, cube.getAxe(calculator::eAxe::Row).getCardinality());
@@ -63,8 +63,8 @@ int main()
 	{
 		Cube cube;	
 		cube.setStorage(storage);
-		cube.addMeas("Meas0");
-		cube.addMeas("Meas1");
+		cube.addMeasure(Object("Meas0"));
+		cube.addMeasure(Object("Meas1"));
 		cube.materialyze();
 
 		CPPUNIT_ASSERT_EQUAL(0, cube.getAxe(calculator::eAxe::Row).getCardinality());
@@ -74,7 +74,7 @@ int main()
 		CPPUNIT_ASSERT_EQUAL(2, cube.getBody().getCellsNbs());
 		CPPUNIT_ASSERT_EQUAL(1, cube.getBody().getColNbrs());
 		CPPUNIT_ASSERT_EQUAL(1, cube.getBody().getRowNbrs());
-		CPPUNIT_ASSERT_EQUAL(calculator::eDataType::Number, cube.getBody().getValueDatatype("Meas0"));
+		CPPUNIT_ASSERT_EQUAL(calculator::eDataType::Number, cube.getBody().getMeasure("Meas0").getDataType());
 		CPPUNIT_ASSERT_EQUAL(9, std::get<double>(cube.getBody().getValue("Meas0", 0, 0)));
 	}
 	{
@@ -82,7 +82,7 @@ int main()
 		cube.setStorage(storage);
 		cube.addDim(calculator::eAxe::Row, Object("DimA"));
 		cube.addDim(calculator::eAxe::Row, Object("DimB"));
-		cube.addMeas("Meas0");
+		cube.addMeasure(Object("Meas0"));
 		cube.materialyze();
 
 		CPPUNIT_ASSERT_EQUAL(4, cube.getAxe(calculator::eAxe::Row).getCardinality());
@@ -106,8 +106,8 @@ int main()
 		cube.setStorage(storage);
 		cube.addDim(calculator::eAxe::Row, Object("DimA"));
 		cube.addDim(calculator::eAxe::Column, Object("DimB"));
-		cube.addMeas("Meas0");
-		cube.addMeas("Meas1");
+		cube.addMeasure(Object("Meas0"));
+		cube.addMeasure(Object("Meas1"));
 		cube.materialyze();
 
 		CPPUNIT_ASSERT_EQUAL(2, cube.getAxe(calculator::eAxe::Row).getCardinality());
@@ -130,8 +130,8 @@ int main()
 		cube.addDim(calculator::eAxe::Row, Object("Dim"));
 		cube.addDim(calculator::eAxe::Row, Object("DimA"));
 		cube.addDim(calculator::eAxe::Row, Object("DimB"));
-		cube.addMeas("Meas0");
-		cube.addMeas("Meas1");
+		cube.addMeasure(Object("Meas0"));
+		cube.addMeasure(Object("Meas1"));
 		cube.materialyze();
 
 		CPPUNIT_ASSERT_EQUAL(4, cube.getAxe(calculator::eAxe::Row).getCardinality());
@@ -153,8 +153,8 @@ int main()
 		CPPUNIT_ASSERT_EQUAL(8, cube.getBody().getCellsNbs());
 		CPPUNIT_ASSERT_EQUAL(4, cube.getBody().getRowNbrs());
 		CPPUNIT_ASSERT_EQUAL(1, cube.getBody().getColNbrs());
-			CPPUNIT_ASSERT_EQUAL(calculator::eDataType::Number, cube.getBody().getValueDatatype("Meas0"));
-			CPPUNIT_ASSERT_EQUAL(calculator::eDataType::String, cube.getBody().getValueDatatype("Meas1"));
+			CPPUNIT_ASSERT_EQUAL(calculator::eDataType::Number, cube.getBody().getMeasure("Meas0").getDataType());
+			CPPUNIT_ASSERT_EQUAL(calculator::eDataType::String, cube.getBody().getMeasure("Meas1").getDataType());
 			CPPUNIT_ASSERT_EQUAL(1,        std::get<double>(cube.getBody().getValue("Meas0", 0, 0)));
 			CPPUNIT_ASSERT_EQUAL(3,        std::get<double>(cube.getBody().getValue("Meas0", 0, 3)));
 			CPPUNIT_ASSERT_EQUAL("2", std::get<std::string>(cube.getBody().getValue("Meas1", 0, 0)));

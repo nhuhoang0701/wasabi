@@ -9,6 +9,7 @@
 
 namespace calculator
 {
+	class Cube;
 	enum class eAxe {Row, Column};
 	class Object
 	{
@@ -16,14 +17,27 @@ namespace calculator
 		Object() = default;
 		Object(const std::string& name);
 
+		void materialyze(const Cube& cube);
+
 		const std::string& getName() const {return m_name;}
+
+		calculator::eDataType  getDataType() const;
+
+		const Value&           getValueAtRowIdx(size_t rowIndex) const;
+
+		size_t                 getValueIndexFromRowIdx(size_t rowIndex) const;
+		const Value&           getValueAtValueIdx(size_t valueIndex) const;
+		size_t                 getNumberOfValues() const;
+
+		Value                  aggregate(const std::vector<size_t>& rowIndexes) const;
 
 	private:
 		std::string m_name;
+		const Cube* m_cube = nullptr;
+		const ColumnData* m_dataColumn = nullptr;
 	};
 
 	class Column;
-	class Cube;
 	class Body;
 	class Axe : public std::vector<Object>
 	{
@@ -35,20 +49,18 @@ namespace calculator
 
 		size_t getCardinality() const;
 
-		calculator::eDataType  getValueDatatype(const std::string& dimName) const;
-		const Value&           getValue(const std::string& dimName, size_t row) const;
-		size_t                 getValueIndex(const std::string& dimName, size_t row) const;
+		const Object&          getDimension(const std::string& dimName) const;
 
-		const ColumnData&      getDataColumn(const std::string& dimName) const;
+		const Value&           getValue(const std::string& dimName, size_t tupleIndex) const;
+		size_t                 getValueIndex(const std::string& dimName, size_t tupleIndex) const;
 
 	private:
-		calculator::eDataType  getValueDatatype(size_t dimIdx) const;
-		const Value&           getValue(size_t dimIdx, size_t row) const;
-		size_t                 getValueIndex(size_t dimIdx, size_t row) const;
+		const Value&           getValue(size_t dimIdx, size_t tupleIndex) const;
+		size_t                 getValueIndex(size_t dimIdx, size_t tupleIndex) const;
 
 	private:
 		friend class Body;
-		const std::vector<size_t>&     getParentIndexes(size_t row) const;
+		const std::vector<size_t>&     getParentIndexes(size_t tupleIndex) const;
 	
 	private:
 		const Cube&                  m_cube;
@@ -71,11 +83,10 @@ namespace calculator
 		size_t  getRowNbrs() const;
 		size_t  getColNbrs() const;
 
-		calculator::eDataType  getValueDatatype(const std::string& measName) const;
-		const Value&           getValue(const std::string& measName, size_t col, size_t row) const;
+		const Object&          getMeasure(const std::string& measureName) const;
+		const Value&           getValue(const std::string& measureName, size_t col, size_t row) const;
 
 	private:
-		calculator::eDataType  getValueDatatype(size_t measIdx) const;
 		const Value&           getValue(size_t measIdx, size_t col, size_t row) const;
 
 	private:
@@ -97,10 +108,12 @@ namespace calculator
 		const DataStorage&  getStorage() const;
 		
 		void         addDim(eAxe eAxe, const Object& obj);
-		void         addMeas(const std::string& name);
+		void         addMeasure(const Object& obj);
+		void         addFunction(const Object& obj);
 
 		void         materialyze();
 
+		Axe&         getAxe(eAxe axe);
 		const Axe&   getAxe(eAxe eAxe) const;
 		const Body&  getBody() const {return m_body;};
 
