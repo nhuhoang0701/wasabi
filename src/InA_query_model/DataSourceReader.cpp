@@ -19,9 +19,9 @@ namespace ina::query_model
 
 		if (JSONGenericObject customProperties = dataSource.getObject("CustomProperties"))
 		{
-			const std::string querySpecJSON = customProperties.getString("sourceQuery");
-			JSONReader reader;
-			JSONGenericObject root = reader.parse(querySpecJSON);
+			//const std::string querySpecJSON = customProperties.getString("sourceQuery");
+			//JSONReader reader;
+			//JSONGenericObject root = reader.parse(querySpecJSON);
 		}
 	}
 } // ina::query_model

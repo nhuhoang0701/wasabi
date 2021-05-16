@@ -24,28 +24,23 @@ namespace ina::query_model
 			
 			Function() = default;
 
-			enum  eFunctionType {eAdd=0, eSubtract, eMultipy, eDivide, eDecFloat, eSquare};
+			enum  eFunctionType {eUndefined=-1,eAdd=0, eSubtract, eMultipy, eDivide, eDecFloat, eSquare};
 			Function(const std::string& name, const std::string& desc, eFunctionType type, const std::vector<Parameter>& params);
 			
-			
-
 			const std::string & getName() const;
 			const std::string & getDescription() const;
-			void  addParameter(const Parameter& param);
 
 			eFunctionType       getFunctionType() const;
 
-			size_t 				getChildrenCount() const;
-
-			const Parameter&	getChild(size_t index) const;
+			void                addParameter(const Parameter& param);
+			size_t 				getParameterCount() const;
+			const Parameter&	getParameter(size_t index) const;
 		private:
 			std::vector<Parameter> m_vParams;
-			eFunctionType		   m_type;
+			eFunctionType		   m_type = eUndefined;
 			std::string			   m_name;
 			std::string			   m_description;
 
 			friend void read(Function& obj, const JSONGenericObject& jsonNode);
-
 	};
-
 }
