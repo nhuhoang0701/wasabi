@@ -242,7 +242,7 @@ namespace ina::grid
             //TODO: Not sure why this is needed
             writer.key("ValuesFormatted");
             {
-                std::cerr << "WASABI: ERROR: Use harcoded format to dislay ValuesFormatted." << std::endl;
+                std::cerr << "WASABI: ERROR: Use harcoded format to display ValuesFormatted." << std::endl;
                 JSON_MAP(writer);
                 writer.pair("Encoding", "None");
                 writer.key("Values");

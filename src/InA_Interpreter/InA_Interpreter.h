@@ -17,3 +17,8 @@ namespace ina::metadata
 {
 	const char* writeCube(const ina::query_model::Query& query, JSONWriter& writer);
 }
+
+//TODO: TMP: WIP
+namespace ina::query_model { class Function;};
+#include <calculator/storage.h>
+calculator::Value evalFunction(const ina::query_model::Function& fct);

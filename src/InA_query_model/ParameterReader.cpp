@@ -13,6 +13,7 @@ namespace ina::query_model
         {
             param.m_type = Parameter::eConstant;
             param.m_value = constObj.getString("Value");
+            param.m_valueType = constObj.getString("ValueType");
         }
         else if(JSONGenericObject memberObj = node.getObject("Member"))
         {

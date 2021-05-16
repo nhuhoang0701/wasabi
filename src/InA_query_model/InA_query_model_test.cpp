@@ -1,6 +1,6 @@
 #include "InA_query_model/Dimension.h"
-#include "InA_query_model/Formula.h"
 #include "InA_query_model/Member.h"
+#include "InA_query_model/Formula.h"
 #include "InA_query_model/Parameter.h"
 #include "InA_query_model/QuerySort.h"
 #include "Query.h"
@@ -42,9 +42,8 @@ int main()
 
 	{
 		std::string request = R"({"Name":"dimName","Axis":"Rows","Attributes":[{"Name":"ATTR0"}, {"Name":"ATTR1"}]})";
-		JSONGenericObject root = reader.parse(request);
 		ina::query_model::Dimension dimension;
-		read(dimension, root);
+		read(dimension, reader.parse(request));
 
 		CPPUNIT_ASSERT_EQUAL(2, dimension.getAttributes().size());
 		CPPUNIT_ASSERT_EQUAL_STR("ATTR0", dimension.getAttributes().at(0).getName().c_str());
@@ -52,16 +51,14 @@ int main()
     }
 	{
 		std::string request = R"({"Dimensions":[{"Name":"text","Axis":"Rows"},{"Name":"varchar","Axis":"Rows"},{"Name":"CustomDimension1","Axis":"Columns","Members":[{"Description":"Measure 1","Name":"real", "Aggregation":"SUM"}]}]})";
-		JSONGenericObject root = reader.parse(request);
 		ina::query_model::Definition definition;
-		read(definition, root);
+		read(definition, reader.parse(request));
 		CPPUNIT_ASSERT_EQUAL(3, definition.getDimensions().size());
 	}
 	{
 		std::string request = R"({"DynamicFilter":{"Selection":{"Operator":{"Code":"And","SubSelections":[{"SetOperand":{"Elements":[{"Comparison":"=","Low":"OBJ_147"},{"Comparison":"<>","Low":"OBJ_191"}],"FieldName":"[Measures].[Measures]"}}]}}}})";
-		JSONGenericObject root = reader.parse(request);
 		ina::query_model::Definition definition;
-		read(definition, root);
+		read(definition, reader.parse(request));
 		CPPUNIT_ASSERT_EQUAL(2, definition.getQueryFilters().size());
 		
 		CPPUNIT_ASSERT_EQUAL("[Measures].[Measures]", definition.getQueryFilters().at(0).getFieldName());
@@ -76,17 +73,15 @@ int main()
 	}
 	{
 		std::string request = R"({"Dimensions":[{"Members":[{"Description":"Calculated Measure 1","Formula":{"Function":{"Name":"**","Parameters":[{"Member":{"Name":"OBJ_147"}},{"Function":{"Name":"decfloat","Parameters":[{"Constant":{"Value":"2","ValueType":"String"}}]}}]}},"Name":"32160367-6930-4537-9181-755582731239"}],"Axis":"Rows","Name":"CustomDimension1"}]})";;
-		JSONGenericObject root = reader.parse(request);
 		ina::query_model::Definition definition;
-		read(definition, root);
+		read(definition, reader.parse(request));
 		CPPUNIT_ASSERT_EQUAL(1, definition.getDimensions().size());
 		CPPUNIT_ASSERT_EQUAL(1, definition.getDimensions().at(0).getMembers().size());
 	}
 	{
 		std::string request = R"({"Dimensions":[{"Attributes":[{"Name":"OBJ_188"}],"Axis":"Rows","Name":"OBJ_188"},{"Attributes":[{"Name":"[Measures].[Measures]"},{"Name":"[Measures].[Name]"}],"Axis":"Columns","Members":[{"Aggregation":"SUM","MemberOperand":{"AttributeName":"Measures","Comparison":"=","Value":"OBJ_147"}},{"Aggregation":"SUM","MemberOperand":{"AttributeName":"Measures","Comparison":"=","Value":"OBJ_262"}}],"Name":"CustomDimension1"}],"DynamicFilter":{"Selection":{"Operator":{"Code":"And","SubSelections":[{"SetOperand":{"Elements":[{"Comparison":"=","Low":"OBJ_262"}],"FieldName":"[Measures].[Measures]"}},{"SetOperand":{"Elements":[{"Comparison":"=","Low":"2014"}],"FieldName":"OBJ_188"}}]}}},"Sort":[]})";
-		JSONGenericObject root = reader.parse(request);
 		ina::query_model::Definition definition;
-		read(definition, root);
+		read(definition, reader.parse(request));
 		auto dimensionYear 		= definition.getDimensions().at(0);
 		auto dimensionMeasure 	= definition.getDimensions().at(1);
 		CPPUNIT_ASSERT_EQUAL(2, definition.getDimensions().size());
@@ -107,9 +102,8 @@ int main()
 	}
 	{
 		std::string request = R"({"Sort":[{"Dimension":"Week ?","Direction":"None","SortType":"MemberKey"}]})";
-		JSONGenericObject root = reader.parse(request);
 		ina::query_model::Definition definition;
-		read(definition, root);
+		read(definition, reader.parse(request));
 		CPPUNIT_ASSERT_EQUAL(1, definition.getQuerySorts().size());
 		CPPUNIT_ASSERT_EQUAL("Week ?", definition.getQuerySorts().at(0).getObjectName());
 		CPPUNIT_ASSERT_EQUAL(ina::query_model::QuerySort::SortType::MemberKey, definition.getQuerySorts().at(0).getSortType());
@@ -117,9 +111,8 @@ int main()
 	}
 	{
 		std::string request = R"({"Dimensions": [{"Members": [{"Description": "Calculated Measure 1","Formula": {"Function": {"Name": "+","Parameters": [{"Member": {"Name": "OBJ_147"}},{"Function": {"Name": "decfloat","Parameters": [{"Constant": {"Value": "1","ValueType": "String"}}]}}]}},"Name": "70027803-5182-4685-b851-864623689423","NumericScale": 7,"Visibility": "Visible"}],"Axis": "Columns","Name": "CustomDimension1"}]})";
-		JSONGenericObject root = reader.parse(request);
 		ina::query_model::Definition definition;
-		read(definition, root);
+		read(definition, reader.parse(request));
 		auto dimension 		= definition.getDimensions().at(0);
 		CPPUNIT_ASSERT_EQUAL(1, definition.getDimensions().size());
 
@@ -128,27 +121,26 @@ int main()
 
 		auto member = dimension.getMembers().at(0);
 		
-		CPPUNIT_ASSERT_EQUAL(2, member.getFormula()->getFunction().getChildrenCount());
+		CPPUNIT_ASSERT_EQUAL(2, member.getFormula()->getFunction().getParameterCount());
 
-		auto param1  =member.getFormula()->getFunction().getChild(0);
-		auto param2  =member.getFormula()->getFunction().getChild(1);
+		auto param1  =member.getFormula()->getFunction().getParameter(0);
+		auto param2  =member.getFormula()->getFunction().getParameter(1);
 		CPPUNIT_ASSERT_EQUAL(ina::query_model::Parameter::eMember, param1.getType());
 		CPPUNIT_ASSERT_EQUAL(ina::query_model::Parameter::eFunction, param2.getType());
 
 		auto func = param2.getFunction();
 		CPPUNIT_ASSERT_EQUAL(ina::query_model::Function::eDecFloat, func.getFunctionType());
 
-		CPPUNIT_ASSERT_EQUAL(1, func.getChildrenCount());
+		CPPUNIT_ASSERT_EQUAL(1, func.getParameterCount());
 
-		auto param = func.getChild(0);
+		auto param = func.getParameter(0);
 		CPPUNIT_ASSERT_EQUAL(ina::query_model::Parameter::eConstant, param.getType());
 		
 	}
 	{
 		std::string request = R"({"ResultSetFeatureRequest":{"SubSetDescription":{"RowFrom":1,"RowTo":2,"ColumnFrom":3,"ColumnTo":4}}})";
-		JSONGenericObject root = reader.parse(request);
 		ina::query_model::Definition definition;
-		read(definition, root);
+		read(definition, reader.parse(request));
 		CPPUNIT_ASSERT_EQUAL(3, definition.getResultSetFeat().getSubSetDescription().m_ColumnFrom);
 		CPPUNIT_ASSERT_EQUAL(4, definition.getResultSetFeat().getSubSetDescription().m_ColumnTo);
 		CPPUNIT_ASSERT_EQUAL(1, definition.getResultSetFeat().getSubSetDescription().m_RowFrom);
