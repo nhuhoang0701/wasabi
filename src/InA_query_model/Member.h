@@ -38,6 +38,7 @@ namespace ina::query_model
 			Member& operator =(const Member& other);
 
 			const std::string&   getName() const;
+			const std::string&   getDescription() const;
 			const Aggregation&   getAggregation() const;
 
 			const Formula*       getFormula() const;

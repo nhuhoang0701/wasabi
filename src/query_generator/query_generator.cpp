@@ -27,6 +27,11 @@ namespace query_generator
 			{
 				for(const auto& member : m_query.getDefinition().getVisibleMembers(dimension) )
 				{
+					// TODO: Query generator should not use ina::query_model::Dimension,
+					// but ina::metadata::Dimension reduced by the ina::query_model::Definition
+					if(member.getFormula() != nullptr)
+						continue;
+
 					std::string memberName = ina::query_model::Member::getName(member);
 					// Integrity check beetwen query and data storage columns
 					{
@@ -157,6 +162,10 @@ namespace query_generator
 			{
 				for(const auto& member : m_query.getDefinition().getVisibleMembers(dimension) )
 				{
+					// TODO: Query generator should not use ina::query_model::Dimension,
+					// but ina::metadata::Dimension reduced by the ina::query_model::Definition
+					if(member.getFormula() != nullptr)
+						continue;
 					std::string memberName = ina::query_model::Member::getName(member);
 					data.addColumn(memberName,calculator::eDataType::Number, calculator::eColumnType::NoneIndexed);
 				}

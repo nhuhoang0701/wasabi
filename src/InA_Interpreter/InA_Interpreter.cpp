@@ -95,8 +95,6 @@ void processQuery(JSONWriter& writer, const ina::query_model::Query& query)
 	if(query.getType() == ina::query_model::Query::qAnalytics)
 	{		
 		getDataCube(query, *dsCube, dataCube);
-		dataCube.materialyze();
-
 		grid = std::make_unique<ina::grid::Grid>(query, *dsCube, dataCube);
 	}
 
@@ -163,7 +161,13 @@ void getDataCube(const ina::query_model::Query& query, const ina::metadata::Cube
 		else
 		{
 			for(const auto& member : query.getDefinition().getVisibleMembers(dimension))
-				cube.addMeasure(ina::query_model::Member::getName(member));
+			{
+				if(member.getFormula() == nullptr)
+					cube.addMeasure(ina::query_model::Member::getName(member));
+				else if(member.getFormula() != nullptr)
+					cube.addFunction(calculator::Object(member.getName()));
+			}
 		}
 	}
+	cube.materialyze();
 }
