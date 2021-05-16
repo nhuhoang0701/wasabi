@@ -1,4 +1,5 @@
 #include "InA_Interpreter.h"
+#include "InA_query_model/Parameter.h"
 
 #include <InA_metadata/Cube.h>
 
@@ -28,6 +29,8 @@
 #include <iomanip>
 #include <stdexcept>
 #include <ostream>
+#include <string>
+#include <vector>
 
 
 extern "C"
@@ -54,10 +57,8 @@ extern "C"
 const char* json_getResponse_json(const char* InA)
 {
 	JSONReader reader;
-	JSONGenericObject root = reader.parse(InA);
-	
 	ina::query_model::Queries queries;
-	read(queries, root);
+	read(queries, reader.parse(InA));
 
 	std::ostringstream osstream;
 	JSONWriter writer(osstream);
@@ -131,6 +132,82 @@ void writeResponse(JSONWriter& writer, const ina::metadata::Cube* dsCube, const 
 	}
 }
 
+double getDouble(const calculator::Value& val)
+{
+	if(std::holds_alternative<double>(val))
+		return std::get<double>(val);
+	return std::stod(std::get<std::string>(val));
+}
+
+calculator::Value evalFunction(const ina::query_model::Function& fct)
+{
+	std::vector<calculator::Value>  paramValues(fct.getParameterCount(), std::nan("0"));
+	for(size_t i = 0; i < fct.getParameterCount(); i++)
+	{
+		const ina::query_model::Parameter& param = fct.getParameter(i);
+		switch (param.getType())
+		{
+			case ina::query_model::Parameter::eConstant:
+			{
+				if(param.getValueType()=="String")
+					paramValues[i] = param.getValue();
+				else
+					paramValues[i] = std::stod(param.getValue());
+				break;
+			}
+			case ina::query_model::Parameter::eFunction:
+			{
+				paramValues[i] = evalFunction(param.getFunction());
+				break;
+			}
+			case ina::query_model::Parameter::eMember:
+			{
+				throw std::runtime_error("Member function parameter not yet implemented");
+			}
+			default:
+				throw std::runtime_error("Unkonw funciton parameter type");
+		}
+	}
+
+	switch(fct.getFunctionType())
+	{
+		case ina::query_model::Function::eAdd:
+		{
+			return getDouble(paramValues[0]) + getDouble(paramValues[1]);
+			break;
+		}
+		case ina::query_model::Function::eSubtract:
+		{
+			return getDouble(paramValues[0]) - getDouble(paramValues[1]);
+			break;
+		}
+		case ina::query_model::Function::eMultipy:
+		{
+			return getDouble(paramValues[0]) * getDouble(paramValues[1]);
+			break;
+		}
+		case ina::query_model::Function::eDivide:
+		{
+			return getDouble(paramValues[0]) / getDouble(paramValues[1]);
+			break;
+		}
+		case ina::query_model::Function::eSquare:
+		{
+			return std::pow(getDouble(paramValues[0]), getDouble(paramValues[1]));
+			break;
+		}
+		case ina::query_model::Function::eDecFloat:
+		{
+			return std::stod(std::get<std::string>(paramValues[0]));
+			break;
+		}
+		default:
+			throw std::runtime_error("Unkonw funciton parameter type");
+
+	}
+	return 42.0;
+}
+
 void getDataCube(const ina::query_model::Query& query, const ina::metadata::Cube& dsCube, calculator::Cube& cube)
 {
 	const query_generator::query_generator& queryGen = query_generator::query_generator(query);
@@ -165,7 +242,7 @@ void getDataCube(const ina::query_model::Query& query, const ina::metadata::Cube
 				if(member.getFormula() == nullptr)
 					cube.addMeasure(ina::query_model::Member::getName(member));
 				else if(member.getFormula() != nullptr)
-					cube.addFunction(calculator::Object(member.getName()));
+					cube.addConstant(calculator::Object(member.getName()), evalFunction(member.getFormula()->getFunction()));
 			}
 		}
 	}
