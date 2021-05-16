@@ -101,9 +101,6 @@ namespace calculator
 	class DataStorage
 	{
 	public:
-		typedef std::shared_ptr<ColumnData> Column;
-
-	public:
 		DataStorage() = default;
 
 		void clear() {m_rowsNb=0;m_cols.clear();m_colsIdxByName.clear();}
@@ -111,9 +108,9 @@ namespace calculator
 		bool          haveCol(const std::string& col_name) const {return m_colsIdxByName.find(col_name) != m_colsIdxByName.end();}
 		size_t        getColIndex(const std::string& col_name) const {return m_colsIdxByName.at(col_name);}
 
-		size_t        getColumnCount() const {return m_cols.size();}
-		const Column& getColumn(const std::string& col_name) const {return m_cols[getColIndex(col_name)];}
-		const Column& getColumn(size_t index) const {return m_cols[index];}
+		size_t                             getColumnCount() const {return m_cols.size();}
+		const std::shared_ptr<ColumnData>& getColumn(const std::string& col_name) const {return m_cols[getColIndex(col_name)];}
+		const std::shared_ptr<ColumnData>& getColumn(size_t index) const {return m_cols[index];}
 
 		bool          haveData() const {return m_rowsNb!=0;}
 		size_t        getRowCount() const {return m_rowsNb;}
@@ -125,7 +122,7 @@ namespace calculator
 			if(m_colsIdxByName.find(name) != m_colsIdxByName.end())
 				throw std::runtime_error("Column already exist:" + name);
 
-			Column colData;
+			std::shared_ptr<ColumnData> colData;
 			if(type == eColumnType::Indexed)
 				colData = std::make_shared<ColumnIndexed>(name, dt);
 			else if(type == eColumnType::NoneIndexed)
@@ -159,8 +156,8 @@ namespace calculator
 		}
 
 	private:
-		std::map<std::string, size_t /*index*/> m_colsIdxByName;
-		std::vector<Column>  m_cols;
+		std::map<std::string, size_t /*index*/>   m_colsIdxByName;
+		std::vector<std::shared_ptr<ColumnData>>  m_cols;
 
 		size_t               m_rowsNb = 0;
 	};
