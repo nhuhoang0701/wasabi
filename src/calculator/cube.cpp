@@ -26,57 +26,90 @@ namespace calculator
 		: m_name(name)
 	{
 	}
+	
+	bool Object::operator==(const Object& rhs) const
+	{
+		return m_name == rhs.m_name;
+	}
 
 	void Object::materialyze(const Cube& cube)
 	{
-		m_dataColumn = &*cube.getStorage().getColumn(m_name);
+		if(m_isFomula == false)
+		{
+			m_dataColumn = cube.getStorage().getColumn(m_name);
+		}
 	}
 
 	calculator::eDataType  Object::getDataType() const
 	{
 		if(!m_dataColumn)
-			throw std::runtime_error("Object: materialyze() not called");
+			throw std::runtime_error("Object: getDataType() no m_dataColumn" + m_name);
 		return m_dataColumn->getDataType();
 	}
 
 	size_t Object::getRowCount() const
 	{
 		if(!m_dataColumn)
-			throw std::runtime_error("Object: materialyze() not called");
+			throw std::runtime_error("Object: getRowCount() no m_dataColumn" + m_name);
 		return m_dataColumn->getRowCount();	
 	}
 
 	const Value& Object::getValueAtRowIdx(size_t rowIndex) const
 	{
 		if(!m_dataColumn)
-			throw std::runtime_error("Object: materialyze() not called");
+			throw std::runtime_error("Object: getValueAtRowIdx() no m_dataColumn" + m_name);
 		return m_dataColumn->getValueAtRowIdx(rowIndex);
 	}
 
 	size_t Object::getValueIndexFromRowIdx(size_t rowIndex) const
 	{
 		if(!m_dataColumn)
-			throw std::runtime_error("Object: materialyze() not called");
+			throw std::runtime_error("Object: getValueIndexFromRowIdx() no m_dataColumn" + m_name);
 		return m_dataColumn->getValueIndexFromRowIdx(rowIndex);
 	}
 
 	const Value& Object::getValueAtValueIdx(size_t valueIndex) const
 	{
 		if(!m_dataColumn)
-			throw std::runtime_error("Object: materialyze() not called");
+			throw std::runtime_error("Object: getValueAtValueIdx() no m_dataColumn" + m_name);
 		return m_dataColumn->getValueAtValueIdx(valueIndex);
 	}
 
 	size_t Object::getNumberOfValues() const
 	{
 		if(!m_dataColumn)
-			throw std::runtime_error("Object: materialyze() not called");
+			throw std::runtime_error("Object: getNumberOfValues() no m_dataColumn:" + m_name);
 		return m_dataColumn->getNumberOfValues();
 	}
 
 	
+	Value Object::aggregate() const
+	{
+		if(m_isFomula)
+			return 42.0;
+		
+		Value value;
+		std::cerr << "WASABI: ERROR: Local agregation, NYI hardcoded to sum" << std::endl;
+
+		const calculator::eDataType datatype = m_dataColumn->getDataType();
+		if(datatype == eDataType::Number)
+		{
+			double sum = 0;
+			for(size_t i = 0; i < m_dataColumn->getRowCount(); i++)
+				sum +=  std::get<double>(m_dataColumn->getValueAtRowIdx(i));
+			value = sum;
+		}
+		else
+		{
+			value = "#MULTIVALUE";
+		}
+		return value;
+	}
+
 	Value Object::aggregate(const std::vector<size_t>& indexes) const
 	{
+		if(m_isFomula)
+			return 42.0;
 		Value value;
 		if(indexes.empty())
 		{
@@ -243,14 +276,9 @@ namespace calculator
 		//std::cout << "*****************************************\n";
 		//std::cout << "materialyze: \n";
 
-		size_t rowCount = std::numeric_limits<size_t>::max();
 		for(auto& object : *this)
 		{
 			object.materialyze(m_cube);
-			if(rowCount == std::numeric_limits<size_t>::max())
-				rowCount = object.getRowCount();
-			else if(rowCount != object.getRowCount())	 
-				throw std::runtime_error("Some column have different row count...");
 		}
 
 		m_Body.resize(size());
@@ -266,9 +294,7 @@ namespace calculator
 			{
 				values.resize(1);
 				values[0].resize(1);
-				std::vector<size_t> indexes(rowCount);
-				std::iota(indexes.begin(), indexes.end(), 0);
-				values[0][0] = measure.aggregate(indexes);
+				values[0][0] = measure.aggregate();
 			}
 			else
 			{
@@ -426,6 +452,18 @@ namespace calculator
 		return *m_data;
 	}
 
+	bool Cube::contain(const Object& obj) const
+	{
+		if( std::find(m_body.begin(), m_body.end(), obj) != m_body.end() )
+			return true;
+		if( std::find(m_AxeColumns.begin(), m_AxeColumns.end(), obj) != m_AxeColumns.end() )
+			return true;
+		if( std::find(m_AxeRows.begin(), m_AxeRows.end(), obj) != m_AxeRows.end() )
+			return true;
+		
+		return false;
+	}
+
 	void Cube::addDim(eAxe axe, const Object& obj)
 	{
 		if(!getStorage().haveCol(obj.getName()))
@@ -448,6 +486,7 @@ namespace calculator
 			throw std::runtime_error("Function Object " + obj.getName() + " already found in datastorage");
 
 		m_body.push_back(obj);
+		m_body.back().m_isFomula = true;
 	}
 	
 	const Axe &Cube::getAxe(eAxe axe) const
@@ -459,7 +498,7 @@ namespace calculator
 		case eAxe::Column:
 			return m_AxeColumns;
 		default:
-		throw std::runtime_error("Unknow eAxe");
+			throw std::runtime_error("Unknow eAxe");
 		}
 	}
 	Axe &Cube::getAxe(eAxe axe)
@@ -471,7 +510,7 @@ namespace calculator
 		case eAxe::Column:
 			return m_AxeColumns;
 		default:
-		throw std::runtime_error("Unknow eAxe");
+			throw std::runtime_error("Unknow eAxe");
 		}
 	}
 } // namespace calculator

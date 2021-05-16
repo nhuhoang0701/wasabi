@@ -17,6 +17,8 @@ namespace calculator
 		Object() = default;
 		Object(const std::string& name);
 
+		bool operator==(const Object& rhs) const;
+
 		void materialyze(const Cube& cube);
 
 		const std::string& getName() const {return m_name;}
@@ -30,11 +32,14 @@ namespace calculator
 		const Value&           getValueAtValueIdx(size_t valueIndex) const;
 		size_t                 getNumberOfValues() const;
 
+		Value                  aggregate() const;
 		Value                  aggregate(const std::vector<size_t>& rowIndexes) const;
 
+		bool m_isFomula = false; // TMP: WIP
 	private:
-		std::string       m_name;
-		const ColumnData* m_dataColumn = nullptr;
+		std::string  m_name;
+
+		std::shared_ptr<const ColumnData> m_dataColumn = nullptr;
 	};
 
 	class Column;
@@ -94,9 +99,9 @@ namespace calculator
 		const Axe&   m_axeRow;
 		const Axe&   m_axeCol;
 
-		typedef std::vector<std::vector<Value>>  Values;
+		typedef std::vector<std::vector<Value>>  CellsValue;
 
-		std::vector<Values> m_Body;
+		std::vector<CellsValue> m_Body;
 		bool  m_materialyzed = false;
 	};
 	class Cube
@@ -106,6 +111,8 @@ namespace calculator
 
 		void                setStorage(std::shared_ptr<const DataStorage> data);
 		const DataStorage&  getStorage() const;
+
+		bool         contain(const Object& obj) const;
 		
 		void         addDim(eAxe eAxe, const Object& obj);
 		void         addMeasure(const Object& obj);
