@@ -1,4 +1,5 @@
 #include "InA_Interpreter.h"
+#include "calculator/storage.h"
 
 #include <iostream>
 
@@ -8,6 +9,7 @@
 
 void getServerInfo();
 void getResponse();
+void interpreter();
 
 int main()
 {
@@ -16,6 +18,8 @@ int main()
     getServerInfo();
 
     getResponse();
+
+    interpreter();
 
     return TEST_HAVEERROR();
 }
@@ -63,4 +67,17 @@ void getResponse()
     // std::cout << "InA_Interpreter_test => response: " << response << std::endl;
 
     std::cout << "------------------------" << std::endl << std::endl;
+}
+
+#include <InA_query_model/Formula.h>
+#include <InA_query_model/Parameter.h>
+#include <json/jsonReader.h>
+void interpreter()
+{
+	JSONReader reader;
+
+    ina::query_model::Function fct;
+    read(fct, reader.parse(R"({"Name": "+","Parameters": [{"Constant": {"ValueType": "String","Value": "1"}},{"Function": {"Name": "*","Parameters": [{"Constant": {"ValueType": "String","Value": "2"}},{"Function": {"Name": "/","Parameters": [{"Function": {"Name": "+","Parameters": [{"Constant": {"ValueType": "String","Value": "3"}},{"Constant": {"ValueType": "String","Value": "4"}}]}},{"Constant": {"ValueType": "String","Value": "5"}}]}}]}}]})"));
+
+    CPPUNIT_ASSERT_EQUAL(3.8, std::get<double>(evalFunction(fct)));
 }

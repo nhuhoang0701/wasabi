@@ -34,7 +34,7 @@ namespace calculator
 
 	void Object::materialyze(const Cube& cube)
 	{
-		if(m_isFomula == false)
+		if(m_isConstant == false)
 		{
 			m_dataColumn = cube.getStorage().getColumn(m_name);
 		}
@@ -85,8 +85,8 @@ namespace calculator
 	
 	Value Object::aggregate() const
 	{
-		if(m_isFomula)
-			return 42.0;
+		if(m_isConstant)
+			return m_constant;
 		
 		Value value;
 		std::cerr << "WASABI: ERROR: Local agregation, NYI hardcoded to sum" << std::endl;
@@ -108,8 +108,8 @@ namespace calculator
 
 	Value Object::aggregate(const std::vector<size_t>& indexes) const
 	{
-		if(m_isFomula)
-			return 42.0;
+		if(m_isConstant)
+			return m_constant;
 		Value value;
 		if(indexes.empty())
 		{
@@ -480,13 +480,14 @@ namespace calculator
 		m_body.push_back(obj);
 	}
 
-	void Cube::addFunction(const Object& obj)
+	void Cube::addConstant(const Object& obj, const Value& value)
 	{
 		if(getStorage().haveCol(obj.getName()))
-			throw std::runtime_error("Function Object " + obj.getName() + " already found in datastorage");
+			throw std::runtime_error("Constant Object " + obj.getName() + " already found in datastorage");
 
 		m_body.push_back(obj);
-		m_body.back().m_isFomula = true;
+		m_body.back().m_isConstant = true;
+		m_body.back().m_constant = value;
 	}
 	
 	const Axe &Cube::getAxe(eAxe axe) const

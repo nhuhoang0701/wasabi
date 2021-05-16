@@ -35,7 +35,8 @@ namespace calculator
 		Value                  aggregate() const;
 		Value                  aggregate(const std::vector<size_t>& rowIndexes) const;
 
-		bool m_isFomula = false; // TMP: WIP
+		bool m_isConstant = false; // TMP: WIP
+		Value m_constant = 0.0;  // TMP: WIP
 	private:
 		std::string  m_name;
 
@@ -116,7 +117,7 @@ namespace calculator
 		
 		void         addDim(eAxe eAxe, const Object& obj);
 		void         addMeasure(const Object& obj);
-		void         addFunction(const Object& obj);
+		void         addConstant(const Object& obj, const Value& value);
 
 		void         materialyze();
 

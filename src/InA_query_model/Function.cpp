@@ -31,12 +31,12 @@ namespace ina::query_model
         m_vParams.push_back(param);
     }
 
-    size_t Function::getChildrenCount() const
+    size_t Function::getParameterCount() const
     {
         return m_vParams.size();
     }
 
-    const Parameter& Function::getChild(size_t index) const
+    const Parameter& Function::getParameter(size_t index) const
     {
         return m_vParams[index];
     }
