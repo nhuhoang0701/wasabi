@@ -1,5 +1,7 @@
 #include "cube.h"
 
+#include "storage.h"
+
 #include <cstddef>
 #include <stdexcept>
 #include <numeric>    // For iota
@@ -314,15 +316,15 @@ namespace calculator
 					for(auto& rowValues : values)
 					{
 						rowValues.resize(getColumnCount());
-						std::vector<size_t> rowIdxs = m_axeRow.getParentIndexes(row);
 
 						// Full aggreagtion on col axis
 						if(m_axeCol.getCardinality() == 0)
 						{
-							rowValues[0] = measure.aggregate(rowIdxs);
+							rowValues[0] = measure.aggregate(m_axeRow.getParentIndexes(row));
 						}
 						else
 						{
+							std::vector<size_t> rowIdxs = m_axeRow.getParentIndexes(row);
 							std::sort (rowIdxs.begin(),rowIdxs.end());
 							
 							size_t col = 0;

@@ -16,10 +16,11 @@ then
 
 	echo ------------- cmake ---------------
 	$CMAKE .. \
-		-G Ninja -DCMAKE_MAKE_PROGRAM=$NINJA \
+		-G Ninja -DCMAKE_MAKE_PROGRAM=${NINJA} \
 		-DCMAKE_C_COMPILER=${C_COMPILER} \
 		-DCMAKE_CXX_COMPILER=${CXX_COMPILER} \
-		-DCMAKE_INSTALL_PREFIX=$BINARYEN_DIR/install >> $outfile
+		-DCMAKE_BUILD_TYPE=${WASABI_BUILD_TYPE} \
+		-DCMAKE_INSTALL_PREFIX=$WASABI_INSTAL_DIR/binaryen
 
 	echo ------------- build ---------------
 	$CMAKE --build . >> $outfile
