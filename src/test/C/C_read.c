@@ -17,16 +17,15 @@ EXPORT char* str_OPENFILE_READ_str(const char* file)
 		buf[i] = 0;
 
 	FILE* fp = fopen (file, "r");
-	if(fp == 0)
-		printf("Error during fopen call");
+	CPPUNIT_ASSERT_MSG(fp != 0,  "Error during fopen call");
 	int res = fread(buf, 1, sizeof buf, fp);
-	if(res < 0)
-		printf("Error during fread call");
+	CPPUNIT_ASSERT_MSG(res >= 0,  "Error during fread call");
 
-	if (ferror(fp))
-		printf("Error during ferror call");
+	res = ferror(fp);
+	CPPUNIT_ASSERT_MSG(res >= 0,"Error during ferror call");
 
-	fclose(fp);
+	res = fclose(fp);
+	CPPUNIT_ASSERT_MSG(res >= 0,"Error during fclose call");
 
 	return buf;
 }

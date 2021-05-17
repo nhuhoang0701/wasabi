@@ -2,19 +2,17 @@
 
 #include <dbproxy/dbproxy.h>  // For dbproxy::Row
 
+#include "common.h"
+
 #include <memory>
 #include <stdexcept>
 #include <tuple>
 #include <string>
 #include <map>
 #include <vector>
-#include <variant>
 
 namespace calculator
 {
-	typedef std::variant<std::string, double> Value;
-
-	enum class eDataType {Number, String};
 	enum class eColumnType {Indexed, NoneIndexed};
 
 	class ColumnData
