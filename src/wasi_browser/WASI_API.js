@@ -61,13 +61,14 @@ let WASI_API = {
 			vpath:".", offset:BigInt(0), data:null,
 		},
 	],
-	// Members
 	moduleWasm : moduleWasm = null,
+	moduleMemoryView : moduleMemoryView = null,
 	
 	//////////////////////////////////////////////////////////////
 	// WASABI variables
 	setModule : setModule = function (module) {
 		moduleWasm = module;
+		moduleMemoryView = new DataView(getModuleInstanceExports().memory.buffer);
 	},
 	start : start = function () {
 		if(getModuleInstanceExports()._initialize)
@@ -85,35 +86,45 @@ let WASI_API = {
 			wasabi_log('wasm module not asyncified');
 		}
 	},
-	getModuleMemoryDataView : getModuleMemoryDataView = function() {
-		return new DataView(moduleWasm.instance.exports.memory.buffer);
-	},
 	getModuleInstanceExports : getModuleInstanceExports =function () {
 		return moduleWasm.instance.exports;
 	},
 	// Memory
+	updatedMemoryView : updatedMemoryView = function() {
+		moduleMemoryView = new DataView(getModuleInstanceExports().memory.buffer);
+		return moduleMemoryView;
+	},
+	memoryView : memoryView = function() {
+		return moduleMemoryView;
+	},
+	malloc : malloc = function (size) {
+		ptr = getModuleInstanceExports().malloc(size);
+		moduleMemoryView = new DataView(getModuleInstanceExports().memory.buffer);
+		return ptr;
+	},
+	free : free = function (ptr) {
+		getModuleInstanceExports().free(ptr);
+		moduleMemoryView = new DataView(getModuleInstanceExports().memory.buffer);
+	},
 	convertJSStr2WAsm : convertJSStr2WAsm =function(js_str)
 	{
-		const heap = new Uint8Array(getModuleInstanceExports().memory.buffer);
-
 		let uint8array = new TextEncoder("utf-8").encode(js_str);
 		let size = uint8array.length;
 		
-		let wasm_str = getModuleInstanceExports().malloc(size+1);
-		
+		let wasm_str = malloc(size+1);
 		for (let i = 0; i < size; i++) {
-			heap[wasm_str+i] = uint8array[i];
+			memoryView().setUint8(wasm_str+i, uint8array[i], true);
 		}
-		heap[wasm_str+size] = 0;
+		memoryView().setUint8(wasm_str+size, 0, true);
 		
 		return wasm_str;
 	},
 	convertWAsmStr2JSStr : convertWAsmStr2JSStr = function (str_ptr)
 	{
-		const heap = new Uint8Array(getModuleInstanceExports().memory.buffer);
 		let str = "";
-		for (let i = str_ptr; heap[i] != 0; ++i)
-			str += String.fromCharCode(heap[i]);
+		memory = updatedMemoryView();
+		for (let i = str_ptr; memory.getUint8(i) != 0; ++i)
+			str += String.fromCharCode(memory.getUint8(i));
 		return str;
 	},
 	
@@ -278,8 +289,7 @@ let WASI_API = {
 		size = fds.length;
 		offset = BigInt(0);
 		const opened_fd = fds.push({vpath, offset}) - 1;
-		const view = getModuleMemoryDataView();
-		view.setUint32(fd, opened_fd, true);
+		updatedMemoryView().setUint32(fd, opened_fd, true);
 			
 		return WASI_ESUCCESS;
 	},
@@ -333,8 +343,7 @@ let WASI_API = {
 		if(entry.offset < 0)
 			entry.offset = BigInt(0);
 		
-		const view = getModuleMemoryDataView();
-		view.setBigUint64(newoffset_ptr, BigInt(entry.offset), true);
+		updatedMemoryView().setBigUint64(newoffset_ptr, BigInt(entry.offset), true);
 
 		return WASI_ESUCCESS;
 	},
@@ -349,11 +358,11 @@ let WASI_API = {
 			return WASI_EINVAL;
 		}
 		
-		let view = getModuleMemoryDataView();
 
 		let written = 0;
 		let bufferBytes = [];                   
 
+		memory = updatedMemoryView();
 		function getiovs(iovs_ptr, iovs_len) {
 			// iovs_ptr* -> [iov, iov, ...]
 			// __wasi_ciovec_t {
@@ -362,15 +371,14 @@ let WASI_API = {
 			// }
 			let buffers = Array.from({ length: iovs_len }, function (_, i) {
 				   let ptr = iovs_ptr + i * 8;
-				   let buf = view.getUint32(ptr, !0);
-				   let bufLen = view.getUint32(ptr + 4, !0);
+				   let buf = memory.getUint32(ptr, true);
+				   let bufLen = memory.getUint32(ptr + 4, true);
 
 				   return new Uint8Array(this.getModuleInstanceExports().memory.buffer, buf, bufLen);
 				});
 
 			return buffers;
 		}
-
 		let buffers = getiovs(iovs_ptr, iovs_len);
 		function writev(iov) {
 			let b = 0;
@@ -389,7 +397,7 @@ let WASI_API = {
 			return WASI_ENOSYS;
 		}
 
-		view.setUint32(nwritten_ptr, written, !0);
+		memory.setUint32(nwritten_ptr, written, true);
 
 		return WASI_ESUCCESS;
 	},
@@ -399,16 +407,16 @@ let WASI_API = {
 		if (!entry) {
 			return WASI_EBADF;
 		}
+
 		if(getModuleInstanceExports().asyncify_start_unwind)
 		{
 			if(!sleeping) {
 				if(DATA_ADDR  == null)
 				{
-					DATA_ADDR = getModuleInstanceExports().malloc(1024*100);
+					DATA_ADDR = malloc(1024*100);
 				}
-				const view32 = new Int32Array(this.getModuleInstanceExports().memory.buffer);
-				view32[DATA_ADDR >> 2] = DATA_ADDR + 8;
-				view32[DATA_ADDR + 4 >> 2] = 1024*100;
+				memoryView().setUint32(DATA_ADDR, DATA_ADDR+8, true);
+				memoryView().setUint32(DATA_ADDR+4, 1024*100, true);
 				try {
 					getModuleInstanceExports().asyncify_start_unwind(DATA_ADDR);
 					sleeping = true;
@@ -436,13 +444,13 @@ let WASI_API = {
 			wasabi_log('wasm module not asyncified');
 		}
 
-		const view = getModuleMemoryDataView();
+		memory = updatedMemoryView();
 		let nread = 0;
 		for (let i = 0; i < iovs_len; i++) {
-			const data_ptr = view.getUint32(iovs_ptr, true);
+			const data_ptr = memory.getUint32(iovs_ptr, true);
 			iovs_ptr += 4;
 
-			const data_len = view.getUint32(iovs_ptr, true);
+			const data_len = memory.getUint32(iovs_ptr, true);
 			iovs_ptr += 4;
 
 			const data = new Uint8Array(getModuleInstanceExports().memory.buffer, data_ptr, data_len);
@@ -451,8 +459,7 @@ let WASI_API = {
 				nread++;
 			}
 		}
-
-		view.setUint32(nread_ptr, nread, true);
+		memory.setUint32(nread_ptr, nread, true);
 
 		return WASI_ESUCCESS;
 	},
@@ -473,39 +480,37 @@ let WASI_API = {
 			return WASI_EBADF;
 		}
 
-		let view = getModuleMemoryDataView();
-
 		// Device ID of device containing the file.
-		view.setUint32(buf_ptr , 0, !0);
-		view.setUint32(buf_ptr + 4, 0, !0);
+		this.updatedMemoryView().setUint32(buf_ptr , 0, true);
+		this.memoryView().setUint32(buf_ptr + 4, 0, true);
 
 		// File serial number.
-		view.setUint32(buf_ptr + 8, 0, !0);
-		view.setUint32(buf_ptr + 12, 0, !0);
+		this.memoryView().setUint32(buf_ptr + 8, 0, true);
+		this.memoryView().setUint32(buf_ptr + 12, 0, true);
 
 		// File type.
-		view.setUint8(buf_ptr + 16, WASI_FILETYPE_REGULAR_FILE, !0);
-		view.setUint32(buf_ptr + 20, 0, !0);
+		this.memoryView().setUint8(buf_ptr + 16, WASI_FILETYPE_REGULAR_FILE, true);
+		this.memoryView().setUint32(buf_ptr + 20, 0, true);
 
 		// Number of hard links to the file.
-		view.setUint32(buf_ptr + 24, 0 , !0);
-		view.setUint32(buf_ptr + 28, 0 , !0);
+		this.memoryView().setUint32(buf_ptr + 24, 0 , true);
+		this.memoryView().setUint32(buf_ptr + 28, 0 , true);
 		
 		// For regular files, the file size in bytes. For symbolic links, the length in bytes of the pathname contained in the symbolic
-		view.setUint32(buf_ptr + 32, entry.data.length, !0);
-		view.setUint32(buf_ptr + 36, 0, !0);
+		this.memoryView().setUint32(buf_ptr + 32, entry.data.length, true);
+		this.memoryView().setUint32(buf_ptr + 36, 0, true);
 
 		// Last data access timestamp.
-		view.setUint32(buf_ptr + 40, 0, !0);
-		view.setUint32(buf_ptr + 44, 0, !0);
+		this.memoryView().setUint32(buf_ptr + 40, 0, true);
+		this.memoryView().setUint32(buf_ptr + 44, 0, true);
 
 		// Last data modification timestamp.
-		view.setUint32(buf_ptr + 48, 0, !0);
-		view.setUint32(buf_ptr + 52, 0, !0);
+		this.memoryView().setUint32(buf_ptr + 48, 0, true);
+		this.memoryView().setUint32(buf_ptr + 52, 0, true);
 
 		// Last file status change timestamp.
-		view.setUint32(buf_ptr + 56, 0, !0);
-		view.setUint32(buf_ptr + 60, 0, !0);
+		this.memoryView().setUint32(buf_ptr + 56, 0, true);
+		this.memoryView().setUint32(buf_ptr + 60, 0, true);
 
 		return WASI_ESUCCESS;
 	},
@@ -514,27 +519,26 @@ let WASI_API = {
 	},
 	fd_fdstat_get: function(fd, stat_ptr) {
 		log(Array.prototype.slice.call(arguments));
-		let view = getModuleMemoryDataView();
 
-		view.setUint8(stat_ptr, fd);
-		view.setUint16(stat_ptr + 2, 0, !0);
-		view.setUint16(stat_ptr + 4, 0, !0);
+		updatedMemoryView().setUint8(stat_ptr, fd);
+		memoryView().setUint16(stat_ptr + 2, 0, true);
+		memoryView().setUint16(stat_ptr + 4, 0, true);
 
-		view.setUint32(stat_ptr + 8, 0, !0);
-		view.setUint32(stat_ptr + 12, 0, !0);
-		view.setUint32(stat_ptr + 16, 0, !0);
-		view.setUint32(stat_ptr + 20, 0, !0);
+		memoryView().setUint32(stat_ptr + 8, 0, true);
+		memoryView().setUint32(stat_ptr + 12, 0, true);
+		memoryView().setUint32(stat_ptr + 16, 0, true);
+		memoryView().setUint32(stat_ptr + 20, 0, true);
 /*
 		function setBigUint64(byteOffset, value, littleEndian) {
 			let lowWord = value;
 			let highWord = 0;
 
-			view.setUint32(littleEndian ? 0 : 4, lowWord, littleEndian);
-			view.setUint32(littleEndian ? 4 : 0, highWord, littleEndian);
+			memoryView().setUint32(littleEndian ? 0 : 4, lowWord, littleEndian);
+			memoryView().setUint32(littleEndian ? 4 : 0, highWord, littleEndian);
 		}
 */
-	//	setBigUint64(stat_ptr + 8, 0, !0);
-	//	setBigUint64(stat_ptr + 8 + 8, 0, !0);
+	//	setBigUint64(stat_ptr + 8, 0, true);
+	//	setBigUint64(stat_ptr + 8 + 8, 0, true);
 
 		return WASI_ESUCCESS;
 	},
@@ -550,9 +554,9 @@ let WASI_API = {
 		}
 		log("vpath:'" + entry.vpath +"'");
 
-		const view = getModuleMemoryDataView();
-		view.setUint8(buf_out, WASI_PREOPENTYPE_DIR);
-		view.setUint32(buf_out + 4, new TextEncoder().encode(entry.vpath).byteLength, true);
+		memory = updatedMemoryView();
+		memory.setUint8(buf_out, WASI_PREOPENTYPE_DIR);
+		memory.setUint32(buf_out + 4, new TextEncoder().encode(entry.vpath).byteLength, true);
 		return WASI_ESUCCESS;
 	},
 	fd_prestat_dir_name: function(fd, path_ptr, path_len) {
@@ -579,10 +583,10 @@ let WASI_API = {
 		log(Array.prototype.slice.call(arguments));
 		const entries = Object.entries(env);
 		const text = new TextEncoder();
-		let view = getModuleMemoryDataView();
 
-		view.setUint32(environ_size, entries.length, !0);
-		view.setUint32(environ_buf_size, entries.reduce(function(acc, [key, value]) {
+		memory = updatedMemoryView();
+		memory.setUint32(environ_size, entries.length, true);
+		memory.setUint32(environ_buf_size, entries.reduce(function(acc, [key, value]) {
 			return acc + text.encode(`${key}=${value}\0`).length;
 		}, 0), true);
 
@@ -593,10 +597,10 @@ let WASI_API = {
 		const entries = Object.entries(env);
 		const text = new TextEncoder();
 		const heap = new Uint8Array(this.memory.buffer);
-		let view = getModuleMemoryDataView();
 
+		memory = updatedMemoryView();
 		for (let [key, value] of entries) {
-			view.setUint32(environ_ptr, environ_buf_ptr, true);
+			memory.setUint32(environ_ptr, environ_buf_ptr, true);
 			environ_ptr += 4;
 
 			const data = text.encode(`${key}=${value}\0`);
@@ -611,23 +615,22 @@ let WASI_API = {
 	// Clock
 	
 	clock_res_get: function (clock_id, resolution_out) {
-		let view = getModuleMemoryDataView();
-
+		memory = this.updatedMemoryView();
 		switch (clock_id) {
 			case WASI_CLOCKID_REALTIME:
-				view.setBigUint64(resolution_out, clock_res_realtime(), true);
+				memory.setBigUint64(resolution_out, clock_res_realtime(), true);
 				break;
 
 			case WASI_CLOCKID_MONOTONIC:
-				view.setBigUint64(resolution_out, clock_res_monotonic(), true);
+				memory.setBigUint64(resolution_out, clock_res_monotonic(), true);
 				break;
 
 			case WASI_CLOCKID_PROCESS_CPUTIME_ID:
-				view.setBigUint64(resolution_out, clock_res_process(), true);
+				memory.setBigUint64(resolution_out, clock_res_process(), true);
 				break;
 
 			case WASI_CLOCKID_THREAD_CPUTIME_ID:
-				view.setBigUint64(resolution_out, clock_res_thread(), true);
+				memory.setBigUint64(resolution_out, clock_res_thread(), true);
 				break;
 
 			default:
@@ -638,23 +641,23 @@ let WASI_API = {
 		return WASI_ESUCCESS;
 	},
 	clock_time_get: function(clock_id, precision, time) {
+		memory = this.updatedMemoryView();
 		log(Array.prototype.slice.call(arguments));
-		let view = getModuleMemoryDataView();
 		switch (clock_id) {
 			case WASI_CLOCKID_REALTIME:
-				view.setBigUint64(time, clock_time_realtime(), true);
+				memory.setBigUint64(time, clock_time_realtime(), true);
 				break;
 
 			case WASI_CLOCKID_MONOTONIC:
-				view.setBigUint64(time, clock_time_monotonic(), true);
+				memory.setBigUint64(time, clock_time_monotonic(), true);
 				break;
 
 			case WASI_CLOCKID_PROCESS_CPUTIME_ID:
-				view.setBigUint64(time, clock_time_process(), true);
+				memory.setBigUint64(time, clock_time_process(), true);
 				break;
 
 			case WASI_CLOCKID_THREAD_CPUTIME_ID:
-				view.setBigUint64(time, clock_time_thread(), true);
+				memory.setBigUint64(time, clock_time_thread(), true);
 				break;
 
 			default:
