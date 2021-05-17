@@ -89,6 +89,8 @@ alias install='$CMAKE --build $WASABI_BUILD_DIR_NAME --target install'
 alias build='$CMAKE -B $WASABI_BUILD_DIR_NAME . -G Ninja -DCMAKE_BUILD_TYPE=$WASABI_BUILD_TYPE -DCMAKE_MAKE_PROGRAM=$NINJA -DCMAKE_INSTALL_PREFIX:PATH=$WASABI_INSTAL_DIR && install && test'
 alias rebuild='rm -rf $WASABI_BUILD_DIR_NAME && mkdir -p $WASABI_BUILD_DIR_NAME && build'
 
-alias export2nexus='(export LD_LIBRARY_PATH=$WASABI_INSTAL_DIR/ && $WASABI_INSTAL_DIR/wasm-opt $WASABI_INSTAL_DIR/InA_Interpreter.wasm -Oz -o $WASABI_INSTAL_DIR/InA_Interpreter.wasm && chmod 777 $WASABI_INSTAL_DIR/InA_Interpreter.wasm && mvn -f $WASABI_ROOT_DIR/nexus/pom.xml clean deploy)'
+alias asyncify='($WASABI_EXTERNAL_DIR/binaryen/install/bin/wasm-opt --asyncify $WASABI_INSTAL_DIR/bin/C_read.wasm -o $WASABI_INSTAL_DIR/bin/C_read.wasm)'
+alias wasmopt='(export LD_LIBRARY_PATH=$WASABI_EXTERNAL_DIR/binaryen/install/lib && $WASABI_EXTERNAL_DIR/binaryen/install/bin/wasm-opt $WASABI_INSTAL_DIR/InA_Interpreter.wasm -Oz -o $WASABI_INSTAL_DIR/InA_Interpreter.wasm && chmod 777 $WASABI_INSTAL_DIR/InA_Interpreter.wasm)'
+alias export2nexus='(wasmopt && mvn -f $WASABI_ROOT_DIR/nexus/pom.xml clean deploy)'
 
 echo

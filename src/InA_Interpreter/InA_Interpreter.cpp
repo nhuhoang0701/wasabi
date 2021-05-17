@@ -202,7 +202,7 @@ calculator::Value evalFunction(const ina::query_model::Function& fct)
 			break;
 		}
 		default:
-			throw std::runtime_error("Unkonw funciton parameter type");
+			throw std::runtime_error("Unkown function parameter type");
 
 	}
 	return 42.0;
