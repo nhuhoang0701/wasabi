@@ -11,27 +11,13 @@ const indexMsgParam = 2;
 
 function initWasmModule(module, ID, action, param){
 	console.log('Worker: initWasmModule');
-	moduleWASI = module;
-	setModuleInstance(module.instance);
+	WASI_API.setModule(module);
 	
 	filesystem = [	"/resources/response_getSerververInfo.json",
 					"/resources/sqlite/efashion/efashion.db"];
 	WASI_API.wasabi_initFS(param, filesystem).then(() => 
 	{
-		if(getModuleInstance()._initialize)
-		{
-			console.log('Worker: execute _initialize');
-			getModuleInstance()._initialize();
-		}
-		else if(getModuleInstance()._start)
-		{
-			console.log('Worker: execute _start');
-			getModuleInstance()._start();
-		}
-		else
-		{
-			console.log('Worker: no _start entry point');
-		}
+		WASI_API.start();
 		postMessage([ID, action, '{"message": "Library well loaded"}']);
 		return true;
 	});
@@ -99,24 +85,35 @@ onmessage = function(e) {
 						throw error;
 					});
 			});
-
+/*
+			fetch(param+"/InA_Interpreter.wasm").then(response =>
+				response.arrayBuffer()
+			).then(bytes =>
+				WebAssembly.instantiate(bytes, importObject)
+			).then(module => {
+				console.log("Worker: InA_Interpreter.wasm loaded from '" + param + "'");
+				isLoaded = initWasmModule(module, ID, action, param);
+			}).catch(error=>{
+				throw error;
+			});
+*/
 			return;
 		case WorkerEvent.eGetServerInfo:
 			if(isLoaded == false)
 				throw new Error("Not loaded");
 
-			var wasmRes = moduleWASI.instance.exports.json_getServerInfo();
-			valret = convertWAsmStr2JSStr(wasmRes, moduleWASI.instance.exports.memory);		
+			var wasmRes = WASI_API.getModuleInstanceExports().json_getServerInfo();
+			valret = WASI_API.convertWAsmStr2JSStr(wasmRes);		
 			break;
 		case WorkerEvent.eGetResponse:
 			if(isLoaded == false)
 				throw new Error("Not loaded");
 
 			var queryJS = message[indexMsgParam];
-			var queryWAsm = convertJSStr2WAsm(queryJS, moduleWASI);
-			var wasmRes = moduleWASI.instance.exports.json_getResponse_json(queryWAsm);
-			moduleWASI.instance.exports.free(queryWAsm);
-			valret = convertWAsmStr2JSStr(wasmRes, moduleWASI.instance.exports.memory);			
+			var queryWAsm = WASI_API.convertJSStr2WAsm(queryJS);
+			var wasmRes = WASI_API.getModuleInstanceExports().json_getResponse_json(queryWAsm);
+			WASI_API.getModuleInstanceExports().free(queryWAsm);
+			valret = WASI_API.convertWAsmStr2JSStr(wasmRes);			
 			break;
 		default:
 			throw  new Error('Unknow action:' + action);
