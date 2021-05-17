@@ -1,6 +1,7 @@
 #pragma once
 
-#include "storage.h"
+#include "common.h"
+
 #include <cstddef>
 #include <memory>
 #include <string>
@@ -10,6 +11,9 @@
 namespace calculator
 {
 	class Cube;
+	class DataStorage;
+	class ColumnData;
+
 	enum class eAxe {Row, Column};
 	class Object
 	{

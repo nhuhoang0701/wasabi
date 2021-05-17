@@ -24,7 +24,26 @@ namespace ina::query_model
 			
 			Function() = default;
 
-			enum  eFunctionType {eUndefined=-1,eAdd=0, eSubtract, eMultipy, eDivide, eDecFloat, eSquare};
+			enum  eFunctionType
+			{
+				eUndefined=-1,
+				eDecFloat=0,
+				eAdd,
+				eSubtract,
+				eMultipy,
+				eDivide,
+				eSquare,
+				eAnd,
+				eOr,
+				eNot,
+				eNotEqual,
+				eEqual,
+				eLess,
+				eLessEq,
+				eGreater,
+				eGreaterEq,
+				eIf
+				};
 			Function(const std::string& name, const std::string& desc, eFunctionType type, const std::vector<Parameter>& params);
 			
 			const std::string & getName() const;
