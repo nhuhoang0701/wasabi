@@ -10,6 +10,7 @@ The technical stacks are :
   - [wasi](https://wasi.dev/)        : own implementation, can be executed in the browser, nodejs or on any machine throw [Wasmtime](https://wasmtime.dev/)      
   - [wasi-sdk](https://github.com/WebAssembly/wasi-sdk)  
   - [clang](https://clang.llvm.org/) compiler (No Emscripten !)  
+  - [Asyncify](https://github.com/WebAssembly/binaryen/blob/main/src/passes/Asyncify.cpp) for JS asynchronous call from WebAssembly  
   - [CMake](https://cmake.org/) for compilation process
 
 This is the [Jenkins](https://gkelucjenkins3.jaas-gcp.cloud.sap.corp/view/experiments/job/wasabi_cmake_nexus/) for compilation and tests.  
