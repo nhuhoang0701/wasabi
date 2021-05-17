@@ -1,5 +1,3 @@
-moduleWASI = null;
-
 function _handleFiles(files) {
 	if (files.length == 0) {
 		console.error("Missing file");
@@ -28,26 +26,22 @@ function start(response, filename) {
 
 	WebAssembly.instantiateStreaming(response, importObject).then(module =>
 	{
-		moduleWASI = module;
-		setModuleInstance(module.instance);
+		WASI_API.setModule(module);
 		filesystem = ["/resources/response_getSerververInfo.json",
 					 "/resources/text.txt",
 					 "/resources/sqlite/efashion/efashion.db",
 					 "/resources/sqlite/onetable_datatype/onetable_datatype.db"];
 		WASI_API.wasabi_initFS(".", filesystem).then(() => {
-			WASI_API.wasabi_log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
-			WASI_API.wasabi_log(">> start: " + filename + "\n");
+			WASI_API.wasabi_log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+			WASI_API.wasabi_log(">> start: " + filename);
 			try {
-				if(module.instance.exports._initialize)
-					module.instance.exports._initialize();
-				else
-					module.instance.exports._start();
+				WASI_API.start();
 			} catch (e)
 			{
 				console.log("Exception during execution:" + e);
 				console.log("stack" + e.stack);
 			}
-			WASI_API.wasabi_log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
+			WASI_API.wasabi_log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 		});
 	});
 };

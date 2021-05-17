@@ -4,117 +4,12 @@
 // https://github.com/WebAssembly/WASI/blob/main/phases/snapshot/docs.md
 // https://docs.rs/wasi/0.10.2+wasi-snapshot-preview1/wasi/wasi_snapshot_preview1/index.html
 
-// Members
-moduleInstanceExports = null;
 
-const  WASI_CLOCKID_REALTIME                          =  0;
-const  WASI_CLOCKID_MONOTONIC                         =  1;
-const  WASI_CLOCKID_PROCESS_CPUTIME_ID                =  2;
-const  WASI_CLOCKID_THREAD_CPUTIME_ID                 =  3;
-
-const  WASI_FILETYPE_UNKNOWN                          =  0;
-const  WASI_FILETYPE_BLOCK_DEVICE                     =  1;
-const  WASI_FILETYPE_CHARACTER_DEVICE                 =  2;
-const  WASI_FILETYPE_DIRECTORY                        =  3;
-const  WASI_FILETYPE_REGULAR_FILE                     =  4;
-const  WASI_FILETYPE_SOCKET_DGRAM                     =  5;
-const  WASI_FILETYPE_SOCKET_STREAM                    =  6;
-const  WASI_FILETYPE_SYMBOLIC_LINK                    =  7;
-
-function clock_res_realtime () {
-			return BigInt(1e6);
-};
-
-function clock_res_monotonic() {
-			return BigInt(1e3);
-};
-
-const clock_res_process = clock_res_monotonic;
-const clock_res_thread = clock_res_monotonic;
-
-function clock_time_realtime () {
-			return BigInt(Date.now()) * BigInt(1e6);
-};
-
-function clock_time_monotonic () {
-			const t = performance.now();
-			const s = Math.trunc(t);
-			const ms = Math.floor((t - s) * 1e3);
-
-			return (BigInt(s) * BigInt(1e9)) + (BigInt(ms) * BigInt(1e6));
-};
-
-const clock_time_process = clock_time_monotonic;
-const clock_time_thread = clock_time_monotonic;
-
-// env : { [key: string]: string | undefined };
-let env = {};
-//
-
-let fs_Path2Data = new Map();
-
-let fds = [
-		{
-			vpath:"/dev/stdin",
-			offset:BigInt(0),
-			data:null,
-		},
-		{
-			vpath:"/dev/stdout",
-			offset:BigInt(0),
-			data:null,
-		},
-		{
-			vpath:"/dev/stderr",
-			offset:BigInt(0),
-			data:null,
-		},
-		{
-			vpath:".",
-			offset:BigInt(0),
-			data:null,
-		},
-	];
-
-function convertWAsmStr2JSStr(str_ptr, memory)
-{
-	const heap = new Uint8Array(memory.buffer);
-	let str = "";
-	for (let i = str_ptr; heap[i] != 0; ++i)
-		str += String.fromCharCode(heap[i]);
-	return str;
-}
-
-function convertJSStr2WAsm(js_str, module)
-{
-	const heap = new Uint8Array(module.instance.exports.memory.buffer);
-
-	let uint8array = new TextEncoder("utf-8").encode(js_str);
-	let size = uint8array.length;
-	
-	let wasm_str = module.instance.exports.malloc(size+1);
-	
-	for (let i = 0; i < size; i++) {
-		heap[wasm_str+i] = uint8array[i];
-	}
-	heap[wasm_str+size] = 0;
-	
-	return wasm_str;
-}
-
-function getModuleMemoryDataView() {
-	return new DataView(moduleInstanceExports.memory.buffer);
-}
-function setModuleInstance(instance) {
-	moduleInstanceExports = instance.exports;
-}
-function getModuleInstance() {
-	return moduleInstanceExports;
-}
-
-
+let DATA_ADDR = null;
+let sleeping = false;
 
 let WASI_API = {
+	//////////////////////////////////////////////////////////////
 	// WASI constants
 	WASI_ESUCCESS: WASI_ESUCCESS = 0,
 	WASI_EBADF : WASI_EBADF = 8,
@@ -130,18 +25,115 @@ let WASI_API = {
 	
 	WASI_PREOPENTYPE_DIR : WASI_PREOPENTYPE_DIR = 0,
 
-	// WASI API
+		
+	WASI_CLOCKID_REALTIME : WASI_CLOCKID_REALTIME =  0,
+	WASI_CLOCKID_MONOTONIC : WASI_CLOCKID_MONOTONIC =  1,
+	WASI_CLOCKID_PROCESS_CPUTIME_ID : WASI_CLOCKID_PROCESS_CPUTIME_ID=  2,
+	WASI_CLOCKID_THREAD_CPUTIME_ID : WASI_CLOCKID_THREAD_CPUTIME_ID=  3,
+
+	WASI_FILETYPE_UNKNOWN : WASI_FILETYPE_UNKNOWN=  0,
+	WASI_FILETYPE_BLOCK_DEVICE : WASI_FILETYPE_BLOCK_DEVICE=  1,
+	WASI_FILETYPE_CHARACTER_DEVICE  :WASI_FILETYPE_CHARACTER_DEVICE=  2,
+	WASI_FILETYPE_DIRECTORY : WASI_FILETYPE_DIRECTORY=  3,
+	WASI_FILETYPE_REGULAR_FILE : WASI_FILETYPE_REGULAR_FILE=  4,
+	WASI_FILETYPE_SOCKET_DGRAM : WASI_FILETYPE_SOCKET_DGRAM=  5,
+	WASI_FILETYPE_SOCKET_STREAM : WASI_FILETYPE_SOCKET_STREAM=  6,
+	WASI_FILETYPE_SYMBOLIC_LINK : WASI_FILETYPE_SYMBOLIC_LINK=  7,
+
+	//////////////////////////////////////////////////////////////
+	// WASABI variables
+	WASASBI_SERVER_ROOT_PATH : WASASBI_SERVER_ROOT_PATH = null,
+	fs_Path2Data : fs_Path2Data = new Map(),
 	
+	// env : { [key: string]: string | undefined };
+	env : env = {},
+	fds : fds = [
+		{
+			vpath:"/dev/stdin",	offset:BigInt(0), data:null,
+		},
+		{
+			vpath:"/dev/stdout", offset:BigInt(0), data:null,
+		},
+		{
+			vpath:"/dev/stderr", offset:BigInt(0), data:null,
+		},
+		{
+			vpath:".", offset:BigInt(0), data:null,
+		},
+	],
+	// Members
+	moduleWasm : moduleWasm = null,
+	
+	//////////////////////////////////////////////////////////////
+	// WASABI variables
+	setModule : setModule = function (module) {
+		moduleWasm = module;
+	},
+	start : start = function () {
+		if(getModuleInstanceExports()._initialize)
+			getModuleInstanceExports()._initialize();
+		else if(getModuleInstanceExports()._start)
+			getModuleInstanceExports()._start();
+		else
+			throw Error('no _start/_initialize entry point');
+
+		//TODO: Need a specific state 
+		if(getModuleInstanceExports().asyncify_stop_unwind) {
+			wasabi_log('stack unwound');
+			getModuleInstanceExports().asyncify_stop_unwind();
+		} else {
+			wasabi_log('wasm module not asyncified');
+		}
+	},
+	getModuleMemoryDataView : getModuleMemoryDataView = function() {
+		return new DataView(moduleWasm.instance.exports.memory.buffer);
+	},
+	getModuleInstanceExports : getModuleInstanceExports =function () {
+		return moduleWasm.instance.exports;
+	},
+	// Memory
+	convertJSStr2WAsm : convertJSStr2WAsm =function(js_str)
+	{
+		const heap = new Uint8Array(getModuleInstanceExports().memory.buffer);
+
+		let uint8array = new TextEncoder("utf-8").encode(js_str);
+		let size = uint8array.length;
+		
+		let wasm_str = getModuleInstanceExports().malloc(size+1);
+		
+		for (let i = 0; i < size; i++) {
+			heap[wasm_str+i] = uint8array[i];
+		}
+		heap[wasm_str+size] = 0;
+		
+		return wasm_str;
+	},
+	convertWAsmStr2JSStr : convertWAsmStr2JSStr = function (str_ptr)
+	{
+		const heap = new Uint8Array(getModuleInstanceExports().memory.buffer);
+		let str = "";
+		for (let i = str_ptr; heap[i] != 0; ++i)
+			str += String.fromCharCode(heap[i]);
+		return str;
+	},
+	
+	//////////////////////////////////////////////////////////////
+	// WASABI API
 	//*************************************************************
 	// wasabi specific
+	wasabi_getServeFSPath : wasabi_getServeFSPath = function(vpath) {
+		if(WASASBI_SERVER_ROOT_PATH != null && WASASBI_SERVER_ROOT_PATH != "" )
+			path = WASASBI_SERVER_ROOT_PATH + vpath;
+		else
+			path = vpath;
+
+		return path;
+	},
 	wasabi_initFS : async function(rootFS, paths) {
+		WASASBI_SERVER_ROOT_PATH = rootFS;
 		for (let i=0; i<paths.length; i++)  {
 			vpath = paths[i];
-			if(rootFS != null && rootFS != "" )
-				path = rootFS + vpath;
-			else
-				path = vpath;
-			const response = await fetch(path);
+			const response = await fetch(wasabi_getServeFSPath(vpath));
 			if (response.status >= 400 && response.status < 600) {
 				response.text().then(function (text) {
 					throw new Error("Bad response from server response.status='"+response.status+"' " + text + "'");
@@ -153,7 +145,7 @@ let WASI_API = {
 			if(vpath.substring(0, 1) == "/")
 				vpath = vpath.substring(1);
 			fs_Path2Data.set(vpath, uint8View);
-			console.log("WASI FileSystem: [" +rootFS + "," + vpath + "] loaded from '" + path + "' (" + uint8View.length + " bytes)");
+			wasabi_log("WASI FileSystem: [" +WASASBI_SERVER_ROOT_PATH + "," + vpath + "] loaded from '" + path + "' (" + uint8View.length + " bytes)");
 		}
 	},
 	wasabi_getFileEntry : wasabi_getFileEntry = function(fd) {
@@ -182,7 +174,7 @@ let WASI_API = {
 	},
 	
 	log : log = function(msg) {
-	//	console.log("WASI-"+arguments.callee.caller.name + ":" + msg);
+		//console.log("WASI-"+arguments.callee.caller.name + ":" + msg);
 	},
 	error : error = function(msg) {
 		console.error("WASI: " + msg);
@@ -191,22 +183,59 @@ let WASI_API = {
 	//*************************************************************
 	// stdout and stderr 
 	wasabi_log : wasabi_log = function(msg) {
+		console.log(msg);
 		if(typeof document !== 'undefined') {
+			msg += "\n";
 			document.getElementById('log').innerHTML += msg.replace(/\n( *)/g, function (match, p1) {
 				return '<br>' + '&nbsp;'.repeat(p1.length);
 			});
 		}
-		console.log(msg);
 	},
 	wasabi_error : wasabi_error = function(msg) {
+		console.error(msg);
 		if(typeof document !== 'undefined') {
+			msg += "\n";
 			document.getElementById('log').innerHTML += msg.replace(/\n( *)/g, function (match, p1) {
 				return '<br>' + '&nbsp;'.repeat(p1.length);
 			});
 		}
-		console.error(msg);
 	},
-	
+
+	// Clock and time
+	clock_res_realtime : clock_res_realtime = function() {
+		return BigInt(1e6);
+	},
+
+	clock_res_monotonic : clock_res_monotonic = function() {
+		return BigInt(1e3);
+	},
+	clock_res_thread : clock_res_thread = function() {
+		return clock_res_monotonic();
+	},
+	clock_res_process : clock_res_process = function() {
+		return clock_res_monotonic();
+	},
+	clock_time_realtime : clock_time_realtime = function() {
+		return BigInt(Date.now()) * BigInt(1e6);
+	},
+
+	clock_time_monotonic : clock_time_monotonic = function() {
+		const t = performance.now();
+		const s = Math.trunc(t);
+		const ms = Math.floor((t - s) * 1e3);
+
+		return (BigInt(s) * BigInt(1e9)) + (BigInt(ms) * BigInt(1e6));
+	},
+	clock_time_process : clock_time_process = function() {
+		return clock_time_monotonic();
+	},
+	clock_time_thread : clock_time_process = function() {
+		return clock_time_monotonic();
+	},
+
+
+	//////////////////////////////////////////////////////////////
+	// WASI API
 	//*************************************************************
 	// process
 	proc_exit: function(rval) {
@@ -219,7 +248,7 @@ let WASI_API = {
 	// path
 	path_open: function(dirfd, dirflags, path_ptr, path_len, oflags, fs_rights_base, fs_rights_inheriting, fs_flags, fd) {
 		log(Array.prototype.slice.call(arguments));
-		vpath  = convertWAsmStr2JSStr(path_ptr, moduleInstanceExports.memory);
+		vpath  = convertWAsmStr2JSStr(path_ptr);
 		log("vpath:'" + vpath +"'");
 		
 		const entry = fds[dirfd];
@@ -249,20 +278,20 @@ let WASI_API = {
 		size = fds.length;
 		offset = BigInt(0);
 		const opened_fd = fds.push({vpath, offset}) - 1;
-		const view = new DataView(moduleInstanceExports.memory.buffer);
+		const view = getModuleMemoryDataView();
 		view.setUint32(fd, opened_fd, true);
 			
 		return WASI_ESUCCESS;
 	},
 	path_filestat_get: function(fd, flags, path_ptr, path_len, buf) {
 		log(Array.prototype.slice.call(arguments));
-		log("vpath:'" + convertWAsmStr2JSStr(path_ptr, moduleInstanceExports.memory) +"'");
+		log("vpath:'" + convertWAsmStr2JSStr(path_ptr) +"'");
 		error("function path_filestat_get not yet implemented");
 		return WASI_ENOSYS;
 	},
 	path_unlink_file: function(fd, path_ptr, path_len) {
 		log(Array.prototype.slice.call(arguments));
-		log("vpath:'" + convertWAsmStr2JSStr(path_ptr, moduleInstanceExports.memory) +"'");
+		log("vpath:'" + convertWAsmStr2JSStr(path_ptr) +"'");
 		error("function path_unlink_file not yet implemented");
 		return WASI_ENOSYS;
 	},
@@ -304,7 +333,7 @@ let WASI_API = {
 		if(entry.offset < 0)
 			entry.offset = BigInt(0);
 		
-		const view = new DataView(moduleInstanceExports.memory.buffer);
+		const view = getModuleMemoryDataView();
 		view.setBigUint64(newoffset_ptr, BigInt(entry.offset), true);
 
 		return WASI_ESUCCESS;
@@ -336,7 +365,7 @@ let WASI_API = {
 				   let buf = view.getUint32(ptr, !0);
 				   let bufLen = view.getUint32(ptr + 4, !0);
 
-				   return new Uint8Array(moduleInstanceExports.memory.buffer, buf, bufLen);
+				   return new Uint8Array(this.getModuleInstanceExports().memory.buffer, buf, bufLen);
 				});
 
 			return buffers;
@@ -370,9 +399,44 @@ let WASI_API = {
 		if (!entry) {
 			return WASI_EBADF;
 		}
+		if(getModuleInstanceExports().asyncify_start_unwind)
+		{
+			if(!sleeping) {
+				if(DATA_ADDR  == null)
+				{
+					DATA_ADDR = getModuleInstanceExports().malloc(1024*100);
+				}
+				const view32 = new Int32Array(this.getModuleInstanceExports().memory.buffer);
+				view32[DATA_ADDR >> 2] = DATA_ADDR + 8;
+				view32[DATA_ADDR + 4 >> 2] = 1024*100;
+				try {
+					getModuleInstanceExports().asyncify_start_unwind(DATA_ADDR);
+					sleeping = true;
+					wasabi_log('timeout start');
+					setTimeout(function() {
+						wasabi_log('timeout ended, starting to rewind the stack');
+						getModuleInstanceExports().asyncify_start_rewind(DATA_ADDR);
+						// The code is now ready to rewind; to start the process, enter the
+						// first function that should be on the call stack.
+						getModuleInstanceExports()._start();
+					}, 5000 /*ms*/);
+					return;
+				}catch(e) {
+					error(e);
+				}
+			} else {
+				// We are called as part of a resume/rewind. Stop sleeping.
+				wasabi_log('...resume');
+				getModuleInstanceExports().asyncify_stop_rewind();
+				sleeping = false;
+			}
+		}
+		else
+		{
+			wasabi_log('wasm module not asyncified');
+		}
 
-		const view = new DataView(moduleInstanceExports.memory.buffer);
-
+		const view = getModuleMemoryDataView();
 		let nread = 0;
 		for (let i = 0; i < iovs_len; i++) {
 			const data_ptr = view.getUint32(iovs_ptr, true);
@@ -381,7 +445,7 @@ let WASI_API = {
 			const data_len = view.getUint32(iovs_ptr, true);
 			iovs_ptr += 4;
 
-			const data = new Uint8Array(moduleInstanceExports.memory.buffer, data_ptr, data_len);
+			const data = new Uint8Array(getModuleInstanceExports().memory.buffer, data_ptr, data_len);
 			for(let j =0; j < data_len && entry.offset < entry.data.length ; j++) {
 				data[j] = entry.data[entry.offset++];
 				nread++;
@@ -486,7 +550,7 @@ let WASI_API = {
 		}
 		log("vpath:'" + entry.vpath +"'");
 
-		const view = new DataView(moduleInstanceExports.memory.buffer);
+		const view = getModuleMemoryDataView();
 		view.setUint8(buf_out, WASI_PREOPENTYPE_DIR);
 		view.setUint32(buf_out + 4, new TextEncoder().encode(entry.vpath).byteLength, true);
 		return WASI_ESUCCESS;
@@ -500,9 +564,9 @@ let WASI_API = {
 		if (!entry.vpath) {
 			return WASI_EBADF;
 		}
-		log("vpath:'" + convertWAsmStr2JSStr(path_ptr, moduleInstanceExports.memory) +"'");
+		log("vpath:'" + convertWAsmStr2JSStr(path_ptr) +"'");
 
-		const data = new Uint8Array(moduleInstanceExports.memory.buffer, path_ptr, path_len);
+		const data = new Uint8Array(this.getModuleInstanceExports().memory.buffer, path_ptr, path_len);
 		data.set(new TextEncoder().encode(entry.vpath));
 
 		return WASI_ESUCCESS;
