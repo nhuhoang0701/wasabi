@@ -8,9 +8,13 @@ namespace ina::query_model
 
     }
 
+    const std::string& Formula::getName() const
+    {
+        return m_name;
+    }
+
     const Function& Formula::getFunction() const
     {
         return m_function;
-    }    
-
+    }
 }
