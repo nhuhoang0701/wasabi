@@ -18,7 +18,7 @@ namespace ina::query_model
         else if(JSONGenericObject memberObj = node.getObject("Member"))
         {
             param.m_type = Parameter::eMember;
-            param.m_value = memberObj.getString("Name");
+            param.m_name = memberObj.getString("Name");
 
         }    
         else if(JSONGenericObject functionObj = node.getObject("Function"))
