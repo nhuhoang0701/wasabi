@@ -21,11 +21,18 @@ namespace ina::query_model
 
 			eType  getType() const;
 
+			// For Member
+			const std::string& getName() const;
+
+			// For Constant
 			const std::string& getValueType() const;
 			const std::string& getValue() const;
+
+			// For Function
 			const Function&    getFunction() const;
 		private:
 			eType  m_type = eUndefined;
+			std::string m_name;
 			std::string m_value;
 			std::string m_valueType;
 			std::shared_ptr<Function> m_function = nullptr;

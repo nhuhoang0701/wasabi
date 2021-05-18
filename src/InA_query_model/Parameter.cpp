@@ -27,6 +27,11 @@ namespace ina::query_model
         return m_valueType;
     }
 
+    const std::string & Parameter::getName() const
+    {
+        return m_name;
+    }
+
     const std::string & Parameter::getValue() const
     {
         return m_value;

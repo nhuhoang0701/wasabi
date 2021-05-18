@@ -3,8 +3,10 @@
 
 #include <dbproxy/dbproxy.h>
 
-#include <memory>
 #include <test_tools/TestAssert.h>
+#include <json/jsonReader.h>
+
+#include <memory>
 
 int main()
 {
@@ -159,6 +161,24 @@ int main()
 			CPPUNIT_ASSERT_EQUAL(3,        std::get<double>(cube.getBody().getValue("Meas0", 0, 3)));
 			CPPUNIT_ASSERT_EQUAL("2", std::get<std::string>(cube.getBody().getValue("Meas1", 0, 0)));
 			CPPUNIT_ASSERT_EQUAL("2", std::get<std::string>(cube.getBody().getValue("Meas1", 0, 3)));
+	}
+
+	{
+		JSONReader reader;
+		
+		ina::query_model::Function fct;
+		read(fct, reader.parse(R"({"Name": "+","Parameters": [{"Constant": {"ValueType": "String","Value": "9"}},{"Member": {"Name": "Meas0"}}]})"));
+
+		Cube cube;	
+		cube.setStorage(storage);
+		cube.addDim(calculator::eAxe::Row, Object("Dim"));
+		cube.addFormula(Object("fct"), fct);
+		cube.materialyze();
+
+		CPPUNIT_ASSERT_EQUAL(4, cube.getAxe(calculator::eAxe::Row).getCardinality());
+			CPPUNIT_ASSERT_EQUAL(1, std::get<double>(cube.getBody().getValue("Meas0", 0, 0)) );
+			CPPUNIT_ASSERT_EQUAL(1+9, std::get<double>(cube.getBody().getValue("fct", 0, 0)) );
+		CPPUNIT_ASSERT_EQUAL(0, cube.getAxe(calculator::eAxe::Column).getCardinality());
 	}
 
 	return TEST_HAVEERROR();
