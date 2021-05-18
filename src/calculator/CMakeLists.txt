@@ -17,7 +17,7 @@ target_link_directories(calculator PUBLIC ${CMAKE_INSTALL_PREFIX}/lib/)
 # test
 add_executable(cube_test cube_test.cpp)
 target_include_directories(cube_test PRIVATE ${WASABI_ROOT_DIR}/src/test_tools/include ${DB_PROXY_LIB})
-target_link_libraries(cube_test calculator)
+target_link_libraries(cube_test calculator InA_query_model)
 target_link_directories(cube_test PUBLIC)
 
 add_executable(storage_test storage_test.cpp)
