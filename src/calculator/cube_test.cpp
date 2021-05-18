@@ -166,18 +166,26 @@ int main()
 	{
 		JSONReader reader;
 		
-		ina::query_model::Function fct;
-		read(fct, reader.parse(R"({"Name": "+","Parameters": [{"Constant": {"ValueType": "String","Value": "9"}},{"Member": {"Name": "Meas0"}}]})"));
+		ina::query_model::Function fct1;
+		read(fct1, reader.parse(R"({"Name": "+","Parameters": [{"Constant": {"ValueType": "String","Value": "9"}},{"Member": {"Name": "Meas0"}}]})"));
+
+		ina::query_model::Function fct2;
+		read(fct2, reader.parse(R"({"Name": "+","Parameters": [{"Constant": {"ValueType": "String","Value": "7"}},{"Member": {"Name": "fct1"}}]})"));
 
 		Cube cube;	
 		cube.setStorage(storage);
 		cube.addDim(calculator::eAxe::Row, Object("Dim"));
-		cube.addFormula(Object("fct"), fct);
+		cube.addFormula(Object("fct1"), fct1);
+		cube.addFormula(Object("fct2"), fct2);
 		cube.materialyze();
 
 		CPPUNIT_ASSERT_EQUAL(4, cube.getAxe(calculator::eAxe::Row).getCardinality());
 			CPPUNIT_ASSERT_EQUAL(1, std::get<double>(cube.getBody().getValue("Meas0", 0, 0)) );
-			CPPUNIT_ASSERT_EQUAL(1+9, std::get<double>(cube.getBody().getValue("fct", 0, 0)) );
+			CPPUNIT_ASSERT_EQUAL(1+9, std::get<double>(cube.getBody().getValue("fct1", 0, 0)) );
+			CPPUNIT_ASSERT_EQUAL(1+9+7, std::get<double>(cube.getBody().getValue("fct2", 0, 0)) );
+			CPPUNIT_ASSERT_EQUAL(2, std::get<double>(cube.getBody().getValue("Meas0", 0, 1)) );
+			CPPUNIT_ASSERT_EQUAL(2+9, std::get<double>(cube.getBody().getValue("fct1", 0, 1)) );
+			CPPUNIT_ASSERT_EQUAL(2+9+7, std::get<double>(cube.getBody().getValue("fct2", 0, 1)) );
 		CPPUNIT_ASSERT_EQUAL(0, cube.getAxe(calculator::eAxe::Column).getCardinality());
 	}
 
