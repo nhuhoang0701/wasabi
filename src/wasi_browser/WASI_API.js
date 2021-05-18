@@ -80,8 +80,10 @@ let WASI_API = {
 
 		//TODO: Need a specific state 
 		if(getModuleInstanceExports().asyncify_stop_unwind) {
-			wasabi_log('stack unwound');
-			getModuleInstanceExports().asyncify_stop_unwind();
+			if(sleeping==true) {
+				wasabi_log('2 asyncify_stop_unwind');
+				getModuleInstanceExports().asyncify_stop_unwind();
+			}
 		} else {
 			wasabi_log('wasm module not asyncified');
 		}
@@ -98,7 +100,7 @@ let WASI_API = {
 		return moduleMemoryView;
 	},
 	malloc : malloc = function (size) {
-		ptr = getModuleInstanceExports().malloc(size);
+		let ptr = getModuleInstanceExports().malloc(size);
 		moduleMemoryView = new DataView(getModuleInstanceExports().memory.buffer);
 		return ptr;
 	},
@@ -122,7 +124,7 @@ let WASI_API = {
 	convertWAsmStr2JSStr : convertWAsmStr2JSStr = function (str_ptr)
 	{
 		let str = "";
-		memory = updatedMemoryView();
+		let memory = updatedMemoryView();
 		for (let i = str_ptr; memory.getUint8(i) != 0; ++i)
 			str += String.fromCharCode(memory.getUint8(i));
 		return str;
@@ -133,6 +135,7 @@ let WASI_API = {
 	//*************************************************************
 	// wasabi specific
 	wasabi_getServeFSPath : wasabi_getServeFSPath = function(vpath) {
+		let path = null;
 		if(WASASBI_SERVER_ROOT_PATH != null && WASASBI_SERVER_ROOT_PATH != "" )
 			path = WASASBI_SERVER_ROOT_PATH + vpath;
 		else
@@ -259,7 +262,7 @@ let WASI_API = {
 	// path
 	path_open: function(dirfd, dirflags, path_ptr, path_len, oflags, fs_rights_base, fs_rights_inheriting, fs_flags, fd) {
 		log(Array.prototype.slice.call(arguments));
-		vpath  = convertWAsmStr2JSStr(path_ptr);
+		let vpath  = convertWAsmStr2JSStr(path_ptr);
 		log("vpath:'" + vpath +"'");
 		
 		const entry = fds[dirfd];
@@ -286,8 +289,7 @@ let WASI_API = {
 			entry.offset = BigInt(0);
 		}
 
-		size = fds.length;
-		offset = BigInt(0);
+		let offset = BigInt(0);
 		const opened_fd = fds.push({vpath, offset}) - 1;
 		updatedMemoryView().setUint32(fd, opened_fd, true);
 			
@@ -362,7 +364,7 @@ let WASI_API = {
 		let written = 0;
 		let bufferBytes = [];                   
 
-		memory = updatedMemoryView();
+		let memory = updatedMemoryView();
 		function getiovs(iovs_ptr, iovs_len) {
 			// iovs_ptr* -> [iov, iov, ...]
 			// __wasi_ciovec_t {
@@ -418,15 +420,17 @@ let WASI_API = {
 				memoryView().setUint32(DATA_ADDR, DATA_ADDR+8, true);
 				memoryView().setUint32(DATA_ADDR+4, 1024*100, true);
 				try {
+					wasabi_log('1 asyncify_start_unwind');
 					getModuleInstanceExports().asyncify_start_unwind(DATA_ADDR);
 					sleeping = true;
 					wasabi_log('timeout start');
 					setTimeout(function() {
-						wasabi_log('timeout ended, starting to rewind the stack');
-						getModuleInstanceExports().asyncify_start_rewind(DATA_ADDR);
+						wasabi_log('timeout ended');
+						wasabi_log('3 asyncify_start_rewind');
+						this.getModuleInstanceExports().asyncify_start_rewind(DATA_ADDR);
 						// The code is now ready to rewind; to start the process, enter the
 						// first function that should be on the call stack.
-						getModuleInstanceExports()._start();
+						start();
 					}, 5000 /*ms*/);
 					return;
 				}catch(e) {
@@ -434,7 +438,8 @@ let WASI_API = {
 				}
 			} else {
 				// We are called as part of a resume/rewind. Stop sleeping.
-				wasabi_log('...resume');
+				wasabi_log('resume');
+				wasabi_log('4 asyncify_stop_rewind');
 				getModuleInstanceExports().asyncify_stop_rewind();
 				sleeping = false;
 			}
@@ -444,7 +449,7 @@ let WASI_API = {
 			wasabi_log('wasm module not asyncified');
 		}
 
-		memory = updatedMemoryView();
+		let memory = updatedMemoryView();
 		let nread = 0;
 		for (let i = 0; i < iovs_len; i++) {
 			const data_ptr = memory.getUint32(iovs_ptr, true);
@@ -516,6 +521,7 @@ let WASI_API = {
 	},
 	fd_fdstat_set_flags: function(fd, flags) {
 		log(Array.prototype.slice.call(arguments));
+		error("function fd_fdstat_set_flags not yet implemented");
 	},
 	fd_fdstat_get: function(fd, stat_ptr) {
 		log(Array.prototype.slice.call(arguments));
@@ -554,7 +560,7 @@ let WASI_API = {
 		}
 		log("vpath:'" + entry.vpath +"'");
 
-		memory = updatedMemoryView();
+		let memory = updatedMemoryView();
 		memory.setUint8(buf_out, WASI_PREOPENTYPE_DIR);
 		memory.setUint32(buf_out + 4, new TextEncoder().encode(entry.vpath).byteLength, true);
 		return WASI_ESUCCESS;
@@ -584,7 +590,7 @@ let WASI_API = {
 		const entries = Object.entries(env);
 		const text = new TextEncoder();
 
-		memory = updatedMemoryView();
+		let memory = updatedMemoryView();
 		memory.setUint32(environ_size, entries.length, true);
 		memory.setUint32(environ_buf_size, entries.reduce(function(acc, [key, value]) {
 			return acc + text.encode(`${key}=${value}\0`).length;
@@ -598,7 +604,7 @@ let WASI_API = {
 		const text = new TextEncoder();
 		const heap = new Uint8Array(this.memory.buffer);
 
-		memory = updatedMemoryView();
+		let memory = updatedMemoryView();
 		for (let [key, value] of entries) {
 			memory.setUint32(environ_ptr, environ_buf_ptr, true);
 			environ_ptr += 4;
@@ -615,7 +621,7 @@ let WASI_API = {
 	// Clock
 	
 	clock_res_get: function (clock_id, resolution_out) {
-		memory = this.updatedMemoryView();
+		let memory = this.updatedMemoryView();
 		switch (clock_id) {
 			case WASI_CLOCKID_REALTIME:
 				memory.setBigUint64(resolution_out, clock_res_realtime(), true);
@@ -641,7 +647,7 @@ let WASI_API = {
 		return WASI_ESUCCESS;
 	},
 	clock_time_get: function(clock_id, precision, time) {
-		memory = this.updatedMemoryView();
+		let memory = this.updatedMemoryView();
 		log(Array.prototype.slice.call(arguments));
 		switch (clock_id) {
 			case WASI_CLOCKID_REALTIME:

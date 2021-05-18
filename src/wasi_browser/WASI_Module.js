@@ -11,11 +11,11 @@ function _handleFiles(files) {
 			return;
 		}
 		let response = new Response(file);
-		start(response, file.name);
+		_start(response, file.name);
 	}
 };
 
-function start(response, filename) {
+function _start(response, filename) {
 
 	const importObject =
 	{
