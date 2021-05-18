@@ -1,5 +1,7 @@
 #pragma once
 
+#include <InA_query_model/Function.h>
+
 #include "common.h"
 
 #include <cstddef>
@@ -38,6 +40,9 @@ namespace calculator
 
 		Value                  aggregate() const;
 		Value                  aggregate(const std::vector<size_t>& rowIndexes) const;
+
+		bool m_isFormula = false; // TMP: WIP
+		const ina::query_model::Function* m_fct = nullptr; // TMP: WIP
 
 		bool m_isConstant = false; // TMP: WIP
 		Value m_constant = 0.0;  // TMP: WIP
@@ -96,8 +101,6 @@ namespace calculator
 		const Object&          getMeasure(const std::string& measureName) const;
 		const Value&           getValue(const std::string& measureName, size_t col, size_t row) const;
 
-	private:
-		const Value&           getValue(size_t measIdx, size_t col, size_t row) const;
 
 	private:
 		const Cube&  m_cube;
@@ -106,8 +109,8 @@ namespace calculator
 
 		typedef std::vector<std::vector<Value>>  CellsValue;
 
-		std::vector<CellsValue> m_Body;
-		bool  m_materialyzed = false;
+		std::map<std::string,CellsValue> m_Body;
+		bool                             m_materialyzed = false;
 	};
 	class Cube
 	{
@@ -118,10 +121,11 @@ namespace calculator
 		const DataStorage&  getStorage() const;
 
 		bool         contain(const Object& obj) const;
-		
+
 		void         addDim(eAxe eAxe, const Object& obj);
 		void         addMeasure(const Object& obj);
 		void         addConstant(const Object& obj, const Value& value);
+		void         addFormula(const Object& obj, const ina::query_model::Function& fct);
 
 		void         materialyze();
 

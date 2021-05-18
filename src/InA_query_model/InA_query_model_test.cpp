@@ -72,7 +72,7 @@ int main()
 		//TODO: check with attributes KEY
 	}
 	{
-		std::string request = R"({"Dimensions":[{"Members":[{"Description":"Calculated Measure 1","Formula":{"Function":{"Name":"**","Parameters":[{"Member":{"Name":"OBJ_147"}},{"Function":{"Name":"decfloat","Parameters":[{"Constant":{"Value":"2","ValueType":"String"}}]}}]}},"Name":"32160367-6930-4537-9181-755582731239"}],"Axis":"Rows","Name":"CustomDimension1"}]})";;
+		std::string request = R"({"Dimensions":[{"Members":[{"Description":"Calculated Measure 1","Formula":{"Name":"theformulaname","Function":{"Name":"**","Parameters":[{"Member":{"Name":"OBJ_147"}},{"Function":{"Name":"decfloat","Parameters":[{"Constant":{"Value":"2","ValueType":"String"}}]}}]}},"Name":"32160367-6930-4537-9181-755582731239"}],"Axis":"Rows","Name":"CustomDimension1"}]})";;
 		ina::query_model::Definition definition;
 		read(definition, reader.parse(request));
 		CPPUNIT_ASSERT_EQUAL(1, definition.getDimensions().size());
@@ -110,7 +110,7 @@ int main()
 		CPPUNIT_ASSERT_EQUAL(ina::query_model::QuerySort::Direction::None, definition.getQuerySorts().at(0).getDirection());
 	}
 	{
-		std::string request = R"({"Dimensions": [{"Members": [{"Description": "Calculated Measure 1","Formula": {"Function": {"Name": "+","Parameters": [{"Member": {"Name": "OBJ_147"}},{"Function": {"Name": "decfloat","Parameters": [{"Constant": {"Value": "1","ValueType": "String"}}]}}]}},"Name": "70027803-5182-4685-b851-864623689423","NumericScale": 7,"Visibility": "Visible"}],"Axis": "Columns","Name": "CustomDimension1"}]})";
+		std::string request = R"({"Dimensions": [{"Members": [{"Description": "Calculated Measure 1","Formula": {"Name":"thename","Function": {"Name": "+","Parameters": [{"Member": {"Name": "OBJ_147"}},{"Function": {"Name": "decfloat","Parameters": [{"Constant": {"Value": "1","ValueType": "String"}}]}}]}},"Name": "70027803-5182-4685-b851-864623689423","NumericScale": 7,"Visibility": "Visible"}],"Axis": "Columns","Name": "CustomDimension1"}]})";
 		ina::query_model::Definition definition;
 		read(definition, reader.parse(request));
 		auto dimension 		= definition.getDimensions().at(0);
@@ -136,6 +136,12 @@ int main()
 		auto param = func.getParameter(0);
 		CPPUNIT_ASSERT_EQUAL(ina::query_model::Parameter::eConstant, param.getType());
 		
+	}
+	{
+		ina::query_model::Function fct;
+		read(fct, reader.parse(R"({"Name": "+","Parameters": [{"Constant": {"ValueType": "String","Value": "1"}},{"Function": {"Name": "*","Parameters": [{"Constant": {"ValueType": "String","Value": "2"}},{"Function": {"Name": "/","Parameters": [{"Function": {"Name": "+","Parameters": [{"Constant": {"ValueType": "String","Value": "3"}},{"Constant": {"ValueType": "String","Value": "4"}}]}},{"Constant": {"ValueType": "String","Value": "5"}}]}}]}}]})"));
+
+		CPPUNIT_ASSERT_EQUAL(3.8, std::get<double>(evalFunction(nullptr, fct, nullptr)));
 	}
 	{
 		std::string request = R"({"ResultSetFeatureRequest":{"SubSetDescription":{"RowFrom":1,"RowTo":2,"ColumnFrom":3,"ColumnTo":4}}})";

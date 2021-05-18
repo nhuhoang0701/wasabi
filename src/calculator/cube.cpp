@@ -1,5 +1,6 @@
 #include "cube.h"
 
+#include "InA_query_model/Function.h"
 #include "storage.h"
 
 #include <cstddef>
@@ -36,7 +37,7 @@ namespace calculator
 
 	void Object::materialyze(const Cube& cube)
 	{
-		if(m_isConstant == false)
+		if(m_isConstant == false && m_fct == nullptr)
 		{
 			m_dataColumn = cube.getStorage().getColumn(m_name);
 		}
@@ -172,9 +173,9 @@ namespace calculator
 			for(size_t rowIndex = 0; rowIndex < rowCount; rowIndex++)
 			{
 				tuple.clear();
-				for(const auto& obj : *this)
+				for(const auto& dimension : *this)
 				{
-					tuple.push_back(obj.getValueIndexFromRowIdx(rowIndex));
+					tuple.push_back(dimension.getValueIndexFromRowIdx(rowIndex));
 				}
 				// Get the list of pre aggreagted indexes
 				auto iterUtplesSet = tuplesSet.find(tuple);
@@ -273,6 +274,14 @@ namespace calculator
 	{
 	}
 
+	typedef std::tuple<size_t, size_t, const Body*> Context;
+	void getValueCallback(const void* context, const std::string& name, calculator::Value& value)
+	{
+		const Body* body = std::get<2>(*static_cast<const Context*>(context));
+		const size_t row = std::get<0>(*static_cast<const Context*>(context));
+		const size_t col = std::get<1>(*static_cast<const Context*>(context));
+		value = body->getValue(name, col, row);
+	}
 	void Body::materialyze()
 	{
 		//std::cout << "*****************************************\n";
@@ -283,19 +292,30 @@ namespace calculator
 			object.materialyze(m_cube);
 		}
 
-		m_Body.resize(size());
-		size_t measIdx = 0;
-		for(auto& values : m_Body)
+		if(getRowCount() == 0 || getColumnCount() == 0)
+			return;
+
+		for(const auto& measure : *this)
 		{
+			auto ret = m_Body.insert(std::pair(measure.getName(), CellsValue()));
+			auto& values = ret.first->second;
 			values.resize(getRowCount());
-	
-			const Object& measure = at(measIdx++);
+			for(auto& rowValues : values)
+			{
+				rowValues.resize(getColumnCount());
+			}
+		}
+
+		size_t measIdx = 0;
+		for(const auto& measure : *this)
+		{
+			auto& values = m_Body.at(measure.getName());
+			if(measure.m_isFormula)
+				continue;
 
 			// Full aggreagtion on the 2 axes
 			if(m_axeRow.getCardinality() == 0 && m_axeCol.getCardinality() == 0 )
 			{
-				values.resize(1);
-				values[0].resize(1);
 				values[0][0] = measure.aggregate();
 			}
 			else
@@ -303,7 +323,6 @@ namespace calculator
 				// Full aggreagtion on row axis
 				if(m_axeRow.getCardinality() == 0)
 				{
-					values[0].resize(getColumnCount());
 					size_t col = 0;
 					for(auto& value : values[0])
 					{
@@ -349,12 +368,6 @@ namespace calculator
 								//std::for_each(indexes.cbegin(), indexes.cend(), [] (const size_t c) {std::cout << c << ",";} );
 								//std::cout << ")" <<  std::endl;
 								value = measure.aggregate(indexes);
-								/*
-								if(columnData.getDataType() == eDataType::Number)
-									std::cout << "value:" << std::get<double>(values[row][col]) <<  std::endl;
-								else
-									std::cout << "value:" << std::get<std::string>(values[row][col]) <<  std::endl;
-								*/
 								col++;
 							}
 						}
@@ -363,6 +376,28 @@ namespace calculator
 				}
 			}
 		}
+
+		
+		for(const auto& measure : *this)
+		{
+			if(!measure.m_isFormula)
+				continue;
+
+			auto& values = m_Body.at(measure.getName());
+			size_t row = 0;
+			for(auto& rowValues : values)
+			{
+				size_t col = 0;
+				for(auto& value : rowValues)
+				{
+					Context context(row, col, this);
+					value = ina::query_model::evalFunction(&context, *measure.m_fct, getValueCallback);
+					col++;
+				}
+				row++;
+			}
+		}
+
 		m_materialyzed = true;
 	}
 
@@ -403,20 +438,7 @@ namespace calculator
 
 	const Value& Body::getValue(const std::string& measureName, size_t col, size_t row) const
 	{
-		for(size_t i = 0; i < size(); i++ )
-		{
-			if(this->at(i).getName() == measureName)
-				return getValue(i, col, row);
-		}
-		throw std::runtime_error("Body: getValue() measure not found:" + measureName);
-	}
-
-	const Value& Body::getValue(size_t measIdx, size_t col, size_t row) const
-	{
-		if(!m_materialyzed)
-			throw std::runtime_error("Body: materialyze() not called");
-
-		return m_Body[measIdx][row][col];
+		return m_Body.at(measureName)[row][col];
 	}
 
 	Cube::Cube()
@@ -485,11 +507,30 @@ namespace calculator
 	void Cube::addConstant(const Object& obj, const Value& value)
 	{
 		if(getStorage().haveCol(obj.getName()))
-			throw std::runtime_error("Constant Object " + obj.getName() + " already found in datastorage");
+			throw std::runtime_error("Constant: '" + obj.getName() + "' name already use in datastorage");
 
 		m_body.push_back(obj);
 		m_body.back().m_isConstant = true;
 		m_body.back().m_constant = value;
+	}
+
+	void Cube::addFormula(const Object& obj, const ina::query_model::Function& fct)
+	{
+		if(getStorage().haveCol(obj.getName()))
+			throw std::runtime_error("Formula: '" + obj.getName() + "' name already use in datastorage");
+
+		std:: cout << __PRETTY_FUNCTION__ << ":"  << obj.getName() << std::endl;
+		std::vector<std::string> deps;
+		ina::query_model::getDeps(fct, deps);
+		for(const auto& dep : deps)
+		{
+			addMeasure(dep);
+		}
+		std:: cout << "*" << __PRETTY_FUNCTION__ << ":"  << obj.getName() << std::endl;
+
+		m_body.push_back(obj);
+		m_body.back().m_isFormula = true;
+		m_body.back().m_fct = &fct;
 	}
 	
 	const Axe &Cube::getAxe(eAxe axe) const
