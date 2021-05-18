@@ -24,11 +24,12 @@ namespace ina::query_model
 
 			Formula(const Function& function);
 			
-			const Function	&getFunction() const;
+			const std::string& getName() const;
+			const Function&    getFunction() const;
 			
 		private:
-			
-			Function			   m_function;
+			std::string    m_name;
+			Function       m_function;
 
 			friend void read(Formula& obj, const JSONGenericObject& jsonNode);
 
