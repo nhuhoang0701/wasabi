@@ -1,5 +1,5 @@
 #pragma once
-
+#include "InA_query_model/Selection/SelectionElement.h"
 #include "calculator/storage.h"
 #include <string>
 
@@ -19,5 +19,6 @@ namespace query_generator
 
 	private:
 		const ina::query_model::Query& m_query;
+		void buildWhereClause(const ina::query_model::SelectionElement& selectionOperator, std::ostringstream& where) const;
 	};
 } // query_generator
