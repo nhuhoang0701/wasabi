@@ -29,7 +29,7 @@ function _start(response, filename) {
 		WASI_API.setModule(module);
 		filesystem = ["/resources/response_getSerververInfo.json",
 					 "/resources/text.txt",
-					 "/resources/sqlite/efashion/efashion.db",
+					 "/resources/sqlite/efashion_lite/efashion_lite.db",
 					 "/resources/sqlite/onetable_datatype/onetable_datatype.db"];
 		WASI_API.wasabi_initFS(".", filesystem).then(() => {
 			WASI_API.wasabi_log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");

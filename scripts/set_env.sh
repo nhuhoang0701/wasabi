@@ -91,6 +91,12 @@ alias rebuild='rm -rf $WASABI_BUILD_DIR_NAME && mkdir -p $WASABI_BUILD_DIR_NAME 
 
 alias asyncify='($WASABI_EXTERNAL_DIR/binaryen/install/bin/wasm-opt --asyncify $WASABI_INSTAL_DIR/bin/C_read.wasm -o $WASABI_INSTAL_DIR/bin/C_read.wasm)'
 alias wasmopt='(export LD_LIBRARY_PATH=$WASABI_EXTERNAL_DIR/binaryen/install/lib && $WASABI_EXTERNAL_DIR/binaryen/install/bin/wasm-opt $WASABI_INSTAL_DIR/InA_Interpreter.wasm -Oz -o $WASABI_INSTAL_DIR/InA_Interpreter.wasm && chmod 777 $WASABI_INSTAL_DIR/InA_Interpreter.wasm)'
-alias export2nexus='(wasmopt && mvn -f $WASABI_ROOT_DIR/nexus/pom.xml clean deploy)'
+alias export2nexus='(mvn -e -f $WASABI_ROOT_DIR/nexus/pom.xml clean deploy)'
+alias export2firefly='(
+scp $WASABI_INSTAL_DIR/InA_Interpreter.wasm ccloud@10.47.240.98:/srv/tomcat/webapps/sap/resources/sap/zen/commons/thirdparty/wasabi 
+scp $WASABI_INSTAL_DIR/Microcube_worker.js  ccloud@10.47.240.98:/srv/tomcat/webapps/sap/resources/sap/zen/commons/thirdparty/wasabi 
+scp $WASABI_INSTAL_DIR/resources/response_getSerververInfo.json  ccloud@10.47.240.98:/srv/tomcat/webapps/sap/resources/sap/zen/commons/thirdparty/wasabi/resources 
+scp $WASABI_INSTAL_DIR/resources/sqlite/efashion_lite/efashion_lite.db  ccloud@10.47.240.98:/srv/tomcat/webapps/sap/resources/sap/zen/commons/thirdparty/wasabi/resources/sqlite/efashion_lite/efashion_lite.db 
+)'
 
 echo

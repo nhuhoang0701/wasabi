@@ -64,7 +64,7 @@ namespace ina::query_model
 
 	const std::string& DataSource::getPackageName() const
 	{
-		const static std::string cnxstrg =  "local:sqlite:efashion";
+		const static std::string cnxstrg =  "local:sqlite:efashion_lite";
 		//TODO: Remove just to start dev.
 		if(m_packageName.empty())
 		{
