@@ -3,10 +3,14 @@
 #include "InA_query_model/Formula.h"
 #include "InA_query_model/Parameter.h"
 #include "InA_query_model/QuerySort.h"
+#include "InA_query_model/Selection/SelectionElement.h"
+#include "InA_query_model/Selection/Element.h"
 #include "Query.h"
 #include "Definition.h"
 #include "DataSource.h"
+#include <iterator>
 #include <json/jsonReader.h>
+#include <ostream>
 #include <test_tools/TestAssert.h>
 
 #include <iostream>
@@ -59,15 +63,21 @@ int main()
 		std::string request = R"({"DynamicFilter":{"Selection":{"Operator":{"Code":"And","SubSelections":[{"SetOperand":{"Elements":[{"Comparison":"=","Low":"OBJ_147"},{"Comparison":"<>","Low":"OBJ_191"}],"FieldName":"[Measures].[Measures]"}}]}}}})";
 		ina::query_model::Definition definition;
 		read(definition, reader.parse(request));
-		CPPUNIT_ASSERT_EQUAL(2, definition.getQueryFilters().size());
+		CPPUNIT_ASSERT_EQUAL(2, definition.getSelection().getOperator().getSubSelections().at(0).getElements().size());
 		
-		CPPUNIT_ASSERT_EQUAL("[Measures].[Measures]", definition.getQueryFilters().at(0).getFieldName());
-		CPPUNIT_ASSERT_EQUAL(ina::query_model::QueryFilter::ComparisonOperator::EqualTo, definition.getQueryFilters().at(0).getComparisonOperator());
-		CPPUNIT_ASSERT_EQUAL("OBJ_147", definition.getQueryFilters().at(0).getLowValue());
-		
-		CPPUNIT_ASSERT_EQUAL("[Measures].[Measures]", definition.getQueryFilters().at(1).getFieldName());
-		CPPUNIT_ASSERT_EQUAL(ina::query_model::QueryFilter::ComparisonOperator::NotEqualTo, definition.getQueryFilters().at(1).getComparisonOperator());
-		CPPUNIT_ASSERT_EQUAL("OBJ_191", definition.getQueryFilters().at(1).getLowValue());
+		const ina::query_model::SelectionElement selectionElement = definition.getSelection().getOperator() .getSubSelections().at(0);
+		std::cout << "[GetType]" << std::endl;
+		CPPUNIT_ASSERT_EQUAL(ina::query_model::SelectionElement::Type::SetOperand, selectionElement.getType());
+		CPPUNIT_ASSERT_EQUAL(2, selectionElement.getElements().size());
+		std::cout << "[setOperand1->getElements().at(0)]" << std::endl;
+		ina::query_model::Element filter0 = selectionElement.getElements().at(0);
+		CPPUNIT_ASSERT_EQUAL("[Measures].[Measures]", filter0.getFieldName());
+		CPPUNIT_ASSERT_EQUAL(ina::query_model::Element::ComparisonOperator::EqualTo, filter0.getComparisonOperator());
+		CPPUNIT_ASSERT_EQUAL("OBJ_147", filter0.getLowValue());
+		ina::query_model::Element filter1 = selectionElement.getElements().at(1);
+		CPPUNIT_ASSERT_EQUAL("[Measures].[Measures]", filter1.getFieldName());
+		CPPUNIT_ASSERT_EQUAL(ina::query_model::Element::ComparisonOperator::NotEqualTo, filter1.getComparisonOperator());
+		CPPUNIT_ASSERT_EQUAL("OBJ_191", filter1.getLowValue());
 
 		//TODO: check with attributes KEY
 	}
@@ -85,7 +95,12 @@ int main()
 		auto dimensionYear 		= definition.getDimensions().at(0);
 		auto dimensionMeasure 	= definition.getDimensions().at(1);
 		CPPUNIT_ASSERT_EQUAL(2, definition.getDimensions().size());
-		CPPUNIT_ASSERT_EQUAL(2, definition.getQueryFilters().size());
+		const ina::query_model::SelectionElement selectionOperator1 = definition.getSelection().getOperator();
+		const ina::query_model::SelectionElement setOperand1 = (selectionOperator1.getSubSelections().at(0));
+		const ina::query_model::SelectionElement setOperand2 = (selectionOperator1.getSubSelections().at(1));
+
+		CPPUNIT_ASSERT_EQUAL(1, setOperand1.getElements().size());
+		CPPUNIT_ASSERT_EQUAL(1, setOperand2.getElements().size());
 
 		CPPUNIT_ASSERT_EQUAL(0, dimensionYear.getMembers().size());
 		CPPUNIT_ASSERT_EQUAL(0, definition.getVisibleMembers(dimensionYear).size());		

@@ -1,19 +1,37 @@
 #pragma once
-
 #include <string>
+#include <vector>
 
-namespace ina::query_model
+class JSONGenericObject; // From <json/jsonReader.h>
+
+namespace ina::query_model 
 {
-    class QueryFilter
-	{
+	class Element
+    {
         public:
             enum class LogicalOperator
             {
-                Or,
                 And,
                 Not,
+                Or,
                 Undefined
             };
+
+            inline static Element::LogicalOperator getLogicalOperator(const std::string& str)
+            {
+                if (str == "And") 		     return LogicalOperator::And;
+                else if (str == "Not")         return LogicalOperator::Not;
+                else if (str == "Or")        return LogicalOperator::Or;
+                else                         return LogicalOperator::Undefined;
+            };
+
+            inline static std::string toString(const Element::LogicalOperator logicalOperator) 
+            {
+                if (logicalOperator == LogicalOperator::And)        return "AND";
+                else if (logicalOperator == LogicalOperator::Not)   return "NOT";
+                else if (logicalOperator == LogicalOperator::Or)    return "OR";
+                else                                                return "";
+            }
 
             enum class ComparisonOperator
             {
@@ -29,7 +47,7 @@ namespace ina::query_model
                 Unknown
             };
 
-            inline static QueryFilter::ComparisonOperator getComparisonOperator(const std::string& str)
+            inline static ComparisonOperator getComparisonOperator(const std::string& str)
             {
                 if (str == "=") 		     return ComparisonOperator::EqualTo;
                 else if (str == "<>")		 return ComparisonOperator::NotEqualTo;
@@ -43,13 +61,13 @@ namespace ina::query_model
                 else                         return ComparisonOperator::Unknown;
             };
 
-            inline static std::string comparisonOperatorToString(const QueryFilter::ComparisonOperator& comparator)
+            inline static std::string toString(const Element::ComparisonOperator& comparator)
             {
                 if (comparator == ComparisonOperator::EqualTo)                          return "=";
                 else if (comparator == ComparisonOperator::NotEqualTo)                  return "<>";
                 else if (comparator == ComparisonOperator::Between)                     return"BETWEEN";
                 else if (comparator == ComparisonOperator::Match)                       return "MATCH";
-                else if (comparator ==ComparisonOperator::GreaterThan)                  return ">";
+                else if (comparator == ComparisonOperator::GreaterThan)                  return ">";
                 else if (comparator == ComparisonOperator::GreaterThanOrEqualTo)        return ">=";
                 else if (comparator == ComparisonOperator::IsNull)                      return "IS_NULL";
                 else if (comparator == ComparisonOperator::LessThan)                    return "<";
@@ -57,13 +75,13 @@ namespace ina::query_model
                 else return "";
             };
 
-            inline static std::string comparisonOperatorToSqlString(const QueryFilter::ComparisonOperator& comparator)
+            inline static std::string toSql(const Element::ComparisonOperator& comparator)
             {
                 if (comparator == ComparisonOperator::EqualTo)                          return "=";
                 else if (comparator == ComparisonOperator::NotEqualTo)                  return "<>";
                 else if (comparator == ComparisonOperator::Between)                     return"BETWEEN";
                 else if (comparator == ComparisonOperator::Match)                       return "MATCH";
-                else if (comparator ==ComparisonOperator::GreaterThan)                  return ">";
+                else if (comparator == ComparisonOperator::GreaterThan)                  return ">";
                 else if (comparator == ComparisonOperator::GreaterThanOrEqualTo)        return ">=";
                 else if (comparator == ComparisonOperator::IsNull)                      return "IS NULL";
                 else if (comparator == ComparisonOperator::LessThan)                    return "<";
@@ -71,6 +89,25 @@ namespace ina::query_model
                 else return "";
             };
 
-            QueryFilter() = default;
-    };   
+            Element(const std::string& fieldName);
+
+            void setComparisonOperator(Element::ComparisonOperator comparisonOperator);
+            void setLowValue(const std::string & lowValue);
+            void setHighValue(const std::string& highValue);
+            void setExcluding(const bool isExcluding);
+
+            Element::ComparisonOperator getComparisonOperator() const;
+            const std::string& getFieldName() const;
+            const std::string& getLowValue() const;
+            const std::string& getHighValue() const;
+            const bool isExcluding() const;
+        private:
+            std::string _fieldName;
+            Element::ComparisonOperator _comparisonOperator;
+            std::string _lowValue;
+            std::string _highValue;
+            bool _isExcluding;
+
+            friend void read(std::vector<Element> & elements, JSONGenericObject setOperandNode);
+    };
 }
