@@ -6,6 +6,7 @@
 
 #include <InA_metadata/Cube.h>
 
+#include <algorithm>
 #include <calculator/cube.h>
 
 #include <cstddef>
@@ -68,5 +69,34 @@ namespace ina::grid
     std::pair<size_t, size_t> Grid::getCellsSize() const
     {
         return m_cellsSize;
+    }
+
+    size_t Grid::getColumnFrom() const
+    {
+        const int32_t val = m_query.getDefinition().getResultSetFeat().getSubSetDescription().m_ColumnFrom;
+        if(val<0)
+            return 0;
+        return std::min<size_t>(val, getCellsSize().second);
+    }
+    size_t Grid::getColumnTo() const
+    {
+        const int32_t val = m_query.getDefinition().getResultSetFeat().getSubSetDescription().m_ColumnTo;
+        if(val<0)
+            return getCellsSize().second;
+        return std::min<size_t>(val, getCellsSize().second);
+    }
+    size_t Grid::getRowFrom() const
+    {
+        const int32_t val = m_query.getDefinition().getResultSetFeat().getSubSetDescription().m_RowFrom;
+        if(val<0)
+            return 0;
+        return std::min<size_t>(val, getCellsSize().first);
+    }
+    size_t Grid::getRowTo() const
+    {
+        const int32_t val = m_query.getDefinition().getResultSetFeat().getSubSetDescription().m_RowTo;
+        if(val<0)
+            return getCellsSize().first;
+        return std::min<size_t>(val, getCellsSize().first);
     }
 }

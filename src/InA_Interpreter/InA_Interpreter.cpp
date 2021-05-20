@@ -126,10 +126,12 @@ void writeResponse(JSONWriter& writer, const ina::metadata::Cube* dsCube, const 
 	writer.key("Messages");
 	{
 		JSON_LIST(writer);
+		/*
 		JSON_MAP(writer);
 		writer.pair("Number", 0u);
 		writer.pair("Text", "This the text of the Error 0 from root");
 		writer.pair("Type", "Error");
+		*/
 	}
 }
 

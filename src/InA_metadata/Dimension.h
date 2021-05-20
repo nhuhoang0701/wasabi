@@ -32,6 +32,8 @@ namespace ina::metadata
 
 			eAxe     getAxisDefault() const {return m_defaultaxe;};
 
+			virtual bool                 isAxisSupported(eAxe axe) const {return true;};
+
 			virtual eDimType             getDimensionType() const {return eDimType::Dimension;};
 			virtual bool                 isDimensionGroup() const {return false;};
 			virtual bool                 isModeled() const {return true;};
@@ -66,6 +68,8 @@ namespace ina::metadata
 		public:
 			DimensionMeasures() = default;
 			DimensionMeasures(const std::string& name, const std::string& description, eAxe defaultAxe = eAxe::Free);
+
+			virtual bool                 isAxisSupported(eAxe axe) const {return axe!=eAxe::Rows;};
 
 			virtual uint32_t              getCardinality() const {return m_members.size();};
 

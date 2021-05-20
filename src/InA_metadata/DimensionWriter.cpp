@@ -27,9 +27,12 @@ namespace ina::metadata
 		writer.key("AxisConstraints");
 		{
 			JSON_LIST(writer);
-			writer.value("Free");
-			writer.value("Rows");
-			writer.value("Columns");
+			if(dim.isAxisSupported(eAxe::Free))
+				writer.value("Free");
+			if(dim.isAxisSupported(eAxe::Rows))
+				writer.value("Rows");
+			if(dim.isAxisSupported(eAxe::Columns))
+				writer.value("Columns");
 		}
 		writer.pair("AxisDefault", toString(dim.getAxisDefault()));
 

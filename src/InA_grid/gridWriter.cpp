@@ -21,14 +21,14 @@ namespace ina::grid
         JSON_MAP(writer);
         {
             writer.pair("ResultFormat", "Version2");
-            /*writer.key("SubSetDescription");
+            writer.key("SubSetDescription");
             {
                 JSON_MAP(writer);
-                writer.pair("ColumnFrom", "ROWS");
-                writer.pair("ColumnTo", "ROWS");
-                writer.pair("RowFrom", "ROWS");
-                writer.pair("RowTo", "ROWS");
-            }*/
+                writer.pair("ColumnFrom", static_cast<uint32_t>(grid.getColumnFrom()));
+                writer.pair("ColumnTo", static_cast<uint32_t>(grid.getColumnTo()));
+                writer.pair("RowFrom", static_cast<uint32_t>(grid.getRowFrom()));
+                writer.pair("RowTo", static_cast<uint32_t>(grid.getRowTo()));
+            }
             writer.key("Axes");
             {
                 JSON_LIST(writer);
@@ -39,15 +39,15 @@ namespace ina::grid
             writeCells(grid, writer);
 
             writer.pair("ResultSetState", 0u);
-            writer.pair("HasErrors", true);
-            writer.key("Messages");
+            writer.pair("HasErrors", false);
+            /*writer.key("Messages");
             {
                 JSON_LIST(writer);
                 JSON_MAP(writer);
                 writer.pair("Number", 1u);
                 writer.pair("Text", "This the text of the Error 1 from Grid");
-                writer.pair("Type", "Error");
-            }
+                writer.pair("Type", 2u);
+            }*/
         }
     }
     
@@ -138,7 +138,7 @@ namespace ina::grid
         //std::cout << "**************************************\n";
         //std::cout << "writeTuples\n";
         writer.pair("TupleCount", static_cast<uint32_t>(axis.getTupleCount()));
-        //writer.pair("TupleCountTotal", static_cast<uint32_t>(axis.getTupleCount()));
+        writer.pair("TupleCountTotal", static_cast<uint32_t>(axis.getTupleCount()));
         writer.key("Tuples");
         {
             JSON_LIST(writer);
@@ -248,9 +248,20 @@ namespace ina::grid
                 writer.key("Values");
                 {
                     JSON_LIST(writer);	
-                    for(size_t rowIndex = 0; rowIndex < grid.getCube().getBody().getRowCount(); rowIndex++)
+                    //TODO: Only measure on column is implemented
+                    if(grid.getRowAxis().getMeasureDimension() != nullptr)
+                        throw std::runtime_error("Measure on rows is not yet implemented");
+
+                    if(grid.getColAxis().getMeasureDimension() == nullptr)
+                        throw std::runtime_error("Measure on column is mandatory");
+                        
+                    const size_t nbOfMembers = grid.getColAxis().getMeasureDimMembers().size();
+                    if(grid.getCube().getBody().size() != grid.getColAxis().getMeasureDimMembers().size())
+                        throw std::runtime_error("Invalid state: Body size and members numbers should be the same");
+
+                    for(size_t rowIndex = grid.getRowFrom(); rowIndex < grid.getRowTo(); rowIndex++)
                     {
-                        for(size_t colIndex = 0; colIndex < grid.getCube().getBody().getColumnCount(); colIndex++)
+                        for(size_t colIndex = grid.getColumnFrom()/nbOfMembers; colIndex < grid.getColumnTo()/nbOfMembers; colIndex++)
                         {
                             for(const auto& measure : grid.getCube().getBody())
                             {
