@@ -501,7 +501,6 @@ namespace calculator
 		if(!getStorage().haveCol(obj.getName()))
 			throw std::runtime_error("Object " + obj.getName() + " not found in datastorage");
 
-		std:: cout << __PRETTY_FUNCTION__ << ":"  << obj.getName() << std::endl;
 		m_body.push_back(obj);
 	}
 
