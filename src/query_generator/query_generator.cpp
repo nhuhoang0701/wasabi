@@ -9,6 +9,8 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "InA_query_model/Selection/Element.h"
+#include "InA_query_model/Selection/SelectionElement.h"
 #include "ModelSQLGenerator.h"
 
 namespace query_generator
@@ -76,24 +78,9 @@ namespace query_generator
 					group_by.push_back(dimension.getName());
 				}
 			}
+			const auto& selectionOperator = m_query.getDefinition().getSelection().getOperator();
 
-			for(const auto& filter : m_query.getDefinition().getQueryFilters())
-			{
-				if (!("[Measures].[Measures]" == filter.getFieldName()))
-				{
-					if (where.str().empty())
-					{
-						where << " WHERE ";
-					}
-					else 
-					{
-						//TODO: Change when we handle the whole filter tree
-						where << " OR ";
-					}
-					
-					where << generateSQL(filter);
-				}
-			}
+			buildWhereClause(selectionOperator, where);
 
 			if (!m_query.getDefinition().getQuerySorts().empty())
 			{
@@ -152,6 +139,37 @@ namespace query_generator
 		}
         return sql.str();
     }
+
+	void query_generator::buildWhereClause(const ina::query_model::SelectionElement& selectionOperator, std::ostringstream& where) const
+	{
+		for(const auto& selectionElement : selectionOperator.getSubSelections())
+		{				
+			if (selectionElement.getType() == ina::query_model::SelectionElement::Type::Operator)
+			{
+				buildWhereClause(selectionElement, where);
+			}
+			else if (selectionElement.getType() == ina::query_model::SelectionElement::Type::SetOperand)
+			{
+				for(const auto& element : selectionElement.getElements())
+				{
+					if (!("[Measures].[Measures]" == element.getFieldName()))
+					{
+						std::string code = ina::query_model::Element::toString(selectionOperator.getCode());
+						if (where.str().empty())
+						{
+							where << " WHERE ";
+						}
+						else 
+						{							
+							where << " " << code << " ";
+						}
+						std::string generatedSQL = generateSQL(element) ;
+						where << generatedSQL;
+					}
+				}
+			}
+		}
+	}
 
 	void query_generator::prepareStorage(calculator::DataStorage& data) const
 	{

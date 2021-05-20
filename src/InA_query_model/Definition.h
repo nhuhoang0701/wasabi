@@ -4,11 +4,11 @@
 
 #include "DataSource.h"
 #include "InA_query_model/QuerySort.h"
+#include "InA_query_model/Selection/Selection.h"
+#include "InA_query_model/Selection/Element.h"
 #include "Member.h"
 #include "Dimension.h"
-#include "QueryFilter.h"
 #include "QuerySort.h"
-#include "QueryFilterComparison.h"
 #include "Formula.h"
 #include "ResultSetFeatureRequest.h"
 
@@ -42,8 +42,8 @@ namespace ina::query_model
 		//TODO: Should not be here, workaround due to the missing queryspec like or Grid object
 		const std::vector<Member>    getVisibleMembers(const Dimension& dimension) const;
 
-		const std::vector<QueryFilterComparison>& getQueryFilters() const;
-		void                                      addQueryFilter(const QueryFilterComparison & queryFilterComparison);
+		const Selection & 			 getSelection() const;
+		void 			 setSelection(Selection & selection);
 
 		const std::vector<QuerySort>& getQuerySorts() const;
 		void                          addQuerySort(const QuerySort& querySort);
@@ -51,12 +51,16 @@ namespace ina::query_model
 		const ResultSetFeatureRequest& getResultSetFeat() const;
 
 	private:
+		Selection m_selection;
+
 		std::vector<Dimension>             m_dimensions;
-		std::vector<QueryFilterComparison> m_filters;
+		std::vector<Element> m_filters;
 		std::vector<QuerySort>             m_sorts;
 		ResultSetFeatureRequest            m_resultSetFeature;
 		
 		DataSource m_ds;
+
+		void traverse(std::vector<Element>& filters, const SelectionElement& selectionElement) const;
 		
 		friend void read(Definition & obj, const JSONGenericObject& jsonNode);
 	};
