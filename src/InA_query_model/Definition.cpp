@@ -76,10 +76,8 @@ namespace ina::query_model
             }
             return visibleMembers;
         }
-        else
-        {
-            return dimension.getMembers();
-        }
+
+        return dimension.getMembers();
     }
 
     const ResultSetFeatureRequest& Definition::getResultSetFeat() const

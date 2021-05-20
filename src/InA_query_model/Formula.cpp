@@ -2,19 +2,17 @@
 
 namespace ina::query_model
 {
-    Formula::Formula(const Function& _function):
-    m_function(_function)
+    calculator::Value eval(const void* context, const ina::query_model::Formula& formula, void (*getValueCallback)(const void* context, const std::string& nameObj, calculator::Value& value))
     {
-
+        return eval(context, formula.getParameter(), getValueCallback);
+    }
+    size_t getDeps(const ina::query_model::Formula& formula, std::vector<std::string>& deps)
+    {
+        return getDeps(formula.getParameter(), deps);
     }
 
-    const std::string& Formula::getName() const
+    const Parameter& Formula::getParameter() const
     {
-        return m_name;
-    }
-
-    const Function& Formula::getFunction() const
-    {
-        return m_function;
+        return m_parameter;
     }
 }
