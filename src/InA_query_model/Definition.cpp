@@ -1,17 +1,15 @@
 #include "Definition.h"
+#include "InA_query_model/Selection/Element.h"
+#include "InA_query_model/Selection/SelectionElement.h"
 
 #include <iostream>
+#include <iterator>
 
 namespace ina::query_model
 {
     void Definition::addDimension(const Dimension& dimension)
     {
         m_dimensions.push_back(dimension);
-    }
-
-    void Definition::addQueryFilter(const QueryFilterComparison& queryFilter)
-    {
-        m_filters.push_back(queryFilter);
     }
 
     void Definition::addQuerySort(const QuerySort& querySort)
@@ -24,9 +22,14 @@ namespace ina::query_model
 		return m_dimensions;
 	}
 	
-	const std::vector<QueryFilterComparison>& Definition::getQueryFilters() const
+	const Selection & Definition::getSelection() const
 	{
-		return m_filters;
+		return m_selection;
+	}
+
+    void Definition::setSelection(Selection & selection)
+	{
+		m_selection = selection;
 	}
 
 	const std::vector<QuerySort>& Definition::getQuerySorts() const
@@ -34,14 +37,36 @@ namespace ina::query_model
 		return m_sorts;
 	}
 
+    void Definition::traverse(std::vector<Element>& filters, const SelectionElement& selectionElement) const
+    {
+        if (selectionElement.getType() == SelectionElement::Type::Operator) 
+        {
+            if (!selectionElement.getSubSelections().empty())
+            {
+                for(const auto& childSelectionElement : selectionElement.getSubSelections()) 
+                {
+                    traverse(filters, childSelectionElement);
+                }
+            }
+        }
+        else if (selectionElement.getType() == SelectionElement::Type::SetOperand)
+        {
+            if (!selectionElement.getElements().empty())
+            {
+                filters.insert(std::end(filters), std::begin(selectionElement.getElements()), std::end(selectionElement.getElements()));
+            }
+        }
+    }
     const std::vector<Member> Definition::getVisibleMembers(const Dimension& dimension) const 
     {
-        if (!m_filters.empty())
+        std::vector<Element> filters;
+        traverse(filters, m_selection.getOperator());
+        if (!filters.empty())
         {
             std::vector<Member> visibleMembers;
             for(const auto& member : dimension.getMembers())
             {
-                for(const auto& filter : m_filters)
+                for(const auto& filter : filters)
                 {
                     /* 
                     MDS_TheDefinitveGuide_2_1 page 237
@@ -61,7 +86,7 @@ namespace ina::query_model
                     }
                     if (matchFieldName)
                     {
-                        if (filter.getComparisonOperator() == QueryFilter::ComparisonOperator::EqualTo )
+                        if (filter.getComparisonOperator() == Element::ComparisonOperator::EqualTo )
                         {
                             if(filter.getLowValue() == ina::query_model::Member::getName(member))
                             {
