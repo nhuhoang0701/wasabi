@@ -1,4 +1,5 @@
 #include "Definition.h"
+#include "InA_query_model/Selection/Selection.h"
 #include "QuerySort.h"
 
 #include <json/jsonReader.h>
@@ -30,14 +31,20 @@ namespace ina::query_model
 				definition.addDimension(dimensionObj);
 			}
 		}
+		
 		if(const auto& resSetFeatJSon = definitionNode.getObject("ResultSetFeatureRequest"))
 		{
 			Read(definition.m_resultSetFeature, resSetFeatJSon);
 		}
-		if(const auto& subSelections = definitionNode.getObject("DynamicFilter").getObject("Selection").getObject("Operator").getArray("SubSelections"))
+		if (const auto& dynamicFilterNode = definitionNode.getObject("DynamicFilter"))
 		{
-			buildQueryFilter(definition, subSelections);
+			if (const auto& selectionNode = dynamicFilterNode.getObject("Selection"))
+			{
+				Selection selection = definition.getSelection();
+				read(selection, selectionNode);
+			}
 		}
+
 		if (const auto& sortArray = definitionNode.getArray("Sort"))
 		{
 			for(int i=0; i < sortArray.size(); i++)
@@ -48,60 +55,4 @@ namespace ina::query_model
 			}
 		}
 	}
-
-	void buildQueryFilter(Definition & definition, const JSONGenericObject & subSelections) 
-	{
-		bool isSubSelectionArray = false;
-		for(size_t i = 0; i < subSelections.size(); ++i)
-		{
-			auto currentSubSelection = subSelections[i];
-			while (!currentSubSelection.getObject("SetOperand") && !isSubSelectionArray)
-			{
-				if (const auto currentOperator = currentSubSelection.getObject("Operator"))				
-				{
-					if (currentOperator.getArray("SubSelections"))
-					{
-						if (currentOperator.getArray("SubSelections").size() == 1)
-						{
-							currentSubSelection = currentOperator.getArray("SubSelections")[0];
-						}
-						else
-						{							
-							currentSubSelection = currentOperator.getArray("SubSelections");
-							isSubSelectionArray = true;
-							buildQueryFilter(definition, currentSubSelection);
-						}
-					}
-				}
-			}
-
-			if (!isSubSelectionArray)
-			{
-				const std::string fieldName = currentSubSelection.getObject("SetOperand").getString("FieldName");
-				if(const auto& elements = currentSubSelection.getObject("SetOperand").getArray("Elements"))
-				{
-					for(size_t j = 0; j < elements.size(); ++j)
-					{	
-						query_model::QueryFilterComparison queryFilterComparison(fieldName);
-						if (elements[j].haveValue("Low"))
-						{
-							std::string lowValue = elements[j].getString("Low");
-							queryFilterComparison.setLowValue(lowValue);
-						}
-						
-						std::string comparisonValue = elements[j].getString("Comparison");
-						query_model::QueryFilter::ComparisonOperator comparisonOperator = query_model::QueryFilter::getComparisonOperator(comparisonValue);
-						queryFilterComparison.setComparisonOperator(comparisonOperator);
-						if (elements[j].haveValue("IsExcluding"))
-						{
-							bool isExcluding = elements[j].getBool("IsExcluding");
-							queryFilterComparison.setExcluding(isExcluding);
-						}
-						definition.addQueryFilter(queryFilterComparison);
-					}
-				}
-			}
-		}
-	}
-
 } //query_model

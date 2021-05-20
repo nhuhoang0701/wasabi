@@ -1,14 +1,12 @@
-#include "InA_query_model/QueryFilter.h"
-#include "InA_query_model/QueryFilterComparison.h"
 #include "ModelSQLGenerator.h"
 #include <string>
 
 namespace query_generator
 {
-    std::string generateSQL(ina::query_model::QueryFilterComparison filter)
+    std::string generateSQL(const ina::query_model::Element& filter)
     {
         switch (filter.getComparisonOperator()) {
-            case ina::query_model::QueryFilter::ComparisonOperator::IsNull:
+            case ina::query_model::Element::ComparisonOperator::IsNull:
             {
                 return generateUnaryOperatorSQL(filter);
             }
@@ -19,7 +17,7 @@ namespace query_generator
         }
     }
     
-    std::string generateNAryOperatorSQL(ina::query_model::QueryFilterComparison filter)
+    std::string generateNAryOperatorSQL(const ina::query_model::Element& filter)
     {
         std::string filterSQL;
         if (filter.isExcluding())
@@ -30,7 +28,7 @@ namespace query_generator
         filterSQL += filter.getFieldName();
         filterSQL += " " ;
         // comparisonOperator is never empty 
-        filterSQL += ina::query_model::QueryFilter::comparisonOperatorToSqlString(filter.getComparisonOperator());
+        filterSQL += ina::query_model::Element::toSql(filter.getComparisonOperator());
         // In case of unary operator, now low/high value
         if (!filter.getLowValue().empty())
         {
@@ -46,7 +44,7 @@ namespace query_generator
         return filterSQL;
     }
 
-    std::string generateUnaryOperatorSQL(ina::query_model::QueryFilterComparison filter)
+    std::string generateUnaryOperatorSQL(const ina::query_model::Element& filter)
     {
         std::string filterSQL;
         if (filter.isExcluding())
@@ -57,7 +55,7 @@ namespace query_generator
         filterSQL += filter.getFieldName();
         filterSQL += " " ;
         // comparisonOperator is never empty 
-        filterSQL += ina::query_model::QueryFilter::comparisonOperatorToSqlString(filter.getComparisonOperator());
+        filterSQL += ina::query_model::Element::toSql(filter.getComparisonOperator());
         // In case of unary operator, now low/high value
         if (filter.isExcluding())
         {
@@ -67,7 +65,7 @@ namespace query_generator
         return filterSQL;
     }
 
-    std::string generateSQL(ina::query_model::QuerySort querySort)
+    std::string generateSQL(const ina::query_model::QuerySort& querySort)
     {
         std::string sortSQL = querySort.getObjectName();
         
