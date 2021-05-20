@@ -18,11 +18,10 @@ namespace ina::query_model
 
 		if(const auto& members = dimNode.getArray("Members"))
 		{
+			dim._members.resize(members.size());
 			for(int i = 0;i < members.size();i++)
 			{
-				query_model::Member member;
-				read(member, members[i]);
-				dim.addMember(member);
+				read(dim._members[i], members[i]);
 			}
 		}
 
