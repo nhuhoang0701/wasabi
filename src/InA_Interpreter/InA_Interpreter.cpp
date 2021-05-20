@@ -130,7 +130,7 @@ void writeResponse(JSONWriter& writer, const ina::metadata::Cube* dsCube, const 
 		JSON_MAP(writer);
 		writer.pair("Number", 0u);
 		writer.pair("Text", "This the text of the Error 0 from root");
-		writer.pair("Type", "Error");
+		writer.pair("Type", 2u);
 		*/
 	}
 }
@@ -177,8 +177,8 @@ void getDataCube(const ina::query_model::Query& query, const ina::metadata::Cube
 			{
 				if(member.getFormula() != nullptr)
 				{
-					if(getDeps(member.getFormula()->getFunction(), formulasDependencies) == 0)
-						cube.addConstant(calculator::Object(member.getName()), evalFunction(nullptr, member.getFormula()->getFunction(), nullptr));
+					if(getDeps(*member.getFormula(), formulasDependencies) == 0)
+						cube.addConstant(calculator::Object(member.getName()), eval(nullptr, *member.getFormula(), nullptr));
 				}
 			}
 			// Add fomrula
@@ -186,7 +186,7 @@ void getDataCube(const ina::query_model::Query& query, const ina::metadata::Cube
 			{
 				auto formula = calculator::Object(member.getName());
 				if(member.getFormula() != nullptr && !cube.contain(formula))
-					cube.addFormula(formula, member.getFormula()->getFunction());
+					cube.addFormula(formula, *member.getFormula());
 			}
 		}
 	}

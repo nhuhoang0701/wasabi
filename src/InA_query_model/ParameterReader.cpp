@@ -24,11 +24,10 @@ namespace ina::query_model
         else if(JSONGenericObject functionObj = node.getObject("Function"))
         {
             param.m_type = Parameter::eFunction;
-            
             param.m_function = std::make_shared<Function>();
-            
             read(*(param.m_function), functionObj);
-            
-        }    
+        }
+        else
+            throw std::runtime_error("Parameter should contains at least 'Constant', 'Member' or 'Function'");
     }
 }

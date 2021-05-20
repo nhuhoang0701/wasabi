@@ -19,37 +19,13 @@ namespace ina::query_model
         throw std::runtime_error("getDouble: Not a double");
     }
 
-    calculator::Value evalFunction(const void* context, const ina::query_model::Function& fct, void (*getValueCallback)(const void* context, const std::string& nameObj, calculator::Value& value))
+    calculator::Value eval(const void* context, const ina::query_model::Function& fct, void (*getValueCallback)(const void* context, const std::string& nameObj, calculator::Value& value))
     {
         std::vector<calculator::Value>  paramValues(fct.getParameterCount());
         for(size_t i = 0; i < fct.getParameterCount(); i++)
         {
             const ina::query_model::Parameter& param = fct.getParameter(i);
-            switch (param.getType())
-            {
-                case ina::query_model::Parameter::eConstant:
-                {
-                    if(param.getValueType()=="String")
-                        paramValues[i] = std::stod(param.getValue());
-                    else
-                        paramValues[i] = std::stod(param.getValue());
-                    break;
-                }
-                case ina::query_model::Parameter::eFunction:
-                {
-                    paramValues[i] = evalFunction(context, param.getFunction(), getValueCallback);
-                    break;
-                }
-                case ina::query_model::Parameter::eMember:
-                {
-                    if(getValueCallback == nullptr)
-                        throw std::runtime_error("Missing callback to evaluate Member");
-                    getValueCallback(context, param.getName(), paramValues[i]);
-                    break;
-                }
-                default:
-                    throw std::runtime_error("Unkonw funciton parameter type");
-            }
+            paramValues[i] = eval(context, param, getValueCallback);
         }
 
         switch(fct.getFunctionType())
@@ -84,6 +60,7 @@ namespace ina::query_model
         }
         return 42.0;
     }
+
     size_t getDeps(const ina::query_model::Function& fct, std::vector<std::string>& deps)
     {
         size_t nbOfDeps = 0;
