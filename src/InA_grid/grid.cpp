@@ -33,6 +33,16 @@ namespace ina::grid
         }
     }
 
+	size_t Axis::getFrom() const
+    {
+        return m_from;
+    }
+
+	size_t Axis::getTo() const
+    {
+        return m_to;
+    }
+
     Grid::Grid(const ina::query_model::Query& query, const ina::metadata::Cube& dsCube, const calculator::Cube& cube)
     : m_query(query), m_cube(cube),
       m_rowAxe("ROWS", cube.getAxe(calculator::eAxe::Row)), 
@@ -53,6 +63,7 @@ namespace ina::grid
                 axe->m_measureDimensionMembers = getQuery().getDefinition().getVisibleMembers(*axe->m_measDim);
             }
         }
+
         m_rowAxe.init();
         m_colAxe.init();
 
@@ -64,6 +75,11 @@ namespace ina::grid
 
         if(m_cellsSize.first != m_rowAxe.m_tupleCount || m_cellsSize.second !=  m_colAxe.m_tupleCount)
             throw std::runtime_error("Cells and Axis have differnet size");
+            
+        m_rowAxe.m_from = getRowFrom();
+        m_rowAxe.m_to = getRowTo();
+        m_colAxe.m_from = getColumnFrom();
+        m_colAxe.m_to = getColumnTo();
     }
 
     std::pair<size_t, size_t> Grid::getCellsSize() const
