@@ -137,7 +137,7 @@ namespace ina::grid
     {
         //std::cout << "**************************************\n";
         //std::cout << "writeTuples\n";
-        writer.pair("TupleCount", static_cast<uint32_t>(axis.getTupleCount()));
+        writer.pair("TupleCount", static_cast<uint32_t>(axis.getTo()-axis.getFrom()));
         writer.pair("TupleCountTotal", static_cast<uint32_t>(axis.getTupleCount()));
         writer.key("Tuples");
         {
@@ -154,15 +154,16 @@ namespace ina::grid
                         {
                             JSON_LIST(writer);
                             {
+                                const auto& members = axis.getMeasureDimMembers();
+                                const size_t memberDiv = members.size()==0?1:members.size();
+                                //std::cout << "member.size(): " << members.size() << "\n";
                                 if(dimension == axis.getMeasureDimension() )
                                 {
                                     size_t maxRows = axis.getCubeAxis().getCardinality();
                                     if(maxRows == 0)
                                         maxRows = 1;
                                     //std::cout << "maxRows: " << maxRows << "\n";
-                                    const auto& members = axis.getMeasureDimMembers();
-                                    //std::cout << "member.size(): " << member.size() << "\n";
-                                    for (size_t tupleIndex = 0; tupleIndex < maxRows; tupleIndex++)
+                                    for (size_t tupleIndex = axis.getFrom()/memberDiv; tupleIndex < axis.getTo()/memberDiv; tupleIndex++)
                                     {
                                         for(size_t i = 0; i < members.size(); i++)
                                         {
@@ -173,12 +174,11 @@ namespace ina::grid
                                 else
                                 {
                                     //std::cout << "axis.getCubeAxis().getCardinality(): " << axis.getCubeAxis().getCardinality() << "\n";
-                                    for (size_t tupleIndex = 0; tupleIndex < axis.getCubeAxis().getCardinality(); tupleIndex++)
+                                    for (size_t tupleIndex = axis.getFrom()/memberDiv; tupleIndex < axis.getTo()/memberDiv; tupleIndex++)
                                     {
                                         const auto idx = static_cast<uint32_t>(axis.getCubeAxis().getValueIndex(dimension->getName(), tupleIndex));
                                         if(axis.getMeasureDimension() != nullptr)
                                         {
-                                            const auto& members = axis.getMeasureDimMembers();
                                             for(size_t i = 0; i < members.size(); i++)
                                                 writer.value(idx);
                                         }
@@ -196,11 +196,22 @@ namespace ina::grid
 
     void writeCells(const Grid& grid, JSONWriter& writer)
     {
+        //TODO: Only measure on column is implemented
+        if(grid.getRowAxis().getMeasureDimension() != nullptr)
+            throw std::runtime_error("Measure on rows is not yet implemented");
+
+        if(grid.getColAxis().getMeasureDimension() == nullptr)
+            throw std::runtime_error("Measure on column is mandatory");
+            
+        const size_t nbOfMembers = grid.getColAxis().getMeasureDimMembers().size();
+        if(grid.getCube().getBody().size() != grid.getColAxis().getMeasureDimMembers().size())
+            throw std::runtime_error("Invalid state: Body size and members numbers should be the same");
+
         writer.key("CellArraySizes");
         {
             JSON_LIST(writer);
-            writer.value(static_cast<uint32_t>(grid.getCellsSize().first));
-            writer.value(static_cast<uint32_t>(grid.getCellsSize().second));
+            writer.value(static_cast<uint32_t>(grid.getRowTo()-grid.getRowFrom()));
+            writer.value(static_cast<uint32_t>(grid.getColumnTo()-grid.getColumnFrom()));
         }
         writer.key("Cells");
         {
@@ -212,9 +223,9 @@ namespace ina::grid
                 writer.key("Values");
                 {
                     JSON_LIST(writer);	
-                    for(size_t rowIndex = 0; rowIndex < grid.getCube().getBody().getRowCount(); rowIndex++)
+                    for(size_t rowIndex = grid.getRowFrom(); rowIndex < grid.getRowTo(); rowIndex++)
                     {
-                        for(size_t colIndex = 0; colIndex < grid.getCube().getBody().getColumnCount(); colIndex++)
+                        for(size_t colIndex = grid.getColumnFrom()/nbOfMembers; colIndex < grid.getColumnTo()/nbOfMembers; colIndex++)
                         {
                             for(const auto& measure : grid.getCube().getBody())
                             {
@@ -248,17 +259,6 @@ namespace ina::grid
                 writer.key("Values");
                 {
                     JSON_LIST(writer);	
-                    //TODO: Only measure on column is implemented
-                    if(grid.getRowAxis().getMeasureDimension() != nullptr)
-                        throw std::runtime_error("Measure on rows is not yet implemented");
-
-                    if(grid.getColAxis().getMeasureDimension() == nullptr)
-                        throw std::runtime_error("Measure on column is mandatory");
-                        
-                    const size_t nbOfMembers = grid.getColAxis().getMeasureDimMembers().size();
-                    if(grid.getCube().getBody().size() != grid.getColAxis().getMeasureDimMembers().size())
-                        throw std::runtime_error("Invalid state: Body size and members numbers should be the same");
-
                     for(size_t rowIndex = grid.getRowFrom(); rowIndex < grid.getRowTo(); rowIndex++)
                     {
                         for(size_t colIndex = grid.getColumnFrom()/nbOfMembers; colIndex < grid.getColumnTo()/nbOfMembers; colIndex++)
@@ -293,9 +293,9 @@ namespace ina::grid
                 writer.key("Values");
                 {
                     JSON_LIST(writer);	
-                    for(size_t rowIndex = 0; rowIndex < grid.getCube().getBody().getRowCount(); rowIndex++)
+                    for(size_t rowIndex = grid.getRowFrom(); rowIndex < grid.getRowTo(); rowIndex++)
                     {
-                        for(size_t colIndex = 0; colIndex < grid.getCube().getBody().getColumnCount(); colIndex++)
+                        for(size_t colIndex = grid.getColumnFrom()/nbOfMembers; colIndex < grid.getColumnTo()/nbOfMembers; colIndex++)
                         {
                             for(const auto& measure : grid.getCube().getBody())
                             {
