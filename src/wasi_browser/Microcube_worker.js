@@ -121,7 +121,7 @@ onmessage = function(e) {
 	} catch(error) {
 		console.log('Worker: error: ', error);
 		console.log("stack: ", error.stack),
-		valret = '{"Messages": [{"Number":0,"Type":"Error","Text":"'+error+'"}]}';
+		valret = '{"Messages": [{"Number":0,"Type":2,"Text":"'+error+'"}]}';
 	}
 	console.log('Worker: return value:');
 	try {
