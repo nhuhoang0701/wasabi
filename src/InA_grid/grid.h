@@ -28,6 +28,9 @@ namespace ina::grid
 		const std::vector<const ina::query_model::Dimension*>& getDimensions() const {return m_dimensions;};
 		std::size_t                                            getTupleCount() const {return m_tupleCount;};
 		
+		size_t   getFrom() const;
+		size_t   getTo() const;
+		
 		const calculator::Axe&  getCubeAxis() const {return m_cubeAxe;};
 
 		const ina::query_model::Dimension*            getMeasureDimension() const {return m_measDim;}
@@ -43,6 +46,8 @@ namespace ina::grid
 		std::vector<ina::query_model::Member>           m_measureDimensionMembers;
 
 		size_t                  m_tupleCount = 0;
+		size_t                  m_from = 0;
+		size_t                  m_to = 0;
 		const calculator::Axe&  m_cubeAxe;
 	};
 
