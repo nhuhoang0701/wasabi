@@ -166,17 +166,17 @@ int main()
 	{
 		JSONReader reader;
 		
-		ina::query_model::Function fct1;
-		read(fct1, reader.parse(R"({"Name": "+","Parameters": [{"Constant": {"ValueType": "String","Value": "9"}},{"Member": {"Name": "Meas0"}}]})"));
+		ina::query_model::Formula formula1;
+		read(formula1, reader.parse(R"({"Name":"fct1", "Function":{"Name": "+","Parameters": [{"Constant": {"ValueType": "String","Value": "9"}},{"Member": {"Name": "Meas0"}}]}})"));
 
-		ina::query_model::Function fct2;
-		read(fct2, reader.parse(R"({"Name": "+","Parameters": [{"Constant": {"ValueType": "String","Value": "7"}},{"Member": {"Name": "fct1"}}]})"));
+		ina::query_model::Formula formula2;
+		read(formula2, reader.parse(R"({"Name":"fct2", "Function":{"Name": "+","Parameters": [{"Constant": {"ValueType": "String","Value": "7"}},{"Member": {"Name": "fct1"}}]}}})"));
 
 		Cube cube;	
 		cube.setStorage(storage);
 		cube.addDim(calculator::eAxe::Row, Object("Dim"));
-		cube.addFormula(Object("fct1"), fct1);
-		cube.addFormula(Object("fct2"), fct2);
+		cube.addFormula(Object("fct1"), formula1);
+		cube.addFormula(Object("fct2"), formula2);
 		cube.materialyze();
 
 		CPPUNIT_ASSERT_EQUAL(4, cube.getAxe(calculator::eAxe::Row).getCardinality());

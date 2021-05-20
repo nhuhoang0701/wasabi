@@ -4,10 +4,17 @@
 #include <vector>
 #include <memory>
 
-class JSONGenericObject; // From <json/jsonReader.h>
+class JSONGenericObject; // From <json/jsonRe
+
+#include <calculator/common.h>   // For calculator::Valueader.h>
 
 namespace ina::query_model
-{	
+{
+	class Parameter;
+
+	calculator::Value eval(const void* context, const ina::query_model::Parameter& param, void (*getValueCallback)(const void* context, const std::string& nameObj, calculator::Value& value));
+	size_t getDeps(const ina::query_model::Parameter& param, std::vector<std::string>& deps);
+
 	class Function;
 	class Parameter
 	{
@@ -16,8 +23,6 @@ namespace ina::query_model
 			enum eType{eUndefined=-1, eMember=0, eFunction, eConstant};
 			Parameter() = default;
 			~Parameter();
-
-			Parameter(eType type, const std::string& value);
 
 			eType  getType() const;
 

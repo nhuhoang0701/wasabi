@@ -1,6 +1,5 @@
 #pragma once
 
-//#include "Member.h"
 #include "Parameter.h"
 #include <string>
 #include <vector>
@@ -8,7 +7,7 @@
 
 class JSONGenericObject; // From <json/jsonReader.h>
 
-#include <calculator/common.h>
+#include <calculator/common.h>   // For calculator::Value
 
 namespace ina::query_model
 {
@@ -20,7 +19,7 @@ namespace ina::query_model
 	void read(Function& obj, const JSONGenericObject& jsonNode);
 	//void write(const Function& obj, JSONWriter& jsonNode);
 
-	calculator::Value evalFunction(const void* context, const ina::query_model::Function& fct, void (*getValueCallback)(const void* context, const std::string& nameObj, calculator::Value& value));
+	calculator::Value eval(const void* context, const ina::query_model::Function& fct, void (*getValueCallback)(const void* context, const std::string& nameObj, calculator::Value& value));
 	size_t getDeps(const ina::query_model::Function& fct, std::vector<std::string>& deps);
 
 	class Function

@@ -1,6 +1,7 @@
 #include "cube.h"
 
 #include "InA_query_model/Function.h"
+#include "calculator/common.h"
 #include "storage.h"
 
 #include <cstddef>
@@ -37,7 +38,7 @@ namespace calculator
 
 	void Object::materialyze(const Cube& cube)
 	{
-		if(m_isConstant == false && m_fct == nullptr)
+		if(m_isConstant == false && m_isFormula == false)
 		{
 			m_dataColumn = cube.getStorage().getColumn(m_name);
 		}
@@ -45,36 +46,40 @@ namespace calculator
 
 	calculator::eDataType  Object::getDataType() const
 	{
+		//TODO: Need getdatatype on the AST
+		if(m_isFormula || m_isConstant)
+			return calculator::eDataType::Number;
+
 		if(!m_dataColumn)
-			throw std::runtime_error("Object: getDataType() no m_dataColumn" + m_name);
+			throw std::runtime_error("Object: getDataType() no m_dataColumn:" + m_name);
 		return m_dataColumn->getDataType();
 	}
 
 	size_t Object::getRowCount() const
 	{
 		if(!m_dataColumn)
-			throw std::runtime_error("Object: getRowCount() no m_dataColumn" + m_name);
+			throw std::runtime_error("Object: getRowCount() no m_dataColumn:" + m_name);
 		return m_dataColumn->getRowCount();	
 	}
 
 	const Value& Object::getValueAtRowIdx(size_t rowIndex) const
 	{
 		if(!m_dataColumn)
-			throw std::runtime_error("Object: getValueAtRowIdx() no m_dataColumn" + m_name);
+			throw std::runtime_error("Object: getValueAtRowIdx() no m_dataColumn:" + m_name);
 		return m_dataColumn->getValueAtRowIdx(rowIndex);
 	}
 
 	size_t Object::getValueIndexFromRowIdx(size_t rowIndex) const
 	{
 		if(!m_dataColumn)
-			throw std::runtime_error("Object: getValueIndexFromRowIdx() no m_dataColumn" + m_name);
+			throw std::runtime_error("Object: getValueIndexFromRowIdx() no m_dataColumn:" + m_name);
 		return m_dataColumn->getValueIndexFromRowIdx(rowIndex);
 	}
 
 	const Value& Object::getValueAtValueIdx(size_t valueIndex) const
 	{
 		if(!m_dataColumn)
-			throw std::runtime_error("Object: getValueAtValueIdx() no m_dataColumn" + m_name);
+			throw std::runtime_error("Object: getValueAtValueIdx() no m_dataColumn:" + m_name);
 		return m_dataColumn->getValueAtValueIdx(valueIndex);
 	}
 
@@ -391,7 +396,7 @@ namespace calculator
 				for(auto& value : rowValues)
 				{
 					Context context(row, col, this);
-					value = ina::query_model::evalFunction(&context, *measure.m_fct, getValueCallback);
+					value = ina::query_model::eval(&context, *measure.m_formula, getValueCallback);
 					col++;
 				}
 				row++;
@@ -514,14 +519,14 @@ namespace calculator
 		m_body.back().m_constant = value;
 	}
 
-	void Cube::addFormula(const Object& obj, const ina::query_model::Function& fct)
+	void Cube::addFormula(const Object& obj, const ina::query_model::Formula& formula)
 	{
 		if(getStorage().haveCol(obj.getName()))
 			throw std::runtime_error("Formula: '" + obj.getName() + "' name already use in datastorage");
 
 		std:: cout << __PRETTY_FUNCTION__ << ":"  << obj.getName() << std::endl;
 		std::vector<std::string> deps;
-		ina::query_model::getDeps(fct, deps);
+		ina::query_model::getDeps(formula, deps);
 		for(const auto& dep : deps)
 		{
 			if(contain(dep) == false)
@@ -531,7 +536,7 @@ namespace calculator
 
 		m_body.push_back(obj);
 		m_body.back().m_isFormula = true;
-		m_body.back().m_fct = &fct;
+		m_body.back().m_formula = &formula;
 	}
 	
 	const Axe &Cube::getAxe(eAxe axe) const
