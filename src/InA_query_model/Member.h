@@ -32,10 +32,6 @@ namespace ina::query_model
 			static std::string getName(const Member& member);
 
 			Member() = default;
-			Member(const Member& other);
-			Member(Member&& other);
-			
-			Member& operator =(const Member& other);
 
 			const std::string&   getName() const;
 			const std::string&   getDescription() const;
@@ -45,8 +41,8 @@ namespace ina::query_model
 			const MemberOperand* getMemberOperand() const;
 
 		private:
-			std::unique_ptr<MemberOperand> m_memberOperand;
-			std::unique_ptr<Formula>       m_formula;
+			std::shared_ptr<MemberOperand> m_memberOperand;
+			std::shared_ptr<Formula>       m_formula;
 			std::string m_name; 
 			std::string m_description; 
 			Aggregation m_aggregation;
