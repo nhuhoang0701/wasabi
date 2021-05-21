@@ -6,55 +6,13 @@
 
 #include <InA_metadata/Cube.h>
 
-#include <algorithm>
 #include <calculator/cube.h>
-
-#include <cstddef>
-#include <json/jsonWriter.h>
 
 #include <iostream>
 #include <stdexcept>
 
 namespace ina::grid
 {
-    Axis::Axis(const std::string& name, const calculator::Axe& cubeAxis)
-     : m_name(name), m_cubeAxe(cubeAxis)
-     {}
-
-    void Axis::init()
-    {
-        m_tupleCount = m_cubeAxe.getCardinality();
-        if( m_measDim != nullptr)
-        {
-            if(m_tupleCount == 0) // Only dim meas on this axe
-                m_tupleCount =m_measureDimensionMembers.size();
-            else
-                m_tupleCount *= m_measureDimensionMembers.size();
-        }
-    }
-
-	void Axis::setFromTo(int32_t from, int32_t to)
-    {
-        if(from<0)
-            m_from = 0;
-        else
-            m_from = std::min<size_t>(from, m_tupleCount);
-
-        if(to<0)
-            m_to = m_tupleCount;
-        else
-            m_to = std::min<size_t>(to, m_tupleCount);
-    }
-	size_t Axis::getFrom() const
-    {
-        return m_from;
-    }
-
-	size_t Axis::getTo() const
-    {
-        return m_to;
-    }
-
     Grid::Grid(const ina::query_model::Query& query, const ina::metadata::Cube& dsCube, const calculator::Cube& cube)
     : m_query(query), m_cube(cube),
       m_rowAxe("ROWS", cube.getAxe(calculator::eAxe::Row)), 
@@ -62,34 +20,26 @@ namespace ina::grid
     {
         for (const auto& dimension : query.getDefinition().getDimensions()) 
         {
-            Axis* axe = nullptr;
             if(dimension.getAxe() == ina::query_model::Dimension::eAxe::Rows)
-                axe = &m_rowAxe;
+                m_rowAxe.addDimension(dimension, getQuery());
             else if(dimension.getAxe() == ina::query_model::Dimension::eAxe::Columns)
-                axe = &m_colAxe;
-
-            axe->m_dimensions.push_back(&dimension);
-            if(ina::query_model::Dimension::isDimensionOfMeasures(dimension) )
-            {
-                axe->m_measDim = &dimension;
-                axe->m_measureDimensionMembers = getQuery().getDefinition().getVisibleMembers(*axe->m_measDim);
-            }
+                m_colAxe.addDimension(dimension, getQuery());
         }
 
-        m_rowAxe.init();
-        m_colAxe.init();
+        m_rowAxe.init(getQuery());
+        m_colAxe.init(getQuery());
 
         m_cellsSize = std::make_pair(getCube().getBody().getRowCount(), getCube().getBody().getColumnCount());
-        if( m_rowAxe.m_measDim != nullptr)
-            m_cellsSize.first *= m_rowAxe.m_measureDimensionMembers.size();
-        if( m_colAxe.m_measDim != nullptr)
-            m_cellsSize.second *= m_colAxe.m_measureDimensionMembers.size();
+        if( m_rowAxe.getMeasureDimension() != nullptr)
+            m_cellsSize.first *= m_rowAxe.getMeasureDimMembers().size();
+        if( m_colAxe.getMeasureDimension() != nullptr)
+            m_cellsSize.second *= m_colAxe.getMeasureDimMembers().size();
 
-        if(!m_rowAxe.m_measureDimensionMembers.empty() && m_cellsSize.first != m_rowAxe.m_tupleCount )
+        if(!m_rowAxe.getMeasureDimMembers().empty() && m_cellsSize.first != m_rowAxe.getTupleCount() )
         {
             throw std::runtime_error("Cells and row Axis have different size");
         }
-        if(!m_colAxe.m_measureDimensionMembers.empty() &&  m_cellsSize.second !=  m_colAxe.m_tupleCount)
+        if(!m_colAxe.getMeasureDimMembers().empty() &&  m_cellsSize.second !=  m_colAxe.getTupleCount())
         {
             throw std::runtime_error("Cells and col Axis have differnet size");
         }

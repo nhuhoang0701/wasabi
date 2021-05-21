@@ -7,8 +7,6 @@
 #include <json/jsonWriter.h>
 
 #include <iostream>
-#include <stdexcept>
-#include <stdint.h>
 
 namespace ina::grid
 {

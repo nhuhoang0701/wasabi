@@ -171,16 +171,6 @@ void getDataCube(const ina::query_model::Query& query, const ina::metadata::Cube
 				if(member.getFormula() == nullptr)
 					cube.addMeasure(ina::query_model::Member::getName(member));
 			}
-			// Get formula dep.
-			std::vector<std::string>  formulasDependencies;
-			for(const auto member : query.getDefinition().getVisibleMembers(dimension))
-			{
-				if(member.getFormula() != nullptr)
-				{
-					if(getDeps(*member.getFormula(), formulasDependencies) == 0)
-						cube.addConstant(calculator::Object(member.getName()), eval(nullptr, *member.getFormula(), nullptr));
-				}
-			}
 			// Add fomrula
 			for(const auto member : query.getDefinition().getVisibleMembers(dimension))
 			{

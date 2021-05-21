@@ -9,7 +9,7 @@ project(InA_grid VERSION 1.0)
 
 ################################################
 # InA_grid
-add_library(InA_grid grid.cpp gridWriter.cpp)
+add_library(InA_grid axis.cpp grid.cpp gridWriter.cpp)
 set_target_properties(InA_grid PROPERTIES PUBLIC_HEADER grid.h)
 
 target_link_libraries(InA_grid PUBLIC exceptions)
