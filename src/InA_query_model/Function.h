@@ -48,7 +48,6 @@ namespace ina::query_model
 				eGreaterEq,
 				eIf
 				};
-			Function(const std::string& name, const std::string& desc, eFunctionType type, const std::vector<Parameter>& params);
 			
 			const std::string & getName() const;
 			const std::string & getDescription() const;

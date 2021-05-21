@@ -89,14 +89,6 @@ namespace ina::query_model
 
         return nbOfDeps;
     }
-    Function::Function(const std::string& name, const std::string& desc, eFunctionType type, const std::vector<Parameter>& params):
-    m_name(name),
-    m_description(desc),
-    m_type(type),
-    m_vParams(params)
-    {
-
-    }
 
     const std::string& Function::getName() const
     {
