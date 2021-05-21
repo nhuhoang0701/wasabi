@@ -23,10 +23,10 @@ namespace ina::grid
             writer.key("SubSetDescription");
             {
                 JSON_MAP(writer);
-                writer.pair("ColumnFrom", static_cast<uint32_t>(grid.getCellsColumnFrom()));
-                writer.pair("ColumnTo", std::max<uint32_t>(static_cast<uint32_t>(grid.getCellsColumnTo()),grid.getColAxis().getTo()));
-                writer.pair("RowFrom", static_cast<uint32_t>(grid.getCellsRowFrom()));
-                writer.pair("RowTo", std::max<uint32_t>(static_cast<uint32_t>(grid.getCellsRowTo()), grid.getRowAxis().getTo()));
+                writer.pair("ColumnFrom", static_cast<uint32_t>(grid.getColumnFrom()));
+                writer.pair("ColumnTo", static_cast<uint32_t>(grid.getColumnTo()));
+                writer.pair("RowFrom", static_cast<uint32_t>(grid.getRowFrom()));
+                writer.pair("RowTo", static_cast<uint32_t>(grid.getRowTo()));
             }
             writer.key("Axes");
             {
@@ -206,8 +206,8 @@ namespace ina::grid
         writer.key("CellArraySizes");
         {
             JSON_LIST(writer);
-            writer.value(static_cast<uint32_t>(grid.getCellsRowTo()-grid.getCellsRowFrom()));
-            writer.value(static_cast<uint32_t>(grid.getCellsColumnTo()-grid.getCellsColumnFrom()));
+            writer.value(static_cast<uint32_t>(grid.getCells().getRowTo()-grid.getCells().getRowFrom()));
+            writer.value(static_cast<uint32_t>(grid.getCells().getColumnTo()-grid.getCells().getColumnFrom()));
         }
         writer.key("Cells");
         {
@@ -219,9 +219,9 @@ namespace ina::grid
                 writer.key("Values");
                 {
                     JSON_LIST(writer);	
-                    for(size_t rowIndex = grid.getCellsRowFrom(); rowIndex < grid.getCellsRowTo(); rowIndex++)
+                    for(size_t rowIndex = grid.getCells().getRowFrom(); rowIndex < grid.getCells().getRowTo(); rowIndex++)
                     {
-                        for(size_t colIndex = grid.getCellsColumnFrom()/nbOfMembers; colIndex < grid.getCellsColumnTo()/nbOfMembers; colIndex++)
+                        for(size_t colIndex = grid.getCells().getColumnFrom()/nbOfMembers; colIndex < grid.getCells().getColumnTo()/nbOfMembers; colIndex++)
                         {
                             for(const auto& measure : grid.getCube().getBody())
                             {
@@ -255,9 +255,9 @@ namespace ina::grid
                 writer.key("Values");
                 {
                     JSON_LIST(writer);	
-                    for(size_t rowIndex = grid.getCellsRowFrom(); rowIndex < grid.getCellsRowTo(); rowIndex++)
+                    for(size_t rowIndex = grid.getCells().getRowFrom(); rowIndex < grid.getCells().getRowTo(); rowIndex++)
                     {
-                        for(size_t colIndex = grid.getCellsColumnFrom()/nbOfMembers; colIndex < grid.getCellsColumnTo()/nbOfMembers; colIndex++)
+                        for(size_t colIndex = grid.getCells().getColumnFrom()/nbOfMembers; colIndex < grid.getCells().getColumnTo()/nbOfMembers; colIndex++)
                         {
                             for(const auto& measure : grid.getCube().getBody())
                             {
@@ -289,9 +289,9 @@ namespace ina::grid
                 writer.key("Values");
                 {
                     JSON_LIST(writer);	
-                    for(size_t rowIndex = grid.getCellsRowFrom(); rowIndex < grid.getCellsRowTo(); rowIndex++)
+                    for(size_t rowIndex = grid.getCells().getRowFrom(); rowIndex < grid.getCells().getRowTo(); rowIndex++)
                     {
-                        for(size_t colIndex = grid.getCellsColumnFrom()/nbOfMembers; colIndex < grid.getCellsColumnTo()/nbOfMembers; colIndex++)
+                        for(size_t colIndex = grid.getCells().getColumnFrom()/nbOfMembers; colIndex < grid.getCells().getColumnTo()/nbOfMembers; colIndex++)
                         {
                             for(const auto& measure : grid.getCube().getBody())
                             {

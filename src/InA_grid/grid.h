@@ -1,6 +1,7 @@
 #pragma once
 
 #include "axis.h"
+#include "cells.h"
 
 #include <string>
 
@@ -27,22 +28,21 @@ namespace ina::grid
 		const Axis&        getRowAxis() const {return m_rowAxe;};
 		const Axis&        getColAxis() const {return m_colAxe;};
 
-		// Row first / Col second
-		std::pair<size_t, size_t>      getCellsSize() const;
+		const Cells&       getCells() const {return m_cells;}
 
-		size_t   getCellsColumnFrom() const;
-		size_t   getCellsColumnTo() const;
-		size_t   getCellsRowFrom() const;
-		size_t   getCellsRowTo() const;
+		size_t   getColumnFrom() const;
+		size_t   getColumnTo() const;
+		size_t   getRowFrom() const;
+		size_t   getRowTo() const;
 
 	private:
 		const ina::query_model::Query& m_query;
 		const calculator::Cube&        m_cube;
 
-		std::pair<size_t, size_t>      m_cellsSize;
-
 		Axis  m_rowAxe;
 		Axis  m_colAxe;
+
+		Cells m_cells;
 
 		friend void   write(const Grid& grid, JSONWriter& writer);
 	};
