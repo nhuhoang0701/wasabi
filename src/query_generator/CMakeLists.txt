@@ -25,7 +25,7 @@ target_link_libraries(query_generator_test PUBLIC query_generator)
 target_link_directories(query_generator_test PUBLIC)
 
 ## [main]
-add_test(NAME query_generator_test COMMAND query_generator_test)
+#add_test(NAME query_generator_test COMMAND query_generator_test)
 
 ## [installation]
 install(TARGETS query_generator
