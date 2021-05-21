@@ -38,7 +38,7 @@ namespace calculator
 
 	void Object::materialyze(const Cube& cube)
 	{
-		if(m_isConstant == false && m_isFormula == false)
+		if(m_isFormula == false)
 		{
 			m_dataColumn = cube.getStorage().getColumn(m_name);
 		}
@@ -47,7 +47,7 @@ namespace calculator
 	calculator::eDataType  Object::getDataType() const
 	{
 		//TODO: Need getdatatype on the AST
-		if(m_isFormula || m_isConstant)
+		if(m_isFormula)
 			return calculator::eDataType::Number;
 
 		if(!m_dataColumn)
@@ -93,9 +93,6 @@ namespace calculator
 	
 	Value Object::aggregate() const
 	{
-		if(m_isConstant)
-			return m_constant;
-		
 		Value value;
 		std::cerr << "WASABI: ERROR: Local agregation, NYI hardcoded to sum" << std::endl;
 
@@ -116,8 +113,6 @@ namespace calculator
 
 	Value Object::aggregate(const std::vector<size_t>& indexes) const
 	{
-		if(m_isConstant)
-			return m_constant;
 		Value value;
 		if(indexes.empty())
 		{
@@ -507,16 +502,6 @@ namespace calculator
 			throw std::runtime_error("Object " + obj.getName() + " not found in datastorage");
 
 		m_body.push_back(obj);
-	}
-
-	void Cube::addConstant(const Object& obj, const Value& value)
-	{
-		if(getStorage().haveCol(obj.getName()))
-			throw std::runtime_error("Constant: '" + obj.getName() + "' name already use in datastorage");
-
-		m_body.push_back(obj);
-		m_body.back().m_isConstant = true;
-		m_body.back().m_constant = value;
 	}
 
 	void Cube::addFormula(const Object& obj, const ina::query_model::Formula& formula)
