@@ -34,7 +34,6 @@ namespace ina::query_model
                     element.setExcluding(isExcluding);
                 }
                 elements.push_back(element);
-                std::cout << "elements.size() == " << elements.size() << std::endl;
             }
         }
     }
