@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <stdint.h>
 
 namespace ina::grid
 {
@@ -24,10 +25,10 @@ namespace ina::grid
             writer.key("SubSetDescription");
             {
                 JSON_MAP(writer);
-                writer.pair("ColumnFrom", static_cast<uint32_t>(grid.getColumnFrom()));
-                writer.pair("ColumnTo", static_cast<uint32_t>(grid.getColumnTo()));
-                writer.pair("RowFrom", static_cast<uint32_t>(grid.getRowFrom()));
-                writer.pair("RowTo", static_cast<uint32_t>(grid.getRowTo()));
+                writer.pair("ColumnFrom", static_cast<uint32_t>(grid.getCellsColumnFrom()));
+                writer.pair("ColumnTo", std::max<uint32_t>(static_cast<uint32_t>(grid.getCellsColumnTo()),grid.getColAxis().getTo()));
+                writer.pair("RowFrom", static_cast<uint32_t>(grid.getCellsRowFrom()));
+                writer.pair("RowTo", std::max<uint32_t>(static_cast<uint32_t>(grid.getCellsRowTo()), grid.getRowAxis().getTo()));
             }
             writer.key("Axes");
             {
@@ -207,8 +208,8 @@ namespace ina::grid
         writer.key("CellArraySizes");
         {
             JSON_LIST(writer);
-            writer.value(static_cast<uint32_t>(grid.getRowTo()-grid.getRowFrom()));
-            writer.value(static_cast<uint32_t>(grid.getColumnTo()-grid.getColumnFrom()));
+            writer.value(static_cast<uint32_t>(grid.getCellsRowTo()-grid.getCellsRowFrom()));
+            writer.value(static_cast<uint32_t>(grid.getCellsColumnTo()-grid.getCellsColumnFrom()));
         }
         writer.key("Cells");
         {
@@ -220,9 +221,9 @@ namespace ina::grid
                 writer.key("Values");
                 {
                     JSON_LIST(writer);	
-                    for(size_t rowIndex = grid.getRowFrom(); rowIndex < grid.getRowTo(); rowIndex++)
+                    for(size_t rowIndex = grid.getCellsRowFrom(); rowIndex < grid.getCellsRowTo(); rowIndex++)
                     {
-                        for(size_t colIndex = grid.getColumnFrom()/nbOfMembers; colIndex < grid.getColumnTo()/nbOfMembers; colIndex++)
+                        for(size_t colIndex = grid.getCellsColumnFrom()/nbOfMembers; colIndex < grid.getCellsColumnTo()/nbOfMembers; colIndex++)
                         {
                             for(const auto& measure : grid.getCube().getBody())
                             {
@@ -256,9 +257,9 @@ namespace ina::grid
                 writer.key("Values");
                 {
                     JSON_LIST(writer);	
-                    for(size_t rowIndex = grid.getRowFrom(); rowIndex < grid.getRowTo(); rowIndex++)
+                    for(size_t rowIndex = grid.getCellsRowFrom(); rowIndex < grid.getCellsRowTo(); rowIndex++)
                     {
-                        for(size_t colIndex = grid.getColumnFrom()/nbOfMembers; colIndex < grid.getColumnTo()/nbOfMembers; colIndex++)
+                        for(size_t colIndex = grid.getCellsColumnFrom()/nbOfMembers; colIndex < grid.getCellsColumnTo()/nbOfMembers; colIndex++)
                         {
                             for(const auto& measure : grid.getCube().getBody())
                             {
@@ -290,9 +291,9 @@ namespace ina::grid
                 writer.key("Values");
                 {
                     JSON_LIST(writer);	
-                    for(size_t rowIndex = grid.getRowFrom(); rowIndex < grid.getRowTo(); rowIndex++)
+                    for(size_t rowIndex = grid.getCellsRowFrom(); rowIndex < grid.getCellsRowTo(); rowIndex++)
                     {
-                        for(size_t colIndex = grid.getColumnFrom()/nbOfMembers; colIndex < grid.getColumnTo()/nbOfMembers; colIndex++)
+                        for(size_t colIndex = grid.getCellsColumnFrom()/nbOfMembers; colIndex < grid.getCellsColumnTo()/nbOfMembers; colIndex++)
                         {
                             for(const auto& measure : grid.getCube().getBody())
                             {
