@@ -11,18 +11,18 @@ namespace ina::query_model
             Undefined
         };
 
-            SelectionElement() = default;
-            SelectionElement(Type type);
-            Type getType() const;
-            virtual ~SelectionElement() = default;
+        SelectionElement() = default;
+        SelectionElement(Type type);
+        Type getType() const;
+        virtual ~SelectionElement() = default;
 
-            // SetOperand
-            const std::vector<Element>& getElements() const;
+        // SetOperand
+        const std::vector<Element>& getElements() const;
 
-            // Operator
-            void setCode(Element::LogicalOperator code);
-            Element::LogicalOperator getCode() const;
-            const std::vector<SelectionElement> & getSubSelections() const;
+        // Operator
+        void setCode(Element::LogicalOperator code);
+        Element::LogicalOperator getCode() const;
+        const std::vector<SelectionElement> & getSubSelections() const;
 
         private:
         Type _type = Type::Undefined;
