@@ -28,18 +28,13 @@ namespace ina::grid
 
         m_rowAxe.init(getQuery());
         m_colAxe.init(getQuery());
+        m_cells.init(*this);
 
-        m_cellsSize = std::make_pair(getCube().getBody().getRowCount(), getCube().getBody().getColumnCount());
-        if( m_rowAxe.getMeasureDimension() != nullptr)
-            m_cellsSize.first *= m_rowAxe.getMeasureDimMembers().size();
-        if( m_colAxe.getMeasureDimension() != nullptr)
-            m_cellsSize.second *= m_colAxe.getMeasureDimMembers().size();
-
-        if(!m_rowAxe.getMeasureDimMembers().empty() && m_cellsSize.first != m_rowAxe.getTupleCount() )
+        if(!m_rowAxe.getMeasureDimMembers().empty() && m_cells.getRowCount() != m_rowAxe.getTupleCount() )
         {
             throw std::runtime_error("Cells and row Axis have different size");
         }
-        if(!m_colAxe.getMeasureDimMembers().empty() &&  m_cellsSize.second !=  m_colAxe.getTupleCount())
+        if(!m_colAxe.getMeasureDimMembers().empty() &&  m_cells.getColumnCount() !=  m_colAxe.getTupleCount())
         {
             throw std::runtime_error("Cells and col Axis have differnet size");
         }
@@ -50,37 +45,20 @@ namespace ina::grid
                             m_query.getDefinition().getResultSetFeat().getSubSetDescription().m_ColumnTo);
     }
 
-    std::pair<size_t, size_t> Grid::getCellsSize() const
+    size_t Grid::getColumnFrom() const
     {
-        return m_cellsSize;
+        return m_cells.getColumnFrom();
     }
-
-    size_t Grid::getCellsColumnFrom() const
+    size_t Grid::getColumnTo() const
     {
-        const int32_t val = m_query.getDefinition().getResultSetFeat().getSubSetDescription().m_ColumnFrom;
-        if(val<0)
-            return 0;
-        return std::min<size_t>(val, getCellsSize().second);
+        return std::max<uint32_t>(m_cells.getColumnTo(), m_colAxe.getTo());
     }
-    size_t Grid::getCellsColumnTo() const
+    size_t Grid::getRowFrom() const
     {
-        const int32_t val = m_query.getDefinition().getResultSetFeat().getSubSetDescription().m_ColumnTo;
-        if(val<0)
-            return getCellsSize().second;
-        return std::min<size_t>(val, getCellsSize().second);
+        return m_cells.getRowFrom();
     }
-    size_t Grid::getCellsRowFrom() const
+    size_t Grid::getRowTo() const
     {
-        const int32_t val = m_query.getDefinition().getResultSetFeat().getSubSetDescription().m_RowFrom;
-        if(val<0)
-            return 0;
-        return std::min<size_t>(val, getCellsSize().first);
-    }
-    size_t Grid::getCellsRowTo() const
-    {
-        const int32_t val = m_query.getDefinition().getResultSetFeat().getSubSetDescription().m_RowTo;
-        if(val<0)
-            return getCellsSize().first;
-        return std::min<size_t>(val, getCellsSize().first);
+        return std::max<uint32_t>(m_cells.getRowTo(), m_rowAxe.getTo());
     }
 }

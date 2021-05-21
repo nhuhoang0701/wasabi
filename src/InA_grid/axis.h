@@ -3,12 +3,10 @@
 #include <vector>
 #include <string>
 
-class JSONWriter;
-
 #include <InA_query_model/Member.h>
+
 namespace ina::query_model { class Query; class Dimension;};
-namespace ina::metadata { class Cube; class Dimension;};
-namespace calculator {class Cube; class Axe;}
+namespace calculator {class Axe;}
 
 namespace ina::grid
 {
