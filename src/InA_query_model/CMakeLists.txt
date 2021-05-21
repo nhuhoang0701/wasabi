@@ -24,7 +24,7 @@ target_link_libraries(InA_query_model_test InA_query_model)
 target_link_directories(InA_query_model_test PUBLIC)
 
 ## [main]
-#add_test(NAME InA_query_model_test COMMAND InA_query_model_test)
+add_test(NAME InA_query_model_test COMMAND InA_query_model_test)
 
 ## [installation]
 install(TARGETS InA_query_model 
