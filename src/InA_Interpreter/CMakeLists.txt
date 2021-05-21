@@ -17,9 +17,12 @@ target_include_directories(InA_Interpreter_lib PUBLIC ${WASABI_INCLUDES} ${PROJE
 target_link_libraries(InA_Interpreter_lib PUBLIC cjson json exceptions InA_query_model InA_grid InA_metadata query_generator dbproxy metadata_enrichment sqlite calculator)
 target_link_directories(InA_Interpreter_lib PUBLIC ${cJSON_LIBRARY_DIRS} ${WASABI_LIBS})
 
-
+if ("${WASABI_PLATFORM_TARGET}" STREQUAL "wasm")
 add_executable(InA_Interpreter InA_Interpreter.cpp)
 target_link_options(InA_Interpreter PRIVATE "-mexec-model=reactor")
+else()
+add_library(InA_Interpreter InA_Interpreter.cpp)
+endif()
 target_link_libraries(InA_Interpreter InA_Interpreter_lib)
 
 # External entries points
