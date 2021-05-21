@@ -84,6 +84,13 @@ int main()
 
 		//TODO: check with attributes KEY
 	}
+
+	{
+		std::string request = R"({"DynamicFilter":{"Selection":{"SetOperand":{"FieldName":"Yr","Elements":[{"Comparison":"=","Low":"2016"}]}}}})";
+		ina::query_model::Definition definition;
+		read(definition, reader.parse(request));
+
+	}
 	{
 		std::string request = R"({"Dimensions":[{"Members":[{"Description":"Calculated Measure 1","Formula":{"Function":{"Name":"**","Parameters":[{"Member":{"Name":"OBJ_147"}},{"Function":{"Name":"decfloat","Parameters":[{"Constant":{"Value":"2","ValueType":"String"}}]}}]}},"Name":"32160367-6930-4537-9181-755582731239"}],"Axis":"Rows","Name":"CustomDimension1"}]})";;
 		ina::query_model::Definition definition;
