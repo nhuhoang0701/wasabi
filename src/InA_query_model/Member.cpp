@@ -33,35 +33,6 @@ namespace ina::query_model
 	{
 		return m_value;
 	}
-
-	Member::Member(Member&& other)
-	: m_memberOperand(std::move(other.m_memberOperand)),
-	  m_formula(std::move(other.m_formula)),
-	  m_name(other.m_name),
-	  m_description(other.m_description),
-	  m_aggregation(other.m_aggregation)
-	{
-	}
-
-	Member::Member(const Member& other)
-	: m_memberOperand(other.m_memberOperand!=nullptr?new MemberOperand(*other.m_memberOperand):nullptr),
-	  m_formula(other.m_formula!=nullptr?new Formula(*other.m_formula):nullptr),
-	  m_name(other.m_name),
-	  m_description(other.m_description),
-	  m_aggregation(other.m_aggregation)
-	{
-	}
-
-	Member& Member::operator =(const Member& other)
-	{
-		m_memberOperand.reset(other.m_memberOperand!=nullptr?new MemberOperand(*other.m_memberOperand):nullptr);
-		m_formula.reset(other.m_formula!=nullptr?new Formula(*other.m_formula):nullptr);
-		m_name = other.m_name;
-		m_description = other.m_description;
-		m_aggregation = other.m_aggregation;
-
-		return *this;
-	}
 	
 	const std::string& Member::getName() const
 	{
