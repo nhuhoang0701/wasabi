@@ -38,10 +38,11 @@ namespace ina::query_model
 		}
 		if (const auto& dynamicFilterNode = definitionNode.getObject("DynamicFilter"))
 		{
+			std::cout << "Reading DynamicFilter" << std::endl;
 			if (const auto& selectionNode = dynamicFilterNode.getObject("Selection"))
 			{
-				Selection selection = definition.getSelection();
-				read(selection, selectionNode);
+				std::cout << "Reading Selection" << std::endl;
+				read(definition.m_selection, selectionNode);
 			}
 		}
 
