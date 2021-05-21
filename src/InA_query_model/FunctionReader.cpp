@@ -37,11 +37,10 @@ namespace ina::query_model
         
         if(const auto& params = functionNode.getArray("Parameters"))
 		{
+            function.m_vParams.resize(params.size());
 			for(int i = 0;i < params.size();i++)
 			{
-				query_model::Parameter parameter;
-                read(parameter, params[i]);
-                function.addParameter(parameter);
+                read(function.m_vParams[i], params[i]);
 			}
 		}
         
