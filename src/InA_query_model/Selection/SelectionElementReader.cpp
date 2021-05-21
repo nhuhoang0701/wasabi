@@ -42,9 +42,7 @@ namespace ina::query_model
         }
         else if (selectionElement.getType() == SelectionElement::Type::SetOperand)
         {
-            SelectionElement childSelectionElement(SelectionElement::Type::SetOperand);
-            read(childSelectionElement._elements, selectionElementNode);
-            selectionElement._subSelections.push_back(childSelectionElement);
+            read(selectionElement._elements, selectionElementNode);
         } 
     }
 }

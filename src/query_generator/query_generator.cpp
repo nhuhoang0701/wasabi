@@ -5,6 +5,7 @@
 #include <InA_query_model/Query.h>
 #include <InA_query_model/Dimension.h>
 
+#include <ostream>
 #include <sstream>
 #include <iostream>
 #include <stdexcept>
@@ -140,37 +141,49 @@ namespace query_generator
         return sql.str();
     }
 
-	void query_generator::buildWhereClause(const ina::query_model::SelectionElement& selectionOperator, std::ostringstream& where) const
+	void query_generator::buildWhereSetOperandClause(const ina::query_model::SelectionElement& selectionElement, ina::query_model::Element::LogicalOperator parentLogicalOperator, std::ostringstream& where) const
 	{
-		for(const auto& selectionElement : selectionOperator.getSubSelections())
-		{				
-			if (selectionElement.getType() == ina::query_model::SelectionElement::Type::Operator)
+		for(const auto& element : selectionElement.getElements())
+		{
+			if (!("[Measures].[Measures]" == element.getFieldName()))
 			{
-				buildWhereClause(selectionElement, where);
-			}
-			else if (selectionElement.getType() == ina::query_model::SelectionElement::Type::SetOperand)
-			{
-				for(const auto& element : selectionElement.getElements())
+				std::string code = ina::query_model::Element::toString(parentLogicalOperator);
+				if (where.str().empty())
 				{
-					if (!("[Measures].[Measures]" == element.getFieldName()))
-					{
-						std::string code = ina::query_model::Element::toString(selectionOperator.getCode());
-						if (where.str().empty())
-						{
-							where << " WHERE ";
-						}
-						else 
-						{							
-							where << " " << code << " ";
-						}
-						std::string generatedSQL = generateSQL(element) ;
-						where << generatedSQL;
-					}
+					where << " WHERE ";
 				}
+				else
+				{							
+					where << " " << code << " ";
+				}
+				std::string generatedSQL = generateSQL(element) ;
+				where << generatedSQL;
 			}
 		}
 	}
 
+	void query_generator::buildWhereClause(const ina::query_model::SelectionElement& selectionElement, std::ostringstream& where) const
+	{
+		if (selectionElement.getType() == ina::query_model::SelectionElement::Type::SetOperand)
+		{
+			buildWhereSetOperandClause(selectionElement, ina::query_model::Element::LogicalOperator::Undefined, where);
+		}
+		else if (selectionElement.getType() == ina::query_model::SelectionElement::Type::Operator)
+		{
+			for(const auto& subSelectionElement : selectionElement.getSubSelections())
+			{				
+				if (subSelectionElement.getType() == ina::query_model::SelectionElement::Type::Operator)
+				{
+					buildWhereClause(subSelectionElement, where);
+				}
+				else if (subSelectionElement.getType() == ina::query_model::SelectionElement::Type::SetOperand)
+				{
+					buildWhereSetOperandClause(subSelectionElement, selectionElement.getCode(), where);
+				}
+			}
+		}
+	}
+	
 	void query_generator::prepareStorage(calculator::DataStorage& data) const
 	{
 		data.clear();
@@ -203,7 +216,7 @@ namespace query_generator
 					break;
 				}
 				default:
-					throw std::runtime_error("Unknow axe");
+					throw std::runtime_error("Unknown axe");
 				}
 			}
         }
