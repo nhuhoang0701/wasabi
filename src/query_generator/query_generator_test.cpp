@@ -11,7 +11,7 @@ int main()
 	
 	JSONReader reader;
 	std::shared_ptr<calculator::DataStorage> data(new calculator::DataStorage());
-
+	
 	{
 		ina::query_model::DataSource ds;
 		ds.setObjectName("MyTable");
@@ -77,7 +77,7 @@ int main()
 		std::string sql = queryGen.getSQL(*data);
 		std::cout << "Generated SQL: " << sql << std::endl;
 		CPPUNIT_ASSERT_EQUAL("SELECT OBJ_188, SUM(OBJ_262) FROM MyTable WHERE OBJ_188 = '2014' GROUP BY OBJ_188;", sql);
-	}
+	}	
 	{
 		ina::query_model::DataSource ds;
 		ds.setObjectName("MyTable");
@@ -96,7 +96,7 @@ int main()
 		std::string sql = queryGen.getSQL(*data);
 		std::cout << "Generated SQL: " << sql << std::endl;
 		CPPUNIT_ASSERT_EQUAL("SELECT OBJ_188 FROM MyTable WHERE OBJ_188 IS NULL OR NOT ( OBJ_188 = '2014' ) GROUP BY OBJ_188;", sql);
-	}
+	}	
 	{
 		ina::query_model::DataSource ds;
 		ds.setObjectName("MyTable");
@@ -151,5 +151,24 @@ int main()
 		CPPUNIT_ASSERT_EQUAL("SELECT SUM(Sales_revenue), SUM(Quantity_sold), SUM(Margin) FROM MyTable;", sql);		
 
 	}	
+	{
+		ina::query_model::DataSource ds;
+		ds.setObjectName("MyTable");
+
+		ina::query_model::Query queryInA;
+		queryInA.setDataSource(ds);
+
+		std::string request = R"({"Dimensions":[{"Name":"Yr","ReadMode":"Master","Axis":"Rows","ResultStructure":[{"Result":"Members","Visibility":"Visible"}],"Attributes":[{"Name":"Yr","Obtainability":"UserInterface"}]},{"Name":"CustomDimension1","Axis":"Columns","Members":[{"MemberOperand":{"AttributeName":"Measures","Comparison":"=","Value":"Sales_revenue"},"Visibility":"Visible"},{"MemberOperand":{"AttributeName":"Measures","Comparison":"=","Value":"Quantity_sold"},"Visibility":"Visible"},{"MemberOperand":{"AttributeName":"Measures","Comparison":"=","Value":"Margin"},"Visibility":"Visible"}],"Attributes":[{"Name":"[Measures].[Measures]","Obtainability":"UserInterface"},{"Name":"[Measures].[Name]","Obtainability":"UserInterface"}]}],"Sort":[{"SortType":"MemberKey","PreserveGrouping":true,"Dimension":"Yr"},{"SortType":"MemberKey","PreserveGrouping":true,"Dimension":"CustomDimension1"}],"DynamicFilter":{"Selection":{"SetOperand":{"FieldName":"[Measures].[Measures]","Elements":[{"Comparison":"=","Low":"Quantity_sold"}]}}}})";
+		ina::query_model::Definition definition;
+		read(definition, reader.parse(request));
+		queryInA.setDefinition(definition);
+		const query_generator::query_generator& queryGen = query_generator::query_generator(queryInA);
+		queryGen.prepareStorage(*data);
+		std::string sql = queryGen.getSQL(*data);
+		std::cout << "Generated SQL: " << sql << std::endl;
+		CPPUNIT_ASSERT_EQUAL("SELECT Yr, SUM(Quantity_sold) FROM MyTable GROUP BY Yr ORDER BY Yr;", sql);		
+
+	}
+	
 	return TEST_HAVEERROR();
 }

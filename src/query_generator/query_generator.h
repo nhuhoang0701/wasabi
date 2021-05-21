@@ -20,5 +20,6 @@ namespace query_generator
 	private:
 		const ina::query_model::Query& m_query;
 		void buildWhereClause(const ina::query_model::SelectionElement& selectionOperator, std::ostringstream& where) const;
+		void buildWhereSetOperandClause(const ina::query_model::SelectionElement& selectionElement, ina::query_model::Element::LogicalOperator parentLogicalOperator, std::ostringstream& where) const;
 	};
 } // query_generator
