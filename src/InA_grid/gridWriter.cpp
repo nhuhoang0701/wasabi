@@ -199,9 +199,6 @@ namespace ina::grid
         //TODO: Only measure on column is implemented
         if(grid.getRowAxis().getMeasureDimension() != nullptr)
             throw std::runtime_error("Measure on rows is not yet implemented");
-
-        if(grid.getColAxis().getMeasureDimension() == nullptr)
-            throw std::runtime_error("Measure on column is mandatory");
             
         const size_t nbOfMembers = grid.getColAxis().getMeasureDimMembers().size();
         if(grid.getCube().getBody().size() != grid.getColAxis().getMeasureDimMembers().size())
