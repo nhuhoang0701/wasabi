@@ -28,6 +28,7 @@ namespace ina::grid
 		const std::vector<const ina::query_model::Dimension*>& getDimensions() const {return m_dimensions;};
 		std::size_t                                            getTupleCount() const {return m_tupleCount;};
 		
+		void     setFromTo(int32_t from, int32_t to);
 		size_t   getFrom() const;
 		size_t   getTo() const;
 		
@@ -65,10 +66,10 @@ namespace ina::grid
 		// Row first / Col second
 		std::pair<size_t, size_t>      getCellsSize() const;
 
-		size_t   getColumnFrom() const;
-		size_t   getColumnTo() const;
-		size_t   getRowFrom() const;
-		size_t   getRowTo() const;
+		size_t   getCellsColumnFrom() const;
+		size_t   getCellsColumnTo() const;
+		size_t   getCellsRowFrom() const;
+		size_t   getCellsRowTo() const;
 
 	private:
 		const ina::query_model::Query& m_query;
