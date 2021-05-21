@@ -3,7 +3,6 @@
 
 
 importScripts('./WASI_API.js');
-moduleWASI = null;
 
 const indexMsgId = 0;
 const indexMsgAction = 1;
@@ -113,7 +112,7 @@ onmessage = function(e) {
 			var queryWAsm = WASI_API.convertJSStr2WAsm(queryJS);
 			var wasmRes = WASI_API.getModuleInstanceExports().json_getResponse_json(queryWAsm);
 			WASI_API.getModuleInstanceExports().free(queryWAsm);
-			valret = WASI_API.convertWAsmStr2JSStr(wasmRes);			
+			valret = WASI_API.convertWAsmStr2JSStr(wasmRes);
 			break;
 		default:
 			throw  new Error('Unknow action:' + action);
@@ -121,7 +120,7 @@ onmessage = function(e) {
 	} catch(error) {
 		console.log('Worker: error: ', error);
 		console.log("stack: ", error.stack),
-		valret = '{"Messages": [{"Number":0,"Type":2,"Text":"'+error+'"}]}';
+		valret = '{"HasErrors":true, "Messages": [{"Number":0,"Type":2,"Text":"'+error+'"}]}';
 	}
 	console.log('Worker: return value:');
 	try {
