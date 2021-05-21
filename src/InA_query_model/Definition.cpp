@@ -99,7 +99,9 @@ namespace ina::query_model
                     }
                 }
             }
-            return visibleMembers;
+            // If some meber have been select it return it , else go to the default behavior are return all memeners
+            if(!visibleMembers.empty())
+                return visibleMembers;
         }
 
         return dimension.getMembers();
