@@ -27,12 +27,10 @@ namespace ina::query_model
 
 		if(const auto& attributs = dimNode.getArray("Attributes"))
 		{
+			dim._attributes.resize(attributs.size());
 			for(int i = 0;i < attributs.size();i++)
 			{
-				Attribute attribut;
-				read(attribut, attributs[i]);
-				attribut.m_dim = &dim;
-				dim.addAttribute(attribut);
+				read(dim._attributes[i], attributs[i]);
 			}
 		}
 	}
