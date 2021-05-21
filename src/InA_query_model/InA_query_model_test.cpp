@@ -63,6 +63,9 @@ int main()
 		std::string request = R"({"DynamicFilter":{"Selection":{"Operator":{"Code":"And","SubSelections":[{"SetOperand":{"Elements":[{"Comparison":"=","Low":"OBJ_147"},{"Comparison":"<>","Low":"OBJ_191"}],"FieldName":"[Measures].[Measures]"}}]}}}})";
 		ina::query_model::Definition definition;
 		read(definition, reader.parse(request));
+		CPPUNIT_ASSERT_EQUAL(ina::query_model::SelectionElement::Type::Operator, definition.getSelection().getOperator().getType());
+		CPPUNIT_ASSERT_EQUAL(1, definition.getSelection().getOperator().getSubSelections().size());
+		CPPUNIT_ASSERT_EQUAL(ina::query_model::SelectionElement::Type::SetOperand, definition.getSelection().getOperator().getSubSelections().at(0).getType());
 		CPPUNIT_ASSERT_EQUAL(2, definition.getSelection().getOperator().getSubSelections().at(0).getElements().size());
 		
 		const ina::query_model::SelectionElement selectionElement = definition.getSelection().getOperator() .getSubSelections().at(0);
