@@ -1,5 +1,6 @@
 #pragma once
 
+#include "calculator/cube.h"
 #include <utility>   // For std::pair
 
 namespace ina::query_model { class Query; class Dimension;};
@@ -11,10 +12,14 @@ namespace ina::grid
 	class Cells
 	{
 		public:
-		Cells() = default;
+		Cells(const calculator::Body& body);
 		void init(const Grid& grid);
+		
+		const calculator::Body&   getCubeBody() const;
 	
-		// Row first / Col second
+		size_t      getTotalRowCount() const;
+		size_t      getTotalColumnCount() const;
+
 		size_t      getRowCount() const;
 		size_t      getColumnCount() const;
 
@@ -24,6 +29,8 @@ namespace ina::grid
 		size_t   getRowTo() const;
 
 	private:
+		const calculator::Body&        m_body;
+
 		// Row first/Column second
 		size_t    m_RowCount = 0;
 		size_t    m_ColumnCount = 0;

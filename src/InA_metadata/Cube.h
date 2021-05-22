@@ -20,6 +20,7 @@ namespace ina::metadata
 		public:
 		Cube(const ina::query_model::DataSource& datasource);
 
+		const Dimension&  getDimension(const std::string& name) const;
 		const std::vector<std::unique_ptr<Dimension>>&  getDimensions() const;
 
 		bool containsAttributes(const std::string& attributeName) const;

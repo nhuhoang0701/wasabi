@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <iostream>
+#include <stdexcept>
 
 
 namespace ina::metadata
@@ -57,8 +58,8 @@ namespace ina::metadata
             m_dimensions.push_back(std::move(dim));
         }*/
         {
-            std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("Mth", "Month number");
-            dim->addKeyAttribute(Attribute(*dim, dim->getName(), dim->getDescription(), eAttrType::Key));
+            std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("Mth_dim", "Month dim");
+            dim->addKeyAttribute(Attribute(*dim, "Mth", "Month number", eAttrType::Key));
             dim->addTextAttribute(Attribute(*dim, "Month_name", "Month name", eAttrType::Text));
             m_dimensions.push_back(std::move(dim));
         }
@@ -73,12 +74,26 @@ namespace ina::metadata
             m_dimensions.push_back(std::move(dim));
         }
 
-        std::unique_ptr<Dimension> measuresDim = std::make_unique<DimensionMeasures>("CustomDimension1", "Measures", eAxe::Columns);
-        measuresDim->addMember(Member(*measuresDim, "Sales_revenue", "Sales revenue", "Sales revenue"));
-        measuresDim->addMember(Member(*measuresDim, "Quantity_sold", "Quantity sold", "Quantity sold"));
-        measuresDim->addMember(Member(*measuresDim, "Margin", "Margin Name", "Margin Name"));
-        m_dimensions.push_back(std::move(measuresDim));
+        {
+            std::unique_ptr<Dimension> measuresDim = std::make_unique<DimensionMeasures>("CustomDimension1", "Measures", eAxe::Columns);            
+            measuresDim->addKeyAttribute(Attribute(*measuresDim, "[Measures].[Measures]", "[Measures].[Measures]", eAttrType::Key));
+            measuresDim->addTextAttribute(Attribute(*measuresDim, "[Measures].[Name]", "[Measures].[Name]", eAttrType::Text));
+
+            measuresDim->addMember(Member(*measuresDim, "Sales_revenue", "Sales revenue", "Sales revenue"));
+            measuresDim->addMember(Member(*measuresDim, "Quantity_sold", "Quantity sold", "Quantity sold"));
+            measuresDim->addMember(Member(*measuresDim, "Margin", "Margin Name", "Margin Name"));
+            m_dimensions.push_back(std::move(measuresDim));
+        }
 	 }
+
+     const Dimension&  Cube::getDimension(const std::string& name) const
+     {
+         for(const auto& dimension : m_dimensions)
+            if(dimension->getName() == name)
+                return *dimension;
+         
+         throw std::runtime_error("Cube::getDimension : dimension not found: " + name);
+     }
 
      const std::vector<std::unique_ptr<Dimension>>&  Cube::getDimensions() const
      {

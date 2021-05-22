@@ -45,9 +45,8 @@ int main()
 	}
 
 	{
-		std::string request = R"({"Name":"dimName","Axis":"Rows","Attributes":[{"Name":"ATTR0"}, {"Name":"ATTR1"}]})";
 		ina::query_model::Dimension dimension;
-		read(dimension, reader.parse(request));
+		read(dimension, reader.parse(R"({"Name":"dimName","Axis":"Rows","Attributes":[{"Name":"ATTR0"}, {"Name":"ATTR1"}]})"));
 
 		CPPUNIT_ASSERT_EQUAL(2, dimension.getAttributes().size());
 		CPPUNIT_ASSERT_EQUAL_STR("ATTR0", dimension.getAttributes().at(0).getName().c_str());
@@ -170,9 +169,8 @@ int main()
 		CPPUNIT_ASSERT_EQUAL(3.8, std::get<double>(eval(nullptr, fct, nullptr)));
 	}
 	{
-		std::string request = R"({"ResultSetFeatureRequest":{"SubSetDescription":{"RowFrom":1,"RowTo":2,"ColumnFrom":3,"ColumnTo":4}}})";
 		ina::query_model::Definition definition;
-		read(definition, reader.parse(request));
+		read(definition, reader.parse( R"({"ResultSetFeatureRequest":{"SubSetDescription":{"RowFrom":1,"RowTo":2,"ColumnFrom":3,"ColumnTo":4}}})"));
 		CPPUNIT_ASSERT_EQUAL(3, definition.getResultSetFeat().getSubSetDescription().m_ColumnFrom);
 		CPPUNIT_ASSERT_EQUAL(4, definition.getResultSetFeat().getSubSetDescription().m_ColumnTo);
 		CPPUNIT_ASSERT_EQUAL(1, definition.getResultSetFeat().getSubSetDescription().m_RowFrom);

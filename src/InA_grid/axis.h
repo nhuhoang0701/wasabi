@@ -21,7 +21,8 @@ namespace ina::grid
 		const std::vector<const ina::query_model::Dimension*>& getDimensions() const {return m_dimensions;};
 		void  addDimension(const ina::query_model::Dimension& dim, const ina::query_model::Query& query);
 
-		std::size_t                                            getTupleCount() const {return m_tupleCount;};
+		std::size_t                                            getTupleCount() const {return m_to-m_from;};
+		std::size_t                                            getTupleTotalCount() const {return m_tupleCount;};
 		
 		void     setFromTo(int32_t from, int32_t to);
 		size_t   getFrom() const;
