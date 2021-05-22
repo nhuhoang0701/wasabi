@@ -39,6 +39,8 @@ namespace ina::query_model
 
 			const std::vector<Member>&    getMembers() const;
 
+			bool                          haveAttribute(const std::string& name) const;
+			const Attribute&              getAttribute(const std::string& name) const;
 			const std::vector<Attribute>& getAttributes() const;
 		
 		//private:

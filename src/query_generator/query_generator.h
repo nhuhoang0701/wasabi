@@ -11,7 +11,7 @@ namespace query_generator
 	class query_generator
 	{
 	public:
-		query_generator(const ina::query_model::Query& query) : m_query(query) {};
+		query_generator(const ina::query_model::Query& query);
 
 		void prepareStorage(calculator::DataStorage& cube) const;
 
