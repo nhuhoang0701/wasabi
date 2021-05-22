@@ -107,12 +107,5 @@ namespace ina::metadata
     DimensionMeasures::DimensionMeasures(const std::string& name, const std::string& description, eAxe defaultAxe)
     : Dimension(name, description, defaultAxe)
     {
-        m_attributes.clear();
-
-        m_keyAttributes = 0; 
-        m_attributes.push_back(Attribute(*this, "[Measures].[Measures]", "[Measures].[Measures]", eAttrType::Key));
-
-        m_textAttributes = 1; 
-        m_attributes.push_back(Attribute(*this, "[Measures].[Name]", "[Measures].[Name]", eAttrType::Text));
-   }
+    }
 }

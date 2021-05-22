@@ -13,7 +13,7 @@ namespace ina::grid
 	void    writeAxe(JSONWriter& writer, const Axis& axis);
 	void    writeDimensions(JSONWriter& writer, const Axis& axis);
 	void    writeTuples(JSONWriter& writer, const Axis& axis);
-	void    writeCells(const Grid& grid, JSONWriter& writer);
+	void    writeCells(JSONWriter& writer, const Cells& cells);
 
     void write(const ina::grid::Grid& grid, JSONWriter& writer)
     {
@@ -35,7 +35,7 @@ namespace ina::grid
                 writeAxe(writer, grid.m_colAxe);
             }
 
-            writeCells(grid, writer);
+            writeCells(writer, grid.getCells());
 
             writer.pair("ResultSetState", 0u);
             writer.pair("HasErrors", false);
@@ -73,57 +73,44 @@ namespace ina::grid
             {
                 writer.key("Attributes");
                 JSON_LIST(writer);
-                if(axis.getMeasureDimension() != dim )
+                size_t idxAttr = 0; // TODO: Remove it use isKey from ina::metadata::Attribut
                 {
-                    JSON_MAP(writer);
-                    writer.pair("Name", dim->getName());
-                    writer.key("Values");
-                    {
-                        JSON_LIST(writer);
-                        const auto& dimension = axis.getCubeAxis().getDimension(dim->getName());
-                        for(size_t valueIdx = 0; valueIdx < dimension.getNumberOfValues(); valueIdx++)
-                        {
-                            const auto& data = dimension.getValueAtValueIdx(valueIdx);
-                            switch (dimension.getDataType())
-                            {
-                            case calculator::eDataType::String:
-                            {
-                                writer.value(std::get<std::string>(data));
-                                break;
-                            }
-                            case calculator::eDataType::Number:
-                            {
-                                writer.value(std::get<double>(data));
-                                break;
-                            }
-                            default:
-                                throw std::runtime_error("InA_Interpreter => Unsupported datatype.");
-                            }
-                        }
-                    }
-                }
-                else			
-                {
+                    for(const auto& attribut : dim->getAttributes())
                     {
                         JSON_MAP(writer);
-                        writer.pair("Name", "[Measures].[Name]");
-                        writer.pair("IsKey", false);
+                        writer.pair("Name", attribut.getName());
+                        //writer.pair("Obtainability", attribut.getObtainability());
+                        writer.pair("IsKey", idxAttr==0);
                         writer.key("Values");
+                        if(axis.getMeasureDimension() == dim )
                         {
                             JSON_LIST(writer);
                             for(const auto& member : axis.getMeasureDimMembers())
                                 writer.value(ina::query_model::Member::getName(member));
                         }
-                    }
-                    {
-                        JSON_MAP(writer);
-                        writer.pair("Name", "[Measures].[Measures]");
-                        writer.pair("IsKey", true);
-                        writer.key("Values");
+                        else
                         {
                             JSON_LIST(writer);
-                            for(const auto& member : axis.getMeasureDimMembers())
-                                writer.value(ina::query_model::Member::getName(member));
+                            const auto& dimension = axis.getCubeAxis().getDimension(attribut.getName());
+                            for(size_t valueIdx = 0; valueIdx < dimension.getNumberOfValues(); valueIdx++)
+                            {
+                                const auto& data = dimension.getValueAtValueIdx(valueIdx);
+                                switch (dimension.getDataType())
+                                {
+                                case calculator::eDataType::String:
+                                {
+                                    writer.value(std::get<std::string>(data));
+                                    break;
+                                }
+                                case calculator::eDataType::Number:
+                                {
+                                    writer.value(std::get<double>(data));
+                                    break;
+                                }
+                                default:
+                                    throw std::runtime_error("InA_Interpreter => Unsupported datatype.");
+                                }
+                            }
                         }
                     }
                 }
@@ -136,8 +123,8 @@ namespace ina::grid
     {
         //std::cout << "**************************************\n";
         //std::cout << "writeTuples\n";
-        writer.pair("TupleCount", static_cast<uint32_t>(axis.getTo()-axis.getFrom()));
-        writer.pair("TupleCountTotal", static_cast<uint32_t>(axis.getTupleCount()));
+        writer.pair("TupleCount", static_cast<uint32_t>(axis.getTupleCount()));
+        writer.pair("TupleCountTotal", static_cast<uint32_t>(axis.getTupleTotalCount()));
         writer.key("Tuples");
         {
             JSON_LIST(writer);
@@ -175,7 +162,8 @@ namespace ina::grid
                                     //std::cout << "axis.getCubeAxis().getCardinality(): " << axis.getCubeAxis().getCardinality() << "\n";
                                     for (size_t tupleIndex = axis.getFrom()/memberDiv; tupleIndex < axis.getTo()/memberDiv; tupleIndex++)
                                     {
-                                        const auto idx = static_cast<uint32_t>(axis.getCubeAxis().getValueIndex(dimension->getName(), tupleIndex));
+                                        //TODO:  What should be the semantic of : dimension->getAttributes().at(0)!????
+                                        const auto idx = static_cast<uint32_t>(axis.getCubeAxis().getValueIndex(dimension->getAttributes().at(0).getName(), tupleIndex));
                                         if(axis.getMeasureDimension() != nullptr)
                                         {
                                             for(size_t i = 0; i < members.size(); i++)
@@ -193,24 +181,17 @@ namespace ina::grid
         }
     }
 
-    void writeCells(const Grid& grid, JSONWriter& writer)
+    void writeCells(JSONWriter& writer, const Cells& cells)
     {
-        //TODO: Only measure on column is implemented
-        if(grid.getRowAxis().getMeasureDimension() != nullptr)
-            throw std::runtime_error("Measure on rows is not yet implemented");
-            
-        const size_t nbOfMembers = grid.getColAxis().getMeasureDimMembers().size();
-        if(grid.getCube().getBody().size() != grid.getColAxis().getMeasureDimMembers().size())
-            throw std::runtime_error("Invalid state: Body size and members numbers should be the same");
-
         writer.key("CellArraySizes");
         {
             JSON_LIST(writer);
-            writer.value(static_cast<uint32_t>(grid.getCells().getRowTo()-grid.getCells().getRowFrom()));
-            writer.value(static_cast<uint32_t>(grid.getCells().getColumnTo()-grid.getCells().getColumnFrom()));
+            writer.value(static_cast<uint32_t>(cells.getRowCount()));
+            writer.value(static_cast<uint32_t>(cells.getColumnCount()));
         }
         writer.key("Cells");
         {
+            size_t nbOfMembers = cells.getCubeBody().size();
             JSON_MAP(writer);
             writer.key("Values");
             {
@@ -219,13 +200,13 @@ namespace ina::grid
                 writer.key("Values");
                 {
                     JSON_LIST(writer);	
-                    for(size_t rowIndex = grid.getCells().getRowFrom(); rowIndex < grid.getCells().getRowTo(); rowIndex++)
+                    for(size_t rowIndex = cells.getRowFrom(); rowIndex < cells.getRowTo(); rowIndex++)
                     {
-                        for(size_t colIndex = grid.getCells().getColumnFrom()/nbOfMembers; colIndex < grid.getCells().getColumnTo()/nbOfMembers; colIndex++)
+                        for(size_t colIndex = cells.getColumnFrom()/nbOfMembers; colIndex < cells.getColumnTo()/nbOfMembers; colIndex++)
                         {
-                            for(const auto& measure : grid.getCube().getBody())
+                            for(const auto& measure : cells.getCubeBody())
                             {
-                                const auto& data = grid.getCube().getBody().getValue(measure.getName(), colIndex, rowIndex);
+                                const auto& data = cells.getCubeBody().getValue(measure.getName(), colIndex, rowIndex);
                                 switch (measure.getDataType())
                                 {
                                 case calculator::eDataType::String:
@@ -255,13 +236,13 @@ namespace ina::grid
                 writer.key("Values");
                 {
                     JSON_LIST(writer);	
-                    for(size_t rowIndex = grid.getCells().getRowFrom(); rowIndex < grid.getCells().getRowTo(); rowIndex++)
+                    for(size_t rowIndex = cells.getRowFrom(); rowIndex < cells.getRowTo(); rowIndex++)
                     {
-                        for(size_t colIndex = grid.getCells().getColumnFrom()/nbOfMembers; colIndex < grid.getCells().getColumnTo()/nbOfMembers; colIndex++)
+                        for(size_t colIndex = cells.getColumnFrom()/nbOfMembers; colIndex < cells.getColumnTo()/nbOfMembers; colIndex++)
                         {
-                            for(const auto& measure : grid.getCube().getBody())
+                            for(const auto& measure : cells.getCubeBody())
                             {
-                                const auto& data = grid.getCube().getBody().getValue(measure.getName(), colIndex, rowIndex);
+                                const auto& data = cells.getCubeBody().getValue(measure.getName(), colIndex, rowIndex);
                                 switch (measure.getDataType())
                                 {
                                 case calculator::eDataType::String:
@@ -289,11 +270,11 @@ namespace ina::grid
                 writer.key("Values");
                 {
                     JSON_LIST(writer);	
-                    for(size_t rowIndex = grid.getCells().getRowFrom(); rowIndex < grid.getCells().getRowTo(); rowIndex++)
+                    for(size_t rowIndex = cells.getRowFrom(); rowIndex < cells.getRowTo(); rowIndex++)
                     {
-                        for(size_t colIndex = grid.getCells().getColumnFrom()/nbOfMembers; colIndex < grid.getCells().getColumnTo()/nbOfMembers; colIndex++)
+                        for(size_t colIndex = cells.getColumnFrom()/nbOfMembers; colIndex < cells.getColumnTo()/nbOfMembers; colIndex++)
                         {
-                            for(const auto& measure : grid.getCube().getBody())
+                            for(const auto& measure : cells.getCubeBody())
                             {
                                 switch (measure.getDataType())
                                 {

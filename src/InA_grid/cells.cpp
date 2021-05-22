@@ -8,6 +8,11 @@
 
 namespace ina::grid
 {
+    Cells::Cells(const calculator::Body& body)
+    : m_body(body)
+    {
+    }
+
     void Cells::init(const Grid& grid)
     {
         m_RowCount = grid.getCube().getBody().getRowCount();
@@ -44,13 +49,28 @@ namespace ina::grid
             m_RowTo = std::min<size_t>(val, m_RowCount);
     }
 
-    size_t Cells::getRowCount() const
+    
+	const calculator::Body& Cells::getCubeBody() const
+    {
+        return m_body;
+    }
+
+    size_t Cells::getTotalRowCount() const
     {
         return m_RowCount;
     }
-    size_t Cells::getColumnCount() const
+    size_t Cells::getTotalColumnCount() const
     {
         return m_ColumnCount;
+    }
+
+    size_t Cells::getRowCount() const
+    {
+        return m_RowTo-m_RowFrom;
+    }
+    size_t Cells::getColumnCount() const
+    {
+        return m_ColumnTo-m_ColumnFrom;
     }
     
     size_t Cells::getColumnFrom() const
