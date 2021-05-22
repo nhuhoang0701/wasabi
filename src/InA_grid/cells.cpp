@@ -37,7 +37,7 @@ namespace ina::grid
         else
             m_RowFrom = std::min<size_t>(val, m_RowCount);
 
-        val = grid.getQuery().getDefinition().getResultSetFeat().getSubSetDescription().m_ColumnTo;
+        val = grid.getQuery().getDefinition().getResultSetFeat().getSubSetDescription().m_RowTo;
         if(val<0)
             m_RowTo = m_RowCount;
         else
