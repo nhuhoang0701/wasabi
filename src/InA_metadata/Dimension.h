@@ -39,6 +39,8 @@ namespace ina::metadata
 			virtual bool                 isModeled() const {return true;};
 			virtual bool                 canBeAggregated() const {return true;};
 
+			void                          addKeyAttribute(const Attribute &att);
+			void                          addTextAttribute(const Attribute &att);
 			void                          addAttribute(const Attribute &att);
 			const std::vector<Attribute>& getAttributes() const;
 			const Attribute&              getKeyAttribute() const;

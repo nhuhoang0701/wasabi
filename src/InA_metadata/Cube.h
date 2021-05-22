@@ -22,6 +22,8 @@ namespace ina::metadata
 
 		const std::vector<std::unique_ptr<Dimension>>&  getDimensions() const;
 
+		bool containsAttributes(const std::string& attributeName) const;
+
 		private:
 		const ina::query_model::DataSource&     m_datasource;
 		std::vector<std::unique_ptr<Dimension>> m_dimensions;
