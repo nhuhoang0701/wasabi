@@ -18,8 +18,8 @@ namespace ina::metadata
             throw std::runtime_error("eDatatype unknow value");
         }
     }
-    Attribute::Attribute(const Dimension& dimension, const std::string name, const std::string& description)
-        : m_dimension(&dimension),m_name(name), m_description(description)
+    Attribute::Attribute(const Dimension& dimension, const std::string name, const std::string& description, eAttrType type)
+        : m_dimension(&dimension),m_name(name), m_description(description), m_type(type)
     {
     }
 
@@ -28,12 +28,14 @@ namespace ina::metadata
         m_dimension = other.m_dimension;
         m_name = other.m_name;
         m_description = other.m_description;
+        m_type = other.m_type;
     }
 	Attribute& Attribute::operator=(const Attribute& other)
     {
         m_dimension = other.m_dimension;
         m_name = other.m_name;
         m_description = other.m_description;
+        m_type = other.m_type;
 
         return *this;
     }
@@ -105,10 +107,7 @@ namespace ina::metadata
 
     bool  Attribute::isKey() const
     {
-        if(m_name=="[Measures].[Name]" || m_name=="[Measures].[Description]")
-            return false;
-        
-        return true;
+        return m_type==eAttrType::Key;
     }
     const std::string    Attribute::getPresentationType() const
     {
