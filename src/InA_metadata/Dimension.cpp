@@ -21,9 +21,6 @@ namespace ina::metadata
     Dimension::Dimension(const std::string& name, const std::string& description, eAxe defaultAxe)
         : m_name(name), m_description(description), m_defaultaxe(defaultAxe)
     {
-        m_keyAttributes = 0;
-        m_attributes.clear();
-        m_attributes.push_back(Attribute(*this, name, description));
     }
 
     const std::string&  Dimension::getName() const
@@ -50,6 +47,31 @@ namespace ina::metadata
         val+=" (D.)";
         #endif
         return val;
+    }
+
+    void Dimension::addKeyAttribute(const Attribute &att)
+    {
+        if(m_keyAttributes != -1)
+            throw std::runtime_error("Dimension::addKeyAttribute key attribut already exist");
+
+        m_keyAttributes = m_attributes.size();
+        addAttribute(att);
+    }
+
+    void Dimension::addTextAttribute(const Attribute &att)
+    {
+        if(m_textAttributes != -1)
+            throw std::runtime_error("Dimension::addTextAttribute text attribut already exist");
+
+        m_textAttributes = m_attributes.size();
+        addAttribute(att);
+    }
+
+    void Dimension::addAttribute(const Attribute &att)
+    {
+        if(&att.getDimension() != this)
+            throw std::runtime_error("Dimension::addAttribute attribut is not onw by this dimension");
+        m_attributes.push_back(att);
     }
 
     const std::vector<Attribute>& Dimension::getAttributes() const
@@ -88,9 +110,9 @@ namespace ina::metadata
         m_attributes.clear();
 
         m_keyAttributes = 0; 
-        m_attributes.push_back(Attribute(*this, "[Measures].[Measures]", "[Measures].[Measures]"));
+        m_attributes.push_back(Attribute(*this, "[Measures].[Measures]", "[Measures].[Measures]", eAttrType::Key));
 
         m_textAttributes = 1; 
-        m_attributes.push_back(Attribute(*this, "[Measures].[Name]", "[Measures].[Name]"));
+        m_attributes.push_back(Attribute(*this, "[Measures].[Name]", "[Measures].[Name]", eAttrType::Text));
    }
 }
