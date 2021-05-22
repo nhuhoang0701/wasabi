@@ -60,7 +60,7 @@ namespace ina::query_model
 		
 		DataSource m_ds;
 
-		void traverse(std::vector<Element>& filters, const SelectionElement& selectionElement) const;
+		static void traverse(std::vector<Element>& filters, const SelectionElement& selectionElement);
 		
 		friend void read(Definition & obj, const JSONGenericObject& jsonNode);
 	};

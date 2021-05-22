@@ -157,11 +157,15 @@ void getDataCube(const ina::query_model::Query& query, const ina::metadata::Cube
 	{
 		if(!ina::query_model::Dimension::isDimensionOfMeasures(dimension) )
 		{
+			calculator::eAxe axe;
 			if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Rows)
-				cube.addDim(calculator::eAxe::Row, dimension.getName());
+				axe = calculator::eAxe::Row;
 			else if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Columns)
-				cube.addDim(calculator::eAxe::Column, dimension.getName());
+				axe = calculator::eAxe::Column;
 			else throw std::runtime_error("Unknow axis type");
+			
+			for(const auto& attribut : dimension.getAttributes())
+				cube.addDim(axe, attribut.getName());
 		}
 		else
 		{

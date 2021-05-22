@@ -16,7 +16,8 @@ namespace ina::grid
     Grid::Grid(const ina::query_model::Query& query, const ina::metadata::Cube& dsCube, const calculator::Cube& cube)
     : m_query(query), m_cube(cube),
       m_rowAxe("ROWS", cube.getAxe(calculator::eAxe::Row)), 
-      m_colAxe("COLUMNS", cube.getAxe(calculator::eAxe::Column))
+      m_colAxe("COLUMNS", cube.getAxe(calculator::eAxe::Column)),
+      m_cells(cube.getBody())
     {
         for (const auto& dimension : query.getDefinition().getDimensions()) 
         {
@@ -30,11 +31,11 @@ namespace ina::grid
         m_colAxe.init(getQuery());
         m_cells.init(*this);
 
-        if(!m_rowAxe.getMeasureDimMembers().empty() && m_cells.getRowCount() != m_rowAxe.getTupleCount() )
+        if(!m_rowAxe.getMeasureDimMembers().empty() && m_cells.getTotalRowCount() != m_rowAxe.getTupleTotalCount() )
         {
             throw std::runtime_error("Cells and row Axis have different size");
         }
-        if(!m_colAxe.getMeasureDimMembers().empty() &&  m_cells.getColumnCount() !=  m_colAxe.getTupleCount())
+        if(!m_colAxe.getMeasureDimMembers().empty() &&  m_cells.getTotalColumnCount() !=  m_colAxe.getTupleTotalCount())
         {
             throw std::runtime_error("Cells and col Axis have differnet size");
         }
@@ -43,6 +44,13 @@ namespace ina::grid
                             m_query.getDefinition().getResultSetFeat().getSubSetDescription().m_RowTo);
         m_colAxe.setFromTo( m_query.getDefinition().getResultSetFeat().getSubSetDescription().m_ColumnFrom,
                             m_query.getDefinition().getResultSetFeat().getSubSetDescription().m_ColumnTo);
+
+        //TODO: Only measure on column is implemented
+        if(getRowAxis().getMeasureDimension() != nullptr)
+            throw std::runtime_error("Measure on rows is not yet implemented");
+            
+        if(getCells().getCubeBody().size() != getColAxis().getMeasureDimMembers().size())
+            throw std::runtime_error("Invalid state: Body size and members numbers should be the same");
     }
 
     size_t Grid::getColumnFrom() const

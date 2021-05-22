@@ -30,6 +30,22 @@ namespace ina::query_model
 		_members.push_back(member);
 	}
 
+	const Attribute& Dimension::getAttribute(const std::string& name) const
+	{
+         for(const auto& attribut  : _attributes)
+            if(attribut.getName() == name)
+                return attribut;
+         
+         throw std::runtime_error("Dimension::getAttribute : attribut not found: " + name);
+	}
+	bool Dimension::haveAttribute(const std::string& name) const
+	{
+         for(const auto& attribut  : _attributes)
+            if(attribut.getName() == name)
+                return true;
+         
+         return false;
+	}
 	const std::vector<Attribute>& Dimension::getAttributes()  const 
 	{
 		return _attributes;

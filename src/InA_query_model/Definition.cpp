@@ -37,7 +37,7 @@ namespace ina::query_model
 		return m_sorts;
 	}
 
-    void Definition::traverse(std::vector<Element>& filters, const SelectionElement& selectionElement) const
+    void Definition::traverse(std::vector<Element>& filters, const SelectionElement& selectionElement)
     {
         if (selectionElement.getType() == SelectionElement::Type::Operator) 
         {
@@ -60,7 +60,7 @@ namespace ina::query_model
     const std::vector<Member> Definition::getVisibleMembers(const Dimension& dimension) const 
     {
         std::vector<Element> filters;
-        traverse(filters, m_selection.getOperator());
+        Definition::traverse(filters, m_selection.getOperator());
         if (!filters.empty())
         {
             std::vector<Member> visibleMembers;
@@ -89,13 +89,10 @@ namespace ina::query_model
                         if (filter.getComparisonOperator() == Element::ComparisonOperator::EqualTo )
                         {
                             if(filter.getLowValue() == ina::query_model::Member::getName(member))
-                            {
                                 visibleMembers.push_back(member);
-                            }
-                            //TODO:
-                            else if(member.getFormula() != nullptr)
-                                continue;
                         }
+                        else
+                            throw std::runtime_error("Only EqualTo operator implemented for member selection");
                     }
                 }
             }

@@ -9,6 +9,7 @@
 #include <sstream>
 #include <iostream>
 #include <stdexcept>
+#include <utility>
 
 #include "InA_query_model/Selection/Element.h"
 #include "InA_query_model/Selection/SelectionElement.h"
@@ -16,12 +17,17 @@
 
 namespace query_generator
 {
+	query_generator::query_generator(const ina::query_model::Query& query)
+	 : m_query(query)
+	{
+	}
+
     std::string query_generator::getSQL(const calculator::DataStorage& data) const
     {
 		std::vector<std::string> selected;
 		std::ostringstream where;
         std::vector<std::string> group_by;
-		std::vector<std::string> order_by;
+		std::vector<std::pair<std::string /*name*/,std::string/*order*/>> order_by;
 
 		size_t idxInData = 0;
         for (const auto& dimension : m_query.getDefinition().getDimensions())
@@ -58,11 +64,13 @@ namespace query_generator
 			}
 			else
 			{
-				selected.push_back(dimension.getName());
+				for(const auto& attribut : dimension.getAttributes())
+					selected.push_back(attribut.getName());
 				
 				// Integrity check beetwen query and data storage columns
+				for(const auto& attribut : dimension.getAttributes())
 				{
-					if(data.getColIndex(dimension.getName()) != idxInData)
+					if(data.getColIndex(attribut.getName()) != idxInData)
 						throw std::runtime_error("Missmatch col. index in data with query");
 					idxInData++;
 				}
@@ -76,7 +84,8 @@ namespace query_generator
 			{
 				if( ! ina::query_model::Dimension::isDimensionOfMeasures(dimension))
 				{
-					group_by.push_back(dimension.getName());
+					for(const auto& attribut : dimension.getAttributes())
+						group_by.push_back(attribut.getName());
 				}
 			}
 			const auto& selectionOperator = m_query.getDefinition().getSelection().getOperator();
@@ -90,7 +99,24 @@ namespace query_generator
 					// case of MemberSort, TODO: in the Grid
 					if (ina::query_model::Dimension::DIMENSION_OF_MEASURES_NAME != querySort.getObjectName())
 					{
-						order_by.push_back(generateSQL(querySort));
+						std::string sortSQL;
+						if (querySort.getDirection() == ina::query_model::QuerySort::Direction::Ascending)
+							sortSQL = "ASC";
+						else if (querySort.getDirection() == ina::query_model::QuerySort::Direction::Descending)
+							sortSQL = "DESC";
+
+						std::string name = querySort.getObjectName();
+						for(const auto& dim : m_query.getDefinition().getDimensions())
+						{
+							if(dim.getName() == name)
+							{
+								//TODO: Should sort on the good attribut, not all
+								for(const auto& attribut : dim.getAttributes())
+								{
+									order_by.push_back(std::make_pair(attribut.getName(), sortSQL));
+								}
+							}
+						}
 					}
 					else
 					{
@@ -131,7 +157,9 @@ namespace query_generator
 				delim.clear();
 				for(const auto& s : order_by)
 				{
-					sql << delim << s;
+					sql << delim << s.first;
+					if(s.second.empty() == false)
+						sql  << " " << s.second;
 					if(delim.empty()) delim = ", ";
 				}
 			}
@@ -207,12 +235,14 @@ namespace query_generator
 				{
 				case ina::query_model::Dimension::eAxe::Rows:
 				{
-					data.addColumn(dimension.getName(),calculator::eDataType::String, calculator::eColumnType::Indexed);
+					for(const auto& attribut : dimension.getAttributes())
+						data.addColumn(attribut.getName(),calculator::eDataType::String, calculator::eColumnType::Indexed);
 					break;
 				}
 				case ina::query_model::Dimension::eAxe::Columns:
 				{
-					data.addColumn(dimension.getName(),calculator::eDataType::String, calculator::eColumnType::Indexed);
+					for(const auto& attribut : dimension.getAttributes())
+						data.addColumn(attribut.getName(),calculator::eDataType::String, calculator::eColumnType::Indexed);
 					break;
 				}
 				default:

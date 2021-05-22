@@ -42,8 +42,10 @@ namespace ina::metadata
 			void                          addKeyAttribute(const Attribute &att);
 			void                          addTextAttribute(const Attribute &att);
 			void                          addAttribute(const Attribute &att);
+			
 			const std::vector<Attribute>& getAttributes() const;
 			const Attribute&              getKeyAttribute() const;
+
 			bool                          haveTextAttribute() const;
 			const Attribute&              getTextAttribute() const;
 

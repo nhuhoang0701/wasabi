@@ -37,9 +37,13 @@ int main()
 		queryInA.setDataSource(ds);
 		
 		ina::query_model::Definition definition;
-		definition.addDimension(ina::query_model::Dimension("dim_A", ina::query_model::Dimension::eAxe::Rows));
 		
-		definition.addDimension(ina::query_model::Dimension("dim_B", ina::query_model::Dimension::eAxe::Rows));
+		ina::query_model::Dimension dim_A;
+		read(dim_A, reader.parse(R"({"Name":"dim_A","Axis":"Rows","Attributes":[{"Name":"dim_A"}]})"));
+		definition.addDimension(dim_A);
+		ina::query_model::Dimension dim_B;
+		read(dim_B, reader.parse(R"({"Name":"dim_B","Axis":"Rows","Attributes":[{"Name":"dim_B"}]})"));
+		definition.addDimension(dim_B);
 		
 		ina::query_model::Dimension dimensionMeasure(ina::query_model::Dimension::DIMENSION_OF_MEASURES_NAME, ina::query_model::Dimension::eAxe::Rows);
 		ina::query_model::Member member1;
@@ -104,7 +108,7 @@ int main()
 		ina::query_model::Query queryInA;
 		queryInA.setDataSource(ds);
 
-		std::string request = R"({"Dimensions":[{"Name":"Yr","Axis":"Rows"},{"Name":"Month_name","Axis":"Rows"},{"Name":"CustomDimension1","Axis":"Columns","Members":[{"Description":"Measure 1","Name":"Sales_revenue", "Aggregation":"SUM"}]}]})";
+		std::string request = R"({"Dimensions":[{"Name":"Yr","Axis":"Rows","Attributes":[{"Name": "Yr"}]},{"Name":"Month_name","Axis":"Rows","Attributes":[{"Name": "Month_name"}]},{"Name":"CustomDimension1","Axis":"Columns","Members":[{"Description":"Measure 1","Name":"Sales_revenue", "Aggregation":"SUM"}]}]})";
 		ina::query_model::Definition definition;
 		read(definition, reader.parse(request));
 		std::cout << "Dimension size " << definition.getDimensions().size() << std::endl;
