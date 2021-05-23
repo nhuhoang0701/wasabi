@@ -172,15 +172,22 @@ void getDataCube(const ina::query_model::Query& query, const ina::metadata::Cube
 			// Add Measures
 			for(const auto member : query.getDefinition().getVisibleMembers(dimension))
 			{
-				if(member.getFormula() == nullptr)
+				if(member.getFormula() == nullptr && member.getSelection() ==nullptr)
 					cube.addMeasure(ina::query_model::Member::getName(member));
 			}
-			// Add fomrula
+			// Add formula
 			for(const auto member : query.getDefinition().getVisibleMembers(dimension))
 			{
 				auto formula = calculator::Object(member.getName());
 				if(member.getFormula() != nullptr && !cube.contain(formula))
 					cube.addFormula(formula, *member.getFormula());
+			}
+			// Add restriction
+			for(const auto member : query.getDefinition().getVisibleMembers(dimension))
+			{
+				auto restriction = calculator::Object(member.getName());
+				if(member.getSelection() != nullptr && !cube.contain(restriction))
+					cube.addRestriction(restriction, *member.getSelection());
 			}
 		}
 	}
