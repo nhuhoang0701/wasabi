@@ -14,7 +14,7 @@ add_library(query_generator query_generator.cpp ModelSQLGenerator.cpp)
 set_target_properties(query_generator PROPERTIES PUBLIC_HEADER query_generator.h)
 
 target_include_directories(query_generator PUBLIC ${WASABI_INCLUDES})
-target_link_libraries(query_generator PUBLIC exceptions InA_query_model)
+target_link_libraries(query_generator PUBLIC exceptions InA_query_model InA_metadata)
 target_link_directories(query_generator PUBLIC ${WASABI_LIBS})
 
 ################################################
