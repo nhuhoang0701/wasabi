@@ -9,30 +9,6 @@ namespace ina::query_model
 	class Element
     {
         public:
-            enum class LogicalOperator
-            {
-                And,
-                Not,
-                Or,
-                Undefined
-            };
-
-            inline static Element::LogicalOperator getLogicalOperator(const std::string& str)
-            {
-                if (str == "And") 		     return LogicalOperator::And;
-                else if (str == "Not")         return LogicalOperator::Not;
-                else if (str == "Or")        return LogicalOperator::Or;
-                else                         return LogicalOperator::Undefined;
-            };
-
-            inline static std::string toString(const Element::LogicalOperator logicalOperator) 
-            {
-                if (logicalOperator == LogicalOperator::And)        return "AND";
-                else if (logicalOperator == LogicalOperator::Not)   return "NOT";
-                else if (logicalOperator == LogicalOperator::Or)    return "OR";
-                else                                                return "";
-            }
-
             enum class ComparisonOperator
             {
                 EqualTo,
