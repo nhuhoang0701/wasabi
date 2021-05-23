@@ -17,7 +17,7 @@ namespace ina::grid
     : m_query(query), m_cube(cube),
       m_rowAxe("ROWS", cube.getAxe(calculator::eAxe::Row)), 
       m_colAxe("COLUMNS", cube.getAxe(calculator::eAxe::Column)),
-      m_cells(cube.getBody())
+      m_cells(m_rowAxe, m_colAxe, cube.getBody())
     {
         for (const auto& dimension : query.getDefinition().getDimensions()) 
         {
@@ -44,13 +44,6 @@ namespace ina::grid
                             m_query.getDefinition().getResultSetFeat().getSubSetDescription().m_RowTo);
         m_colAxe.setFromTo( m_query.getDefinition().getResultSetFeat().getSubSetDescription().m_ColumnFrom,
                             m_query.getDefinition().getResultSetFeat().getSubSetDescription().m_ColumnTo);
-
-        //TODO: Only measure on column is implemented
-        if(getRowAxis().getMeasureDimension() != nullptr)
-            throw std::runtime_error("Measure on rows is not yet implemented");
-            
-        if(getCells().getCubeBody().size() != getColAxis().getMeasureDimMembers().size())
-            throw std::runtime_error("Invalid state: Body size and members numbers should be the same");
     }
 
     size_t Grid::getColumnFrom() const

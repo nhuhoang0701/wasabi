@@ -75,14 +75,39 @@ namespace ina::grid
                 JSON_LIST(writer);
                 size_t idxAttr = 0; // TODO: Remove it use isKey from ina::metadata::Attribut
                 {
+                    /*bool haveAlways=false;
+                    for(const auto& attribut : dim->getAttributes())
+                        if(attribut.getObtainability()=="Always")
+                            haveAlways = true;*/
                     for(const auto& attribut : dim->getAttributes())
                     {
-                        bool isKey = idxAttr++==0; // TODO: Remove it use isKey from ina::metadata::Attribut
                         JSON_MAP(writer);
                         writer.pair("Name", attribut.getName());
-                        //if(isKey && dim->getAttributes().size()>1 )
-                        //    writer.pair("Obtainability", attribut.getObtainability());
-                        //writer.pair("IsKey", isKey);
+                       /*
+                        bool isKey = idxAttr==0; // TODO: Remove it use isKey from ina::metadata::Attribut
+                        idxAttr++;
+                        std::string Obtainability = attribut.getObtainability();
+                        if(Obtainability!="Always")
+                        {
+                            if(isKey && dim->getAttributes().size()>1 )
+                            {
+                                if(attribut.getObtainability()!="UserInterface")
+                                {
+                                    std::cerr << "WASABI: Receive Obtainability!=UserInterface on key attribut: " << attribut.getName() << std::endl;
+                                }
+                                Obtainability = "UserInterface";
+                            }
+                            else if(haveAlways==false)
+                            {
+                                if(attribut.getObtainability()!="Always")
+                                {
+                                    std::cerr << "WASABI: Receive Obtainability!=Always on text attribut: " << attribut.getName() << std::endl;
+                                }
+                                Obtainability = "Always";
+                                haveAlways = true;
+                            }
+                        }
+                        writer.pair("Obtainability", Obtainability);*/
                         writer.key("Values");
                         if(axis.getMeasureDimension() == dim )
                         {
@@ -145,23 +170,17 @@ namespace ina::grid
                                 const auto& members = axis.getMeasureDimMembers();
                                 const size_t memberDiv = members.size()==0?1:members.size();
                                 //std::cout << "member.size(): " << members.size() << "\n";
-                                if(dimension == axis.getMeasureDimension() )
+                                for (size_t tupleIndex = axis.getFrom(); tupleIndex < axis.getTo(); tupleIndex++)
                                 {
-                                    for (size_t tupleIndex = axis.getFrom(); tupleIndex < axis.getTo(); tupleIndex++)
-                                    {
-                                        writer.value(static_cast<uint32_t>(tupleIndex%memberDiv));
-                                    }
-                                }
-                                else
-                                {
-                                    //std::cout << "axis.getCubeAxis().getCardinality(): " << axis.getCubeAxis().getCardinality() << "\n";
-                                    for (size_t tupleIndex = axis.getFrom(); tupleIndex < axis.getTo(); tupleIndex++)
-                                    {
+                                    uint32_t idx = -1;
+                                    if(dimension == axis.getMeasureDimension() )
+                                        idx = (tupleIndex%memberDiv);
+                                    else
                                         //TODO: dimension->getAttributes().at(0)? Certainly the Key Attributes
                                         // if yes so we should also use ina metadata Dimension here
-                                        const auto idx = static_cast<uint32_t>(axis.getCubeAxis().getValueIndex(dimension->getAttributes().at(0).getName(), tupleIndex/memberDiv));
-                                        writer.value(idx);
-                                    }
+                                        idx = static_cast<uint32_t>(axis.getCubeAxis().getValueIndex(dimension->getAttributes().at(0).getName(), tupleIndex/memberDiv));
+
+                                    writer.value(idx);
                                 }
                             }
                         }
@@ -181,7 +200,13 @@ namespace ina::grid
         }
         writer.key("Cells");
         {
-            size_t nbOfMembers = cells.getCubeBody().size();
+            size_t memberDivCol = cells.getColumnAxis().getMeasureDimMembers().size();
+            if(memberDivCol==0)
+                memberDivCol=1;
+            size_t memberDivRow = cells.getRowAxis().getMeasureDimMembers().size();
+            if(memberDivRow==0)
+                memberDivRow=1;
+            bool dimMeasureOnCol = cells.getColumnAxis().getMeasureDimension()!=nullptr;
             JSON_MAP(writer);
             writer.key("Values");
             {
@@ -194,8 +219,8 @@ namespace ina::grid
                     {
                         for(size_t colIndex = cells.getColumnFrom(); colIndex < cells.getColumnTo(); colIndex++)
                         {
-                            const auto& measure = cells.getCubeBody()[colIndex%nbOfMembers];
-                            const auto& data = cells.getCubeBody().getValue(measure.getName(), colIndex/nbOfMembers, rowIndex);
+                            const auto& measure = cells.getCubeBody()[dimMeasureOnCol?(colIndex%memberDivCol):(rowIndex%memberDivRow)];
+                            const auto& data = cells.getCubeBody().getValue(measure.getName(), colIndex/memberDivCol, rowIndex/memberDivRow);
                             switch (measure.getDataType())
                             {
                             case calculator::eDataType::String:
@@ -228,8 +253,8 @@ namespace ina::grid
                     {
                         for(size_t colIndex = cells.getColumnFrom(); colIndex < cells.getColumnTo(); colIndex++)
                         {
-                            const auto& measure = cells.getCubeBody()[colIndex%nbOfMembers];
-                            const auto& data = cells.getCubeBody().getValue(measure.getName(), colIndex/nbOfMembers, rowIndex);
+                            const auto& measure = cells.getCubeBody()[dimMeasureOnCol?(colIndex%memberDivCol):(rowIndex%memberDivRow)];
+                            const auto& data = cells.getCubeBody().getValue(measure.getName(), colIndex/memberDivCol, rowIndex/memberDivRow);
                             switch (measure.getDataType())
                             {
                             case calculator::eDataType::String:
@@ -260,7 +285,7 @@ namespace ina::grid
                     {
                         for(size_t colIndex = cells.getColumnFrom(); colIndex < cells.getColumnTo(); colIndex++)
                         {
-                            const auto& measure = cells.getCubeBody()[colIndex%nbOfMembers];
+                            const auto& measure = cells.getCubeBody()[dimMeasureOnCol?(colIndex%memberDivCol):(rowIndex%memberDivRow)];
                             switch (measure.getDataType())
                             {
                             case calculator::eDataType::String:

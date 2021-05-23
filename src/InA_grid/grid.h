@@ -26,7 +26,7 @@ namespace ina::grid
 		const calculator::Cube&        getCube() const {return m_cube;};
 
 		const Axis&        getRowAxis() const {return m_rowAxe;};
-		const Axis&        getColAxis() const {return m_colAxe;};
+		const Axis&        getColumnAxis() const {return m_colAxe;};
 
 		const Cells&       getCells() const {return m_cells;}
 

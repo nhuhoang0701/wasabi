@@ -59,12 +59,12 @@ namespace ina::metadata
             m_dimensions.push_back(std::move(dim));
         }
         {
-            std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("Wk", "Week number");
+            std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("Wk", "Week");
             dim->addKeyAttribute(Attribute(*dim, dim->getName(), dim->getDescription(), eAttrType::Key));
             m_dimensions.push_back(std::move(dim));
         }
         {
-            std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("City", "City name");
+            std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("City", "City");
             dim->addKeyAttribute(Attribute(*dim, dim->getName(), dim->getDescription(), eAttrType::Key));
             m_dimensions.push_back(std::move(dim));
         }
