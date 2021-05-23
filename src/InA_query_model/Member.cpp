@@ -46,6 +46,11 @@ namespace ina::query_model
 		return m_formula.get();
 	}
 
+	const Selection* Member::getSelection() const
+	{
+		return m_selection.get();
+	}
+
 	const MemberOperand* Member::getMemberOperand() const
 	{
 		return m_memberOperand.get();
