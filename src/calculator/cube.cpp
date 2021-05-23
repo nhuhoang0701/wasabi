@@ -1,6 +1,7 @@
 #include "cube.h"
 
 #include "InA_query_model/Function.h"
+#include "InA_query_model/Selection/Selection.h"
 #include "calculator/common.h"
 #include "storage.h"
 
@@ -38,7 +39,7 @@ namespace calculator
 
 	void Object::materialyze(const Cube& cube)
 	{
-		if(m_isFormula == false)
+		if(m_formula == nullptr && m_selection == nullptr)
 		{
 			m_dataColumn = cube.getStorage().getColumn(m_name);
 		}
@@ -47,7 +48,7 @@ namespace calculator
 	calculator::eDataType  Object::getDataType() const
 	{
 		//TODO: Need getdatatype on the AST
-		if(m_isFormula)
+		if(m_formula != nullptr || m_selection != nullptr)
 			return calculator::eDataType::Number;
 
 		if(!m_dataColumn)
@@ -310,7 +311,7 @@ namespace calculator
 		for(const auto& measure : *this)
 		{
 			auto& values = m_Body.at(measure.getName());
-			if(measure.m_isFormula)
+			if(measure.m_formula != nullptr || measure.m_selection != nullptr)
 				continue;
 
 			// Full aggreagtion on the 2 axes
@@ -380,7 +381,7 @@ namespace calculator
 		
 		for(const auto& measure : *this)
 		{
-			if(!measure.m_isFormula)
+			if(measure.m_formula == nullptr)
 				continue;
 
 			auto& values = m_Body.at(measure.getName());
@@ -509,7 +510,6 @@ namespace calculator
 		if(getStorage().haveCol(obj.getName()))
 			throw std::runtime_error("Formula: '" + obj.getName() + "' name already use in datastorage");
 
-		std:: cout << __PRETTY_FUNCTION__ << ":"  << obj.getName() << std::endl;
 		std::vector<std::string> deps;
 		ina::query_model::getDeps(formula, deps);
 		for(const auto& dep : deps)
@@ -517,11 +517,26 @@ namespace calculator
 			if(contain(dep) == false)
 				addMeasure(dep);
 		}
-		std:: cout << "*" << __PRETTY_FUNCTION__ << ":"  << obj.getName() << std::endl;
 
 		m_body.push_back(obj);
-		m_body.back().m_isFormula = true;
 		m_body.back().m_formula = &formula;
+	}
+
+	void Cube::addRestriction(const Object& obj, const ina::query_model::Selection& selection)
+	{
+		if(getStorage().haveCol(obj.getName()))
+			throw std::runtime_error("Restriction: '" + obj.getName() + "' name already use in datastorage");
+
+		std::vector<std::string> deps;
+		ina::query_model::getDeps(selection, deps);
+		for(const auto& dep : deps)
+		{
+			if(contain(dep) == false)
+				addMeasure(dep);
+		}
+
+		m_body.push_back(obj);
+		m_body.back().m_selection = &selection;
 	}
 	
 	const Axe &Cube::getAxe(eAxe axe) const

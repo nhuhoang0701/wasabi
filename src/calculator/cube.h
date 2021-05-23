@@ -1,6 +1,7 @@
 #pragma once
 
 #include <InA_query_model/Formula.h>
+#include <InA_query_model/Selection/Selection.h>
 
 #include "common.h"
 
@@ -41,8 +42,8 @@ namespace calculator
 		Value                  aggregate() const;
 		Value                  aggregate(const std::vector<size_t>& rowIndexes) const;
 
-		bool m_isFormula = false; // TMP: WIP
 		const ina::query_model::Formula* m_formula = nullptr; // TMP: WIP
+		const ina::query_model::Selection* m_selection = nullptr; // TMP: WIP
 	private:
 		std::string  m_name;
 
@@ -122,6 +123,7 @@ namespace calculator
 		void         addDim(eAxe eAxe, const Object& obj);
 		void         addMeasure(const Object& obj);
 		void         addFormula(const Object& obj, const ina::query_model::Formula& formula);
+		void         addRestriction(const Object& obj, const ina::query_model::Selection& formula);
 
 		void         materialyze();
 
