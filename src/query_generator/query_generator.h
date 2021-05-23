@@ -14,13 +14,13 @@ namespace query_generator
 	public:
 		query_generator(const ina::query_model::Query& query);
 
-		void prepareStorage(calculator::DataStorage& cube) const;
+		void prepareStorage(calculator::DataStorage& cube, const ina::metadata::Cube* dsCube) const;
 
 		std::string getSQL(const calculator::DataStorage& data, const ina::metadata::Cube* dsCube) const;
 
 	private:
 		const ina::query_model::Query& m_query;
 		void buildWhereClause(const ina::query_model::SelectionElement& selectionOperator, std::ostringstream& where) const;
-		void buildWhereSetOperandClause(const ina::query_model::SelectionElement& selectionElement, ina::query_model::Element::LogicalOperator parentLogicalOperator, std::ostringstream& where) const;
+		void buildWhereSetOperandClause(const ina::query_model::SelectionElement& selectionElement, ina::query_model::LogicalOperator parentLogicalOperator, std::ostringstream& where) const;
 	};
 } // query_generator

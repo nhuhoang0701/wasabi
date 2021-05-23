@@ -1,4 +1,5 @@
 #include "SelectionElement.h"
+
 namespace ina::query_model 
 {
 
@@ -12,12 +13,12 @@ namespace ina::query_model
         return _type;
     }
 
-    void SelectionElement::setCode(Element::LogicalOperator code) 
+    void SelectionElement::setCode(LogicalOperator code) 
     {
         _code = code;
     }
 
-    Element::LogicalOperator SelectionElement::getCode() const
+    LogicalOperator SelectionElement::getCode() const
     {
         return _code;
     }

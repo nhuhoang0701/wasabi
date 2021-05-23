@@ -19,16 +19,16 @@ namespace ina::grid
         if( grid.getRowAxis().getMeasureDimension() != nullptr)
         {
             m_RowCount *= grid.getRowAxis().getMeasureDimMembers().size();
-            if(getCubeBody().size() != getRowAxis().getMeasureDimMembers().size())
-                throw std::runtime_error("Invalid state: Body size and members numbers on row should be the same");
+            if(getCubeBody().size() < getRowAxis().getMeasureDimMembers().size())
+                throw std::runtime_error("Invalid state: Body size is less than visble members size on row.");
         }
 
         m_ColumnCount = grid.getCube().getBody().getColumnCount();
         if( grid.getColumnAxis().getMeasureDimension() != nullptr)
         {
             m_ColumnCount *= grid.getColumnAxis().getMeasureDimMembers().size();
-            if(getCubeBody().size() != getColumnAxis().getMeasureDimMembers().size())
-                throw std::runtime_error("Invalid state: Body size and members numbers on col should be the same");
+            if(getCubeBody().size() < getColumnAxis().getMeasureDimMembers().size())
+                throw std::runtime_error("Invalid state: Body size is less than visble members size on col.");
         }
 
 

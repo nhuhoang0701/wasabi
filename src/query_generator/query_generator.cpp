@@ -6,6 +6,7 @@
 #include <InA_query_model/Dimension.h>
 #include <InA_query_model/Selection/Element.h>
 #include <InA_query_model/Selection/SelectionElement.h>
+#include <InA_query_model/Formula.h>
 
 #include "ModelSQLGenerator.h"
 
@@ -26,7 +27,7 @@ namespace query_generator
 
     std::string query_generator::getSQL(const calculator::DataStorage& data, const ina::metadata::Cube* dsCube) const
     {
-		std::vector<std::string> selected;
+		std::vector<std::pair<std::string /*name*/,std::string/*aggregation*/>> selected;
 		std::ostringstream where;
         std::vector<std::string> group_by;
 		std::vector<std::pair<std::string /*name*/,std::string/*order*/>> order_by;
@@ -36,19 +37,25 @@ namespace query_generator
         {
 			if(ina::query_model::Dimension::isDimensionOfMeasures(dimension))
 			{
+				// Add measures
 				for(const auto& member : m_query.getDefinition().getVisibleMembers(dimension) )
 				{
-					// TODO: Query generator should not use ina::query_model::Dimension,
-					// but ina::metadata::Dimension reduced by the ina::query_model::Definition
-					if(member.getFormula() != nullptr)
-						continue;
-
 					const std::string& memberName = ina::query_model::Member::getName(member);
+					if(dsCube == nullptr)// TODO: for unit test
+					{
+						if(member.getFormula() != nullptr || member.getSelection() != nullptr)
+							continue;
+					}
+					else
+					{
+						if(dsCube->containsDataSourceColumn(memberName)==false)
+							continue;
+					}
+
 					// Integrity check beetwen query and data storage columns
 					{
 						if(data.getColIndex(memberName) != idxInData)
 							throw std::runtime_error("Missmatch col. index in data with query");
-						idxInData++;
 					}
 
 					std::string agg = member.getAggregation();
@@ -59,15 +66,61 @@ namespace query_generator
 						std::cerr << msg;
 						agg = "SUM";
 					}
-					std::string select = agg + "(" + memberName + ")";
-					selected.push_back(select);
-					
+					selected.push_back(std::make_pair(memberName, agg));
+					idxInData++;
+				}
+				// Add function dependencies
+				for(const auto& member : m_query.getDefinition().getVisibleMembers(dimension) )
+				{
+					if(member.getFormula() == nullptr)
+						continue;
+
+					std::vector<std::string> deps;
+					ina::query_model::getDeps(*member.getFormula(), deps);
+
+					for(const auto&memberName : deps )
+					{
+						// TODO: for unit test
+						if(dsCube != nullptr)
+						{
+							if(dsCube->containsDataSourceColumn(memberName)==false)
+								continue;
+						}
+						bool conatainsIt = false;
+						for(const auto& select : selected)
+						{
+							if(select.first==memberName)
+							{
+								conatainsIt=true;
+								continue;
+							}
+						}
+						if(conatainsIt)
+							continue;
+
+						// Integrity check beetwen query and data storage columns
+						{
+							if(data.getColIndex(memberName) != idxInData)
+								throw std::runtime_error("Missmatch col. index in data with query");
+						}
+
+						std::string agg = member.getAggregation();
+						if(agg.empty())
+						{
+							std::string msg;
+							msg += "WASABI: ERROR: Missing aggreation in the InA request for member '" + memberName + "' hardcoded SUM will be used";
+							std::cerr << msg;
+							agg = "SUM";
+						}
+						selected.push_back(std::make_pair(memberName, agg));
+						idxInData++;
+					}
 				}
 			}
 			else
 			{
 				for(const auto& attribut : dimension.getAttributes())
-					selected.push_back(attribut.getName());
+					selected.push_back(std::make_pair(attribut.getName(), ""));
 				
 				// Integrity check beetwen query and data storage columns
 				for(const auto& attribut : dimension.getAttributes())
@@ -141,7 +194,10 @@ namespace query_generator
 			delim.clear();
 			for(const auto& s : selected)
 			{
-        		sql << delim << s;
+				if(s.second.empty())
+	        		sql << delim << s.first;
+				else
+					sql << delim << s.second << "(" << s.first << ")";
 				if(delim.empty()) delim = ", ";
 			}
 
@@ -179,13 +235,13 @@ namespace query_generator
         return sql.str();
     }
 
-	void query_generator::buildWhereSetOperandClause(const ina::query_model::SelectionElement& selectionElement, ina::query_model::Element::LogicalOperator parentLogicalOperator, std::ostringstream& where) const
+	void query_generator::buildWhereSetOperandClause(const ina::query_model::SelectionElement& selectionElement, ina::query_model::LogicalOperator parentLogicalOperator, std::ostringstream& where) const
 	{
 		for(const auto& element : selectionElement.getElements())
 		{
-			if (!("[Measures].[Measures]" == element.getFieldName()))
+			if ("[Measures].[Measures]" != element.getFieldName())
 			{
-				std::string code = ina::query_model::Element::toString(parentLogicalOperator);
+				std::string code = ina::query_model::toString(parentLogicalOperator);
 				if (where.str().empty())
 				{
 					where << " WHERE ";
@@ -204,7 +260,7 @@ namespace query_generator
 	{
 		if (selectionElement.getType() == ina::query_model::SelectionElement::Type::SetOperand)
 		{
-			buildWhereSetOperandClause(selectionElement, ina::query_model::Element::LogicalOperator::Undefined, where);
+			buildWhereSetOperandClause(selectionElement, ina::query_model::LogicalOperator::Undefined, where);
 		}
 		else if (selectionElement.getType() == ina::query_model::SelectionElement::Type::Operator)
 		{
@@ -222,7 +278,7 @@ namespace query_generator
 		}
 	}
 	
-	void query_generator::prepareStorage(calculator::DataStorage& data) const
+	void query_generator::prepareStorage(calculator::DataStorage& data, const ina::metadata::Cube* dsCube) const
 	{
 		data.clear();
         for (const auto& dimension : m_query.getDefinition().getDimensions())
@@ -231,12 +287,43 @@ namespace query_generator
 			{
 				for(const auto& member : m_query.getDefinition().getVisibleMembers(dimension) )
 				{
-					// TODO: Query generator should not use ina::query_model::Dimension,
-					// but ina::metadata::Dimension reduced by the ina::query_model::Definition
-					if(member.getFormula() != nullptr)
-						continue;
-					std::string memberName = ina::query_model::Member::getName(member);
+					const std::string& memberName = ina::query_model::Member::getName(member);
+					if(dsCube == nullptr)// TODO: for unit test
+					{
+						if(member.getFormula() != nullptr || member.getSelection() != nullptr)
+							continue;
+					}
+					else
+					{
+						if(dsCube->containsDataSourceColumn(memberName)==false)
+							continue;
+					}
+
 					data.addColumn(memberName,calculator::eDataType::Number, calculator::eColumnType::NoneIndexed);
+				}
+				for(const auto& member : m_query.getDefinition().getVisibleMembers(dimension) )
+				{
+					// TODO: Query generator should not use ina::query_model::Dimension,
+					// but ina::metadata::Dimension to know if object is part of the data source
+					if(member.getFormula() == nullptr )
+						continue;
+						
+					std::vector<std::string> deps;
+					ina::query_model::getDeps(*member.getFormula(), deps);
+
+					for(const auto& memberName : deps)
+					{
+						// TODO: for unit test
+						if(dsCube != nullptr)
+						{
+							if(dsCube->containsDataSourceColumn(memberName)==false)
+								continue;
+						}
+						if(data.haveCol(memberName))
+							continue;
+						
+						data.addColumn(memberName,calculator::eDataType::Number, calculator::eColumnType::NoneIndexed);
+					}
 				}
 			}
 			else
@@ -244,11 +331,6 @@ namespace query_generator
 				switch (dimension.getAxe())
 				{
 				case ina::query_model::Dimension::eAxe::Rows:
-				{
-					for(const auto& attribut : dimension.getAttributes())
-						data.addColumn(attribut.getName(),calculator::eDataType::String, calculator::eColumnType::Indexed);
-					break;
-				}
 				case ina::query_model::Dimension::eAxe::Columns:
 				{
 					for(const auto& attribut : dimension.getAttributes())

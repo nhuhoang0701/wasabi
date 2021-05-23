@@ -55,7 +55,7 @@ void getResponse()
 
     std::cout << "------------------------" << std::endl << std::endl;
 
-    request = R"({"Analytics":{"DataSource":{"ObjectName":"onetable_datatype","PackageName":"local:sqlite:onetable_datatype","Type":"Wasabi"},"Definition":{"Dimensions":[{"Name":"text","Axis":"Rows","Attributes":[{"Name":"text"}]},{"Name":"varchar","Axis":"Rows","Attributes":[{"Name":"varchar"}]},{"Name":"CustomDimension1","Axis":"Columns","Attributes":[{"Name":"varchar"}],"Members":[{"Description":"Measure 1","Name":"real", "Aggregation":"SUM"}]}]}}})";
+    request = R"({"Analytics":{"DataSource":{"ObjectName":"onetable_datatype","PackageName":"local:sqlite:onetable_datatype","Type":"Wasabi"},"Definition":{"Dimensions":[{"Name":"text","Axis":"Rows","Attributes":[{"Name":"text"}]},{"Name":"varchar","Axis":"Rows","Attributes":[{"Name":"varchar"}]},{"Name":"CustomDimension1","Axis":"Columns","Attributes":[{"Name":"measure"}],"Members":[{"Description":"Measure 1","Name":"real", "Aggregation":"SUM"}]}]}}})";
 
     // std::cout << "InA_Interpreter_test => request: json_getResponse_json " << request << std::endl;
 
