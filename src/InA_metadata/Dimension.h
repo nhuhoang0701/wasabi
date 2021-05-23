@@ -73,8 +73,6 @@ namespace ina::metadata
 			DimensionMeasures() = default;
 			DimensionMeasures(const std::string& name, const std::string& description, eAxe defaultAxe = eAxe::Free);
 
-			virtual bool                 isAxisSupported(eAxe axe) const {return axe!=eAxe::Rows;};
-
 			virtual uint32_t              getCardinality() const {return m_members.size();};
 
 			virtual eDimType             getDimensionType() const {return eDimType::MeasuresDimension;};

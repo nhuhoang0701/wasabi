@@ -9,12 +9,15 @@ namespace calculator {class Cube; class Axe;}
 namespace ina::grid
 {
 	class Grid;
+	class Axis;
 	class Cells
 	{
 		public:
-		Cells(const calculator::Body& body);
+		Cells(const Axis& rowAXis, const Axis& colAxis, const calculator::Body& body);
 		void init(const Grid& grid);
 		
+		const Axis&               getRowAxis() const;
+		const Axis&               getColumnAxis() const;
 		const calculator::Body&   getCubeBody() const;
 	
 		size_t      getTotalRowCount() const;
@@ -30,6 +33,8 @@ namespace ina::grid
 
 	private:
 		const calculator::Body&        m_body;
+		const Axis&        m_rowAxis;
+		const Axis&        m_colAxis;
 
 		// Row first/Column second
 		size_t    m_RowCount = 0;
