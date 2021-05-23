@@ -29,7 +29,7 @@ namespace ina::query_model
 	{
 		public:
 			// TODO: Wait intermediate model on top of the InA query and the InAcube
-			static std::string getName(const Member& member);
+			static const std::string& getName(const Member& member);
 
 			Member() = default;
 

@@ -25,7 +25,7 @@ namespace ina::metadata
             const std::string& tableName = m_datasource.getObjectName();
             const auto& colNames = catalog->getTable(tableName).getColumnNames();
             {
-                for(auto& colName : colNames)
+                for(const auto& colName : colNames)
                 {
                     const auto& column = catalog->getTable(tableName).getColumn(colName);
                     //std::cout << "******************" << std::endl;
@@ -52,13 +52,8 @@ namespace ina::metadata
             dim->addKeyAttribute(Attribute(*dim, dim->getName(), dim->getDescription(), eAttrType::Key));
             m_dimensions.push_back(std::move(dim));
         }
-        /*{
-            std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("Month_name", "Month name");
-            dim->addKeyAttribute(Attribute(*dim, dim->getName(), dim->getDescription()));
-            m_dimensions.push_back(std::move(dim));
-        }*/
         {
-            std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("Mth_dim", "Month dim");
+            std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("Mth_dim", "Month");
             dim->addKeyAttribute(Attribute(*dim, "Mth", "Month number", eAttrType::Key));
             dim->addTextAttribute(Attribute(*dim, "Month_name", "Month name", eAttrType::Text));
             m_dimensions.push_back(std::move(dim));
