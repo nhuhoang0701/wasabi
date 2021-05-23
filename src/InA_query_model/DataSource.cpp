@@ -64,12 +64,16 @@ namespace ina::query_model
 
 	const std::string& DataSource::getPackageName() const
 	{
-		const static std::string cnxstrg =  "local:sqlite:efashion_lite";
 		//TODO: Remove just to start dev.
 		if(m_packageName.empty())
 		{
-			std::cerr << "WASABI: Harcoded connection string will be used: " << cnxstrg << std::endl;
-			return cnxstrg;
+			static std::string default_packageName;
+			if(default_packageName.empty())
+			{
+				default_packageName =  "local:sqlite:efashion_lite";
+				std::cerr << "WASABI: DataSource::getPackageName(): no package name provided , default will be used: " << default_packageName << std::endl;
+			}
+			return default_packageName;
 		}
 		return m_packageName;
 	}
@@ -93,6 +97,17 @@ namespace ina::query_model
 
 	const std::string&	DataSource::getDescription() const
 	{
+		//TODO: Remove just to start dev.
+		if(m_packageName.empty())
+		{
+			static std::string default_description;
+			if(default_description.empty())
+			{
+				default_description =  "Revenue/City/Time";
+				std::cerr << "WASABI: DataSource::getDescription(): no description provided , default will be used: " << default_description << std::endl;
+			}
+			return default_description;
+		}
 		return m_description;
 	}
 
