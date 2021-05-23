@@ -10,7 +10,7 @@ namespace ina::query_model
             {
                 return _direction;
             }
-            std::string QuerySort::getObjectName() const
+            const std::string& QuerySort::getObjectName() const
             {
                 return _objectName;
             }
