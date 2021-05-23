@@ -5,6 +5,7 @@
 
 namespace calculator {class DataStorage;}
 namespace ina::query_model {class Query;}
+namespace ina::metadata {class Cube;}
 
 namespace query_generator
 {
@@ -15,7 +16,7 @@ namespace query_generator
 
 		void prepareStorage(calculator::DataStorage& cube) const;
 
-		std::string getSQL(const calculator::DataStorage& data) const;
+		std::string getSQL(const calculator::DataStorage& data, const ina::metadata::Cube* dsCube) const;
 
 	private:
 		const ina::query_model::Query& m_query;

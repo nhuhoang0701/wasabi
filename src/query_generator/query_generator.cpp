@@ -1,19 +1,21 @@
 #include "query_generator.h"
 
-#include <algorithm>
 #include <calculator/storage.h>
+#include <InA_metadata/Cube.h>
 #include <InA_query_model/Query.h>
 #include <InA_query_model/Dimension.h>
+#include <InA_query_model/Selection/Element.h>
+#include <InA_query_model/Selection/SelectionElement.h>
+
+#include "ModelSQLGenerator.h"
 
 #include <ostream>
 #include <sstream>
 #include <iostream>
 #include <stdexcept>
 #include <utility>
+#include <algorithm>
 
-#include "InA_query_model/Selection/Element.h"
-#include "InA_query_model/Selection/SelectionElement.h"
-#include "ModelSQLGenerator.h"
 
 namespace query_generator
 {
@@ -22,7 +24,7 @@ namespace query_generator
 	{
 	}
 
-    std::string query_generator::getSQL(const calculator::DataStorage& data) const
+    std::string query_generator::getSQL(const calculator::DataStorage& data, const ina::metadata::Cube* dsCube) const
     {
 		std::vector<std::string> selected;
 		std::ostringstream where;
@@ -41,7 +43,7 @@ namespace query_generator
 					if(member.getFormula() != nullptr)
 						continue;
 
-					std::string memberName = ina::query_model::Member::getName(member);
+					const std::string& memberName = ina::query_model::Member::getName(member);
 					// Integrity check beetwen query and data storage columns
 					{
 						if(data.getColIndex(memberName) != idxInData)
@@ -105,15 +107,23 @@ namespace query_generator
 						else if (querySort.getDirection() == ina::query_model::QuerySort::Direction::Descending)
 							sortSQL = "DESC";
 
-						std::string name = querySort.getObjectName();
+						const std::string& name = querySort.getObjectName();
 						for(const auto& dim : m_query.getDefinition().getDimensions())
 						{
 							if(dim.getName() == name)
 							{
-								//TODO: Should sort on the good attribut, not all
-								for(const auto& attribut : dim.getAttributes())
+								if(dsCube != nullptr)
 								{
-									order_by.push_back(std::make_pair(attribut.getName(), sortSQL));
+									if(querySort.getSortType()==ina::query_model::QuerySort::SortType::MemberKey)
+										order_by.push_back(std::make_pair(dsCube->getDimension(dim.getName()).getKeyAttribute().getName(), sortSQL));
+									else if(querySort.getSortType()==ina::query_model::QuerySort::SortType::MemberText)
+										order_by.push_back(std::make_pair(dsCube->getDimension(dim.getName()).getTextAttribute().getName(), sortSQL));
+									else
+										order_by.push_back(std::make_pair(dim.getAttributes().at(0).getName(), sortSQL));
+								}
+								else // For unit test
+								{
+									order_by.push_back(std::make_pair(dim.getAttributes().at(0).getName(), sortSQL));
 								}
 							}
 						}
