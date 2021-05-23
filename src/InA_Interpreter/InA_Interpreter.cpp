@@ -147,7 +147,7 @@ void getDataCube(const ina::query_model::Query& query, const ina::metadata::Cube
 		data->insertRow(row);
 	};
 	const std::string& cnxString = query.getDataSource().getPackageName();
-	const std::string sql = queryGen.getSQL(*data);
+	const std::string sql = queryGen.getSQL(*data, &dsCube);
 	std::cout << "SQL: " << sql << std::endl;
 	dbproxy::DBProxy::getDBProxy(cnxString)->executeSQL(sql, &lambda);
 	std::cout << "    Nbrs of rows " << data->getRowCount() << std::endl;
