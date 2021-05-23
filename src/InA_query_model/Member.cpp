@@ -4,7 +4,7 @@
 
 namespace ina::query_model
 {
-	std::string Member::getName(const Member& member)
+	const std::string& Member::getName(const Member& member)
 	{
 		/*
 		"MemberOperand": {
@@ -21,13 +21,10 @@ namespace ina::query_model
 		"Value": "2015"
 		}
 		*/
-		std::string name;
 		if(member.getMemberOperand() != nullptr)
-			name = member.getMemberOperand()->getValue();
-		else
-			name = member.getName();
-
-		return name;
+			return member.getMemberOperand()->getValue();
+		
+		return member.getName();
 	}
 	const std::string&  MemberOperand::getValue() const
 	{

@@ -51,7 +51,7 @@ namespace ina::query_model
             }
 
             QuerySort();
-            std::string     getObjectName() const;
+            const std::string&     getObjectName() const;
             Direction       getDirection() const;
             SortType        getSortType() const;
 
