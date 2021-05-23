@@ -77,10 +77,12 @@ namespace ina::grid
                 {
                     for(const auto& attribut : dim->getAttributes())
                     {
+                        bool isKey = idxAttr++==0; // TODO: Remove it use isKey from ina::metadata::Attribut
                         JSON_MAP(writer);
                         writer.pair("Name", attribut.getName());
-                        //writer.pair("Obtainability", attribut.getObtainability());
-                        writer.pair("IsKey", idxAttr==0);
+                        //if(isKey && dim->getAttributes().size()>1 )
+                        //    writer.pair("Obtainability", attribut.getObtainability());
+                        //writer.pair("IsKey", isKey);
                         writer.key("Values");
                         if(axis.getMeasureDimension() == dim )
                         {
@@ -145,32 +147,20 @@ namespace ina::grid
                                 //std::cout << "member.size(): " << members.size() << "\n";
                                 if(dimension == axis.getMeasureDimension() )
                                 {
-                                    size_t maxRows = axis.getCubeAxis().getCardinality();
-                                    if(maxRows == 0)
-                                        maxRows = 1;
-                                    //std::cout << "maxRows: " << maxRows << "\n";
-                                    for (size_t tupleIndex = axis.getFrom()/memberDiv; tupleIndex < axis.getTo()/memberDiv; tupleIndex++)
+                                    for (size_t tupleIndex = axis.getFrom(); tupleIndex < axis.getTo(); tupleIndex++)
                                     {
-                                        for(size_t i = 0; i < members.size(); i++)
-                                        {
-                                            writer.value(static_cast<uint32_t>(i));
-                                        }
+                                        writer.value(static_cast<uint32_t>(tupleIndex%memberDiv));
                                     }
                                 }
                                 else
                                 {
                                     //std::cout << "axis.getCubeAxis().getCardinality(): " << axis.getCubeAxis().getCardinality() << "\n";
-                                    for (size_t tupleIndex = axis.getFrom()/memberDiv; tupleIndex < axis.getTo()/memberDiv; tupleIndex++)
+                                    for (size_t tupleIndex = axis.getFrom(); tupleIndex < axis.getTo(); tupleIndex++)
                                     {
-                                        //TODO:  What should be the semantic of : dimension->getAttributes().at(0)!????
-                                        const auto idx = static_cast<uint32_t>(axis.getCubeAxis().getValueIndex(dimension->getAttributes().at(0).getName(), tupleIndex));
-                                        if(axis.getMeasureDimension() != nullptr)
-                                        {
-                                            for(size_t i = 0; i < members.size(); i++)
-                                                writer.value(idx);
-                                        }
-                                        else
-                                            writer.value(idx);
+                                        //TODO: dimension->getAttributes().at(0)? Certainly the Key Attributes
+                                        // if yes so we should also use ina metadata Dimension here
+                                        const auto idx = static_cast<uint32_t>(axis.getCubeAxis().getValueIndex(dimension->getAttributes().at(0).getName(), tupleIndex/memberDiv));
+                                        writer.value(idx);
                                     }
                                 }
                             }
@@ -202,26 +192,24 @@ namespace ina::grid
                     JSON_LIST(writer);	
                     for(size_t rowIndex = cells.getRowFrom(); rowIndex < cells.getRowTo(); rowIndex++)
                     {
-                        for(size_t colIndex = cells.getColumnFrom()/nbOfMembers; colIndex < cells.getColumnTo()/nbOfMembers; colIndex++)
+                        for(size_t colIndex = cells.getColumnFrom(); colIndex < cells.getColumnTo(); colIndex++)
                         {
-                            for(const auto& measure : cells.getCubeBody())
+                            const auto& measure = cells.getCubeBody()[colIndex%nbOfMembers];
+                            const auto& data = cells.getCubeBody().getValue(measure.getName(), colIndex/nbOfMembers, rowIndex);
+                            switch (measure.getDataType())
                             {
-                                const auto& data = cells.getCubeBody().getValue(measure.getName(), colIndex, rowIndex);
-                                switch (measure.getDataType())
-                                {
-                                case calculator::eDataType::String:
-                                {
-                                    writer.value(std::get<std::string>(data));
-                                    break;
-                                }
-                                case calculator::eDataType::Number:
-                                {
-                                    writer.value(std::get<double>(data));
-                                    break;
-                                }
-                                default:
-                                    throw std::runtime_error("InA_Interpreter => Unsupported datatype.");
-                                }
+                            case calculator::eDataType::String:
+                            {
+                                writer.value(std::get<std::string>(data));
+                                break;
+                            }
+                            case calculator::eDataType::Number:
+                            {
+                                writer.value(std::get<double>(data));
+                                break;
+                            }
+                            default:
+                                throw std::runtime_error("InA_Interpreter => Unsupported datatype.");
                             }
                         }
                     }
@@ -238,26 +226,24 @@ namespace ina::grid
                     JSON_LIST(writer);	
                     for(size_t rowIndex = cells.getRowFrom(); rowIndex < cells.getRowTo(); rowIndex++)
                     {
-                        for(size_t colIndex = cells.getColumnFrom()/nbOfMembers; colIndex < cells.getColumnTo()/nbOfMembers; colIndex++)
+                        for(size_t colIndex = cells.getColumnFrom(); colIndex < cells.getColumnTo(); colIndex++)
                         {
-                            for(const auto& measure : cells.getCubeBody())
+                            const auto& measure = cells.getCubeBody()[colIndex%nbOfMembers];
+                            const auto& data = cells.getCubeBody().getValue(measure.getName(), colIndex/nbOfMembers, rowIndex);
+                            switch (measure.getDataType())
                             {
-                                const auto& data = cells.getCubeBody().getValue(measure.getName(), colIndex, rowIndex);
-                                switch (measure.getDataType())
-                                {
-                                case calculator::eDataType::String:
-                                {
-                                    writer.value(std::get<std::string>(data));
-                                    break;
-                                }
-                                case calculator::eDataType::Number:
-                                {
-                                    writer.value(std::get<double>(data));
-                                    break;
-                                }
-                                default:
-                                    throw std::runtime_error("InA_Interpreter => Unsupported datatype.");
-                                }
+                            case calculator::eDataType::String:
+                            {
+                                writer.value(std::get<std::string>(data));
+                                break;
+                            }
+                            case calculator::eDataType::Number:
+                            {
+                                writer.value(std::get<double>(data));
+                                break;
+                            }
+                            default:
+                                throw std::runtime_error("InA_Interpreter => Unsupported datatype.");
                             }
                         }
                     }
@@ -272,25 +258,23 @@ namespace ina::grid
                     JSON_LIST(writer);	
                     for(size_t rowIndex = cells.getRowFrom(); rowIndex < cells.getRowTo(); rowIndex++)
                     {
-                        for(size_t colIndex = cells.getColumnFrom()/nbOfMembers; colIndex < cells.getColumnTo()/nbOfMembers; colIndex++)
+                        for(size_t colIndex = cells.getColumnFrom(); colIndex < cells.getColumnTo(); colIndex++)
                         {
-                            for(const auto& measure : cells.getCubeBody())
+                            const auto& measure = cells.getCubeBody()[colIndex%nbOfMembers];
+                            switch (measure.getDataType())
                             {
-                                switch (measure.getDataType())
-                                {
-                                case calculator::eDataType::String:
-                                {
-                                    writer.value(4u);
-                                    break;
-                                }
-                                case calculator::eDataType::Number:
-                                {
-                                    writer.value(10u);
-                                    break;
-                                }
-                                default:
-                                    throw std::runtime_error("InA_Interpreter => Unsupported datatype.");
-                                }
+                            case calculator::eDataType::String:
+                            {
+                                writer.value(4u);
+                                break;
+                            }
+                            case calculator::eDataType::Number:
+                            {
+                                writer.value(10u);
+                                break;
+                            }
+                            default:
+                                throw std::runtime_error("InA_Interpreter => Unsupported datatype.");
                             }
                         }
                     }
