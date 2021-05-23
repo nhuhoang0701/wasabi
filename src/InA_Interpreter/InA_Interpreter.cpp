@@ -141,7 +141,7 @@ void getDataCube(const ina::query_model::Query& query, const ina::metadata::Cube
 	const query_generator::query_generator& queryGen = query_generator::query_generator(query);
 
 	std::shared_ptr<calculator::DataStorage> data(new calculator::DataStorage());
-	queryGen.prepareStorage(*data);
+	queryGen.prepareStorage(*data, &dsCube);
 	std::function<void(const dbproxy::Row&)> lambda = [&data](const dbproxy::Row& row)
 	{
 		data->insertRow(row);

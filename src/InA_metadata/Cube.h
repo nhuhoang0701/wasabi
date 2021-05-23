@@ -23,7 +23,7 @@ namespace ina::metadata
 		const Dimension&  getDimension(const std::string& name) const;
 		const std::vector<std::unique_ptr<Dimension>>&  getDimensions() const;
 
-		bool containsAttributes(const std::string& attributeName) const;
+		bool containsDataSourceColumn(const std::string& attributeName) const;
 
 		private:
 		const ina::query_model::DataSource&     m_datasource;
