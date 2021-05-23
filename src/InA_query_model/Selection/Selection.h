@@ -7,6 +7,8 @@ class JSONGenericObject;    // #include <json/jsonReader.h>
 
 namespace ina::query_model 
 {
+    class Selection;
+    size_t getDeps(const ina::query_model::Selection& selection, std::vector<std::string>& deps);
 	class Selection
     {
         public:
