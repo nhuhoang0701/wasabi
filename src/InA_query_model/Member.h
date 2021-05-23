@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include "Formula.h"
+#include "InA_query_model/Selection/Selection.h"
 
 class JSONGenericObject;    // #include <json/jsonReader.h>
 
@@ -38,11 +39,13 @@ namespace ina::query_model
 			const Aggregation&   getAggregation() const;
 
 			const Formula*       getFormula() const;
+			const Selection*     getSelection() const;
 			const MemberOperand* getMemberOperand() const;
 
 		private:
 			std::shared_ptr<MemberOperand> m_memberOperand;
 			std::shared_ptr<Formula>       m_formula;
+			std::shared_ptr<Selection>     m_selection;
 			std::string m_name; 
 			std::string m_description; 
 			Aggregation m_aggregation;
