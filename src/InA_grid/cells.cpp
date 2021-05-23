@@ -8,8 +8,8 @@
 
 namespace ina::grid
 {
-    Cells::Cells(const calculator::Body& body)
-    : m_body(body)
+    Cells::Cells(const Axis& rowAXis, const Axis& colAxis, const calculator::Body& body)
+    : m_body(body), m_rowAxis(rowAXis), m_colAxis(colAxis)
     {
     }
 
@@ -17,11 +17,19 @@ namespace ina::grid
     {
         m_RowCount = grid.getCube().getBody().getRowCount();
         if( grid.getRowAxis().getMeasureDimension() != nullptr)
+        {
             m_RowCount *= grid.getRowAxis().getMeasureDimMembers().size();
+            if(getCubeBody().size() != getRowAxis().getMeasureDimMembers().size())
+                throw std::runtime_error("Invalid state: Body size and members numbers on row should be the same");
+        }
 
         m_ColumnCount = grid.getCube().getBody().getColumnCount();
-        if( grid.getColAxis().getMeasureDimension() != nullptr)
-            m_ColumnCount *= grid.getColAxis().getMeasureDimMembers().size();
+        if( grid.getColumnAxis().getMeasureDimension() != nullptr)
+        {
+            m_ColumnCount *= grid.getColumnAxis().getMeasureDimMembers().size();
+            if(getCubeBody().size() != getColumnAxis().getMeasureDimMembers().size())
+                throw std::runtime_error("Invalid state: Body size and members numbers on col should be the same");
+        }
 
 
         int32_t val = grid.getQuery().getDefinition().getResultSetFeat().getSubSetDescription().m_ColumnFrom;
@@ -49,7 +57,14 @@ namespace ina::grid
             m_RowTo = std::min<size_t>(val, m_RowCount);
     }
 
-    
+    const Axis& Cells::getRowAxis() const
+    {
+        return m_rowAxis;
+    }
+    const Axis&Cells::getColumnAxis() const
+    {
+        return m_colAxis;
+    }
 	const calculator::Body& Cells::getCubeBody() const
     {
         return m_body;
