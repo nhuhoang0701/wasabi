@@ -37,35 +37,37 @@ namespace ina::metadata
             }
         }
 
+        if(tableName == "Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma" )
         {
-            std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("agg1_id", "index");
-            dim->addKeyAttribute(Attribute(*dim, dim->getName(), dim->getDescription(), eAttrType::Key));
+            {
+                std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[index]", "index");
+                dim->addKeyAttribute(Attribute(*dim, "agg1_id", "agg. idx", eAttrType::Key));
             m_dimensions.push_back(std::move(dim));
         }
         {
-            std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("Yr", "Year", eAxe::Rows);
-            dim->addKeyAttribute(Attribute(*dim, dim->getName(), dim->getDescription(), eAttrType::Key));
+                std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[Year]", "Year", eAxe::Rows);
+                dim->addKeyAttribute(Attribute(*dim, "Yr", "Year", eAttrType::Key));
             m_dimensions.push_back(std::move(dim));
         }
         {
-            std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("Qtr", "Quarter");
-            dim->addKeyAttribute(Attribute(*dim, dim->getName(), dim->getDescription(), eAttrType::Key));
+                std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[Quarter]", "Quarter");
+                dim->addKeyAttribute(Attribute(*dim, "Qtr", "Quarter", eAttrType::Key));
             m_dimensions.push_back(std::move(dim));
         }
         {
-            std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("Mth_dim", "Month");
+                std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[Month]", "Month");
             dim->addKeyAttribute(Attribute(*dim, "Mth", "Month number", eAttrType::Key));
             dim->addTextAttribute(Attribute(*dim, "Month_name", "Month name", eAttrType::Text));
             m_dimensions.push_back(std::move(dim));
         }
         {
-            std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("Wk", "Week");
-            dim->addKeyAttribute(Attribute(*dim, dim->getName(), dim->getDescription(), eAttrType::Key));
+                std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[Week]", "Week");
+                dim->addKeyAttribute(Attribute(*dim, "Wk", "Week", eAttrType::Key));
             m_dimensions.push_back(std::move(dim));
         }
         {
-            std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("City", "City");
-            dim->addKeyAttribute(Attribute(*dim, dim->getName(), dim->getDescription(), eAttrType::Key));
+                std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[City]", "City");
+                dim->addKeyAttribute(Attribute(*dim, "City", "City", eAttrType::Key));
             m_dimensions.push_back(std::move(dim));
         }
 
@@ -79,6 +81,31 @@ namespace ina::metadata
             measuresDim->addMember(Member(*measuresDim, "Margin", "Margin", "Margin"));
             m_dimensions.push_back(std::move(measuresDim));
         }
+	 }
+        else if(tableName == "onetable_datatype" )
+        {
+            {
+                std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[text dimension name]", "text dimension description");
+                dim->addKeyAttribute(Attribute(*dim, "text", "text attribut description", eAttrType::Key));
+                m_dimensions.push_back(std::move(dim));
+            }
+            {
+                std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[varchar dimension name]", "varchar dimension description");
+                dim->addKeyAttribute(Attribute(*dim, "varchar", "varchar attribut description", eAttrType::Key));
+                m_dimensions.push_back(std::move(dim));
+            }
+            {
+                std::unique_ptr<Dimension> measuresDim = std::make_unique<DimensionMeasures>("[Dimension of measures name]", "Dimension of measures description", eAxe::Columns);            
+                measuresDim->addKeyAttribute(Attribute(*measuresDim, "[Measures].[Measures]", "[Measures].[Measures]", eAttrType::Key));
+                measuresDim->addTextAttribute(Attribute(*measuresDim, "[Measures].[Name]", "[Measures].[Name]", eAttrType::Text));
+
+                measuresDim->addMember(Member(*measuresDim, "integer", "integer", "integer"));
+                measuresDim->addMember(Member(*measuresDim, "real", "real", "real"));
+                m_dimensions.push_back(std::move(measuresDim));
+            }
+        }
+        else
+            throw std::runtime_error("Unknow datasource:"+tableName);
 	 }
 
      const Dimension&  Cube::getDimension(const std::string& name) const
@@ -95,16 +122,25 @@ namespace ina::metadata
          return m_dimensions;
      }
 
-     bool Cube::containsAttributes(const std::string& attributeName) const
+     bool Cube::containsDataSourceColumn(const std::string& attributeName) const
      {
+         std::cout << __PRETTY_FUNCTION__ << " attributeName:" << attributeName << std::endl;
          for(const auto& dim : m_dimensions)
          {
              for(const auto& attribut : dim->getAttributes())
              {
+                std::cout << "attribut_dim:" << attribut.getName() << std::endl;
                  if(attribut.getName() == attributeName)
                  return true;
              }
+             for(const auto& member : dim->getMembers())
+             {
+                std::cout << "member_dim:" << member.getName().second << std::endl;
+                 if(member.getUniqueName().second == attributeName)
+                    return true;
          }
+         }
+        std::cout << "containsAttributes:" << false << std::endl;
 
          return false;
      }

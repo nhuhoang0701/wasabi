@@ -6,7 +6,7 @@ namespace ina::query_model
 {
     size_t getDeps(const ina::query_model::Selection& selection, std::vector<std::string>& deps)
     {
-        trhow std::runtime_error("NYI Selection dependencies");
+        throw std::runtime_error("NYI Selection dependencies");
     }
     void Selection::setOperator(const SelectionElement& selectionOperator) 
     {
