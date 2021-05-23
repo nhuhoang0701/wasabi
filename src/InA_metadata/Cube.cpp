@@ -81,7 +81,7 @@ namespace ina::metadata
 
             measuresDim->addMember(Member(*measuresDim, "Sales_revenue", "Sales revenue", "Sales revenue"));
             measuresDim->addMember(Member(*measuresDim, "Quantity_sold", "Quantity sold", "Quantity sold"));
-            measuresDim->addMember(Member(*measuresDim, "Margin", "Margin Name", "Margin Name"));
+            measuresDim->addMember(Member(*measuresDim, "Margin", "Margin", "Margin"));
             m_dimensions.push_back(std::move(measuresDim));
         }
 	 }
