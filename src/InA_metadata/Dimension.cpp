@@ -81,11 +81,15 @@ namespace ina::metadata
 
     const Attribute& Dimension::getKeyAttribute() const
     {
+        if(m_keyAttributes == -1)
+            throw std::runtime_error("Dimension::getKeyAttribute: no key attribut exist:" + getName());
         return m_attributes.at(m_keyAttributes);
     }
 
     const Attribute& Dimension::getTextAttribute() const
     {
+        if(m_textAttributes == -1)
+            throw std::runtime_error("Dimension::getTextAttribute: no text attribut exist:" + getName());
         return m_attributes.at(m_textAttributes);
     }
 
