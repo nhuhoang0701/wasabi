@@ -75,15 +75,17 @@ namespace ina::grid
                 JSON_LIST(writer);
                 size_t idxAttr = 0; // TODO: Remove it use isKey from ina::metadata::Attribut
                 {
-                    /*bool haveAlways=false;
+                    /**/
+                    bool haveAlways=false;
                     for(const auto& attribut : dim->getAttributes())
                         if(attribut.getObtainability()=="Always")
-                            haveAlways = true;*/
+                            haveAlways = true;
+                    /**/
                     for(const auto& attribut : dim->getAttributes())
                     {
                         JSON_MAP(writer);
                         writer.pair("Name", attribut.getName());
-                       /*
+                       /**/
                         bool isKey = idxAttr==0; // TODO: Remove it use isKey from ina::metadata::Attribut
                         idxAttr++;
                         std::string Obtainability = attribut.getObtainability();
@@ -107,7 +109,8 @@ namespace ina::grid
                                 haveAlways = true;
                             }
                         }
-                        writer.pair("Obtainability", Obtainability);*/
+                        writer.pair("Obtainability", Obtainability);
+                        /**/
                         writer.key("Values");
                         if(axis.getMeasureDimension() == dim )
                         {

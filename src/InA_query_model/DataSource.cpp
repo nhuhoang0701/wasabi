@@ -47,18 +47,33 @@ namespace ina::query_model
 
 	const std::string&	DataSource::getObjectName() const
 	{
-		const static std::string table = "Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma";
 		//TODO: Remove just to start dev.
 		if(m_objName.empty())
 		{
-			std::cerr << "WASABI: Harcoded table will be used: " << table << std::endl;
-			return table;
+			static std::string defaultObjectName;
+			if(defaultObjectName.empty())
+			{
+				defaultObjectName = "Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma";
+				std::cerr << "WASABI: DataSource::getPackageName(): no objectName provided , default will be used: " << defaultObjectName << std::endl;
+			}
+			return defaultObjectName;
 		}
 		return m_objName;
 	}
 
 	const std::string&	DataSource::getInstanceId() const
 	{
+		//TODO: Remove just to start dev.
+		if(m_InstanceId.empty())
+		{
+			static std::string defaultInstanceId;
+			if(defaultInstanceId.empty())
+			{
+				defaultInstanceId = "0";
+				std::cerr << "WASABI: DataSource::getInstanceId(): no InstanceID provided , default will be used: " << defaultInstanceId << std::endl;
+			}
+			return defaultInstanceId;
+		}
 		return m_InstanceId;
 	}
 
@@ -92,13 +107,24 @@ namespace ina::query_model
 
 	const std::string& DataSource::getSchemaName() const
 	{
+		//TODO: Remove just to start dev.
+		if(m_schemaName.empty())
+		{
+			static std::string defaultSchemaName;
+			if(defaultSchemaName.empty())
+			{
+				defaultSchemaName = "default";
+				std::cerr << "WASABI: DataSource::getSchemaName(): no schemaname provided , default will be used: " << defaultSchemaName << std::endl;
+			}
+			return defaultSchemaName;
+		}
 		return m_schemaName;
 	}
 
 	const std::string&	DataSource::getDescription() const
 	{
 		//TODO: Remove just to start dev.
-		if(m_packageName.empty())
+		if(m_description.empty())
 		{
 			static std::string default_description;
 			if(default_description.empty())

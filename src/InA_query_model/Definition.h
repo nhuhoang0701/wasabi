@@ -38,9 +38,6 @@ namespace ina::query_model
 		void                          addDimension(const Dimension & dimension);
 		const std::vector<Dimension>& getDimensions() const;
 
-		//TODO: Should not be here, workaround due to the missing queryspec like or Grid object
-		const std::vector<Member>    getVisibleMembers(const Dimension& dimension) const;
-
 		const Selection & 			 getSelection() const;
 		void 			 setSelection(Selection & selection);
 
@@ -58,8 +55,6 @@ namespace ina::query_model
 		ResultSetFeatureRequest            m_resultSetFeature;
 		
 		DataSource m_ds;
-
-		static void traverse(std::vector<Element>& filters, const SelectionElement& selectionElement);
 		
 		friend void read(Definition & obj, const JSONGenericObject& jsonNode);
 	};

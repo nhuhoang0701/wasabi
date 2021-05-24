@@ -9,7 +9,7 @@ project(InA_query_model VERSION 1.0)
   
 ################################################
 # InA_query_model
-add_library(InA_query_model Queries.cpp QueriesReader.cpp ResultSetFeatureRequest.cpp ResultSetFeatureRequestReader.cpp Definition.cpp DefinitionReader.cpp Parameter.cpp Function.cpp ParameterReader.cpp FunctionReader.cpp Formula.cpp FormulaReader.cpp Member.cpp MemberReader.cpp Attribute.cpp AttributeReader.cpp Dimension.cpp DimensionReader.cpp DataSource.cpp DataSourceReader.cpp DataSourceWriter.cpp Query.cpp QueryReader.cpp QuerySort.cpp QuerySortReader.cpp Selection/Selection.cpp Selection/SelectionReader.cpp Selection/SelectionElement.cpp Selection/SelectionElementReader.cpp Selection/Element.cpp Selection/ElementReader.cpp)
+add_library(InA_query_model Queries.cpp QueriesReader.cpp ResultSetFeatureRequest.cpp ResultSetFeatureRequestReader.cpp Definition.cpp DefinitionReader.cpp Parameter.cpp Function.cpp ParameterReader.cpp FunctionReader.cpp Formula.cpp FormulaReader.cpp Member.cpp MemberReader.cpp Attribute.cpp AttributeReader.cpp Dimension.cpp DimensionReader.cpp DataSource.cpp DataSourceReader.cpp DataSourceWriter.cpp Query.cpp QueryEx.cpp QueryReader.cpp Sort.cpp SortReader.cpp Selection/Selection.cpp Selection/SelectionReader.cpp Selection/SelectionElement.cpp Selection/SelectionElementReader.cpp Selection/Element.cpp Selection/ElementReader.cpp)
 set_target_properties(InA_query_model PROPERTIES PUBLIC_HEADER Query.h)
 
 target_include_directories(InA_query_model PUBLIC ${WASABI_INCLUDES}})

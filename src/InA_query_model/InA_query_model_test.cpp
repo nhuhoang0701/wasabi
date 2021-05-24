@@ -1,11 +1,13 @@
 #include "Dimension.h"
 #include "Member.h"
 #include "Formula.h"
+#include "Function.h"
 #include "Parameter.h"
 #include "Sort.h"
 #include "Selection/SelectionElement.h"
 #include "Selection/Element.h"
 #include "Query.h"
+#include "QueryEx.h"
 #include "Definition.h"
 #include "DataSource.h"
 
@@ -102,6 +104,9 @@ int main()
 		std::string request = R"({"Dimensions":[{"Attributes":[{"Name":"OBJ_188"}],"Axis":"Rows","Name":"OBJ_188"},{"Attributes":[{"Name":"[Measures].[Measures]"},{"Name":"[Measures].[Name]"}],"Axis":"Columns","Members":[{"Aggregation":"SUM","MemberOperand":{"AttributeName":"Measures","Comparison":"=","Value":"OBJ_147"}},{"Aggregation":"SUM","MemberOperand":{"AttributeName":"Measures","Comparison":"=","Value":"OBJ_262"}}],"Name":"CustomDimension1"}],"DynamicFilter":{"Selection":{"Operator":{"Code":"And","SubSelections":[{"SetOperand":{"Elements":[{"Comparison":"=","Low":"OBJ_262"}],"FieldName":"[Measures].[Measures]"}},{"SetOperand":{"Elements":[{"Comparison":"=","Low":"2014"}],"FieldName":"OBJ_188"}}]}}},"Sort":[]})";
 		ina::query_model::Definition definition;
 		read(definition, reader.parse(request));
+
+		ina::query_model::QueryEx queryEx(definition);
+
 		auto dimensionYear 		= definition.getDimensions().at(0);
 		auto dimensionMeasure 	= definition.getDimensions().at(1);
 		CPPUNIT_ASSERT_EQUAL(2, definition.getDimensions().size());
@@ -113,14 +118,14 @@ int main()
 		CPPUNIT_ASSERT_EQUAL(1, setOperand2.getElements().size());
 
 		CPPUNIT_ASSERT_EQUAL(0, dimensionYear.getMembers().size());
-		CPPUNIT_ASSERT_EQUAL(0, definition.getVisibleMembers(dimensionYear).size());		
+		CPPUNIT_ASSERT_EQUAL(0, queryEx.getVisibleMembers(dimensionYear).size());		
 		CPPUNIT_ASSERT_EQUAL(1, dimensionYear.getAttributes().size());
 
 		auto attributeYear = dimensionYear.getAttributes().at(0);
 		CPPUNIT_ASSERT_EQUAL("OBJ_188", attributeYear.getName());
 
 		CPPUNIT_ASSERT_EQUAL(2, dimensionMeasure.getMembers().size());
-		CPPUNIT_ASSERT_EQUAL(1, definition.getVisibleMembers(dimensionMeasure).size());
+		CPPUNIT_ASSERT_EQUAL(1, queryEx.getVisibleMembers(dimensionMeasure).size());
 		CPPUNIT_ASSERT(dimensionMeasure.getMembers().at(0).getMemberOperand() != nullptr);
 		CPPUNIT_ASSERT(dimensionMeasure.getMembers().at(0).getFormula() == nullptr);
 		CPPUNIT_ASSERT_EQUAL("OBJ_147", dimensionMeasure.getMembers().at(0).getMemberOperand()->getValue());
@@ -164,10 +169,10 @@ int main()
 		
 	}
 	{
-		ina::query_model::Function fct;
-		read(fct, reader.parse(R"({"Name": "+","Parameters": [{"Constant": {"ValueType": "String","Value": "1"}},{"Function": {"Name": "*","Parameters": [{"Constant": {"ValueType": "String","Value": "2"}},{"Function": {"Name": "/","Parameters": [{"Function": {"Name": "+","Parameters": [{"Constant": {"ValueType": "String","Value": "3"}},{"Constant": {"ValueType": "String","Value": "4"}}]}},{"Constant": {"ValueType": "String","Value": "5"}}]}}]}}]})"));
+		ina::query_model::Formula formula;
+		read(formula, reader.parse(R"({"Name":"fct1", "Function":{"Name": "+","Parameters": [{"Constant": {"ValueType": "String","Value": "1"}},{"Function": {"Name": "*","Parameters": [{"Constant": {"ValueType": "String","Value": "2"}},{"Function": {"Name": "/","Parameters": [{"Function": {"Name": "+","Parameters": [{"Constant": {"ValueType": "String","Value": "3"}},{"Constant": {"ValueType": "String","Value": "4"}}]}},{"Constant": {"ValueType": "String","Value": "5"}}]}}]}}]}})"));
 
-		CPPUNIT_ASSERT_EQUAL(3.8, std::get<double>(eval(nullptr, fct, nullptr)));
+		CPPUNIT_ASSERT_EQUAL(3.8, std::get<double>(eval(nullptr, formula, nullptr)));
 	}
 	{
 		ina::query_model::Definition definition;
