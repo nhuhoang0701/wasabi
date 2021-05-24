@@ -1,0 +1,68 @@
+{
+    "Metadata": {
+        "Capabilities": [
+            "AggregationNOPNULL",
+            "AggregationNOPNULLZERO",
+            "AttributeHierarchy",
+            "AttributeValueLookup",
+            "AverageCountIgnoreNullZero",
+            "CalculatedDimension",
+            "ClientCapabilities",
+            "Conditions",
+            "DatasourceAtService",
+            "DimensionValuehelpProperty",
+            "ExceptionAggregationDimsAndFormulas",
+            "ExceptionSettings",
+            "Exceptions",
+            "ExtendedDimensions",
+            "ExtendedDimensionsFieldMapping",
+            "ExtendedDimensionsJoinColumns",
+            "ExtendedDimensionsOuterJoin",
+            "HierarchyKeyTextName",
+            "HierarchyLevelOffsetFilter",
+            "HierarchyPath",
+            "HierarchyPathUniqueName",
+            "MaxResultRecords",
+            "MetadataCubeQuery",
+            "MetadataDataCategory",
+            "MetadataHierarchyLevels",
+            "MetadataHierarchyStructure",
+            "MetadataIsDisplayAttribute",
+            "Obtainability",
+            "OrderBy",
+            "ResultSetAxisType",
+            "ResultSetInterval",
+            "ResultSetState",
+            "ReturnedDataSelection",
+            "SupportsCalculatedKeyFigures",
+            "SupportsComplexFilters",
+            "SupportsEncodedResultSet",
+            "SupportsEncodedResultSet2",
+            "SupportsExtendedSort",
+            "SupportsIgnoreExternalDimensions",
+            "SupportsMemberValueExceptions",
+            "SupportsMemberVisibility",
+            "SupportsRestrictedKeyFigures",
+            "SupportsSetOperand",
+            "TechnicalAxis",
+            "Totals",
+            "TotalsAfterVisibilityFilter",
+            "Variables",
+            "VisibilityFilter"
+        ],
+        "Context": "Analytics",
+        "DataSource": {
+            "CustomProperties": {
+                "sourceQuery": "{\"testInfo\":\"test.sap.sl.ina.workflows.AggregationTest.aggregation_storyDimAgg\",\"selectedObjects\":[{\"identifier\":\"OBJ_188\",\"name\":\"Year\"},{\"identifier\":\"OBJ_165\",\"name\":\"Lines\"},{\"identifier\":\"OBJ_218\",\"name\":\"State\"},{\"identifier\":\"OBJ_166\",\"name\":\"City\"},{\"identifier\":\"OBJ_147\",\"name\":\"Sales revenue\"},{\"identifier\":\"OBJ_146\",\"name\":\"Margin\"}],\"ldcVersion\":\"2.3.0.0\",\"columns\":[\"OBJ_188\",\"OBJ_165\",\"OBJ_218\",\"OBJ_166\",\"OBJ_147\",\"OBJ_146\"],\"queryProperties\":{\"retrieveDuplicateRows\":false},\"language\":\"en\",\"dataSourceCuid\":\"AZvZ67XBvN9Gmyx2T3J9oCg\",\"universeCuid\":\"AZvZ67XBvN9Gmyx2T3J9oCg\",\"filters\":{\"operands\":[],\"treeOperator\":\"AND\"},\"dataSourceType\":\"UNX\"}"
+            },
+            "InstanceId": "7d5b7967-c3ce-433a-8725-79d0d0e30ff8",
+            "ObjectName": "eFashion-Simple2.unx",
+            "PackageName": "Universes/InA Provider/Test Resources/AggregationTest",
+            "Type": "Unx"
+        },
+        "Expand": [
+            "Cube"
+        ],
+        "Language": "EN"
+    }
+}
