@@ -4,7 +4,7 @@
 
 #include "Definition.h"
 
-#include <calculator/common.h>   // For calculator::Value
+#include <common/data.h>   // For common::Value
 
 #include <string>
 
@@ -14,7 +14,7 @@ namespace ina::query_model
     class Function;
     class Parameter;
     
-	calculator::Value eval(const void* context, const ina::query_model::Formula& fct, void (*getValueCallback)(const void* context, const std::string& nameObj, calculator::Value& value));
+	common::Value eval(const void* context, const ina::query_model::Formula& fct, void (*getValueCallback)(const void* context, const std::string& nameObj, common::Value& value));
 	size_t getDeps(const ina::query_model::Formula& fct, std::vector<std::string>& deps);
 
     size_t getDeps(const ina::query_model::Selection& selection, std::vector<std::string>& deps);
@@ -35,7 +35,8 @@ namespace ina::query_model
         const ina::query_model::Definition&  getQueryDefinition() const;
         const ina::metadata::Cube*           getDSCube() const;
 
-        bool isDataSourceObject(const std::string& attributeName) const;
+        void                         getResultObjects(std::vector<std::tuple<std::string /*name*/, std::string/*aggregation*/, common::eDataType>>& resultObjects) const;
+        bool                         isDataSourceObject(const std::string& attributeName) const;
 		const std::vector<Member>    getVisibleMembers(const Dimension& dimension) const;
 
         private:

@@ -32,4 +32,11 @@ namespace ina::query_model
     {
         return _elements;
     }
+
+
+
+    void Operator::setCode(LogicalOperator code) 
+    {
+        _code = code;
+    }
 }

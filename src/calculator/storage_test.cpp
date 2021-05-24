@@ -11,21 +11,21 @@ int main()
 	DataStorage storage;
 	CPPUNIT_ASSERT_EQUAL(0,storage.getColumnCount());
 
-	storage.addColumn("col0", eDataType::String, eColumnType::Indexed);
+	storage.addColumn("col0", common::eDataType::String, eColumnType::Indexed);
 	CPPUNIT_ASSERT_EQUAL(1,storage.getColumnCount());
 
-	storage.addColumn("col1", eDataType::Number, eColumnType::NoneIndexed);
+	storage.addColumn("col1", common::eDataType::Numeric, eColumnType::NoneIndexed);
 	CPPUNIT_ASSERT_EQUAL(2,storage.getColumnCount());
 
 	CPPUNIT_ASSERT_EQUAL(0,storage.getColIndex("col0"));
 	CPPUNIT_ASSERT_EQUAL(1,storage.getColIndex("col1"));
 
 	const auto& col0Data = storage.getColumn(0);
-	CPPUNIT_ASSERT_EQUAL(eDataType::String,col0Data->getDataType());
+	CPPUNIT_ASSERT_EQUAL(common::eDataType::String,col0Data->getDataType());
 	CPPUNIT_ASSERT(dynamic_cast<ColumnIndexed*>(col0Data.get()) != nullptr);
 
 	const auto& col1Data = storage.getColumn(1);
-	CPPUNIT_ASSERT_EQUAL(eDataType::Number,col1Data->getDataType());
+	CPPUNIT_ASSERT_EQUAL(common::eDataType::Numeric,col1Data->getDataType());
 	CPPUNIT_ASSERT(dynamic_cast<ColumnNoneIndexed*>(col1Data.get()) != nullptr);
 
 	{

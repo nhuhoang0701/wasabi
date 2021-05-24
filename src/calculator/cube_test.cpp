@@ -1,5 +1,9 @@
 #include "cube.h"
+
 #include "storage.h"
+
+#include <InA_query_model/Formula.h>
+#include <InA_query_model/Selection/Selection.h>
 
 #include <dbproxy/dbproxy.h>
 
@@ -15,11 +19,11 @@ int main()
 	using namespace calculator;
 
 	std::shared_ptr<DataStorage> storage(new DataStorage());
-	storage->addColumn("Dim", eDataType::String, eColumnType::Indexed);
-	storage->addColumn("DimA", eDataType::String, eColumnType::Indexed);
-	storage->addColumn("DimB", eDataType::String, eColumnType::Indexed);
-	storage->addColumn("Meas0", eDataType::Number, eColumnType::NoneIndexed);
-	storage->addColumn("Meas1", eDataType::String, eColumnType::NoneIndexed);
+	storage->addColumn("Dim", common::eDataType::String, eColumnType::Indexed);
+	storage->addColumn("DimA", common::eDataType::String, eColumnType::Indexed);
+	storage->addColumn("DimB", common::eDataType::String, eColumnType::Indexed);
+	storage->addColumn("Meas0", common::eDataType::Numeric, eColumnType::NoneIndexed);
+	storage->addColumn("Meas1", common::eDataType::String, eColumnType::NoneIndexed);
 
 	{
 		Cube cube;	
@@ -76,7 +80,7 @@ int main()
 		CPPUNIT_ASSERT_EQUAL(2, cube.getBody().getCellCount());
 		CPPUNIT_ASSERT_EQUAL(1, cube.getBody().getColumnCount());
 		CPPUNIT_ASSERT_EQUAL(1, cube.getBody().getRowCount());
-		CPPUNIT_ASSERT_EQUAL(calculator::eDataType::Number, cube.getBody().getMeasure("Meas0").getDataType());
+		CPPUNIT_ASSERT_EQUAL(common::eDataType::Numeric, cube.getBody().getMeasure("Meas0").getDataType());
 		CPPUNIT_ASSERT_EQUAL(9, std::get<double>(cube.getBody().getValue("Meas0", 0, 0)));
 	}
 	{
@@ -155,8 +159,8 @@ int main()
 		CPPUNIT_ASSERT_EQUAL(8, cube.getBody().getCellCount());
 		CPPUNIT_ASSERT_EQUAL(4, cube.getBody().getRowCount());
 		CPPUNIT_ASSERT_EQUAL(1, cube.getBody().getColumnCount());
-			CPPUNIT_ASSERT_EQUAL(calculator::eDataType::Number, cube.getBody().getMeasure("Meas0").getDataType());
-			CPPUNIT_ASSERT_EQUAL(calculator::eDataType::String, cube.getBody().getMeasure("Meas1").getDataType());
+			CPPUNIT_ASSERT_EQUAL(common::eDataType::Numeric, cube.getBody().getMeasure("Meas0").getDataType());
+			CPPUNIT_ASSERT_EQUAL(common::eDataType::String, cube.getBody().getMeasure("Meas1").getDataType());
 			CPPUNIT_ASSERT_EQUAL(1,        std::get<double>(cube.getBody().getValue("Meas0", 0, 0)));
 			CPPUNIT_ASSERT_EQUAL(3,        std::get<double>(cube.getBody().getValue("Meas0", 0, 3)));
 			CPPUNIT_ASSERT_EQUAL("2", std::get<std::string>(cube.getBody().getValue("Meas1", 0, 0)));

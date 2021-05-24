@@ -22,12 +22,15 @@ namespace ina::metadata
 		
 		const ina::query_model::DataSource&     getDataSource() const;
 
+		bool                                            haveDimension(const std::string name) const;
 		const Dimension&                                getDimension(const std::string& name) const;
 		const std::vector<std::unique_ptr<Dimension>>&  getDimensions() const;
 
 		bool containsDataSourceColumn(const std::string& attributeName) const;
 
 		private:
+		Dimension&                                getDimension(const std::string& name);
+		
 		const ina::query_model::DataSource&     m_datasource;
 		std::vector<std::unique_ptr<Dimension>> m_dimensions;
 
