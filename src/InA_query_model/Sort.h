@@ -1,13 +1,16 @@
 #pragma once
 #include "exceptions/InA_Exception.h"
-#include <string>
+
 #include <json/jsonReader.h>
+
+#include <string>
+
 namespace ina::query_model
 {
-    class QuerySort;
-    void read(QuerySort & querySort, const JSONGenericObject& jsonQuerySort);
+    class Sort;
+    void read(Sort & querySort, const JSONGenericObject& jsonSort);
 
-    class QuerySort {
+    class Sort {
         public:
             enum class SortType {
                 Undef,
@@ -20,7 +23,7 @@ namespace ina::query_model
                 Complex
             };
 
-            inline static QuerySort::SortType getSortType(const std::string& str)
+            inline static Sort::SortType getSortType(const std::string& str)
             {
                 if (str == "MemberKey")     return SortType::MemberKey;
                 if (str == "MemberText")    return SortType::MemberText;
@@ -39,7 +42,7 @@ namespace ina::query_model
                 None
             };
 
-            inline static QuerySort::Direction getDirection(const std::string& str)
+            inline static Sort::Direction getDirection(const std::string& str)
             {
                 if (str == "Asc")     return Direction::Ascending;
                 if (str == "Desc")    return Direction::Descending;
@@ -50,7 +53,7 @@ namespace ina::query_model
                 return Direction::Default;
             }
 
-            QuerySort();
+            Sort();
             const std::string&     getObjectName() const;
             Direction       getDirection() const;
             SortType        getSortType() const;

@@ -147,17 +147,17 @@ namespace query_generator
 
 			buildWhereClause(selectionOperator, where);
 
-			if (!m_query.getDefinition().getQuerySorts().empty())
+			if (!m_query.getDefinition().getSorts().empty())
 			{
-				for(const auto& querySort : m_query.getDefinition().getQuerySorts())
+				for(const auto& querySort : m_query.getDefinition().getSorts())
 				{
 					// case of MemberSort, TODO: in the Grid
 					if (ina::query_model::Dimension::DIMENSION_OF_MEASURES_NAME != querySort.getObjectName())
 					{
 						std::string sortSQL;
-						if (querySort.getDirection() == ina::query_model::QuerySort::Direction::Ascending)
+						if (querySort.getDirection() == ina::query_model::Sort::Direction::Ascending)
 							sortSQL = "ASC";
-						else if (querySort.getDirection() == ina::query_model::QuerySort::Direction::Descending)
+						else if (querySort.getDirection() == ina::query_model::Sort::Direction::Descending)
 							sortSQL = "DESC";
 
 						const std::string& name = querySort.getObjectName();
@@ -167,9 +167,9 @@ namespace query_generator
 							{
 								if(dsCube != nullptr)
 								{
-									if(querySort.getSortType()==ina::query_model::QuerySort::SortType::MemberKey)
+									if(querySort.getSortType()==ina::query_model::Sort::SortType::MemberKey)
 										order_by.push_back(std::make_pair(dsCube->getDimension(dim.getName()).getKeyAttribute().getName(), sortSQL));
-									else if(querySort.getSortType()==ina::query_model::QuerySort::SortType::MemberText)
+									else if(querySort.getSortType()==ina::query_model::Sort::SortType::MemberText)
 										order_by.push_back(std::make_pair(dsCube->getDimension(dim.getName()).getTextAttribute().getName(), sortSQL));
 									else
 										order_by.push_back(std::make_pair(dim.getAttributes().at(0).getName(), sortSQL));

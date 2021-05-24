@@ -1,18 +1,19 @@
-#include "InA_query_model/Dimension.h"
-#include "InA_query_model/Member.h"
-#include "InA_query_model/Formula.h"
-#include "InA_query_model/Parameter.h"
-#include "InA_query_model/QuerySort.h"
-#include "InA_query_model/Selection/SelectionElement.h"
-#include "InA_query_model/Selection/Element.h"
+#include "Dimension.h"
+#include "Member.h"
+#include "Formula.h"
+#include "Parameter.h"
+#include "Sort.h"
+#include "Selection/SelectionElement.h"
+#include "Selection/Element.h"
 #include "Query.h"
 #include "Definition.h"
 #include "DataSource.h"
-#include <iterator>
+
 #include <json/jsonReader.h>
-#include <ostream>
 #include <test_tools/TestAssert.h>
 
+#include <iterator>
+#include <ostream>
 #include <iostream>
 #include <sstream>
 
@@ -128,10 +129,10 @@ int main()
 		std::string request = R"({"Sort":[{"Dimension":"Week ?","Direction":"None","SortType":"MemberKey"}]})";
 		ina::query_model::Definition definition;
 		read(definition, reader.parse(request));
-		CPPUNIT_ASSERT_EQUAL(1, definition.getQuerySorts().size());
-		CPPUNIT_ASSERT_EQUAL("Week ?", definition.getQuerySorts().at(0).getObjectName());
-		CPPUNIT_ASSERT_EQUAL(ina::query_model::QuerySort::SortType::MemberKey, definition.getQuerySorts().at(0).getSortType());
-		CPPUNIT_ASSERT_EQUAL(ina::query_model::QuerySort::Direction::None, definition.getQuerySorts().at(0).getDirection());
+		CPPUNIT_ASSERT_EQUAL(1, definition.getSorts().size());
+		CPPUNIT_ASSERT_EQUAL("Week ?", definition.getSorts().at(0).getObjectName());
+		CPPUNIT_ASSERT_EQUAL(ina::query_model::Sort::SortType::MemberKey, definition.getSorts().at(0).getSortType());
+		CPPUNIT_ASSERT_EQUAL(ina::query_model::Sort::Direction::None, definition.getSorts().at(0).getDirection());
 	}
 	{
 		std::string request = R"({"Dimensions": [{"Members": [{"Description": "Calculated Measure 1","Formula": {"Function": {"Name": "+","Parameters": [{"Member": {"Name": "OBJ_147"}},{"Function": {"Name": "decfloat","Parameters": [{"Constant": {"Value": "1","ValueType": "String"}}]}}]}},"Name": "70027803-5182-4685-b851-864623689423","NumericScale": 7,"Visibility": "Visible"}],"Axis": "Columns","Name": "CustomDimension1"}]})";
