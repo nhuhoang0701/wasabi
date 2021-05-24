@@ -8,9 +8,8 @@
 class JSONWriter;
 
 #include <InA_query_model/Member.h>
-namespace ina::query_model { class Query; class Dimension;};
-namespace ina::metadata { class Cube; class Dimension;};
-namespace calculator {class Cube; class Axe;}
+namespace ina::query_model { class QueryEx;};
+namespace calculator {class Cube;}
 
 namespace ina::grid
 {
@@ -20,9 +19,9 @@ namespace ina::grid
 	class Grid
 	{
 	public:
-		Grid(const ina::query_model::Query& query, const ina::metadata::Cube& dsCube, const calculator::Cube& cube);
+		Grid(const ina::query_model::QueryEx& queryExec, const calculator::Cube& cube);
 
-		const ina::query_model::Query& getQuery() const {return m_query;};
+		const ina::query_model::QueryEx& getQuery() const {return m_queryExec;};
 		const calculator::Cube&        getCube() const {return m_cube;};
 
 		const Axis&        getRowAxis() const {return m_rowAxe;};
@@ -36,7 +35,7 @@ namespace ina::grid
 		size_t   getRowTo() const;
 
 	private:
-		const ina::query_model::Query& m_query;
+		const ina::query_model::QueryEx& m_queryExec;
 		const calculator::Cube&        m_cube;
 
 		Axis  m_rowAxe;

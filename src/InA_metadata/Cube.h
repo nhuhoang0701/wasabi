@@ -19,8 +19,10 @@ namespace ina::metadata
 	{
 		public:
 		Cube(const ina::query_model::DataSource& datasource);
+		
+		const ina::query_model::DataSource&     getDataSource() const;
 
-		const Dimension&  getDimension(const std::string& name) const;
+		const Dimension&                                getDimension(const std::string& name) const;
 		const std::vector<std::unique_ptr<Dimension>>&  getDimensions() const;
 
 		bool containsDataSourceColumn(const std::string& attributeName) const;

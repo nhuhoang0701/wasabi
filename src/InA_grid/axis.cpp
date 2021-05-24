@@ -1,7 +1,7 @@
 #include "axis.h"
 
 
-#include <InA_query_model/Query.h>
+#include <InA_query_model/QueryEx.h>
 #include <InA_query_model/Dimension.h>
 
 #include <InA_metadata/Cube.h>
@@ -14,7 +14,7 @@ namespace ina::grid
      : m_name(name), m_cubeAxe(cubeAxis)
      {}
 
-    void Axis::init(const ina::query_model::Query& query)
+    void Axis::init(const ina::query_model::QueryEx& queryEx, int32_t from, int32_t to)
     {
         m_tupleCount = m_cubeAxe.getCardinality();
         if( m_measDim != nullptr)
@@ -24,15 +24,17 @@ namespace ina::grid
             else
                 m_tupleCount *= m_measureDimensionMembers.size();
         }
+
+        setFromTo(from, to);
     }
 
-	void  Axis::addDimension(const ina::query_model::Dimension& dimension, const ina::query_model::Query& query)
+	void  Axis::addDimension(const ina::query_model::Dimension& dimension, const ina::query_model::QueryEx& queryEx)
     {
         m_dimensions.push_back(&dimension);
-        if(ina::query_model::Dimension::isDimensionOfMeasures(dimension) )
+        if(ina::query_model::QueryEx::isDimensionOfMeasures(dimension) )
         {
             m_measDim = &dimension;
-            m_measureDimensionMembers = query.getDefinition().getVisibleMembers(*m_measDim);
+            m_measureDimensionMembers = queryEx.getVisibleMembers(*m_measDim);
         }
     }
 
