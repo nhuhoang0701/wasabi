@@ -6,6 +6,7 @@
 
 #include <InA_query_model/Queries.h>
 #include <InA_query_model/Query.h>
+#include <InA_query_model/QueryEx.h>
 #include <InA_query_model/DataSource.h>
 
 #include <calculator/cube.h>
@@ -52,7 +53,7 @@ const char* json_getServerInfo()
 
 void processQuery(JSONWriter& writer, const ina::query_model::Query& query);
 void writeResponse(JSONWriter& writer, const ina::metadata::Cube* dsCube, const ina::grid::Grid* grid);
-void getDataCube(const ina::query_model::Query& query, const ina::metadata::Cube& dsCube, calculator::Cube& cube);
+void getDataCube(const ina::query_model::QueryEx& queryExec, calculator::Cube& cube);
 
 extern "C"
 const char* json_getResponse_json(const char* InA)
@@ -96,8 +97,9 @@ void processQuery(JSONWriter& writer, const ina::query_model::Query& query)
 
 	if(query.getType() == ina::query_model::Query::qAnalytics)
 	{		
-		getDataCube(query, *dsCube, dataCube);
-		grid = std::make_unique<ina::grid::Grid>(query, *dsCube, dataCube);
+		ina::query_model::QueryEx queryExec(query.getDefinition(), *dsCube);
+		getDataCube(queryExec, dataCube);
+		grid = std::make_unique<ina::grid::Grid>(queryExec, dataCube);
 	}
 
 	////////////////////////////////////////////
@@ -112,7 +114,8 @@ void writeResponse(JSONWriter& writer, const ina::metadata::Cube* dsCube, const 
 	JSON_MAP(writer);
 	if(grid)
 	{
-		write(grid->getQuery().getDataSource(), writer);
+		if(grid->getQuery().getDSCube())
+			write(grid->getQuery().getDSCube()->getDataSource(), writer);
 		writer.key("Grids");
 		JSON_LIST(writer);
 		ina::grid::write(*grid, writer);
@@ -136,26 +139,26 @@ void writeResponse(JSONWriter& writer, const ina::metadata::Cube* dsCube, const 
 }
 
 
-void getDataCube(const ina::query_model::Query& query, const ina::metadata::Cube& dsCube, calculator::Cube& cube)
+void getDataCube(const ina::query_model::QueryEx& queryEx, calculator::Cube& cube)
 {
-	const query_generator::query_generator& queryGen = query_generator::query_generator(query);
+	const query_generator::query_generator& queryGen = query_generator::query_generator(queryEx);
 
 	std::shared_ptr<calculator::DataStorage> data(new calculator::DataStorage());
-	queryGen.prepareStorage(*data, &dsCube);
+	queryGen.prepareStorage(data);
 	std::function<void(const dbproxy::Row&)> lambda = [&data](const dbproxy::Row& row)
 	{
 		data->insertRow(row);
 	};
-	const std::string& cnxString = query.getDataSource().getPackageName();
-	const std::string sql = queryGen.getSQL(*data, &dsCube);
+	const std::string& cnxString = queryEx.getDSCube()->getDataSource().getPackageName();
+	const std::string sql = queryGen.getSQL();
 	std::cout << "SQL: " << sql << std::endl;
 	dbproxy::DBProxy::getDBProxy(cnxString)->executeSQL(sql, &lambda);
 	std::cout << "    Nbrs of rows " << data->getRowCount() << std::endl;
 
 	cube.setStorage(data);
-	for (const auto& dimension : query.getDefinition().getDimensions()) 
+	for (const auto& dimension : queryEx.getQueryDefinition().getDimensions()) 
 	{
-		if(!ina::query_model::Dimension::isDimensionOfMeasures(dimension) )
+		if(!ina::query_model::QueryEx::isDimensionOfMeasures(dimension) )
 		{
 			calculator::eAxe axe;
 			if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Rows)
@@ -170,20 +173,20 @@ void getDataCube(const ina::query_model::Query& query, const ina::metadata::Cube
 		else
 		{
 			// Add Measures
-			for(const auto member : query.getDefinition().getVisibleMembers(dimension))
+			for(const auto member : queryEx.getVisibleMembers(dimension))
 			{
 				if(member.getFormula() == nullptr && member.getSelection() ==nullptr)
 					cube.addMeasure(ina::query_model::Member::getName(member));
 			}
 			// Add formula
-			for(const auto member : query.getDefinition().getVisibleMembers(dimension))
+			for(const auto member : queryEx.getVisibleMembers(dimension))
 			{
 				auto formula = calculator::Object(member.getName());
 				if(member.getFormula() != nullptr && !cube.contain(formula))
 					cube.addFormula(formula, *member.getFormula());
 			}
 			// Add restriction
-			for(const auto member : query.getDefinition().getVisibleMembers(dimension))
+			for(const auto member : queryEx.getVisibleMembers(dimension))
 			{
 				auto restriction = calculator::Object(member.getName());
 				if(member.getSelection() != nullptr && !cube.contain(restriction))
