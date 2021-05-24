@@ -7,19 +7,19 @@
 
 namespace ina::metadata
 {
-    std::string toString(eDatatype dataType)
+    std::string toString(common::eDataType dataType)
     {
         switch (dataType)
         {
-        case eDatatype::Uninit : throw std::runtime_error("eDatatype value not init.");
-        case eDatatype::String : return "String";
-        case eDatatype::Long :return "Long";
+        case common::eDataType::Uniti : throw std::runtime_error("eDatatype value not init.");
+        case common::eDataType::String : return "String";
+        case common::eDataType::Numeric :return "Long";
         default:
             throw std::runtime_error("eDatatype unknow value");
         }
     }
-    Attribute::Attribute(const Dimension& dimension, const std::string name, const std::string& description, eAttrType type)
-        : m_dimension(&dimension),m_name(name), m_description(description), m_type(type)
+    Attribute::Attribute(const Dimension& dimension, const std::string name, const std::string& description, eAttrType type, common::eDataType datatype)
+        : m_dimension(&dimension),m_name(name), m_description(description), m_datatype(datatype), m_type(type)
     {
     }
 
@@ -28,6 +28,7 @@ namespace ina::metadata
         m_dimension = other.m_dimension;
         m_name = other.m_name;
         m_description = other.m_description;
+        m_datatype = other.m_datatype;
         m_type = other.m_type;
     }
 	Attribute& Attribute::operator=(const Attribute& other)
@@ -35,6 +36,7 @@ namespace ina::metadata
         m_dimension = other.m_dimension;
         m_name = other.m_name;
         m_description = other.m_description;
+        m_datatype = other.m_datatype;
         m_type = other.m_type;
 
         return *this;
@@ -74,10 +76,9 @@ namespace ina::metadata
         const static std::string ID = "ID";
         return ID;
     }
-	eDatatype            Attribute::getDataType() const
+	common::eDataType Attribute::getDataType() const
     {
-        //TODO
-        return eDatatype::String;
+        return m_datatype;
     }
     const std::string&   Attribute::getSQLDataType() const
     {

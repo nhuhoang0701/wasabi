@@ -4,14 +4,16 @@
 #include "Parameter.h"
 
 #include <cmath> // For std::pow
+#include <iostream>
+#include <tuple>
 
 namespace ina::query_model {        
 	const std::string QueryEx::DIMENSION_OF_MEASURES_NAME = "CustomDimension1";
 
-	calculator::Value eval(const void* context, const ina::query_model::Parameter& param, void (*getValueCallback)(const void* context, const std::string& nameObj, calculator::Value& value));
+	common::Value eval(const void* context, const ina::query_model::Parameter& param, void (*getValueCallback)(const void* context, const std::string& nameObj, common::Value& value));
 	size_t getDeps(const ina::query_model::Parameter& param, std::vector<std::string>& deps);
 
-	calculator::Value eval(const void* context, const ina::query_model::Function& fct, void (*getValueCallback)(const void* context, const std::string& nameObj, calculator::Value& value));
+	common::Value eval(const void* context, const ina::query_model::Function& fct, void (*getValueCallback)(const void* context, const std::string& nameObj, common::Value& value));
 	size_t getDeps(const ina::query_model::Function& fct, std::vector<std::string>& deps);
 
      QueryEx::QueryEx(const Definition& queryDefinition)
@@ -21,6 +23,74 @@ namespace ina::query_model {
      QueryEx::QueryEx(const Definition& queryDefinition, const ina::metadata::Cube& dsCube)
      : m_queryDefinition(queryDefinition), m_dsCube(&dsCube)
     {
+    }
+    
+    void QueryEx::getResultObjects(std::vector<std::tuple<std::string /*name*/, std::string/*aggregation*/, common::eDataType>>& resultObjects) const
+    {
+        for (const auto& dimension : getQueryDefinition().getDimensions())
+        {
+            // Add members
+            for(const auto& member : getVisibleMembers(dimension) )
+            {
+                const std::string& memberName = ina::query_model::Member::getName(member);
+                if(isDataSourceObject(memberName)==false)
+                    continue;
+
+                std::string agg = member.getAggregation();
+                if(agg.empty())
+                {
+                    std::string msg;
+                    msg += "WASABI: ERROR: Missing aggreation in the InA request for member '" + memberName + "' hardcoded SUM will be used, NYI metadata from SQL tables";
+                    std::cerr << msg;
+                    agg = "SUM";
+                }
+                resultObjects.push_back(std::make_tuple(memberName, agg, common::eDataType::Numeric)); // TODO: Add datatype to Member
+            }
+            // From formula
+            for(const auto& member : getVisibleMembers(dimension) )
+            {
+                if(member.getFormula() == nullptr)
+                    continue;
+
+                std::vector<std::string> deps;
+                ina::query_model::getDeps(*member.getFormula(), deps);
+
+                for(const auto&memberName : deps )
+                {
+                    if(isDataSourceObject(memberName)==false)
+                        continue;
+
+                    bool conatainsIt = false;
+                    for(const auto& select : resultObjects)
+                    {
+                        if(std::get<0>(select)==memberName)
+                        {
+                            conatainsIt=true;
+                            continue;
+                        }
+                    }
+                    if(conatainsIt)
+                        continue;
+
+                    std::string agg = member.getAggregation();
+                    if(agg.empty())
+                    {
+                        std::string msg;
+                        msg += "WASABI: ERROR: Missing aggreation in the InA request for member '" + memberName + "' hardcoded SUM will be used, TODO: Read it from metadata";
+                        std::cerr << msg;
+                        agg = "SUM";
+                    }
+                    resultObjects.push_back(std::make_tuple(memberName, agg, common::eDataType::Numeric)); // TODO: datatype
+                }
+            }
+            //From attributes
+            for(const auto& attribut : dimension.getAttributes())
+            {
+                if(isDataSourceObject(attribut.getName())==false)
+                    continue;
+                resultObjects.push_back(std::make_tuple(attribut.getName(), "", common::eDataType::String));
+            }
+        }
     }
 
     const ina::query_model::Definition& QueryEx::getQueryDefinition() const
@@ -112,9 +182,9 @@ namespace ina::query_model {
         return dimension.getMembers();
     }
     
-	calculator::Value eval(const void* context, const ina::query_model::Parameter& param, void (*getValueCallback)(const void* context, const std::string& nameObj, calculator::Value& value))
+	common::Value eval(const void* context, const ina::query_model::Parameter& param, void (*getValueCallback)(const void* context, const std::string& nameObj, common::Value& value))
     {
-        calculator::Value paramValue;
+        common::Value paramValue;
         switch (param.getType())
         {
             case ina::query_model::Parameter::eConstant:
@@ -171,7 +241,7 @@ namespace ina::query_model {
         return nbOfDeps;
     }
     
-    double getDouble(const calculator::Value& val)
+    double getDouble(const common::Value& val)
     {
         if(std::holds_alternative<double>(val))
         {
@@ -184,9 +254,9 @@ namespace ina::query_model {
         throw std::runtime_error("getDouble: Not a double");
     }
 
-    calculator::Value eval(const void* context, const ina::query_model::Function& fct, void (*getValueCallback)(const void* context, const std::string& nameObj, calculator::Value& value))
+    common::Value eval(const void* context, const ina::query_model::Function& fct, void (*getValueCallback)(const void* context, const std::string& nameObj, common::Value& value))
     {
-        std::vector<calculator::Value>  paramValues(fct.getParameterCount());
+        std::vector<common::Value>  paramValues(fct.getParameterCount());
         for(size_t i = 0; i < fct.getParameterCount(); i++)
         {
             const ina::query_model::Parameter& param = fct.getParameter(i);
@@ -255,7 +325,7 @@ namespace ina::query_model {
         return nbOfDeps;
     }
     
-    calculator::Value eval(const void* context, const ina::query_model::Formula& formula, void (*getValueCallback)(const void* context, const std::string& nameObj, calculator::Value& value))
+    common::Value eval(const void* context, const ina::query_model::Formula& formula, void (*getValueCallback)(const void* context, const std::string& nameObj, common::Value& value))
     {
         return eval(context, formula.getParameter(), getValueCallback);
     }

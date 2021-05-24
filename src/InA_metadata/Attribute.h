@@ -1,5 +1,7 @@
 #pragma once
 
+#include <common/data.h>
+
 #include <cstdint>
 #include <string>
 
@@ -13,15 +15,14 @@ namespace ina::metadata
 	void write(const Attribute& obj, JSONWriter& jsonNode);
 
 	enum class eAttrType {Uninit=-1, Key = 3, Text = 1};
-	enum class eDatatype {Uninit=-1, String = 3, Long = 1};
-	std::string toString(eDatatype);
+	std::string toString(common::eDataType);
 	enum class eColumnType {Uninit=-1,NumericMeasure = 73,NoNumericMeasure = 83,NoMeasure = 0};
 
 	class Attribute
 	{
 		public:
 			Attribute() = default;
-			Attribute(const Dimension& dimension, const std::string name, const std::string& description, eAttrType type);
+			Attribute(const Dimension& dimension, const std::string name, const std::string& description, eAttrType type, common::eDataType datatype);
 			Attribute(const Attribute& other);
 			Attribute& operator=(const Attribute& other);
 
@@ -34,7 +35,7 @@ namespace ina::metadata
 
 			const std::string&   getAlias() const;
 
-			eDatatype            getDataType() const;
+			common::eDataType    getDataType() const;
 			const std::string&   getSQLDataType() const;
 			
 			bool                 isKey() const;
@@ -50,9 +51,10 @@ namespace ina::metadata
 			std::uint32_t        getCardinality() const;
 
 		private:
-			std::string      m_name; 
-			std::string      m_description;
-			eAttrType        m_type = eAttrType::Uninit;
+			std::string       m_name; 
+			std::string       m_description;
+			common::eDataType m_datatype = common::eDataType::Uniti;
+			eAttrType         m_type = eAttrType::Uninit;
 
 			const Dimension* m_dimension = nullptr;
 
