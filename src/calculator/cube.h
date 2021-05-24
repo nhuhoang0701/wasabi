@@ -1,15 +1,13 @@
 #pragma once
 
-#include <InA_query_model/Formula.h>
-#include <InA_query_model/Selection/Selection.h>
+#include <common/data.h>
 
-#include "common.h"
-
-#include <cstddef>
 #include <memory>
 #include <string>
 #include <vector>
-#include <set>
+#include <map>
+
+namespace ina::query_model {class Formula; class Selection;}
 
 namespace calculator
 {
@@ -30,17 +28,17 @@ namespace calculator
 
 		const std::string& getName() const {return m_name;}
 
-		calculator::eDataType  getDataType() const;
+		common::eDataType  getDataType() const;
 
 		size_t                 getRowCount() const;
-		const Value&           getValueAtRowIdx(size_t rowIndex) const;
+		const common::Value&   getValueAtRowIdx(size_t rowIndex) const;
 
 		size_t                 getValueIndexFromRowIdx(size_t rowIndex) const;
-		const Value&           getValueAtValueIdx(size_t valueIndex) const;
+		const common::Value&   getValueAtValueIdx(size_t valueIndex) const;
 		size_t                 getNumberOfValues() const;
 
-		Value                  aggregate() const;
-		Value                  aggregate(const std::vector<size_t>& rowIndexes) const;
+		common::Value          aggregate() const;
+		common::Value          aggregate(const std::vector<size_t>& rowIndexes) const;
 
 		const ina::query_model::Formula* m_formula = nullptr; // TMP: WIP
 		const ina::query_model::Selection* m_selection = nullptr; // TMP: WIP
@@ -64,11 +62,11 @@ namespace calculator
 
 		const Object&          getDimension(const std::string& dimName) const;
 
-		const Value&           getValue(const std::string& dimName, size_t tupleIndex) const;
+		const common::Value&   getValue(const std::string& dimName, size_t tupleIndex) const;
 		size_t                 getValueIndex(const std::string& dimName, size_t tupleIndex) const;
 
 	private:
-		const Value&           getValue(size_t dimIdx, size_t tupleIndex) const;
+		const common::Value&   getValue(size_t dimIdx, size_t tupleIndex) const;
 		size_t                 getValueIndex(size_t dimIdx, size_t tupleIndex) const;
 
 	private:
@@ -97,7 +95,7 @@ namespace calculator
 		size_t  getColumnCount() const;
 
 		const Object&          getMeasure(const std::string& measureName) const;
-		const Value&           getValue(const std::string& measureName, size_t col, size_t row) const;
+		const common::Value&   getValue(const std::string& measureName, size_t col, size_t row) const;
 
 
 	private:
@@ -105,7 +103,7 @@ namespace calculator
 		const Axe&   m_axeRow;
 		const Axe&   m_axeCol;
 
-		typedef std::vector<std::vector<Value>>  CellsValue;
+		typedef std::vector<std::vector<common::Value>>  CellsValue;
 
 		std::map<std::string,CellsValue> m_Body;
 		bool                             m_materialyzed = false;

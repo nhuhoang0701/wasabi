@@ -1,5 +1,6 @@
 #include "Cube.h"
 #include "Dimension.h"
+#include "InA_metadata/Member.h"
 
 #include <InA_query_model/DataSource.h>
 #include <metadata_enrichment/Tables.h>
@@ -17,95 +18,124 @@ namespace ina::metadata
         const std::string& tableName = m_datasource.getObjectName();
         if(tableName == "$$DataSource$$" )
 			throw std::runtime_error("write cube on $$DataSource$$ NYI");
-        
-        {
-            const std::string& cnxString = m_datasource.getPackageName();
-            std::shared_ptr<wasabi::metadata::Catalog> catalog = std::shared_ptr<wasabi::metadata::Catalog>(new wasabi::metadata::Catalog(cnxString));
 
-            const std::string& tableName = m_datasource.getObjectName();
-            const auto& colNames = catalog->getTable(tableName).getColumnNames();
+        const std::string& cnxString = m_datasource.getPackageName();
+        std::shared_ptr<wasabi::metadata::Catalog> catalog = std::shared_ptr<wasabi::metadata::Catalog>(new wasabi::metadata::Catalog(cnxString));
+
+        const auto& colNames = catalog->getTable(tableName).getColumnNames();
+        {
+            std::unique_ptr<Dimension> measuresDim = std::make_unique<DimensionMeasures>("CustomDimension1", "Measures", eAxe::Columns);
+            measuresDim->addKeyAttribute(Attribute(*measuresDim, "[Measures].[Measures]", "[Measures].[Measures]", eAttrType::Key, common::eDataType::String));
+            measuresDim->addTextAttribute(Attribute(*measuresDim, "[Measures].[Name]", "[Measures].[Name]", eAttrType::Text, common::eDataType::String));
+
+            for(const auto& colName : colNames)
             {
-                for(const auto& colName : colNames)
+                const auto& column = catalog->getTable(tableName).getColumn(colName);
+                if(tableName == "Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma" )
                 {
-                    const auto& column = catalog->getTable(tableName).getColumn(colName);
-                    //std::cout << "******************" << std::endl;
-                    //std::cout << "column.getName():" << column.getName() << std::endl;
-                    //std::cout << "column.getSQLName():" << column.getSQLName() << std::endl;
-                    //std::cout << "column.getDataType():" << static_cast<std::uint32_t>(column.getDataType()) << std::endl;
-                    //std::cout << "column.getAggregation():" << static_cast<std::uint32_t>(column.getAggregation()) << std::endl;
+                    if(colName=="agg1_id")
+                    {
+                        std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[index]", "index");
+                        dim->addKeyAttribute(Attribute(*dim, colName, "agg. idx", eAttrType::Key, column.getDataType()));
+                        m_dimensions.push_back(std::move(dim));
+                    }
+                    else if(colName=="Yr")
+                    {
+                        std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[Year]", "Year", eAxe::Rows);
+                        dim->addKeyAttribute(Attribute(*dim, colName, "Year", eAttrType::Key, column.getDataType()));
+                        m_dimensions.push_back(std::move(dim));
+                    }
+                    else if(colName=="Qtr")
+                    {
+                        std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[Quarter]", "Quarter");
+                        dim->addKeyAttribute(Attribute(*dim, colName, "Quarter", eAttrType::Key, column.getDataType()));
+                        m_dimensions.push_back(std::move(dim));
+                    }
+                    else if(colName=="Mth")
+                    {
+                        if(haveDimension("[Month]") == false)
+                        {
+                            std::unique_ptr<Dimension> dim;
+                            dim = std::make_unique<Dimension>("[Month]", "Month");
+                            m_dimensions.push_back(std::move(dim));
+                        }
+                        Dimension& dim = getDimension("[Month]");
+                        dim.addKeyAttribute(Attribute(dim, "Mth", "Month number", eAttrType::Key, column.getDataType()));
+                    }
+                    else if(colName=="Month_name")
+                    {
+                        if(haveDimension("[Month]") == false)
+                        {
+                            std::unique_ptr<Dimension> dim;
+                            dim = std::make_unique<Dimension>("[Month]", "Month");
+                            m_dimensions.push_back(std::move(dim));
+                        }
+                        Dimension& dim = getDimension("[Month]");
+                        dim.addTextAttribute(Attribute(dim, "Month_name", "Month name", eAttrType::Text, column.getDataType()));
+                    }
+                    else if(colName=="Wk")
+                    {
+                        std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[Week]", "Week");
+                        dim->addKeyAttribute(Attribute(*dim, colName, "Week", eAttrType::Key, column.getDataType()));
+                        m_dimensions.push_back(std::move(dim));
+                    }
+                    else if(colName=="City")
+                    {
+                        std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[City]", "City");
+                        dim->addKeyAttribute(Attribute(*dim, colName, "City", eAttrType::Key, column.getDataType()));
+                        m_dimensions.push_back(std::move(dim));
+                    }
+                    else if(colName=="Store_name")
+                    {
+                        std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[Store_name]", "Store name");
+                        dim->addKeyAttribute(Attribute(*dim, colName, "Store name", eAttrType::Key, column.getDataType()));
+                        m_dimensions.push_back(std::move(dim));
+                    }
+                    else if(colName=="Sales_revenue")
+                    {
+                        measuresDim->addMember(Member(*measuresDim, colName, "Sales revenue", "Sales revenue"));
+                    }
+                    else if(colName=="Quantity_sold")
+                    {
+                        measuresDim->addMember(Member(*measuresDim, colName, "Quantity sold", "Quantity sold"));
+                    }
+                    else if(colName=="Margin")
+                    {
+                        measuresDim->addMember(Member(*measuresDim, colName, "Margin", "Margin"));
+                    }
+                    else
+                        throw std::runtime_error("Unknow column:"+colName);
                 }
+                else if(tableName == "onetable_datatype" )
+                {
+                    if(colName=="text")
+                    {
+                        std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[text dimension name]", "text dimension description");
+                        dim->addKeyAttribute(Attribute(*dim, colName, "text attribut description", eAttrType::Key, column.getDataType()));
+                        m_dimensions.push_back(std::move(dim));
+                    }
+                    else if(colName=="varchar")
+                    {
+                        std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[varchar dimension name]", "varchar dimension description");
+                        dim->addKeyAttribute(Attribute(*dim, colName, "varchar attribut description", eAttrType::Key, column.getDataType()));
+                        m_dimensions.push_back(std::move(dim));
+                    }
+                    else if(colName=="integer")
+                    {
+                        measuresDim->addMember(Member(*measuresDim, colName, "integer", "integer"));
+                    }
+                    else if(colName=="real")
+                    {
+                        measuresDim->addMember(Member(*measuresDim, colName, "real", "real"));
+                    }
+                    else
+                        throw std::runtime_error("Unknow column:"+colName);
+                }
+                else
+                    throw std::runtime_error("Unknow table:"+tableName);
             }
+            m_dimensions.push_back(std::move(measuresDim));
         }
-
-        if(tableName == "Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma" )
-        {
-            {
-                std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[index]", "index");
-                dim->addKeyAttribute(Attribute(*dim, "agg1_id", "agg. idx", eAttrType::Key));
-                m_dimensions.push_back(std::move(dim));
-            }
-            {
-                std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[Year]", "Year", eAxe::Rows);
-                dim->addKeyAttribute(Attribute(*dim, "Yr", "Year", eAttrType::Key));
-                m_dimensions.push_back(std::move(dim));
-            }
-            {
-                std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[Quarter]", "Quarter");
-                dim->addKeyAttribute(Attribute(*dim, "Qtr", "Quarter", eAttrType::Key));
-                m_dimensions.push_back(std::move(dim));
-            }
-            {
-                std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[Month]", "Month");
-                dim->addKeyAttribute(Attribute(*dim, "Mth", "Month number", eAttrType::Key));
-                dim->addTextAttribute(Attribute(*dim, "Month_name", "Month name", eAttrType::Text));
-                m_dimensions.push_back(std::move(dim));
-            }
-            {
-                std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[Week]", "Week");
-                dim->addKeyAttribute(Attribute(*dim, "Wk", "Week", eAttrType::Key));
-                m_dimensions.push_back(std::move(dim));
-            }
-            {
-                std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[City]", "City");
-                dim->addKeyAttribute(Attribute(*dim, "City", "City", eAttrType::Key));
-                m_dimensions.push_back(std::move(dim));
-            }
-
-            {
-                std::unique_ptr<Dimension> measuresDim = std::make_unique<DimensionMeasures>("CustomDimension1", "Measures", eAxe::Columns);            
-                measuresDim->addKeyAttribute(Attribute(*measuresDim, "[Measures].[Measures]", "[Measures].[Measures]", eAttrType::Key));
-                measuresDim->addTextAttribute(Attribute(*measuresDim, "[Measures].[Name]", "[Measures].[Name]", eAttrType::Text));
-
-                measuresDim->addMember(Member(*measuresDim, "Sales_revenue", "Sales revenue", "Sales revenue"));
-                measuresDim->addMember(Member(*measuresDim, "Quantity_sold", "Quantity sold", "Quantity sold"));
-                measuresDim->addMember(Member(*measuresDim, "Margin", "Margin", "Margin"));
-                m_dimensions.push_back(std::move(measuresDim));
-            }
-        }
-        else if(tableName == "onetable_datatype" )
-        {
-            {
-                std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[text dimension name]", "text dimension description");
-                dim->addKeyAttribute(Attribute(*dim, "text", "text attribut description", eAttrType::Key));
-                m_dimensions.push_back(std::move(dim));
-            }
-            {
-                std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[varchar dimension name]", "varchar dimension description");
-                dim->addKeyAttribute(Attribute(*dim, "varchar", "varchar attribut description", eAttrType::Key));
-                m_dimensions.push_back(std::move(dim));
-            }
-            {
-                std::unique_ptr<Dimension> measuresDim = std::make_unique<DimensionMeasures>("[Dimension of measures name]", "Dimension of measures description", eAxe::Columns);            
-                measuresDim->addKeyAttribute(Attribute(*measuresDim, "[Measures].[Measures]", "[Measures].[Measures]", eAttrType::Key));
-                measuresDim->addTextAttribute(Attribute(*measuresDim, "[Measures].[Name]", "[Measures].[Name]", eAttrType::Text));
-
-                measuresDim->addMember(Member(*measuresDim, "integer", "integer", "integer"));
-                measuresDim->addMember(Member(*measuresDim, "real", "real", "real"));
-                m_dimensions.push_back(std::move(measuresDim));
-            }
-        }
-        else
-            throw std::runtime_error("Unknow datasource:"+tableName);
 	 }
 
     const ina::query_model::DataSource& Cube::getDataSource() const
@@ -113,7 +143,21 @@ namespace ina::metadata
         return m_datasource;
     }
 
+     bool Cube::haveDimension(const std::string name) const
+     {
+         for(const auto& dimension : m_dimensions)
+            if(dimension && dimension->getName() == name)
+                return true;
+         
+         return false;
+     }
+
      const Dimension&  Cube::getDimension(const std::string& name) const
+     {
+        return  const_cast<Cube&>(*this).getDimension(name);
+     }
+
+     Dimension&  Cube::getDimension(const std::string& name)
      {
          for(const auto& dimension : m_dimensions)
             if(dimension->getName() == name)

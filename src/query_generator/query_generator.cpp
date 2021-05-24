@@ -28,85 +28,22 @@ namespace query_generator
 
     std::string query_generator::getSQL() const
     {
-		std::vector<std::pair<std::string /*name*/,std::string/*aggregation*/>> selected;
+		std::vector<std::tuple<std::string /*name*/,std::string/*aggregation*/, common::eDataType>> resultObjects;
 		std::ostringstream where;
         std::vector<std::string> group_by;
 		std::vector<std::pair<std::string /*name*/,std::string/*order*/>> order_by;
 
 		// SELECT objects
 		{
-			for (const auto& dimension : m_queryExec.getQueryDefinition().getDimensions())
-			{
-				// Add members
-				for(const auto& member : m_queryExec.getVisibleMembers(dimension) )
-				{
-					const std::string& memberName = ina::query_model::Member::getName(member);
-					if(m_queryExec.isDataSourceObject(memberName)==false)
-						continue;
+			m_queryExec.getResultObjects(resultObjects);
 
-					std::string agg = member.getAggregation();
-					if(agg.empty())
-					{
-						std::string msg;
-						msg += "WASABI: ERROR: Missing aggreation in the InA request for member '" + memberName + "' hardcoded SUM will be used, NYI metadata from SQL tables";
-						std::cerr << msg;
-						agg = "SUM";
-					}
-					selected.push_back(std::make_pair(memberName, agg));
-				}
-				// From formula
-				for(const auto& member : m_queryExec.getVisibleMembers(dimension) )
-				{
-					if(member.getFormula() == nullptr)
-						continue;
-
-					std::vector<std::string> deps;
-					ina::query_model::getDeps(*member.getFormula(), deps);
-
-					for(const auto&memberName : deps )
-					{
-						if(m_queryExec.isDataSourceObject(memberName)==false)
-							continue;
-
-						bool conatainsIt = false;
-						for(const auto& select : selected)
-						{
-							if(select.first==memberName)
-							{
-								conatainsIt=true;
-								continue;
-							}
-						}
-						if(conatainsIt)
-							continue;
-
-						std::string agg = member.getAggregation();
-						if(agg.empty())
-						{
-							std::string msg;
-							msg += "WASABI: ERROR: Missing aggreation in the InA request for member '" + memberName + "' hardcoded SUM will be used";
-							std::cerr << msg;
-							agg = "SUM";
-						}
-						selected.push_back(std::make_pair(memberName, agg));
-					}
-				}
-				//From attributes
-				for(const auto& attribut : dimension.getAttributes())
-				{
-					if(m_queryExec.isDataSourceObject(attribut.getName())==false)
-						continue;
-					selected.push_back(std::make_pair(attribut.getName(), ""));
-				}
-			}
-
-			// Integrity check index beetwen query and data storage columns
 			if(m_dataStorage)
 			{
+				// Integrity check index beetwen query and data storage columns
 				size_t idxInData = 0;
-				for(const auto& select : selected)
+				for(const auto& resultObject : resultObjects)
 				{
-					if(m_dataStorage->getColIndex(select.first) != idxInData)
+					if(m_dataStorage->getColIndex(std::get<0>(resultObject)) != idxInData)
 						throw std::runtime_error("Missmatch col. index in data with query");
 					idxInData++;
 				}
@@ -114,7 +51,7 @@ namespace query_generator
 		}
 
         std::ostringstream sql;
-		if(!selected.empty())
+		if(!resultObjects.empty())
 		{
 			for (const auto& dimension : m_queryExec.getQueryDefinition().getDimensions())
 			{
@@ -173,12 +110,12 @@ namespace query_generator
 			std::string delim;
         	sql << "SELECT ";
 			delim.clear();
-			for(const auto& s : selected)
+			for(const auto& resultObject : resultObjects)
 			{
-				if(s.second.empty())
-	        		sql << delim << s.first;
+				if(std::get<1>(resultObject).empty())
+	        		sql << delim << std::get<0>(resultObject);
 				else
-					sql << delim << s.second << "(" << s.first << ")";
+					sql << delim << std::get<1>(resultObject) << "(" << std::get<0>(resultObject) << ")";
 				if(delim.empty()) delim = ", ";
 			}
 
@@ -264,43 +201,11 @@ namespace query_generator
 		if(data.get() == nullptr)
 			throw std::runtime_error("query_generator::prepareStorage datastorage should not be null");
 
-        for (const auto& dimension : m_queryExec.getQueryDefinition().getDimensions())
-        {
-			for(const auto& member : m_queryExec.getVisibleMembers(dimension) )
-			{
-				const std::string& memberName = ina::query_model::Member::getName(member);
+		std::vector<std::tuple<std::string /*name*/,std::string/*aggregation*/, common::eDataType>> resultObjects;
+		m_queryExec.getResultObjects(resultObjects);
+		for(const auto& resultObject: resultObjects)
+			data->addColumn(std::get<0>(resultObject),std::get<2>(resultObject), calculator::eColumnType::NoneIndexed);
 
-				if(m_queryExec.isDataSourceObject(memberName)==false)
-					continue;
-				data->addColumn(memberName,calculator::eDataType::Number, calculator::eColumnType::NoneIndexed);
-			}
-			for(const auto& member : m_queryExec.getVisibleMembers(dimension) )
-			{
-				// TODO: Query generator should not use ina::query_model::Dimension,
-				// but ina::metadata::Dimension to know if object is part of the data source
-				if(member.getFormula() == nullptr )
-					continue;
-					
-				std::vector<std::string> deps;
-				ina::query_model::getDeps(*member.getFormula(), deps);
-
-				for(const auto& memberName : deps)
-				{
-					if(m_queryExec.isDataSourceObject(memberName)==false)
-						continue;
-					if(data->haveCol(memberName))
-						continue;
-					data->addColumn(memberName,calculator::eDataType::Number, calculator::eColumnType::NoneIndexed);
-				}
-			}
-			//From attribut
-			for(const auto& attribut : dimension.getAttributes())
-			{
-				if(m_queryExec.isDataSourceObject(attribut.getName())==false)
-					continue;
-				data->addColumn(attribut.getName(),calculator::eDataType::String, calculator::eColumnType::Indexed);
-			}
-        }
 		m_dataStorage = data;
 	}
 } //query_generator

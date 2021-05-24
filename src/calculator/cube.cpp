@@ -1,14 +1,14 @@
 #include "cube.h"
 
 #include "InA_query_model/QueryEx.h"
+
 #include "InA_query_model/Function.h"
 #include "InA_query_model/Selection/Selection.h"
-#include "calculator/common.h"
+
+#include "common/data.h"
 #include "storage.h"
 
-#include <cstddef>
 #include <stdexcept>
-#include <numeric>    // For iota
 #include <limits>
 
 #include <unordered_map>
@@ -46,11 +46,11 @@ namespace calculator
 		}
 	}
 
-	calculator::eDataType  Object::getDataType() const
+	common::eDataType  Object::getDataType() const
 	{
 		//TODO: Need getdatatype on the AST
 		if(m_formula != nullptr || m_selection != nullptr)
-			return calculator::eDataType::Number;
+			return common::eDataType::Numeric;
 
 		if(!m_dataColumn)
 			throw std::runtime_error("Object: getDataType() no m_dataColumn:" + m_name);
@@ -64,7 +64,7 @@ namespace calculator
 		return m_dataColumn->getRowCount();	
 	}
 
-	const Value& Object::getValueAtRowIdx(size_t rowIndex) const
+	const common::Value& Object::getValueAtRowIdx(size_t rowIndex) const
 	{
 		if(!m_dataColumn)
 			throw std::runtime_error("Object: getValueAtRowIdx() no m_dataColumn:" + m_name);
@@ -78,7 +78,7 @@ namespace calculator
 		return m_dataColumn->getValueIndexFromRowIdx(rowIndex);
 	}
 
-	const Value& Object::getValueAtValueIdx(size_t valueIndex) const
+	const common::Value& Object::getValueAtValueIdx(size_t valueIndex) const
 	{
 		if(!m_dataColumn)
 			throw std::runtime_error("Object: getValueAtValueIdx() no m_dataColumn:" + m_name);
@@ -93,13 +93,13 @@ namespace calculator
 	}
 
 	
-	Value Object::aggregate() const
+	common::Value Object::aggregate() const
 	{
-		Value value;
+		common::Value value;
 		std::cerr << "WASABI: ERROR: Local agregation, NYI hardcoded to sum" << std::endl;
 
-		const calculator::eDataType datatype = m_dataColumn->getDataType();
-		if(datatype == eDataType::Number)
+		const common::eDataType datatype = m_dataColumn->getDataType();
+		if(datatype == common::eDataType::Numeric)
 		{
 			double sum = 0;
 			for(size_t i = 0; i < m_dataColumn->getRowCount(); i++)
@@ -113,13 +113,13 @@ namespace calculator
 		return value;
 	}
 
-	Value Object::aggregate(const std::vector<size_t>& indexes) const
+	common::Value Object::aggregate(const std::vector<size_t>& indexes) const
 	{
-		Value value;
+		common::Value value;
 		if(indexes.empty())
 		{
-			const calculator::eDataType datatype = m_dataColumn->getDataType();
-			if(datatype == eDataType::Number)
+			const common::eDataType datatype = m_dataColumn->getDataType();
+			if(datatype == common::eDataType::Numeric)
 				value = std::nan("0");
 			else
 				value = "##NULL##";
@@ -132,8 +132,8 @@ namespace calculator
 		{
 			std::cerr << "WASABI: ERROR: Local agregation, NYI hardcoded to sum" << std::endl;
 
-			const calculator::eDataType datatype = m_dataColumn->getDataType();
-			if(datatype == eDataType::Number)
+			const common::eDataType datatype = m_dataColumn->getDataType();
+			if(datatype == common::eDataType::Numeric)
 			{
 				double sum = 0;
 				for(const auto& i : indexes)
@@ -220,7 +220,7 @@ namespace calculator
 		throw std::runtime_error("Axe: getDimension() dimemsion not found:" + dimName);
 	}
 
-	const Value& Axe::getValue(const std::string& dimName, size_t tupleIndex) const
+	const common::Value& Axe::getValue(const std::string& dimName, size_t tupleIndex) const
 	{
 		for(size_t dimIdx = 0; dimIdx < size(); dimIdx++ )
 		{
@@ -240,7 +240,7 @@ namespace calculator
 		throw std::runtime_error("Axe: getValue() dimemsion not found:" + dimName);
 	}
 
-	const Value& Axe::getValue(size_t dimIdx, size_t tupleIndex) const
+	const common::Value& Axe::getValue(size_t dimIdx, size_t tupleIndex) const
 	{
 		return at(dimIdx).getValueAtValueIdx(getValueIndex(dimIdx, tupleIndex));
 	}
@@ -277,7 +277,7 @@ namespace calculator
 	}
 
 	typedef std::tuple<size_t, size_t, const Body*> Context;
-	void getValueCallback(const void* context, const std::string& name, calculator::Value& value)
+	void getValueCallback(const void* context, const std::string& name, common::Value& value)
 	{
 		const Body* body = std::get<2>(*static_cast<const Context*>(context));
 		const size_t row = std::get<0>(*static_cast<const Context*>(context));
@@ -438,7 +438,7 @@ namespace calculator
 		throw std::runtime_error("Body: getMeasure() measure not found:" + measureName);
 	}
 
-	const Value& Body::getValue(const std::string& measureName, size_t col, size_t row) const
+	const common::Value& Body::getValue(const std::string& measureName, size_t col, size_t row) const
 	{
 		return m_Body.at(measureName)[row][col];
 	}

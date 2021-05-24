@@ -1,8 +1,6 @@
 #include "Parameter.h"
 #include "Function.h"
 
-#include "calculator/common.h"
-#include <cstddef>
 #include <exceptions/InA_Exception.h>
 
 namespace ina::query_model

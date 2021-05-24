@@ -3,9 +3,9 @@
 #include <string>
 #include <variant>
 
-namespace calculator
+namespace common
 {
 	typedef std::variant<std::string, double> Value;
 
-	enum class eDataType {Number, String};
+	enum class eDataType {Uniti = -1, Numeric=0, String, DateTime};
 }
