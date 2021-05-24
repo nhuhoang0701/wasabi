@@ -2,6 +2,28 @@
 
 namespace ina::query_model
 {
+            Sort::SortType Sort::getSortType(const std::string& str)
+            {
+                if (str == "MemberKey")     return SortType::MemberKey;
+                if (str == "MemberText")    return SortType::MemberText;
+                if (str == "Field")         return SortType::Field;
+                if (str == "Datacell")      return SortType::Datacell;
+                if (str == "Hierarchy")     return SortType::Hierarchy;
+                if (str == "Measure")       return SortType::Measure;
+                if (str == "Complex")       return SortType::Complex;
+                throw TRACED_InA_EXCEPTION("Sort::SortType");
+            }
+
+            Sort::Direction Sort::getDirection(const std::string& str)
+            {
+                if (str == "Asc")     return Direction::Ascending;
+                if (str == "Desc")    return Direction::Descending;
+                if (str == "None")          return Direction::None;
+                // MDS_TheDefinitveGuide_2_1.pdf
+                // P87
+                // If not mentioned, the server decides, how to sort.
+                return Direction::Default;
+            }
             Sort::Sort() 
             {
 
