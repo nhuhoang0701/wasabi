@@ -1,11 +1,12 @@
 #include "Definition.h"
-#include "InA_query_model/Selection/Selection.h"
-#include "QuerySort.h"
+
+#include "Selection/Selection.h"
+#include "Sort.h"
+
+#include "ResultSetFeatureRequest.h"
 
 #include <json/jsonReader.h>
 #include <exceptions/InA_Exception.h>
-
-#include "ResultSetFeatureRequest.h"
 
 #include <iostream>
 
@@ -49,9 +50,9 @@ namespace ina::query_model
 		{
 			for(int i=0; i < sortArray.size(); i++)
 			{
-				query_model::QuerySort querySort;
+				query_model::Sort querySort;
 				read(querySort, sortArray[i]);
-				definition.addQuerySort(querySort);
+				definition.addSort(querySort);
 			}
 		}
 	}

@@ -3,12 +3,11 @@
 #include <metadata_enrichment/Tables.h>
 
 #include "DataSource.h"
-#include "InA_query_model/QuerySort.h"
-#include "InA_query_model/Selection/Selection.h"
-#include "InA_query_model/Selection/Element.h"
+#include "Selection/Selection.h"
+#include "Selection/Element.h"
 #include "Member.h"
 #include "Dimension.h"
-#include "QuerySort.h"
+#include "Sort.h"
 #include "Formula.h"
 #include "ResultSetFeatureRequest.h"
 
@@ -45,8 +44,8 @@ namespace ina::query_model
 		const Selection & 			 getSelection() const;
 		void 			 setSelection(Selection & selection);
 
-		const std::vector<QuerySort>& getQuerySorts() const;
-		void                          addQuerySort(const QuerySort& querySort);
+		const std::vector<Sort>& getSorts() const;
+		void                          addSort(const Sort& sort);
 
 		const ResultSetFeatureRequest& getResultSetFeat() const;
 
@@ -55,7 +54,7 @@ namespace ina::query_model
 
 		std::vector<Dimension>             m_dimensions;
 		std::vector<Element> m_filters;
-		std::vector<QuerySort>             m_sorts;
+		std::vector<Sort>             m_sorts;
 		ResultSetFeatureRequest            m_resultSetFeature;
 		
 		DataSource m_ds;

@@ -1,6 +1,6 @@
 #include "Definition.h"
-#include "InA_query_model/Selection/Element.h"
-#include "InA_query_model/Selection/SelectionElement.h"
+#include "Selection/Element.h"
+#include "Selection/SelectionElement.h"
 
 #include <iostream>
 #include <iterator>
@@ -12,7 +12,7 @@ namespace ina::query_model
         m_dimensions.push_back(dimension);
     }
 
-    void Definition::addQuerySort(const QuerySort& querySort)
+    void Definition::addSort(const Sort& querySort)
     {
         m_sorts.push_back(querySort);
     }
@@ -32,7 +32,7 @@ namespace ina::query_model
 		m_selection = selection;
 	}
 
-	const std::vector<QuerySort>& Definition::getQuerySorts() const
+	const std::vector<Sort>& Definition::getSorts() const
 	{
 		return m_sorts;
 	}
