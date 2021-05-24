@@ -1,21 +1,15 @@
 #pragma once
 
 #include <string>
-#include <vector>
 #include <memory>
 
-class JSONGenericObject; // From <json/jsonRe
-
-#include <calculator/common.h>   // For calculator::Valueader.h>
+class JSONGenericObject; // From <json/jsonReader
 
 namespace ina::query_model
 {
 	class Parameter;
 
-	calculator::Value eval(const void* context, const ina::query_model::Parameter& param, void (*getValueCallback)(const void* context, const std::string& nameObj, calculator::Value& value));
-	size_t getDeps(const ina::query_model::Parameter& param, std::vector<std::string>& deps);
-
-	class Function;
+	class Function;    // Function.h
 	class Parameter
 	{
 		public:

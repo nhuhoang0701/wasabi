@@ -19,14 +19,6 @@ namespace ina::query_model
 	class Dimension
 	{
 		public:
-			const static std::string DIMENSION_OF_MEASURES_NAME;
-
-			inline static bool isDimensionOfMeasures(const Dimension & dimension)
-			{
-				return dimension.getName() == DIMENSION_OF_MEASURES_NAME;
-			}
-
-		public:
 			enum class eAxe {Uninit=0, Rows, Columns};
 
 			Dimension() = default;

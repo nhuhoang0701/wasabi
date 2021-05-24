@@ -1,5 +1,6 @@
 #include "cube.h"
 
+#include "InA_query_model/QueryEx.h"
 #include "InA_query_model/Function.h"
 #include "InA_query_model/Selection/Selection.h"
 #include "calculator/common.h"

@@ -3,6 +3,7 @@
 #include "grid.h"
 
 #include <InA_query_model/Query.h>
+#include <InA_query_model/QueryEx.h>
 #include <calculator/cube.h>
 #include <stdint.h>
 
@@ -32,25 +33,26 @@ namespace ina::grid
         }
 
 
-        int32_t val = grid.getQuery().getDefinition().getResultSetFeat().getSubSetDescription().m_ColumnFrom;
+        const ina::query_model::SubSetDescription& subsetDescription = grid.getQuery().getQueryDefinition().getResultSetFeat().getSubSetDescription();
+        int32_t val = subsetDescription.m_ColumnFrom;
         if(val<0)
             m_ColumnFrom = 0;
         else
             m_ColumnFrom = std::min<size_t>(val, m_ColumnCount);
 
-        val = grid.getQuery().getDefinition().getResultSetFeat().getSubSetDescription().m_ColumnTo;
+        val = subsetDescription.m_ColumnTo;
         if(val<0)
             m_ColumnTo = m_ColumnCount;
         else
             m_ColumnTo = std::min<size_t>(val, m_ColumnCount);
 
-        val = grid.getQuery().getDefinition().getResultSetFeat().getSubSetDescription().m_RowFrom;
+        val = subsetDescription.m_RowFrom;
         if(val<0)
             m_RowFrom = 0;
         else
             m_RowFrom = std::min<size_t>(val, m_RowCount);
 
-        val = grid.getQuery().getDefinition().getResultSetFeat().getSubSetDescription().m_RowTo;
+        val = subsetDescription.m_RowTo;
         if(val<0)
             m_RowTo = m_RowCount;
         else

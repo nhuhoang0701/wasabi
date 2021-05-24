@@ -5,7 +5,7 @@
 
 #include <InA_query_model/Member.h>
 
-namespace ina::query_model { class Query; class Dimension;};
+namespace ina::query_model { class QueryEx; class Dimension;};
 namespace calculator {class Axe;}
 
 namespace ina::grid
@@ -14,17 +14,16 @@ namespace ina::grid
 	{
 		public:
 		Axis(const std::string& name, const calculator::Axe& cubeAxis);
-		void init(const ina::query_model::Query& query);
+		void init(const ina::query_model::QueryEx& queryEx, int32_t from, int32_t to);
 
 		const std::string& getName() const {return m_name;};
 	
 		const std::vector<const ina::query_model::Dimension*>& getDimensions() const {return m_dimensions;};
-		void  addDimension(const ina::query_model::Dimension& dim, const ina::query_model::Query& query);
+		void  addDimension(const ina::query_model::Dimension& dim, const ina::query_model::QueryEx& queryEx);
 
 		std::size_t                                            getTupleCount() const {return m_to-m_from;};
 		std::size_t                                            getTupleTotalCount() const {return m_tupleCount;};
 		
-		void     setFromTo(int32_t from, int32_t to);
 		size_t   getFrom() const;
 		size_t   getTo() const;
 		
@@ -34,6 +33,8 @@ namespace ina::grid
 		const std::vector<ina::query_model::Member>& getMeasureDimMembers() const { return m_measureDimensionMembers;}
 
 		private:
+		void     setFromTo(int32_t from, int32_t to);
+	
 		std::string                                     m_name;
 
 		std::vector<const ina::query_model::Dimension*> m_dimensions;
