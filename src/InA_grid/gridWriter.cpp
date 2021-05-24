@@ -1,6 +1,6 @@
 #include "grid.h"
 
-#include <InA_query_model/Query.h>
+#include <InA_query_model/Dimension.h>
 #include <calculator/cube.h>
 
 #include <cstdint>
@@ -127,12 +127,12 @@ namespace ina::grid
                                 const auto& data = dimension.getValueAtValueIdx(valueIdx);
                                 switch (dimension.getDataType())
                                 {
-                                case calculator::eDataType::String:
+                                case common::eDataType::String:
                                 {
                                     writer.value(std::get<std::string>(data));
                                     break;
                                 }
-                                case calculator::eDataType::Number:
+                                case common::eDataType::Numeric:
                                 {
                                     writer.value(std::get<double>(data));
                                     break;
@@ -226,12 +226,12 @@ namespace ina::grid
                             const auto& data = cells.getCubeBody().getValue(measure.getName(), colIndex/memberDivCol, rowIndex/memberDivRow);
                             switch (measure.getDataType())
                             {
-                            case calculator::eDataType::String:
+                            case common::eDataType::String:
                             {
                                 writer.value(std::get<std::string>(data));
                                 break;
                             }
-                            case calculator::eDataType::Number:
+                            case common::eDataType::Numeric:
                             {
                                 writer.value(std::get<double>(data));
                                 break;
@@ -260,12 +260,12 @@ namespace ina::grid
                             const auto& data = cells.getCubeBody().getValue(measure.getName(), colIndex/memberDivCol, rowIndex/memberDivRow);
                             switch (measure.getDataType())
                             {
-                            case calculator::eDataType::String:
+                            case common::eDataType::String:
                             {
                                 writer.value(std::get<std::string>(data));
                                 break;
                             }
-                            case calculator::eDataType::Number:
+                            case common::eDataType::Numeric:
                             {
                                 writer.value(std::get<double>(data));
                                 break;
@@ -291,12 +291,12 @@ namespace ina::grid
                             const auto& measure = cells.getCubeBody()[dimMeasureOnCol?(colIndex%memberDivCol):(rowIndex%memberDivRow)];
                             switch (measure.getDataType())
                             {
-                            case calculator::eDataType::String:
+                            case common::eDataType::String:
                             {
                                 writer.value(4u);
                                 break;
                             }
-                            case calculator::eDataType::Number:
+                            case common::eDataType::Numeric:
                             {
                                 writer.value(10u);
                                 break;

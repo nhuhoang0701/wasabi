@@ -2,7 +2,7 @@
 
 #include <dbproxy/dbproxy.h>  // For dbproxy::Row
 
-#include "common.h"
+#include <common/data.h>
 
 #include <memory>
 #include <stdexcept>
@@ -11,6 +11,7 @@
 #include <map>
 #include <vector>
 
+
 namespace calculator
 {
 	enum class eColumnType {Indexed, NoneIndexed};
@@ -18,62 +19,62 @@ namespace calculator
 	class ColumnData
 	{
 	public:
-		ColumnData(const std::string& name, eDataType dt)
+		ColumnData(const std::string& name, common::eDataType dt)
 		: m_name(name), m_datatype(dt) {}
 
-		eDataType            getDataType() const {return m_datatype;}
+		common::eDataType    getDataType() const {return m_datatype;}
 		const std::string    getName() const {return m_name;}
 
-		virtual void push_back(const Value& value) = 0;
+		virtual void push_back(const common::Value& value) = 0;
 
-		virtual size_t       getNumberOfValues() const = 0;
-		virtual const Value& getValueAtValueIdx(size_t valueIndex) const = 0;
+		virtual size_t               getNumberOfValues() const = 0;
+		virtual const common::Value& getValueAtValueIdx(size_t valueIndex) const = 0;
 
-		virtual size_t       getRowCount() const = 0;
-		virtual const Value& getValueAtRowIdx(size_t rowIndex) const = 0;
-		virtual size_t       getValueIndexFromRowIdx(size_t rowIndex) const = 0;
+		virtual size_t               getRowCount() const = 0;
+		virtual const common::Value& getValueAtRowIdx(size_t rowIndex) const = 0;
+		virtual size_t               getValueIndexFromRowIdx(size_t rowIndex) const = 0;
 
 	private:
 		const std::string  m_name;
-		const eDataType    m_datatype;
+		const common::eDataType    m_datatype;
 	};
 	class ColumnNoneIndexed : public ColumnData
 	{
 	public:
-		ColumnNoneIndexed(const std::string& name, eDataType dt)
+		ColumnNoneIndexed(const std::string& name, common::eDataType dt)
 			: ColumnData(name, dt) {}
 
-		void push_back(const Value& value)
+		void push_back(const common::Value& value)
 		{
 			m_values.push_back(value);
 		}
 
-		virtual size_t       getNumberOfValues() const {return m_values.size();}
-		virtual const Value& getValueAtValueIdx(size_t valueIndex) const {return m_values[valueIndex];}
+		virtual size_t               getNumberOfValues() const {return m_values.size();}
+		virtual const common::Value& getValueAtValueIdx(size_t valueIndex) const {return m_values[valueIndex];}
 
-		size_t         getRowCount() const {return m_values.size();}
-		const Value&   getValueAtRowIdx(size_t rowIndex) const {return m_values[rowIndex];}
-		virtual size_t getValueIndexFromRowIdx(size_t rowIndex) const {return rowIndex;}
+		size_t                 getRowCount() const {return m_values.size();}
+		const common::Value&   getValueAtRowIdx(size_t rowIndex) const {return m_values[rowIndex];}
+		virtual size_t         getValueIndexFromRowIdx(size_t rowIndex) const {return rowIndex;}
 
 	private:
-		std::vector<Value> m_values;
+		std::vector<common::Value> m_values;
 	};
 
 	class ColumnIndexed : public ColumnData
 	{
 	typedef size_t Index;
 	public:
-		ColumnIndexed(const std::string& name, eDataType dt)
+		ColumnIndexed(const std::string& name, common::eDataType dt)
 			: ColumnData(name, dt) {}
 
-		virtual size_t       getNumberOfValues() const {return m_values.size();}
-		virtual const Value& getValueAtValueIdx(size_t valueIndex) const {return m_values[valueIndex];}
+		virtual size_t               getNumberOfValues() const {return m_values.size();}
+		virtual const common::Value& getValueAtValueIdx(size_t valueIndex) const {return m_values[valueIndex];}
 
-		size_t         getRowCount() const {return m_valueIndexes.size();}		
-		const Value&   getValueAtRowIdx(size_t rowIndex) const {return m_values[m_valueIndexes[rowIndex]];}
-		virtual size_t getValueIndexFromRowIdx(size_t rowIndex) const {return m_valueIndexes[rowIndex];}
+		size_t                 getRowCount() const {return m_valueIndexes.size();}		
+		const common::Value&   getValueAtRowIdx(size_t rowIndex) const {return m_values[m_valueIndexes[rowIndex]];}
+		virtual size_t         getValueIndexFromRowIdx(size_t rowIndex) const {return m_valueIndexes[rowIndex];}
 
-		void push_back(const Value& value)
+		void push_back(const common::Value& value)
 		{
 			Index index = 0;
 			if(m_idxByVal.find(value) != m_idxByVal.end())
@@ -91,9 +92,9 @@ namespace calculator
 		}
 
 	private:
-		std::vector<Index>      m_valueIndexes;
-		std::vector<Value>      m_values;
-		std::map<Value, Index>  m_idxByVal;
+		std::vector<Index>              m_valueIndexes;
+		std::vector<common::Value>      m_values;
+		std::map<common::Value, Index>  m_idxByVal;
 	};
 
 	class DataStorage
@@ -113,7 +114,7 @@ namespace calculator
 		bool          haveData() const {return m_rowsNb!=0;}
 		size_t        getRowCount() const {return m_rowsNb;}
 
-		void addColumn(const std::string& name, eDataType dt, eColumnType type)
+		void addColumn(const std::string& name, common::eDataType dt, eColumnType type)
 		{
 			if(name.empty())
 				throw std::runtime_error("Column with empty name not supported.");
@@ -140,12 +141,14 @@ namespace calculator
 			size_t idx = 0;
 			for(auto& colData : m_cols)
 			{
-				const eDataType dt = colData->getDataType();
+				const common::eDataType dt = colData->getDataType();
 
-				if(dt == eDataType::String)
+				if(dt == common::eDataType::String)
 					colData->push_back(row[idx].getString());
-				else if(dt == eDataType::Number)
+				else if(dt == common::eDataType::Numeric)
+				{
 					colData->push_back(std::stod(row[idx].getString()));
+				}
 				else
 					throw std::runtime_error("unknow column type");
 				idx++;

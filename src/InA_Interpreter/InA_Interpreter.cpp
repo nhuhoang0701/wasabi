@@ -1,6 +1,4 @@
 #include "InA_Interpreter.h"
-#include "InA_query_model/Parameter.h"
-#include "calculator/common.h"
 
 #include <InA_metadata/Cube.h>
 
@@ -18,8 +16,6 @@
 
 #include <dbproxy/dbproxy.h>
 
-#include <metadata_enrichment/Tables.h>
-
 #include <json/jsonReader.h>
 #include <json/jsonWriter.h>
 
@@ -27,10 +23,7 @@
 #include <fstream>      // std::ifstream
 #include <sstream>
 #include <iostream>
-#include <ios>
-#include <iomanip>
 #include <stdexcept>
-#include <ostream>
 #include <string>
 #include <vector>
 
@@ -94,10 +87,10 @@ void processQuery(JSONWriter& writer, const ina::query_model::Query& query)
 
 	calculator::Cube dataCube;
 	std::unique_ptr<ina::grid::Grid> grid;
+	ina::query_model::QueryEx queryExec(query.getDefinition(), *dsCube);
 
 	if(query.getType() == ina::query_model::Query::qAnalytics)
 	{		
-		ina::query_model::QueryEx queryExec(query.getDefinition(), *dsCube);
 		getDataCube(queryExec, dataCube);
 		grid = std::make_unique<ina::grid::Grid>(queryExec, dataCube);
 	}

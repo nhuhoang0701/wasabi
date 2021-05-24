@@ -1,6 +1,5 @@
 #include "metadata_enrichment/Tables.h"
 
-#include <cstdint>
 #include <dbproxy/dbproxy.h>
 
 #include <json/jsonWriter.h>
@@ -9,6 +8,7 @@
 #include  <stdexcept>
 #include <unordered_map>
 #include <sstream>
+#include <cstdint>
 
 namespace wasabi{
   using namespace std;
@@ -17,7 +17,7 @@ namespace wasabi{
     struct ColumnImpl
 	{
       ColumnImpl(
-                 Column::DataType theDataType,
+                 common::eDataType theDataType,
                  Column::Aggregation theAggregation,
                  const string& theName,
                  const string& theSQLName
@@ -29,7 +29,7 @@ namespace wasabi{
       };
       ColumnImpl(const ColumnImpl&)=delete;
       ColumnImpl& operator=(const ColumnImpl&) = delete;
-      Column::DataType itsDataType;
+      common::eDataType itsDataType;
       Column::Aggregation itsAggregation;
       string itsName;
       string itsSQLName;
@@ -77,7 +77,7 @@ namespace wasabi{
                theNames.begin(), theNames.end(),
                [&theProxy, &theNames, &theTables](const string& theName ) -> void
 			   {
-                 const TableDescr& aTableDescr = theProxy.getTableDescr(theName);
+                 const dbproxy::TableDescr& aTableDescr = theProxy.getTableDescr(theName);
                  const auto& aCols = aTableDescr.getColumnsDescr();
                  auto anIter = theTables.insert(pair<string,unique_ptr<Table>>(theName,unique_ptr<Table>(new Table(theName)))                                                );
                  if(!anIter.second){
@@ -211,9 +211,9 @@ namespace wasabi{
       return theStream;
     }
 	
-    Column::Aggregation calcAggreation( Column::DataType theType)
+    Column::Aggregation calcAggreation( common::eDataType theType)
 	{
-      if( theType == Column::DataType::Numeric )
+      if( theType == common::eDataType::Numeric )
 	  {
         return Column::Aggregation::Sum;
       } else
@@ -224,26 +224,26 @@ namespace wasabi{
       aStream << "datatype " << static_cast<uint8_t>(theType) << " not found" << endl;
       throw out_of_range(aStream.str());
     }
-    Column::DataType calcDataType( const string& theType)
+    common::eDataType calcDataType( const string& theSQLType)
 	{
-      if( theType == "TEXT"
-          || theType.find("CHAR") != std::string::npos)
+      if( theSQLType == "TEXT"
+          || theSQLType.find("CHAR") != std::string::npos)
         {
-          return Column::DataType::String;
+          return common::eDataType::String;
         }
-      else if( theType.find("TIME") != std::string::npos
-               || theType.find("DATE") != std::string::npos )
+      else if( theSQLType.find("TIME") != std::string::npos
+               || theSQLType.find("DATE") != std::string::npos )
         {
-          return Column::DataType::DateTime;
+          return common::eDataType::DateTime;
         }
-      else if( theType == "REAL"
-               || theType == "DOUBLE"
-               || theType.find("INT") != std::string::npos
-               || theType.find("NUMERIC") != std::string::npos )
+      else if( theSQLType == "REAL"
+               || theSQLType == "DOUBLE"
+               || theSQLType.find("INT") != std::string::npos
+               || theSQLType.find("NUMERIC") != std::string::npos )
 		{
-			return Column::DataType::Numeric;
+			return common::eDataType::Numeric;
 		}
-      throw out_of_range("datatype " + theType +" not found");
+      throw out_of_range("datatype " + theSQLType +" not found");
     }
     Column::Column(const dbproxy::ColumnDescr& theDesc)
 		:itsPimpl(new utils::ColumnImpl(
@@ -266,7 +266,7 @@ namespace wasabi{
 	{
       return itsPimpl->itsSQLName;
     };
-    Column::DataType Column::getDataType()const
+    common::eDataType Column::getDataType()const
 	{
       return itsPimpl->itsDataType;
     };
