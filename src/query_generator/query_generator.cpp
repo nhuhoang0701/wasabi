@@ -155,22 +155,31 @@ namespace query_generator
 
 	void query_generator::buildWhereSetOperandClause(const ina::query_model::SelectionElement& selectionElement, ina::query_model::LogicalOperator parentLogicalOperator, std::ostringstream& where) const
 	{
+		std::string SELECTIONS;
+		bool first = true;
 		for(const auto& element : selectionElement.getElements())
 		{
 			if ("[Measures].[Measures]" != element.getFieldName())
 			{
-				std::string code = ina::query_model::toString(parentLogicalOperator);
-				if (where.str().empty())
-				{
-					where << " WHERE ";
-				}
-				else
-				{							
-					where << " " << code << " ";
-				}
-				std::string generatedSQL = generateSQL(element) ;
-				where << generatedSQL;
+				if(first == false)
+					SELECTIONS += " OR ";
+				SELECTIONS += generateSQL(element) ;
+				first = false;
 			}
+		}
+
+		if(SELECTIONS.empty() == false)
+		{
+			if (where.str().empty())
+			{
+				where << " WHERE ";
+			}
+			else
+			{			
+				std::string code = ina::query_model::toString(parentLogicalOperator);				
+				where << " " << code << " ";
+			}
+			where << SELECTIONS;
 		}
 	}
 
@@ -179,7 +188,7 @@ namespace query_generator
 		if (selectionElement.getType() == ina::query_model::SelectionElement::Type::SetOperand)
 		{
 			 //TODO: Or by default ?
-			buildWhereSetOperandClause(selectionElement, ina::query_model::LogicalOperator::Or, where);
+			buildWhereSetOperandClause(selectionElement, ina::query_model::LogicalOperator::Undefined, where);
 		}
 		else if (selectionElement.getType() == ina::query_model::SelectionElement::Type::Operator)
 		{
