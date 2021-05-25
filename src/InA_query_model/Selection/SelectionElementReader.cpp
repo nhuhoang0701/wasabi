@@ -30,6 +30,7 @@ namespace ina::query_model
                     {
                         SelectionElement childSelectionElement(SelectionElement::Type::SetOperand);
                         read(childSelectionElement._elements, setOperandNode);
+                        childSelectionElement.setFieldName(setOperandNode.getString("FieldName"));
                         selectionElement._subSelections.push_back(childSelectionElement);
                     }
                     else

@@ -13,7 +13,7 @@
 
 #include <ostream>
 #include <sstream>
-#include <iostream>
+
 #include <stdexcept>
 #include <utility>
 #include <algorithm>
@@ -99,10 +99,6 @@ namespace query_generator
 							}
 						}
 					}
-					else
-					{
-						std::cerr << "WASABI: Sort on member NYI" << std::endl;
-					}
 				}
 			}
 
@@ -153,19 +149,20 @@ namespace query_generator
         return sql.str();
     }
 
-	void query_generator::buildWhereSetOperandClause(const ina::query_model::SelectionElement& selectionElement, ina::query_model::LogicalOperator parentLogicalOperator, std::ostringstream& where) const
+	void query_generator::buildWhereSetOperandClause(const ina::query_model::SelectionElement& setOperand, ina::query_model::LogicalOperator parentLogicalOperator, std::ostringstream& where) const
 	{
 		std::string SELECTIONS;
 		bool first = true;
-		for(const auto& element : selectionElement.getElements())
+		const std::string& fieldName = setOperand.getFieldName();
+		if ("[Measures].[Measures]" == fieldName)
+			return;
+
+		for(const auto& element : setOperand.getElements())
 		{
-			if ("[Measures].[Measures]" != element.getFieldName())
-			{
-				if(first == false)
-					SELECTIONS += " OR ";
-				SELECTIONS += generateSQL(element) ;
-				first = false;
-			}
+			if(first == false)
+				SELECTIONS += " OR ";
+			SELECTIONS += generateSQL(fieldName, element);
+			first = false;
 		}
 
 		if(SELECTIONS.empty() == false)
@@ -187,7 +184,6 @@ namespace query_generator
 	{
 		if (selectionElement.getType() == ina::query_model::SelectionElement::Type::SetOperand)
 		{
-			 //TODO: Or by default ?
 			buildWhereSetOperandClause(selectionElement, ina::query_model::LogicalOperator::Undefined, where);
 		}
 		else if (selectionElement.getType() == ina::query_model::SelectionElement::Type::Operator)

@@ -7,7 +7,6 @@ class JSONGenericObject;    // #include <json/jsonReader.h>
 
 namespace ina::query_model 
 {
-    class Selection;
 	class Selection
     {
         public:
