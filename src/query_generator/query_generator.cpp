@@ -204,7 +204,7 @@ namespace query_generator
 		std::vector<std::tuple<std::string /*name*/,std::string/*aggregation*/, common::eDataType>> resultObjects;
 		m_queryExec.getResultObjects(resultObjects);
 		for(const auto& resultObject: resultObjects)
-			data->addColumn(std::get<0>(resultObject),std::get<2>(resultObject), calculator::eColumnType::NoneIndexed);
+			data->addColumn(std::get<0>(resultObject),std::get<2>(resultObject), std::get<1>(resultObject).empty()?calculator::eColumnType::Indexed:calculator::eColumnType::NoneIndexed);
 
 		m_dataStorage = data;
 	}
