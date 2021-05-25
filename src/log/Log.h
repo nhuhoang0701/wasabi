@@ -1,2 +1,0 @@
-
-#define KTRACE_API 

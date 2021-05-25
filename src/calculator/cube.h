@@ -2,112 +2,21 @@
 
 #include <common/data.h>
 
+#include "object.h"
+#include "axe.h"
+#include "body.h"
+
 #include <memory>
 #include <string>
 #include <vector>
 #include <map>
 
-namespace ina::query_model {class Formula; class Selection;}
 
 namespace calculator
 {
-	class Cube;
 	class DataStorage;
-	class ColumnData;
 
 	enum class eAxe {Row, Column};
-	class Object
-	{
-	public:
-		Object() = default;
-		Object(const std::string& name);
-
-		bool operator==(const Object& rhs) const;
-
-		void materialyze(const Cube& cube);
-
-		const std::string& getName() const {return m_name;}
-
-		common::eDataType  getDataType() const;
-
-		size_t                 getRowCount() const;
-		const common::Value&   getValueAtRowIdx(size_t rowIndex) const;
-
-		size_t                 getValueIndexFromRowIdx(size_t rowIndex) const;
-		const common::Value&   getValueAtValueIdx(size_t valueIndex) const;
-		size_t                 getNumberOfValues() const;
-
-		common::Value          aggregate() const;
-		common::Value          aggregate(const std::vector<size_t>& rowIndexes) const;
-
-		const ina::query_model::Formula* m_formula = nullptr; // TMP: WIP
-		const ina::query_model::Selection* m_selection = nullptr; // TMP: WIP
-	private:
-		std::string  m_name;
-
-		std::shared_ptr<const ColumnData> m_dataColumn = nullptr;
-	};
-
-	class Column;
-	class Body;
-	class Axe : public std::vector<Object>
-	{
-	public:
-		Axe(const Cube& cube) : m_cube(cube) {};
-		~Axe() = default;
-
-		void   materialyze();
-
-		size_t getCardinality() const;
-
-		const Object&          getDimension(const std::string& dimName) const;
-
-		const common::Value&   getValue(const std::string& dimName, size_t tupleIndex) const;
-		size_t                 getValueIndex(const std::string& dimName, size_t tupleIndex) const;
-
-	private:
-		const common::Value&   getValue(size_t dimIdx, size_t tupleIndex) const;
-		size_t                 getValueIndex(size_t dimIdx, size_t tupleIndex) const;
-
-	private:
-		friend class Body;
-		const std::vector<size_t>&     getParentIndexes(size_t tupleIndex) const;
-	
-	private:
-		const Cube&                  m_cube;
-
-		// Tuple of value index
-		typedef std::vector<size_t> Tuple;
-		/*Tuple / row indexes in the parent data table for this tuple, will be use for the aggreagtion*/
-		std::vector<std::pair<Tuple, std::vector<size_t>>> m_tuples;
-		bool  m_materialyzed = false;
-	};
-
-	class Body : public std::vector<Object>
-	{
-	public:
-		Body(const Cube& cube, const Axe& row,const Axe& col);
-
-		void    materialyze();
-
-		size_t  getCellCount() const;
-		size_t  getRowCount() const;
-		size_t  getColumnCount() const;
-
-		const Object&          getMeasure(const std::string& measureName) const;
-		const common::Value&   getValue(const std::string& measureName, size_t col, size_t row) const;
-
-
-	private:
-		const Cube&  m_cube;
-		const Axe&   m_axeRow;
-		const Axe&   m_axeCol;
-
-		typedef std::vector<std::vector<common::Value>>  CellsValue;
-
-		std::map<std::string,CellsValue> m_Body;
-		bool                             m_materialyzed = false;
-	};
 	class Cube
 	{
 	public:
