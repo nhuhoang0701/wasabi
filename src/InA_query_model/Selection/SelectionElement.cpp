@@ -39,6 +39,7 @@ namespace ina::query_model
         return _type;
     }
 
+    // Operator
     void SelectionElement::setCode(LogicalOperator code) 
     {
         _code = code;
@@ -53,16 +54,25 @@ namespace ina::query_model
     {
         return _subSelections;
     }
-    
-    const std::vector<Element>& SelectionElement::getElements() const
-    {
-        return _elements;
-    }
-
-
 
     void Operator::setCode(LogicalOperator code) 
     {
         _code = code;
+    }
+    
+
+    // SetOperand
+    void  SelectionElement::setFieldName(const std::string& fieldName)
+    {
+        _fieldName = fieldName;
+    }
+    const std::string& SelectionElement::getFieldName() const
+    {
+        return _fieldName;
+    }
+
+    const std::vector<Element>& SelectionElement::getElements() const
+    {
+        return _elements;
     }
 }

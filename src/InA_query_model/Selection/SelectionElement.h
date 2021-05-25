@@ -18,7 +18,7 @@ namespace ina::query_model
     {
         public:
         enum class Type {
-            Operator,
+            Operator=0,
             SetOperand,
             Undefined
         };
@@ -29,6 +29,8 @@ namespace ina::query_model
         virtual ~SelectionElement() = default;
 
         // SetOperand
+        const std::string& getFieldName() const;
+        void setFieldName(const std::string&);
         const std::vector<Element>& getElements() const;
 
         // Operator
@@ -37,6 +39,8 @@ namespace ina::query_model
         const std::vector<SelectionElement> & getSubSelections() const;
 
         private:
+        friend void read(SelectionElement& selectionElement, const JSONGenericObject& setOperandNode); 
+
         Type _type = Type::Undefined;
         
         // Operator
@@ -44,9 +48,8 @@ namespace ina::query_model
         std::vector<SelectionElement> _subSelections;
 
         // SetOperand
+        std::string _fieldName;
         std::vector<Element> _elements;
-        friend void read(SelectionElement& selectionElement, const JSONGenericObject& setOperandNode); 
-
     };
 	class SetOperand
     {
