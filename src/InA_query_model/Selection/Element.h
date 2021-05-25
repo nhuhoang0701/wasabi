@@ -31,24 +31,20 @@ namespace ina::query_model
 
             static std::string toSql(const Element::ComparisonOperator& comparator);
 
-            Element(const std::string& fieldName);
-
             void setComparisonOperator(Element::ComparisonOperator comparisonOperator);
             void setLowValue(const common::Value& lowValue);
             void setHighValue(const common::Value& highValue);
             void setExcluding(const bool isExcluding);
 
             Element::ComparisonOperator getComparisonOperator() const;
-            const std::string& getFieldName() const; //TODO: Remove not the good place, only SelectionElement (aka SetOperand) should be use
             const common::Value& getLowValue() const;
             const common::Value& getHighValue() const;
             const bool isExcluding() const;
         private:
-            std::string _fieldName;
-            Element::ComparisonOperator _comparisonOperator;
+            Element::ComparisonOperator _comparisonOperator = ComparisonOperator::Unknown;
             common::Value _lowValue;
             common::Value _highValue;
-            bool _isExcluding;
+            bool _isExcluding = false;
 
             friend void read(std::vector<Element> & elements, JSONGenericObject setOperandNode);
     };
