@@ -46,14 +46,12 @@ namespace ina::query_model
     }
     void read(std::vector<Element> & elements, JSONGenericObject setOperandNode)
     {
-        const std::string fieldName = setOperandNode.getString("FieldName");
         if(const auto& elementNodes = setOperandNode.getArray("Elements"))
         {
+            elements.resize(elementNodes.size());
             for(size_t j = 0; j < elementNodes.size(); ++j)
             {	
-                query_model::Element element(fieldName);
-                read(element, elementNodes[j]);
-                elements.push_back(element);
+                read(elements[j], elementNodes[j]);
             }
         }
     }
