@@ -10,21 +10,10 @@ namespace ina::query_model
         Undefined
     };
 
-    inline static LogicalOperator getLogicalOperator(const std::string& str)
-    {
-        if (str == "And") 		     return LogicalOperator::And;
-        else if (str == "Not")         return LogicalOperator::Not;
-        else if (str == "Or")        return LogicalOperator::Or;
-        else                         return LogicalOperator::Undefined;
-    };
+    LogicalOperator getLogicalOperator(const std::string& str);
 
-    inline static std::string toString(const LogicalOperator logicalOperator) 
-    {
-        if (logicalOperator == LogicalOperator::And)        return "AND";
-        else if (logicalOperator == LogicalOperator::Not)   return "NOT";
-        else if (logicalOperator == LogicalOperator::Or)    return "OR";
-        else                                                return "";
-    }
+    std::string toString(const LogicalOperator logicalOperator);
+
 	class SelectionElement 
     {
         public:

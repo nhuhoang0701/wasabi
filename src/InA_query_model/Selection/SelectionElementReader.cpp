@@ -1,7 +1,8 @@
 #include "InA_query_model/Selection/SelectionElement.h"
+
 #include "SelectionElement.h"
 #include "Element.h"
-#include <iostream>
+
 #include <json/jsonReader.h>    // For JSONGenericObject
 
 namespace ina::query_model
@@ -31,6 +32,8 @@ namespace ina::query_model
                         read(childSelectionElement._elements, setOperandNode);
                         selectionElement._subSelections.push_back(childSelectionElement);
                     }
+                    else
+                        throw std::runtime_error("JSON SubSelections only Operator and SetOperand implented");
                 }
             }
             else 
@@ -40,7 +43,7 @@ namespace ina::query_model
         }
         else if (selectionElement.getType() == SelectionElement::Type::SetOperand)
         {
-            read(selectionElement._elements, selectionElementNode);
+           read(selectionElement._elements, selectionElementNode);
         } 
     }
 
