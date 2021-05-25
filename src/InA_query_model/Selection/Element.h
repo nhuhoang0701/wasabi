@@ -39,7 +39,7 @@ namespace ina::query_model
             void setExcluding(const bool isExcluding);
 
             Element::ComparisonOperator getComparisonOperator() const;
-            const std::string& getFieldName() const;
+            const std::string& getFieldName() const; //TODO: Remove not the good place, only SelectionElement (aka SetOperand) should be use
             const common::Value& getLowValue() const;
             const common::Value& getHighValue() const;
             const bool isExcluding() const;

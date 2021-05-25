@@ -4,21 +4,25 @@
 
 namespace query_generator
 {
-    std::string generateSQL(const ina::query_model::Element& filter)
+    
+    std::string generateNAryOperatorSQL(const std::string& fieldName, const ina::query_model::Element& filter);
+    std::string generateUnaryOperatorSQL(const std::string& fieldName, const ina::query_model::Element& filter);
+
+    std::string generateSQL(const std::string& fieldName, const ina::query_model::Element& filter)
     {
         switch (filter.getComparisonOperator()) {
             case ina::query_model::Element::ComparisonOperator::IsNull:
             {
-                return generateUnaryOperatorSQL(filter);
+                return generateUnaryOperatorSQL(fieldName, filter);
             }
             default:
             {
-                return generateNAryOperatorSQL(filter);
+                return generateNAryOperatorSQL(fieldName, filter);
             }        
         }
     }
     
-    std::string generateNAryOperatorSQL(const ina::query_model::Element& filter)
+    std::string generateNAryOperatorSQL(const std::string& fieldName, const ina::query_model::Element& filter)
     {
         std::string filterSQL;
         if (filter.isExcluding())
@@ -26,7 +30,7 @@ namespace query_generator
             filterSQL += "NOT ( ";
         }
         // fieldName is never empty 
-        filterSQL += filter.getFieldName();
+        filterSQL += fieldName;
         filterSQL += " " ;
         // comparisonOperator is never empty 
         filterSQL += ina::query_model::Element::toSql(filter.getComparisonOperator());
@@ -52,7 +56,7 @@ namespace query_generator
         return filterSQL;
     }
 
-    std::string generateUnaryOperatorSQL(const ina::query_model::Element& filter)
+    std::string generateUnaryOperatorSQL(const std::string& fieldName, const ina::query_model::Element& filter)
     {
         std::string filterSQL;
         if (filter.isExcluding())
@@ -60,7 +64,7 @@ namespace query_generator
             filterSQL += "NOT ( ";
         }
         // fieldName is never empty 
-        filterSQL += filter.getFieldName();
+        filterSQL += fieldName;
         filterSQL += " " ;
         // comparisonOperator is never empty 
         filterSQL += ina::query_model::Element::toSql(filter.getComparisonOperator());

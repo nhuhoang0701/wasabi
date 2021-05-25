@@ -5,9 +5,7 @@
 
 namespace query_generator
 {
-    std::string generateSQL(const ina::query_model::Element& filter);
-    std::string generateNAryOperatorSQL(const ina::query_model::Element& filter);
-    std::string generateUnaryOperatorSQL(const ina::query_model::Element& filter);
+    std::string generateSQL(const std::string& fieldName, const ina::query_model::Element& filter);
 
     std::string generateSQL(const ina::query_model::Sort& querySort);
 }

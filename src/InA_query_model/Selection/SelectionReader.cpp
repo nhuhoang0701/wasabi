@@ -17,6 +17,7 @@ namespace ina::query_model
         {
             selectionElementNode = selectionNode.getObject("SetOperand");
             selectionElement = SelectionElement(SelectionElement::Type::SetOperand);
+            selectionElement.setFieldName(selectionElementNode.getString("FieldName"));
         }
         read(selectionElement, selectionElementNode);
         selection.setOperator(selectionElement);
