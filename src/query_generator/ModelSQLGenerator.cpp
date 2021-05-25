@@ -1,4 +1,5 @@
 #include "ModelSQLGenerator.h"
+#include <stdexcept>
 #include <string>
 
 namespace query_generator
@@ -30,10 +31,17 @@ namespace query_generator
         // comparisonOperator is never empty 
         filterSQL += ina::query_model::Element::toSql(filter.getComparisonOperator());
         // In case of unary operator, now low/high value
-        if (!filter.getLowValue().empty())
+        std::string valueStr;
+        if(std::holds_alternative<std::string>(filter.getLowValue()))
+            valueStr = std::get<std::string>(filter.getLowValue());
+        else if(std::holds_alternative<double>(filter.getLowValue()))
+            valueStr = std::to_string(std::get<double>(filter.getLowValue()));
+        else
+            throw std::runtime_error("common::Value : a datatype is NYI.");
+        if (!valueStr.empty())
         {
             filterSQL += " '";
-            filterSQL += filter.getLowValue();
+            filterSQL += valueStr;
             filterSQL += "'";
         }
         if (filter.isExcluding())

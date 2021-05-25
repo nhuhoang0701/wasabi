@@ -78,11 +78,11 @@ int main()
 		ina::query_model::Element filter0 = selectionElement.getElements().at(0);
 		CPPUNIT_ASSERT_EQUAL("[Measures].[Measures]", filter0.getFieldName());
 		CPPUNIT_ASSERT_EQUAL(ina::query_model::Element::ComparisonOperator::EqualTo, filter0.getComparisonOperator());
-		CPPUNIT_ASSERT_EQUAL("OBJ_147", filter0.getLowValue());
+		CPPUNIT_ASSERT_EQUAL("OBJ_147", std::get<std::string>(filter0.getLowValue()));
 		ina::query_model::Element filter1 = selectionElement.getElements().at(1);
 		CPPUNIT_ASSERT_EQUAL("[Measures].[Measures]", filter1.getFieldName());
 		CPPUNIT_ASSERT_EQUAL(ina::query_model::Element::ComparisonOperator::NotEqualTo, filter1.getComparisonOperator());
-		CPPUNIT_ASSERT_EQUAL("OBJ_191", filter1.getLowValue());
+		CPPUNIT_ASSERT_EQUAL("OBJ_191", std::get<std::string>(filter1.getLowValue()));
 
 		//TODO: check with attributes KEY
 	}
