@@ -166,7 +166,8 @@ namespace ina::query_model {
                     {
                         if (filter.getComparisonOperator() == Element::ComparisonOperator::EqualTo )
                         {
-                            if(filter.getLowValue() == ina::query_model::Member::getName(member))
+                            //TODO: Check getLowValue datatype
+                            if(std::get<std::string>(filter.getLowValue()) == ina::query_model::Member::getName(member))
                                 visibleMembers.push_back(member);
                         }
                         else
