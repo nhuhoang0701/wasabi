@@ -46,12 +46,6 @@ namespace ina::query_model
             else return "";
         };
 
-        Element::Element(const std::string& fieldName) 
-            : _fieldName(fieldName),_comparisonOperator(Element::ComparisonOperator::Unknown),_isExcluding(false)
-        {
-
-        }
-
         void Element::setComparisonOperator(Element::ComparisonOperator comparisonOperator)
         {
             _comparisonOperator = comparisonOperator;
@@ -75,11 +69,6 @@ namespace ina::query_model
         Element::ComparisonOperator Element::getComparisonOperator() const
         {
             return _comparisonOperator;
-        }
-
-        const std::string& Element::getFieldName() const
-        {
-            return _fieldName;
         }
 
         const common::Value& Element::getLowValue() const
