@@ -178,7 +178,8 @@ namespace query_generator
 	{
 		if (selectionElement.getType() == ina::query_model::SelectionElement::Type::SetOperand)
 		{
-			buildWhereSetOperandClause(selectionElement, ina::query_model::LogicalOperator::Undefined, where);
+			 //TODO: Or by default ?
+			buildWhereSetOperandClause(selectionElement, ina::query_model::LogicalOperator::Or, where);
 		}
 		else if (selectionElement.getType() == ina::query_model::SelectionElement::Type::Operator)
 		{
