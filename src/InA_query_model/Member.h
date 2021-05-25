@@ -20,7 +20,7 @@ namespace ina::query_model
 		std::string m_value;
 		std::string m_comparison;
 		
-		friend void read(Member& obj, const JSONGenericObject& jsonNode);
+		friend void read(MemberOperand& obj, const JSONGenericObject& jsonNode);
 	};
 	class Dimension;
 	

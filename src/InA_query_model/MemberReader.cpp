@@ -8,6 +8,15 @@
 
 namespace ina::query_model
 {
+	void read(MemberOperand& obj, const JSONGenericObject& jsonNode)
+	{
+		// MDS_TheDefinitveGuide_2_1 
+		// MemberOperand is deprecated, but, in MANY examples
+		obj.m_attributeName = jsonNode.getString("AttributeName");
+		obj.m_value = jsonNode.getString("Value");
+		obj.m_comparison = jsonNode.getString("Comparison");
+	}
+
 	void read(Member& obj, const JSONGenericObject& jsonNode)
 	{
 		if(jsonNode.haveValue("Aggregation"))
@@ -34,9 +43,7 @@ namespace ina::query_model
 			// MDS_TheDefinitveGuide_2_1 
 			// MemberOperand is deprecated, but, in MANY examples
 			obj.m_memberOperand = std::make_unique<MemberOperand>();
-			obj.m_memberOperand->m_attributeName = memberOperandNode.getString("AttributeName");
-			obj.m_memberOperand->m_value = memberOperandNode.getString("Value");
-			obj.m_memberOperand->m_comparison = memberOperandNode.getString("Comparison");
+			read(*obj.m_memberOperand, memberOperandNode);
 		}
 	}
 }
