@@ -4,6 +4,7 @@
 
 #include <cstdint>
 #include <string>
+#include <string_view>
 
 class JSONWriter;        // From <json/jsonWriter.h>
 
@@ -15,8 +16,9 @@ namespace ina::metadata
 	void write(const Attribute& obj, JSONWriter& jsonNode);
 
 	enum class eAttrType {Uninit=-1, Key = 3, Text = 1};
-	std::string toString(common::eDataType);
 	enum class eColumnType {Uninit=-1,NumericMeasure = 73,NoNumericMeasure = 83,NoMeasure = 0};
+
+	std::string_view   toString(common::eDataType);
 
 	class Attribute
 	{

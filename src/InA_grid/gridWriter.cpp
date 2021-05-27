@@ -6,7 +6,7 @@
 #include <cstdint>
 #include <json/jsonWriter.h>
 
-#include <iostream>
+#include <common/Log.h>
 
 namespace ina::grid
 {
@@ -95,7 +95,7 @@ namespace ina::grid
                             {
                                 if(attribut.getObtainability()!="UserInterface")
                                 {
-                                    std::cerr << "WASABI: Receive Obtainability!=UserInterface on key attribut: " << attribut.getName() << std::endl;
+                                    Logger::error("Receive Obtainability!=UserInterface on key attribut", attribut.getName());
                                 }
                                 Obtainability = "UserInterface";
                             }
@@ -103,7 +103,7 @@ namespace ina::grid
                             {
                                 if(attribut.getObtainability()!="Always")
                                 {
-                                    std::cerr << "WASABI: Receive Obtainability!=Always on text attribut: " << attribut.getName() << std::endl;
+                                    Logger::error("Receive Obtainability!=Always on text attribut: ", attribut.getName());
                                 }
                                 Obtainability = "Always";
                                 haveAlways = true;
@@ -222,7 +222,7 @@ namespace ina::grid
                     {
                         for(size_t colIndex = cells.getColumnFrom(); colIndex < cells.getColumnTo(); colIndex++)
                         {
-                            const auto& measure = cells.getCubeBody()[dimMeasureOnCol?(colIndex%memberDivCol):(rowIndex%memberDivRow)];
+                            const auto& measure = cells.getCubeBody().getVisibleObjects()[dimMeasureOnCol?(colIndex%memberDivCol):(rowIndex%memberDivRow)];
                             const auto& data = cells.getCubeBody().getValue(measure.getName(), colIndex/memberDivCol, rowIndex/memberDivRow);
                             switch (measure.getDataType())
                             {
@@ -246,7 +246,7 @@ namespace ina::grid
             //TODO: Not sure why this is needed
             writer.key("ValuesFormatted");
             {
-                std::cerr << "WASABI: ERROR: Use harcoded format to display ValuesFormatted." << std::endl;
+                Logger::error("Use harcoded format to display ValuesFormatted.");
                 JSON_MAP(writer);
                 writer.pair("Encoding", "None");
                 writer.key("Values");
@@ -256,7 +256,7 @@ namespace ina::grid
                     {
                         for(size_t colIndex = cells.getColumnFrom(); colIndex < cells.getColumnTo(); colIndex++)
                         {
-                            const auto& measure = cells.getCubeBody()[dimMeasureOnCol?(colIndex%memberDivCol):(rowIndex%memberDivRow)];
+                            const auto& measure = cells.getCubeBody().getVisibleObjects()[dimMeasureOnCol?(colIndex%memberDivCol):(rowIndex%memberDivRow)];
                             const auto& data = cells.getCubeBody().getValue(measure.getName(), colIndex/memberDivCol, rowIndex/memberDivRow);
                             switch (measure.getDataType())
                             {
@@ -288,7 +288,7 @@ namespace ina::grid
                     {
                         for(size_t colIndex = cells.getColumnFrom(); colIndex < cells.getColumnTo(); colIndex++)
                         {
-                            const auto& measure = cells.getCubeBody()[dimMeasureOnCol?(colIndex%memberDivCol):(rowIndex%memberDivRow)];
+                            const auto& measure = cells.getCubeBody().getVisibleObjects()[dimMeasureOnCol?(colIndex%memberDivCol):(rowIndex%memberDivRow)];
                             switch (measure.getDataType())
                             {
                             case common::eDataType::String:

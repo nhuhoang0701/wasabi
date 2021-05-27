@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 #include <vector>
 #include <memory>
 
@@ -26,8 +27,8 @@ namespace ina::query_model
 			TypeView,
 			Query
 		};
-		static std::string toString(Type type);
-		static Type        fromString(const std::string& str);
+		static std::string_view toString(Type type);
+		static Type             fromString(const std::string& str);
 
 	private:
 		DataSource(const DataSource&);

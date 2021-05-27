@@ -2,6 +2,7 @@
 #include <common/data.h>
 
 #include <string>
+#include <string_view>
 #include <vector>
 
 class JSONGenericObject; // From <json/jsonReader.h>
@@ -27,9 +28,7 @@ namespace ina::query_model
 
             static ComparisonOperator getComparisonOperator(const std::string& str);
 
-            static std::string toString(const Element::ComparisonOperator& comparator);
-
-            static std::string toSql(const Element::ComparisonOperator& comparator);
+            static std::string_view toString(const Element::ComparisonOperator& comparator);
 
             void setComparisonOperator(Element::ComparisonOperator comparisonOperator);
             void setLowValue(const common::Value& lowValue);

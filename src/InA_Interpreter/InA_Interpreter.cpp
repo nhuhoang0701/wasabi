@@ -19,10 +19,11 @@
 #include <json/jsonReader.h>
 #include <json/jsonWriter.h>
 
+#include <common/Log.h>
+
 #include <memory>
 #include <fstream>      // std::ifstream
 #include <sstream>
-#include <iostream>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -144,9 +145,9 @@ void getDataCube(const ina::query_model::QueryEx& queryEx, calculator::Cube& cub
 	};
 	const std::string& cnxString = queryEx.getDSCube()->getDataSource().getPackageName();
 	const std::string sql = queryGen.getSQL();
-	std::cout << "SQL: " << sql << std::endl;
+	Logger::log("SQL: ", sql);
 	dbproxy::DBProxy::getDBProxy(cnxString)->executeSQL(sql, &lambda);
-	std::cout << "    Nbrs of rows " << data->getRowCount() << std::endl;
+	Logger::log("    Nbrs of rows ", data->getRowCount());
 
 	cube.setStorage(data);
 	for (const auto& dimension : queryEx.getQueryDefinition().getDimensions()) 

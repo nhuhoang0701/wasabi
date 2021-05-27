@@ -1,20 +1,43 @@
+//#define WASABI_NOLOG
 #include "QueryEx.h"
 
 #include "Function.h"
+#include "InA_query_model/Selection/Selection.h"
+#include "InA_query_model/Selection/SelectionElement.h"
 #include "Parameter.h"
+#include "common/data.h"
+
+#include <common//Log.h>
 
 #include <cmath> // For std::pow
-#include <iostream>
+#include <cstdint>
+#include <stdexcept>
 #include <tuple>
 
 namespace ina::query_model {        
 	const std::string QueryEx::DIMENSION_OF_MEASURES_NAME = "CustomDimension1";
 
-	common::Value eval(const void* context, const ina::query_model::Parameter& param, void (*getValueCallback)(const void* context, const std::string& nameObj, common::Value& value));
-	size_t getDeps(const ina::query_model::Parameter& param, std::vector<std::string>& deps);
+    common::Value eval(const void* context, const ina::query_model::Parameter& param, void (*getValueCallback)(const void* context, const std::string& nameObj, common::Value& value));
+    size_t        getDeps(const ina::query_model::Parameter& param, std::vector<std::string>& deps);
 
-	common::Value eval(const void* context, const ina::query_model::Function& fct, void (*getValueCallback)(const void* context, const std::string& nameObj, common::Value& value));
-	size_t getDeps(const ina::query_model::Function& fct, std::vector<std::string>& deps);
+    common::Value eval(const void* context, const ina::query_model::Function& fct, void (*getValueCallback)(const void* context, const std::string& nameObj, common::Value& value));
+    size_t        getDeps(const ina::query_model::Function& fct, std::vector<std::string>& deps);
+   
+    bool          eval(const void* context, const ina::query_model::SelectionElement& selectionElement, void (*getValueCallback)(const void* context, const std::string& nameObj, common::Value& value));
+    void          traverse(std::map<std::string/*field name/attribut name*/,std::vector<Element>>& filters, const SelectionElement& selectionElement);
+
+    bool containsIt(const std::string& name, std::vector<std::tuple<std::string /*name*/, std::string/*aggregation*/, common::eDataType>>& resultObjects)
+    {
+        bool conatainsIt = false;
+        for(const auto& select : resultObjects)
+        {
+            if(std::get<0>(select)==name)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
      QueryEx::QueryEx(const Definition& queryDefinition)
      : m_queryDefinition(queryDefinition)
@@ -29,7 +52,7 @@ namespace ina::query_model {
     {
         for (const auto& dimension : getQueryDefinition().getDimensions())
         {
-            // Add members
+            // From members
             for(const auto& member : getVisibleMembers(dimension) )
             {
                 const std::string& memberName = ina::query_model::Member::getName(member);
@@ -39,56 +62,129 @@ namespace ina::query_model {
                 std::string agg = member.getAggregation();
                 if(agg.empty())
                 {
-                    std::string msg;
-                    msg += "WASABI: ERROR: Missing aggreation in the InA request for member '" + memberName + "' hardcoded SUM will be used, NYI metadata from SQL tables";
-                    std::cerr << msg;
+                    Logger::error("No aggreation in the InA request for member(NYI red metadata)", memberName );
                     agg = "SUM";
                 }
                 resultObjects.push_back(std::make_tuple(memberName, agg, common::eDataType::Numeric)); // TODO: Add datatype to Member
             }
-            // From formula
+            // From formulas
             for(const auto& member : getVisibleMembers(dimension) )
             {
                 if(member.getFormula() == nullptr)
                     continue;
 
                 std::vector<std::string> deps;
-                ina::query_model::getDeps(*member.getFormula(), deps);
+                getDeps(*member.getFormula(), deps);
 
                 for(const auto&memberName : deps )
                 {
                     if(isDataSourceObject(memberName)==false)
                         continue;
 
-                    bool conatainsIt = false;
-                    for(const auto& select : resultObjects)
-                    {
-                        if(std::get<0>(select)==memberName)
-                        {
-                            conatainsIt=true;
-                            continue;
-                        }
-                    }
-                    if(conatainsIt)
+                    if(containsIt(memberName, resultObjects))
                         continue;
 
                     std::string agg = member.getAggregation();
                     if(agg.empty())
                     {
                         std::string msg;
-                        msg += "WASABI: ERROR: Missing aggreation in the InA request for member '" + memberName + "' hardcoded SUM will be used, TODO: Read it from metadata";
-                        std::cerr << msg;
+                        msg += "Missing aggreation in the InA request for member '" + memberName + "' hardcoded SUM will be used, TODO: Read it from metadata\n";
+                        Logger::error(msg);
                         agg = "SUM";
                     }
                     resultObjects.push_back(std::make_tuple(memberName, agg, common::eDataType::Numeric)); // TODO: datatype
                 }
             }
+            // From restriction
+            for(const auto& member : getVisibleMembers(dimension) )
+            {
+                if(member.getSelection() == nullptr)
+                    continue;
+
+                std::map<std::string, std::vector<Element>> selector;
+
+                traverse(selector, member.getSelection()->getOperator());
+                
+                for(const auto& attribut: selector)
+                {
+                    if(attribut.first != "[Measures].[Measures]")
+                    {
+                        if(!containsIt(attribut.first, resultObjects))
+                            resultObjects.push_back(std::make_tuple(attribut.first, "", common::eDataType::String));
+                    }
+                }
+            }
+
             //From attributes
             for(const auto& attribut : dimension.getAttributes())
             {
                 if(isDataSourceObject(attribut.getName())==false)
                     continue;
                 resultObjects.push_back(std::make_tuple(attribut.getName(), "", common::eDataType::String));
+            }
+        }
+    }
+
+    
+    void QueryEx::getGroupBy(std::vector<std::string>& group_by) const
+    {
+        for (const auto& dimension : getQueryDefinition().getDimensions())
+        {
+            if( ! ina::query_model::QueryEx::isDimensionOfMeasures(dimension))
+            {
+                for(const auto& attribut : dimension.getAttributes())
+                    group_by.push_back(attribut.getName());
+            }
+            
+            // From restriction
+            for(const auto& member : getVisibleMembers(dimension) )
+            {
+                if(member.getSelection() == nullptr)
+                    continue;
+
+                std::map<std::string, std::vector<Element>> selector;
+
+                traverse(selector, member.getSelection()->getOperator());
+                
+                for(const auto& attribut: selector)
+                {
+                    if(attribut.first != "[Measures].[Measures]")
+                    {
+                        if( std::find(group_by.cbegin(), group_by.cend(), attribut.first) == group_by.cend())
+                            group_by.push_back(attribut.first);
+                    }
+                }
+            }
+        }
+    }
+
+    void QueryEx::getSortObjects(std::vector<std::pair<std::string /*name*/, ina::query_model::Sort::Direction>>& order_by) const
+    {
+        if (!getQueryDefinition().getSorts().empty())
+        {
+            for(const auto& querySort : getQueryDefinition().getSorts())
+            {
+                // case of MemberSort, TODO: in the Grid
+                if (ina::query_model::QueryEx::DIMENSION_OF_MEASURES_NAME != querySort.getObjectName())
+                {
+                    const std::string& nameSortedDim = querySort.getObjectName();
+                    if(getDSCube() != nullptr)
+                    {
+                        if(querySort.getSortType()==ina::query_model::Sort::SortType::MemberKey)
+                            order_by.push_back(std::make_pair(getDSCube()->getDimension(nameSortedDim).getKeyAttribute().getName(), querySort.getDirection()));
+                        else if(querySort.getSortType()==ina::query_model::Sort::SortType::MemberText)
+                            order_by.push_back(std::make_pair(getDSCube()->getDimension(nameSortedDim).getTextAttribute().getName(), querySort.getDirection()));
+                        else
+                            order_by.push_back(std::make_pair(getDSCube()->getDimension(nameSortedDim).getAttributes().at(0).getName(), querySort.getDirection()));
+                    }
+                    for(const auto& dim : getQueryDefinition().getDimensions())
+                    {
+                        if(dim.getName() == nameSortedDim)
+                        {
+                           order_by.push_back(std::make_pair(dim.getAttributes().at(0).getName(), querySort.getDirection()));
+                        }
+                    }
+                }
             }
         }
     }
@@ -114,64 +210,54 @@ namespace ina::query_model {
         return true;// Should not append expect for test
     }
 
-    void traverse(std::vector<Element>& filters, const SelectionElement& selectionElement)
+    void traverse(std::map<std::string,std::vector<Element>>& filters, const SelectionElement& selectionElement)
     {
         if (selectionElement.getType() == SelectionElement::Type::Operator) 
         {
-            if (!selectionElement.getSubSelections().empty())
+            for(const auto& childSelectionElement : selectionElement.getSubSelections()) 
             {
-                for(const auto& childSelectionElement : selectionElement.getSubSelections()) 
-                {
-                    traverse(filters, childSelectionElement);
-                }
+                traverse(filters, childSelectionElement);
             }
         }
         else if (selectionElement.getType() == SelectionElement::Type::SetOperand)
         {
-            if (!selectionElement.getElements().empty())
-            {
-                filters.insert(std::end(filters), std::begin(selectionElement.getElements()), std::end(selectionElement.getElements()));
-            }
+            const std::string& fieldName = selectionElement.getFieldName();
+            auto& elements = filters[fieldName];
+            elements.insert(std::end(elements), std::begin(selectionElement.getElements()), std::end(selectionElement.getElements()));
         }
     }
 
     const std::vector<Member> QueryEx::getVisibleMembers(const Dimension& dimension) const 
     {
-        std::vector<Element> filters;
+        std::map<std::string /*fieldName/attributname*/, std::vector<Element>> filters;
         traverse(filters, m_queryDefinition.getSelection().getOperator());
         if (!filters.empty())
         {
             std::vector<Member> visibleMembers;
             for(const auto& member : dimension.getMembers())
             {
-                for(const auto& filter : filters)
+                /* 
+                MDS_TheDefinitveGuide_2_1 page 237
+                5.4.1 FieldName
+                    The name of the field, which is used in the comparison. Even though the term “FieldName”
+                    was use, only attribute names may be specified in this field.
+                    Even some virtual attributes (e.g. hierarchy key or description) can be used.
+                */              
+                for(const auto& attribute : dimension.getAttributes())
                 {
-                    /* 
-                    MDS_TheDefinitveGuide_2_1 page 237
-                    5.4.1 FieldName
-                        The name of the field, which is used in the comparison. Even though the term “FieldName”
-                        was use, only attribute names may be specified in this field.
-                        Even some virtual attributes (e.g. hierarchy key or description) can be used.
-                    */
-                    bool matchFieldName = false;                    
-                    for(const auto& attribute : dimension.getAttributes())
+                    if(filters.find(attribute.getName()) != filters.end())
                     {
-                        if (filter.getFieldName()  == attribute.getName())
+                        for(const Element& filter : filters[attribute.getName()])
                         {
-                            matchFieldName = true;
-                            break;
+                            if (filter.getComparisonOperator() == Element::ComparisonOperator::EqualTo )
+                            {
+                                //TODO: Check getLowValue datatype
+                                if(std::get<std::string>(filter.getLowValue()) == ina::query_model::Member::getName(member))
+                                    visibleMembers.push_back(member);
+                            }
+                            else
+                                throw std::runtime_error("Only EqualTo operator implemented for member selection");
                         }
-                    }
-                    if (matchFieldName)
-                    {
-                        if (filter.getComparisonOperator() == Element::ComparisonOperator::EqualTo )
-                        {
-                            //TODO: Check getLowValue datatype
-                            if(std::get<std::string>(filter.getLowValue()) == ina::query_model::Member::getName(member))
-                                visibleMembers.push_back(member);
-                        }
-                        else
-                            throw std::runtime_error("Only EqualTo operator implemented for member selection");
                     }
                 }
             }
@@ -335,9 +421,85 @@ namespace ina::query_model {
         return getDeps(formula.getParameter(), deps);
     }
 
-    
+    bool eval(const void* context, const ina::query_model::Selection* selection, void (*getValueCallback)(const void* context, const std::string& nameObj, common::Value& value))
+    {
+        if(selection==nullptr)
+            return true;
+        
+        return eval(context, selection->getOperator(), getValueCallback);
+    }
+
+    bool eval(const void* context, const ina::query_model::SelectionElement& selectionElement, void (*getValueCallback)(const void* context, const std::string& nameObj, common::Value& value))
+    {
+        if (selectionElement.getType() == SelectionElement::Type::Operator) 
+        {
+            ScopeLog sc("eval SelectionElement Operator");
+            uint8_t evalRes = 2;
+            ina::query_model::LogicalOperator code = selectionElement.getCode();
+            for(const auto& childSelectionElement : selectionElement.getSubSelections()) 
+            {
+                const std::string& fieldName = childSelectionElement.getFieldName();
+                ScopeLog sc(fieldName);
+                if(fieldName=="[Measures].[Measures]")
+                    continue;
+
+                bool res = eval(context, childSelectionElement, getValueCallback);
+                Logger::log("res", res);
+                if(evalRes == 2)
+                    evalRes = res;
+                else if(code == ina::query_model::LogicalOperator::Or)
+                    evalRes |= res;
+                else if(code == ina::query_model::LogicalOperator::And)
+                    evalRes &= res;
+                else if(code == ina::query_model::LogicalOperator::Not)
+                    evalRes = !res;
+
+                Logger::log("evalRes", evalRes);  
+            }
+            return evalRes;
+        }
+        else if (selectionElement.getType() == SelectionElement::Type::SetOperand)
+        {
+            ScopeLog sc("eval SelectionElement SetOperand");
+            const std::string& fieldName = selectionElement.getFieldName();
+            Logger::log("fieldName", fieldName);
+            if(fieldName=="[Measures].[Measures]")
+                return false;
+
+            common::Value value;
+            getValueCallback(context, fieldName, value);
+            Logger::log("value", value);
+            for(const auto& element : selectionElement.getElements())
+            {
+                if(element.getComparisonOperator()==ina::query_model::Element::ComparisonOperator::EqualTo)
+                {
+                    Logger::log("element.getLowValue()", element.getLowValue());
+                    if(element.getLowValue()==value)
+                    {
+                        Logger::log("match", true);
+                        return true;
+                    }
+                }
+                else
+                    throw std::runtime_error("Only ComparisonOperator is implemented");
+            }
+            Logger::log("match", false); 
+        }
+        return false;
+    }
+
     size_t getDeps(const ina::query_model::Selection& selection, std::vector<std::string>& deps)
     {
-        throw std::runtime_error("NYI Selection dependencies");
+        std::map<std::string, std::vector<Element>> selector;
+
+        traverse(selector, selection.getOperator());
+        
+        const auto& measures = selector["[Measures].[Measures]"];
+        for(const auto& measure: measures)
+        {
+            deps.push_back(std::get<std::string>(measure.getLowValue()));
+        }
+
+        return measures.size();
     }
 }

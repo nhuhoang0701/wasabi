@@ -18,21 +18,7 @@ namespace ina::query_model
             else                         return ComparisonOperator::Unknown;
         };
 
-        std::string Element::toSql(const Element::ComparisonOperator& comparator)
-        {
-            if (comparator == ComparisonOperator::EqualTo)                          return "=";
-            else if (comparator == ComparisonOperator::NotEqualTo)                  return "<>";
-            else if (comparator == ComparisonOperator::Between)                     return"BETWEEN";
-            else if (comparator == ComparisonOperator::Match)                       return "MATCH";
-            else if (comparator == ComparisonOperator::GreaterThan)                  return ">";
-            else if (comparator == ComparisonOperator::GreaterThanOrEqualTo)        return ">=";
-            else if (comparator == ComparisonOperator::IsNull)                      return "IS NULL";
-            else if (comparator == ComparisonOperator::LessThan)                    return "<";
-            else if (comparator == ComparisonOperator::LessThanOrEqualTo)           return "<=";
-            else return "";
-        };
-
-        std::string Element::toString(const Element::ComparisonOperator& comparator)
+        std::string_view Element::toString(const Element::ComparisonOperator& comparator)
         {
             if (comparator == ComparisonOperator::EqualTo)                          return "=";
             else if (comparator == ComparisonOperator::NotEqualTo)                  return "<>";
