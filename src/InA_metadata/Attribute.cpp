@@ -7,7 +7,7 @@
 
 namespace ina::metadata
 {
-    std::string toString(common::eDataType dataType)
+    std::string_view toString(common::eDataType dataType)
     {
         switch (dataType)
         {

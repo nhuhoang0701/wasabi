@@ -4,6 +4,7 @@
 
 #include <common/data.h>
 
+#include <memory>
 #include <vector>
 #include <string>
 #include <tuple>
@@ -33,7 +34,7 @@ namespace calculator
 
 	private:
 		friend class Body;
-		const std::vector<size_t>&     getParentIndexes(size_t tupleIndex) const;
+		std::shared_ptr<const indexisSet>   getParentIndexes(size_t tupleIndex) const;
 	
 	private:
 		const Cube&                  m_cube;
@@ -41,7 +42,7 @@ namespace calculator
 		// Tuple of value index
 		typedef std::vector<size_t> Tuple;
 		/*Tuple / row indexes in the parent data table for this tuple, will be use for the aggreagtion*/
-		std::vector<std::pair<Tuple, std::vector<size_t>>> m_tuples;
+		std::vector<std::pair<Tuple, std::shared_ptr<indexisSet>>> m_tuples;
 		bool  m_materialyzed = false;
 	};
 

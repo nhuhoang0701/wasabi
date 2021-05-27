@@ -1,5 +1,6 @@
+#include <common/Log.h>
+
 #include <exception>
-#include <iostream>
 #include <stdexcept>
 #include <typeinfo>
 
@@ -32,8 +33,8 @@ void __cxa_throw(void *thrown_object, std::type_info *tinfo, void (*dest)(void *
 			msg = x->what();
 		}
 	}
-	msg = "WASABI:Error: Throwing exception. Exception's type info name: '" + typeinfo + "' message:'" + msg + "'";
-	std::cerr << msg << "'";
+	msg = "Throwing exception. Exception's type info name: '" + typeinfo + "' message:'" + msg + "'";
+	Logger::error(msg);
 
 	std::terminate();
 }
@@ -41,13 +42,13 @@ void __cxa_throw(void *thrown_object, std::type_info *tinfo, void (*dest)(void *
 
 void* __cxa_begin_catch(void* unwind_arg) throw()
 {
-	std::cerr << "WASABI: NYI: __cxa_begin_catch" << std::endl;
+	Logger::error("NYI: __cxa_begin_catch");
 	return unwind_arg;
 }
 
 void __cxa_end_catch() throw()
 {
-	std::cerr << "WASABI: NYI: __cxa_end_catch" << std::endl;
+	Logger::error("NYI: __cxa_end_catch");
 }
 
 }

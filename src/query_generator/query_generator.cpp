@@ -9,18 +9,30 @@
 #include <InA_query_model/Selection/SelectionElement.h>
 #include <InA_query_model/Formula.h>
 
+#include "InA_query_model/Sort.h"
 #include "ModelSQLGenerator.h"
 
 #include <ostream>
 #include <sstream>
 
 #include <stdexcept>
+#include <string_view>
 #include <utility>
 #include <algorithm>
 
 
 namespace query_generator
 {
+	std::string_view toString(ina::query_model::Sort::Direction direction)
+	{
+		if (direction == ina::query_model::Sort::Direction::Ascending || direction == ina::query_model::Sort::Direction::Default)
+			return "ASC";
+		else if (direction == ina::query_model::Sort::Direction::Descending)
+			return "DESC";
+		
+		throw std::runtime_error("Unknow sort direction");
+	}
+
 	query_generator::query_generator(const ina::query_model::QueryEx& queryExec)
 	 : m_queryExec(queryExec)
 	{
@@ -31,7 +43,7 @@ namespace query_generator
 		std::vector<std::tuple<std::string /*name*/,std::string/*aggregation*/, common::eDataType>> resultObjects;
 		std::ostringstream where;
         std::vector<std::string> group_by;
-		std::vector<std::pair<std::string /*name*/,std::string/*order*/>> order_by;
+		std::vector<std::pair<std::string /*name*/,ina::query_model::Sort::Direction>> order_by;
 
 		// SELECT objects
 		{
@@ -53,54 +65,12 @@ namespace query_generator
         std::ostringstream sql;
 		if(!resultObjects.empty())
 		{
-			for (const auto& dimension : m_queryExec.getQueryDefinition().getDimensions())
-			{
-				if( ! ina::query_model::QueryEx::isDimensionOfMeasures(dimension))
-				{
-					for(const auto& attribut : dimension.getAttributes())
-						group_by.push_back(attribut.getName());
-				}
-			}
+			m_queryExec.getGroupBy(group_by);
+			
 			const auto& selectionOperator = m_queryExec.getQueryDefinition().getSelection().getOperator();
-
 			buildWhereClause(selectionOperator, where);
 
-			if (!m_queryExec.getQueryDefinition().getSorts().empty())
-			{
-				for(const auto& querySort : m_queryExec.getQueryDefinition().getSorts())
-				{
-					// case of MemberSort, TODO: in the Grid
-					if (ina::query_model::QueryEx::DIMENSION_OF_MEASURES_NAME != querySort.getObjectName())
-					{
-						std::string sortSQL;
-						if (querySort.getDirection() == ina::query_model::Sort::Direction::Ascending)
-							sortSQL = "ASC";
-						else if (querySort.getDirection() == ina::query_model::Sort::Direction::Descending)
-							sortSQL = "DESC";
-
-						const std::string& nameSortedDim = querySort.getObjectName();
-						for(const auto& dim : m_queryExec.getQueryDefinition().getDimensions())
-						{
-							if(dim.getName() == nameSortedDim)
-							{
-								if(m_queryExec.getDSCube() != nullptr)
-								{
-									if(querySort.getSortType()==ina::query_model::Sort::SortType::MemberKey)
-										order_by.push_back(std::make_pair(m_queryExec.getDSCube()->getDimension(dim.getName()).getKeyAttribute().getName(), sortSQL));
-									else if(querySort.getSortType()==ina::query_model::Sort::SortType::MemberText)
-										order_by.push_back(std::make_pair(m_queryExec.getDSCube()->getDimension(dim.getName()).getTextAttribute().getName(), sortSQL));
-									else
-										order_by.push_back(std::make_pair(dim.getAttributes().at(0).getName(), sortSQL));
-								}
-								else // For unit test
-								{
-									order_by.push_back(std::make_pair(dim.getAttributes().at(0).getName(), sortSQL));
-								}
-							}
-						}
-					}
-				}
-			}
+			m_queryExec.getSortObjects(order_by);
 
 			// Generated statement
 			std::string delim;
@@ -138,8 +108,8 @@ namespace query_generator
 				for(const auto& s : order_by)
 				{
 					sql << delim << s.first;
-					if(s.second.empty() == false)
-						sql  << " " << s.second;
+					if(s.second != ina::query_model::Sort::Direction::Default && s.second != ina::query_model::Sort::Direction::None)
+						sql  << " " << toString(s.second);
 					if(delim.empty()) delim = ", ";
 				}
 			}
