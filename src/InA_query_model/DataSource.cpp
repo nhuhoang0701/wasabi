@@ -1,11 +1,11 @@
 #include "DataSource.h"
 
 #include <exceptions/InA_Exception.h>
-#include <iostream>
+#include <common/Log.h>
 
 namespace ina::query_model
 {
-	std::string DataSource::toString(DataSource::Type type)
+	std::string_view DataSource::toString(DataSource::Type type)
 	{
 		switch (type)
 		{
@@ -54,7 +54,7 @@ namespace ina::query_model
 			if(defaultObjectName.empty())
 			{
 				defaultObjectName = "Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma";
-				std::cerr << "WASABI: DataSource::getPackageName(): no objectName provided , default will be used: " << defaultObjectName << std::endl;
+				Logger::error("DataSource::getPackageName(): no objectName provided , default will be used", defaultObjectName);
 			}
 			return defaultObjectName;
 		}
@@ -70,7 +70,7 @@ namespace ina::query_model
 			if(defaultInstanceId.empty())
 			{
 				defaultInstanceId = "0";
-				std::cerr << "WASABI: DataSource::getInstanceId(): no InstanceID provided , default will be used: " << defaultInstanceId << std::endl;
+				Logger::error("DataSource::getInstanceId(): no InstanceID provided , default will be used", defaultInstanceId);
 			}
 			return defaultInstanceId;
 		}
@@ -86,7 +86,7 @@ namespace ina::query_model
 			if(default_packageName.empty())
 			{
 				default_packageName =  "local:sqlite:efashion_lite";
-				std::cerr << "WASABI: DataSource::getPackageName(): no package name provided , default will be used: " << default_packageName << std::endl;
+				Logger::error("DataSource::getPackageName(): no package name provided , default will be used", default_packageName);
 			}
 			return default_packageName;
 		}
@@ -114,7 +114,7 @@ namespace ina::query_model
 			if(defaultSchemaName.empty())
 			{
 				defaultSchemaName = "default";
-				std::cerr << "WASABI: DataSource::getSchemaName(): no schemaname provided , default will be used: " << defaultSchemaName << std::endl;
+				Logger::error("DataSource::getSchemaName(): no schemaname provided , default will be used", defaultSchemaName);
 			}
 			return defaultSchemaName;
 		}
@@ -130,7 +130,7 @@ namespace ina::query_model
 			if(default_description.empty())
 			{
 				default_description =  "Revenue/City/Time";
-				std::cerr << "WASABI: DataSource::getDescription(): no description provided , default will be used: " << default_description << std::endl;
+				Logger::error("DataSource::getDescription(): no description provided , default will be used", default_description);
 			}
 			return default_description;
 		}

@@ -4,6 +4,7 @@
 #include "Attribute.h"
 
 #include <string>
+#include <string_view>
 #include <vector>
 
 class JSONWriter;        // From <json/jsonWriter.h>
@@ -16,7 +17,8 @@ namespace ina::metadata
 	void write(const Dimension& obj, JSONWriter& jsonNode);
 
 	enum class eAxe {Uninit=0, Free, Rows, Columns};
-	std::string toString(eAxe);
+	std::string_view toString(eAxe);
+
 	enum class eDimType {Uninit=0, MeasuresDimension = 2, Dimension = 3};
 
 	class Dimension
