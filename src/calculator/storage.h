@@ -105,7 +105,7 @@ namespace calculator
 		void clear() {m_rowsNb=0;m_cols.clear();m_colsIdxByName.clear();}
 
 		bool          haveCol(const std::string& col_name) const {return m_colsIdxByName.find(col_name) != m_colsIdxByName.end();}
-		size_t        getColIndex(const std::string& col_name) const {return m_colsIdxByName.at(col_name);}
+		size_t        getColIndex(const std::string& col_name) const;
 
 		size_t                             getColumnCount() const {return m_cols.size();}
 		const std::shared_ptr<ColumnData>& getColumn(const std::string& col_name) const {return m_cols[getColIndex(col_name)];}

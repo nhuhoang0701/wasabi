@@ -1,3 +1,4 @@
+#define WASABI_NOLOG
 #include "object.h"
 
 #include "cube.h"
@@ -5,11 +6,14 @@
 #include "InA_query_model/Function.h"
 #include "InA_query_model/Selection/Selection.h"
 
+#include <InA_query_model/QueryEx.h>
+
 #include "storage.h"
 
 #include <stdexcept>
 
-#include <iostream>
+#include <common/Log.h>
+#include <string>
 
 
 namespace calculator
@@ -19,25 +23,64 @@ namespace calculator
 	{
 	}
 	
+	Object::Object(const Object& other)
+	{
+		m_name = other.m_name;
+		m_datastorage = other.m_datastorage;
+		m_formula = other.m_formula;
+		m_selection = other.m_selection;
+		m_restrictedObject = other.m_restrictedObject;
+		m_dataColumn = other.m_dataColumn;
+	}
+	Object& Object::operator=(const Object& rhs)
+	{
+		m_name = rhs.m_name;
+		m_datastorage = rhs.m_datastorage;
+		m_formula = rhs.m_formula;
+		m_selection = rhs.m_selection;
+		m_restrictedObject = rhs.m_restrictedObject;
+		m_dataColumn = rhs.m_dataColumn;
+		return *this;
+	}
 	bool Object::operator==(const Object& rhs) const
 	{
-		return m_name == rhs.m_name;
+		if(m_name != rhs.m_name)
+			return false;
+		if(m_datastorage != rhs.m_datastorage)
+			return false;
+		if(m_formula != rhs.m_formula)
+			return false;
+		if(m_restrictedObject != rhs.m_restrictedObject)
+			return false;
+		if(m_dataColumn != rhs.m_dataColumn)
+			return false;
+		return m_selection == rhs.m_selection;
 	}
 
 	void Object::materialyze(const Cube& cube)
 	{
+		ScopeLog sc("Object::materialyze");
+		Logger::log("name", getName());
+		Logger::log("m_restrictedObject", m_restrictedObject!=nullptr);
+		Logger::log("m_formula", m_formula!=nullptr);
+		Logger::log("m_dataColumn", m_dataColumn!=nullptr);
+		Logger::log("m_datastorage", m_datastorage!=nullptr);
+		Logger::log("m_selection", m_selection!=nullptr);
+		m_datastorage = &cube.getStorage();
 		if(m_formula == nullptr && m_selection == nullptr)
 		{
-			if(!cube.getStorage().haveCol(getName()))
+			m_dataColumn = m_datastorage->getColumn(m_name);
+			if(!m_datastorage->haveCol(getName()))
 				throw std::runtime_error("Object name '" + getName() + "' not found in datastorage");
-
-			m_dataColumn = cube.getStorage().getColumn(m_name);
 		}
 		else
 		{
-			if(cube.getStorage().haveCol(getName()))
+			if(m_datastorage->haveCol(getName()))
 				throw std::runtime_error("Object name '" + getName() + "' already use in datastorage");	
 		}
+		
+		if(m_restrictedObject != nullptr)
+			m_restrictedObject->materialyze(cube);
 	}
 
 	common::eDataType  Object::getDataType() const
@@ -87,17 +130,48 @@ namespace calculator
 	}
 
 	
-	common::Value Object::aggregate() const
-	{
-		common::Value value;
-		std::cerr << "WASABI: ERROR: Local agregation, NYI hardcoded to sum" << std::endl;
 
+	typedef std::tuple<size_t, const DataStorage*> Context;
+	void getValueCallback2(const void* context, const std::string& name, common::Value& value)
+	{
+		const DataStorage* data = std::get<1>(*static_cast<const Context*>(context));
+		const size_t row = std::get<0>(*static_cast<const Context*>(context));
+
+		Logger::debug("getValueCallback2 row:", row);
+		Logger::debug("getValueCallback2 name:", name);
+		Logger::debug("getValueCallback2 data:", data==nullptr);
+		Logger::debug("getValueCallback2 data->haveCol(name):", data==nullptr?false:data->haveCol(name));
+		value = data->getColumn(name)->getValueAtRowIdx(row);
+	}
+	common::Value Object::aggregate(const ina::query_model::Selection* selection) const
+	{
+		ScopeLog sc("Object::aggregate_all");
 		const common::eDataType datatype = m_dataColumn->getDataType();
+
+		common::Value value;
+		//TODO: Add value exception in common::Value
+		if(datatype == common::eDataType::Numeric)
+			value = std::nan("0");
+		else
+			value = "##NULL##";
+		Logger::error("Local agregation, NYI hardcoded to sum");
+
 		if(datatype == common::eDataType::Numeric)
 		{
 			double sum = 0;
-			for(size_t i = 0; i < m_dataColumn->getRowCount(); i++)
-				sum +=  std::get<double>(m_dataColumn->getValueAtRowIdx(i));
+			for(size_t rowIndex = 0; rowIndex < m_dataColumn->getRowCount(); rowIndex++)
+			{
+				if(selection == nullptr)
+					sum +=  std::get<double>(m_dataColumn->getValueAtRowIdx(rowIndex));
+				else
+				{
+					Context ctxt(rowIndex, m_datastorage);
+					if(ina::query_model::eval(&ctxt, selection, getValueCallback2))
+					{
+						sum +=  std::get<double>(m_dataColumn->getValueAtRowIdx(rowIndex));
+					}
+				}
+			}
 			value = sum;
 		}
 		else
@@ -106,40 +180,65 @@ namespace calculator
 		}
 		return value;
 	}
-
-	common::Value Object::aggregate(const indexisSet& indexes) const
+	common::Value Object::aggregate(const indexisSet& indexes, const ina::query_model::Selection* selection) const
 	{
-		if(indexes.isAll)
-			return aggregate();
+		ScopeLog sc("Object::aggregate");
+		Logger::log("name", getName());
+		Logger::log("indexes.size()", indexes.size());
+		if(indexes.isAll())
+			return aggregate(selection);
 
+		const common::eDataType datatype = m_dataColumn->getDataType();
 		common::Value value;
-		if(indexes.empty())
+		//TODO: Add value exception in common::Value
+		if(datatype == common::eDataType::Numeric)
 		{
-			const common::eDataType datatype = m_dataColumn->getDataType();
-			if(datatype == common::eDataType::Numeric)
-				value = std::nan("0");
-			else
-				value = "##NULL##";
+			Logger::log("datatype", "Numeric");
+			value = std::nan("0");
 		}
-		else if(indexes.size() == 1)
+		else
 		{
-			value = m_dataColumn->getValueAtRowIdx(indexes.at(0));
+			Logger::log("datatype", "String");
+			value = "##NULL##";
+		}
+
+		if(indexes.size() == 1)
+		{
+			if(selection == nullptr)
+				value = m_dataColumn->getValueAtRowIdx(indexes[0]);
+			else
+			{
+				Context ctxt(indexes[0], m_datastorage);
+				if(ina::query_model::eval(&ctxt, selection, getValueCallback2))
+				{
+					value = m_dataColumn->getValueAtRowIdx(indexes[0]);
+				}
+			}
 		}
 		else if(indexes.size() > 1 )
 		{
-			std::cerr << "WASABI: ERROR: Local agregation, NYI hardcoded to sum" << std::endl;
-
-			const common::eDataType datatype = m_dataColumn->getDataType();
+			Logger::error("Local agregation, NYI hardcoded to sum");
 			if(datatype == common::eDataType::Numeric)
 			{
 				double sum = 0;
-				for(const auto& i : indexes)
-					sum +=  std::get<double>(m_dataColumn->getValueAtRowIdx(i));
+				for(const auto& rowIndex : indexes)
+				{
+					if(selection == nullptr)
+						sum +=  std::get<double>(m_dataColumn->getValueAtRowIdx(rowIndex));
+					else
+					{
+						Context ctxt(rowIndex, m_datastorage);
+						if(ina::query_model::eval(&ctxt, selection, getValueCallback2))
+						{
+							sum +=  std::get<double>(m_dataColumn->getValueAtRowIdx(rowIndex));
+						}
+					}
+				}
 				value = sum;
 			}
 			else
 			{
-				value = "#MULTIVALUE";
+				value = "#MULTIVALUE"; // TODO: Add vlaue exception in common::Value
 			}
 		}
 		return value;

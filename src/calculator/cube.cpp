@@ -7,7 +7,7 @@
 #include <limits>
 
 
-#include <iostream>
+#include <common/Log.h>
 
 
 namespace calculator
@@ -23,21 +23,20 @@ namespace calculator
 	
 	void Cube::materialyze()
 	{
+		ScopeLog sc("Cube::materialyze");
 		m_AxeRows.materialyze();
 		m_AxeColumns.materialyze();
 		m_body.materialyze();
-		/*
-		std::cout << "Cube::materialyze()" << std::endl;
-		std::cout << " Row axis card:" << m_AxeRows.getCardinality() << std::endl;
-		std::cout << "  nb dim:" << m_AxeRows.size() << std::endl;
-		std::cout << " Col axis card:" << m_AxeColumns.getCardinality() << std::endl;
-		std::cout << "  nb dim:" << m_AxeColumns.size() << std::endl;
 
-		std::cout << " Body cells nbr:" << m_body.getCellCount() << std::endl;
-		std::cout << "  nb meas:" << m_body.size() << std::endl;
-		std::cout << "  nb getColNbrs:" << m_body.getColumnCount() << std::endl;
-		std::cout << "  nb getRowNbrs:" << m_body.getRowCount() << std::endl;
-		*/
+		Logger::log(" Row axis card", m_AxeRows.getCardinality());
+		Logger::log("  nb dim", m_AxeRows.size());
+		Logger::log(" Col axis card", m_AxeColumns.getCardinality());
+		Logger::log("  nb dim", m_AxeColumns.size());
+
+		Logger::log(" Body cells nbr", m_body.getCellCount());
+		Logger::log("  nb meas", m_body.getVisibleObjects().size());
+		Logger::log("  nb getColNbrs", m_body.getColumnCount());
+		Logger::log("  nb getRowNbrs", m_body.getRowCount());
 	}
 	
 	const DataStorage&  Cube::getStorage() const
@@ -64,7 +63,6 @@ namespace calculator
 		if(!getStorage().haveCol(obj.getName()))
 			throw std::runtime_error("Object " + obj.getName() + " not found in datastorage");
 
-		//std::cout << "AddDim:" << obj.getName() << ":" << static_cast<uint32_t>(axe)<< std::endl;
 		getAxe(axe).push_back(obj);
 	}
 

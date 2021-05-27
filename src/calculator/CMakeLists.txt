@@ -9,7 +9,7 @@ project(calculator VERSION 1.0)
 
 ################################################
 # calculator
-add_library(calculator object.cpp axe.cpp body.cpp cube.cpp )
+add_library(calculator object.cpp storage.cpp axe.cpp body.cpp cube.cpp )
 target_link_libraries(calculator PUBLIC exceptions)
 target_link_directories(calculator PUBLIC ${CMAKE_INSTALL_PREFIX}/lib/)
 

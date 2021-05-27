@@ -5,7 +5,7 @@
 
 namespace ina::metadata
 {
-    std::string toString(eAxe axe)
+    std::string_view toString(eAxe axe)
     {
         switch (axe)
         {

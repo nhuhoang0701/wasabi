@@ -1,5 +1,6 @@
 #include "axe.h"
 
+#include <memory>
 #include <stdexcept>
 
 #include <unordered_map>
@@ -56,12 +57,13 @@ namespace calculator
 				{
 					//std::cout << "+";
 					tuplesSet[tuple] = m_tuples.size();
-					m_tuples.push_back(std::make_pair(tuple, std::vector(1, rowIndex)));
+					m_tuples.push_back(std::make_pair(tuple, std::make_shared<indexisSet>()));
+					m_tuples.back().second->push_back(rowIndex);
 				}
 				else
 				{
 					//std::cout << "=";
-					m_tuples[iterUtplesSet->second].second.push_back(rowIndex);
+					m_tuples[iterUtplesSet->second].second->push_back(rowIndex);
 				}
 				//std::for_each(m_tuples[tuplesSet.at(tuple)].first.cbegin(), m_tuples[tuplesSet.at(tuple)].first.cend(), [] (const size_t c) {std::cout << c << "\t";} );
 				//std::cout << "\t|\t";
@@ -131,7 +133,7 @@ namespace calculator
 		return tuple[dimIdx];
 	}
 
-	const std::vector<size_t>& Axe::getParentIndexes(size_t tupleIndex) const
+	std::shared_ptr<const indexisSet> Axe::getParentIndexes(size_t tupleIndex) const
 	{
 		if(!m_materialyzed)
 			throw std::runtime_error("Axe: materialyze() not called");
