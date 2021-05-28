@@ -223,8 +223,8 @@ namespace ina::grid
                         for(size_t colIndex = cells.getColumnFrom(); colIndex < cells.getColumnTo(); colIndex++)
                         {
                             const auto& measure = cells.getCubeBody().getVisibleObjects()[dimMeasureOnCol?(colIndex%memberDivCol):(rowIndex%memberDivRow)];
-                            const auto& data = cells.getCubeBody().getValue(measure.getName(), colIndex/memberDivCol, rowIndex/memberDivRow);
-                            switch (measure.getDataType())
+                            const auto& data = cells.getCubeBody().getValue(measure->getName(), colIndex/memberDivCol, rowIndex/memberDivRow);
+                            switch (measure->getDataType())
                             {
                             case common::eDataType::String:
                             {
@@ -257,8 +257,8 @@ namespace ina::grid
                         for(size_t colIndex = cells.getColumnFrom(); colIndex < cells.getColumnTo(); colIndex++)
                         {
                             const auto& measure = cells.getCubeBody().getVisibleObjects()[dimMeasureOnCol?(colIndex%memberDivCol):(rowIndex%memberDivRow)];
-                            const auto& data = cells.getCubeBody().getValue(measure.getName(), colIndex/memberDivCol, rowIndex/memberDivRow);
-                            switch (measure.getDataType())
+                            const auto& data = cells.getCubeBody().getValue(measure->getName(), colIndex/memberDivCol, rowIndex/memberDivRow);
+                            switch (measure->getDataType())
                             {
                             case common::eDataType::String:
                             {
@@ -289,7 +289,7 @@ namespace ina::grid
                         for(size_t colIndex = cells.getColumnFrom(); colIndex < cells.getColumnTo(); colIndex++)
                         {
                             const auto& measure = cells.getCubeBody().getVisibleObjects()[dimMeasureOnCol?(colIndex%memberDivCol):(rowIndex%memberDivRow)];
-                            switch (measure.getDataType())
+                            switch (measure->getDataType())
                             {
                             case common::eDataType::String:
                             {

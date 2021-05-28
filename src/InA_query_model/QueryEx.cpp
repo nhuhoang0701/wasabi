@@ -62,7 +62,7 @@ namespace ina::query_model {
                 std::string agg = member.getAggregation();
                 if(agg.empty())
                 {
-                    Logger::error("No aggreation in the InA request for member(NYI red metadata)", memberName );
+                    Logger::error("No aggreation in the InA request for member(NYI: read it from metadata)", memberName );
                     agg = "SUM";
                 }
                 resultObjects.push_back(std::make_tuple(memberName, agg, common::eDataType::Numeric)); // TODO: Add datatype to Member

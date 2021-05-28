@@ -176,14 +176,14 @@ void getDataCube(const ina::query_model::QueryEx& queryEx, calculator::Cube& cub
 			for(const auto member : queryEx.getVisibleMembers(dimension))
 			{
 				auto formula = calculator::Object(member.getName());
-				if(member.getFormula() != nullptr && !cube.contain(formula))
+				if(member.getFormula() != nullptr && !cube.contain(member.getName()))
 					cube.addFormula(formula, *member.getFormula());
 			}
 			// Add restriction
 			for(const auto member : queryEx.getVisibleMembers(dimension))
 			{
 				auto restriction = calculator::Object(member.getName());
-				if(member.getSelection() != nullptr && !cube.contain(restriction))
+				if(member.getSelection() != nullptr && !cube.contain(member.getName()))
 					cube.addRestriction(restriction, *member.getSelection());
 			}
 		}
