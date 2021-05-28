@@ -31,23 +31,24 @@ namespace calculator
 		void    addFormula(const Object& obj, const ina::query_model::Formula& formula, const ina::query_model::Selection* selection = nullptr);
 		void    addRestriction(const Object& obj, const ina::query_model::Selection& formula);
 
-		const std::vector<Object>&  getVisibleObjects() const;
-		std::vector<Object>&        getVisibleObjects();
+		const std::vector<std::shared_ptr<Object>>&  getVisibleObjects() const;
 
-		bool          contain(const Object& obj) const;
+		bool          contain(const std::string& name) const;
 		const Object& getObject(const std::string& objectName) const;
-		Object&       getObject(const std::string& objectName);
 
 		const common::Value&   getValue(const std::string& measureName, size_t col, size_t row) const;
 		const indexisSet&      getParentIndexes(const std::string& measureName, size_t col, size_t row) const;
 
+	private:
+		std::vector<std::shared_ptr<Object>>&   _getVisibleObjects();
+		std::shared_ptr<Object>&                _getObject(const std::string& objectName);
 
 	private:
 		const Cube&  m_cube;
 		const Axe&   m_axeRow;
 		const Axe&   m_axeCol;
 
-		std::vector<Object>  m_VisibleObjects;
+		std::vector<std::shared_ptr<Object>>  m_VisibleObjects;
 
 		typedef std::vector<std::vector<std::shared_ptr<const indexisSet>>>  bodyIndexes;
 		bodyIndexes  m_BodyIdx;
@@ -56,8 +57,6 @@ namespace calculator
 		std::map<std::string,CellsValue> m_VisibleCells;
 		bool                             m_materialyzed = false;
 
-
-		
-		std::vector<Object>  m_restrictedObjects;
+		std::vector<std::shared_ptr<Object>>  m_restrictedObjects;
 	};
 } // cube
