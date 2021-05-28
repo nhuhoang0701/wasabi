@@ -25,7 +25,7 @@ namespace calculator
 		void                setStorage(std::shared_ptr<const DataStorage> data);
 		const DataStorage&  getStorage() const;
 
-		bool         contain(const Object& obj) const;
+		bool         contain(const std::string& name) const;
 
 		void         addDim(eAxe eAxe, const Object& obj);
 		void         addMeasure(const Object& obj);

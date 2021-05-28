@@ -25,10 +25,10 @@ namespace calculator
 		size_t rowCount = std::numeric_limits<size_t>::max();
 		for(auto& object : *this)
 		{
-			object.materialyze(m_cube);
+			object->materialyze(m_cube);
 			if(rowCount == std::numeric_limits<size_t>::max())
-				rowCount = object.getRowCount();
-			else if(rowCount != object.getRowCount())	 
+				rowCount = object->getRowCount();
+			else if(rowCount != object->getRowCount())	 
 				throw std::runtime_error("Some column have different row count...");
 		}
 
@@ -49,7 +49,7 @@ namespace calculator
 				tuple.clear();
 				for(const auto& dimension : *this)
 				{
-					tuple.push_back(dimension.getValueIndexFromRowIdx(rowIndex));
+					tuple.push_back(dimension->getValueIndexFromRowIdx(rowIndex));
 				}
 				// Get the list of pre aggreagted indexes
 				auto iterUtplesSet = tuplesSet.find(tuple);
@@ -87,8 +87,8 @@ namespace calculator
 	{
 		for(const auto& dim : (*this))
 		{
-			if(dim.getName() == dimName)
-				return dim;
+			if(dim->getName() == dimName)
+				return *dim;
 		}
 		throw std::runtime_error("Axe: getDimension() dimemsion not found:" + dimName);
 	}
@@ -97,7 +97,7 @@ namespace calculator
 	{
 		for(size_t dimIdx = 0; dimIdx < size(); dimIdx++ )
 		{
-			if((*this)[dimIdx].getName() == dimName)
+			if((*this)[dimIdx]->getName() == dimName)
 				return getValue(dimIdx, tupleIndex);
 		}
 		throw std::runtime_error("Axe: getValue() dimemsion not found:" + dimName);
@@ -107,7 +107,7 @@ namespace calculator
 	{
 		for(size_t dimIdx = 0; dimIdx < size(); dimIdx++ )
 		{
-			if((*this)[dimIdx].getName() == dimName)
+			if((*this)[dimIdx]->getName() == dimName)
 				return getValueIndex(dimIdx, tupleIndex);
 		}
 		throw std::runtime_error("Axe: getValue() dimemsion not found:" + dimName);
@@ -115,7 +115,7 @@ namespace calculator
 
 	const common::Value& Axe::getValue(size_t dimIdx, size_t tupleIndex) const
 	{
-		return at(dimIdx).getValueAtValueIdx(getValueIndex(dimIdx, tupleIndex));
+		return at(dimIdx)->getValueAtValueIdx(getValueIndex(dimIdx, tupleIndex));
 	}
 
 	size_t Axe::getValueIndex(size_t dimIdx, size_t tupleIndex) const

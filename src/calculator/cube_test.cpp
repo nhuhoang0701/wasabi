@@ -193,26 +193,25 @@ int main()
 		CPPUNIT_ASSERT_EQUAL(0, cube.getAxe(calculator::eAxe::Column).getCardinality());
 	}
 
-	if(false)
 	{
 		JSONReader reader;
 		
 		ina::query_model::Selection selection1;
-		read(selection1, reader.parse(R"({"Operator":{"Code":"And","SubSelections":[{"SetOperand":{"FieldName":"[Measures].[Measures]","Elements":[{"Comparison":"=","Low":"Meas0"}]}},{"SetOperand":{"FieldName":"Yr","Elements":[{"Comparison":"=","Low":"A"}]}}]}})"));
+		read(selection1, reader.parse(R"({"Operator":{"Code":"And","SubSelections":[{"SetOperand":{"FieldName":"[Measures].[Measures]","Elements":[{"Comparison":"=","Low":"Meas0"}]}},{"SetOperand":{"FieldName":"Dim","Elements":[{"Comparison":"=","Low":"A"}]}}]}})"));
 
 		ina::query_model::Selection selection2;
-		read(selection2, reader.parse(R"({"Operator":{"Code":"And","SubSelections":[{"SetOperand":{"FieldName":"[Measures].[Measures]","Elements":[{"Comparison":"=","Low":"Meas0"}]}},{"SetOperand":{"FieldName":"Yr","Elements":[{"Comparison":"=","Low":"B"}]}}]}})"));
+		read(selection2, reader.parse(R"({"Operator":{"Code":"And","SubSelections":[{"SetOperand":{"FieldName":"[Measures].[Measures]","Elements":[{"Comparison":"=","Low":"Meas0"}]}},{"SetOperand":{"FieldName":"Dim","Elements":[{"Comparison":"=","Low":"B"}]}}]}})"));
 
 		Cube cube;	
 		cube.setStorage(storage);
 		cube.addMeasure(Object("Meas0"));
 		cube.addRestriction(Object("rest1"), selection1);
-		//cube.addRestriction(Object("rest2"), selection2);
+		cube.addRestriction(Object("rest2"), selection2);
 		cube.materialyze();
 
-		CPPUNIT_ASSERT_EQUAL(4, cube.getAxe(calculator::eAxe::Row).getCardinality());
-			CPPUNIT_ASSERT_EQUAL(9-1, std::get<double>(cube.getBody().getValue("rest1", 0, 0)) );
-			//CPPUNIT_ASSERT_EQUAL(9-2, std::get<double>(cube.getBody().getValue("rest2", 0, 0)) );
+		CPPUNIT_ASSERT_EQUAL(0, cube.getAxe(calculator::eAxe::Row).getCardinality());
+			CPPUNIT_ASSERT_EQUAL(1, std::get<double>(cube.getBody().getValue("rest1", 0, 0)) );
+			CPPUNIT_ASSERT_EQUAL(2, std::get<double>(cube.getBody().getValue("rest2", 0, 0)) );
 		CPPUNIT_ASSERT_EQUAL(0, cube.getAxe(calculator::eAxe::Column).getCardinality());
 	}
 
