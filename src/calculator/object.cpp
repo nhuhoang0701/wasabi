@@ -1,4 +1,5 @@
 #define WASABI_NOLOG
+
 #include "object.h"
 
 #include "cube.h"
@@ -22,50 +23,11 @@ namespace calculator
 		: m_name(name)
 	{
 	}
-	
-	Object::Object(const Object& other)
-	{
-		m_name = other.m_name;
-		m_datastorage = other.m_datastorage;
-		m_formula = other.m_formula;
-		m_selection = other.m_selection;
-		m_restrictedObject = other.m_restrictedObject;
-		m_dataColumn = other.m_dataColumn;
-	}
-	Object& Object::operator=(const Object& rhs)
-	{
-		m_name = rhs.m_name;
-		m_datastorage = rhs.m_datastorage;
-		m_formula = rhs.m_formula;
-		m_selection = rhs.m_selection;
-		m_restrictedObject = rhs.m_restrictedObject;
-		m_dataColumn = rhs.m_dataColumn;
-		return *this;
-	}
-	bool Object::operator==(const Object& rhs) const
-	{
-		if(m_name != rhs.m_name)
-			return false;
-		if(m_datastorage != rhs.m_datastorage)
-			return false;
-		if(m_formula != rhs.m_formula)
-			return false;
-		if(m_restrictedObject != rhs.m_restrictedObject)
-			return false;
-		if(m_dataColumn != rhs.m_dataColumn)
-			return false;
-		return m_selection == rhs.m_selection;
-	}
 
 	void Object::materialyze(const Cube& cube)
 	{
 		ScopeLog sc("Object::materialyze");
 		Logger::log("name", getName());
-		Logger::log("m_restrictedObject", m_restrictedObject!=nullptr);
-		Logger::log("m_formula", m_formula!=nullptr);
-		Logger::log("m_dataColumn", m_dataColumn!=nullptr);
-		Logger::log("m_datastorage", m_datastorage!=nullptr);
-		Logger::log("m_selection", m_selection!=nullptr);
 		m_datastorage = &cube.getStorage();
 		if(m_formula == nullptr && m_selection == nullptr)
 		{

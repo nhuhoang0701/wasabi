@@ -13,7 +13,7 @@ namespace calculator
 {
 	class Cube;
 
-	class Axe : public std::vector<Object>
+	class Axe : public std::vector<std::shared_ptr<Object>>
 	{
 	public:
 		Axe(const Cube& cube) : m_cube(cube) {};

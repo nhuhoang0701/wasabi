@@ -3,6 +3,7 @@
 #include "storage.h"
 
 #include <cstdint>
+#include <memory>
 #include <stdexcept>
 #include <limits>
 
@@ -46,14 +47,16 @@ namespace calculator
 		return *m_data;
 	}
 
-	bool Cube::contain(const Object& obj) const
+	bool Cube::contain(const std::string& name) const
 	{
-		if( m_body.contain(obj) )
+		if( m_body.contain(name) )
 			return true;
-		if( std::find(m_AxeColumns.begin(), m_AxeColumns.end(), obj) != m_AxeColumns.end() )
-			return true;
-		if( std::find(m_AxeRows.begin(), m_AxeRows.end(), obj) != m_AxeRows.end() )
-			return true;
+		for( const auto& dim : m_AxeColumns)
+			if(dim->getName() == name)
+				return true;
+		for( const auto& dim : m_AxeRows)
+			if(dim->getName() == name)
+				return true;
 		
 		return false;
 	}
@@ -63,7 +66,7 @@ namespace calculator
 		if(!getStorage().haveCol(obj.getName()))
 			throw std::runtime_error("Object " + obj.getName() + " not found in datastorage");
 
-		getAxe(axe).push_back(obj);
+		getAxe(axe).push_back(std::make_shared<Object>(obj.getName()));
 	}
 
 	void Cube::addMeasure(const Object& obj)
