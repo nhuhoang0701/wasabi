@@ -19,7 +19,7 @@ namespace ina::grid
         m_RowCount = getCubeBody().getRowCount();
         if( getRowAxis().getMeasureDimension() != nullptr)
         {
-            if(getCubeBody().getVisibleObjects().size() < getRowAxis().getMeasureDimMembers().size())
+            if(getCubeBody().getNumberOfVisibleObjects() < getRowAxis().getMeasureDimMembers().size())
                 throw std::runtime_error("Invalid state: Body size is less than visble members size on row.");
 
             m_RowCount *= getRowAxis().getMeasureDimMembers().size();
@@ -29,7 +29,7 @@ namespace ina::grid
         m_ColumnCount = getCubeBody().getColumnCount();
         if( getColumnAxis().getMeasureDimension() != nullptr)
         {
-            if(getCubeBody().getVisibleObjects().size() < getColumnAxis().getMeasureDimMembers().size())
+            if(getCubeBody().getNumberOfVisibleObjects() < getColumnAxis().getMeasureDimMembers().size())
                 throw std::runtime_error("Invalid state: Body size is less than visble members size on col.");
 
             m_ColumnCount *= getColumnAxis().getMeasureDimMembers().size();

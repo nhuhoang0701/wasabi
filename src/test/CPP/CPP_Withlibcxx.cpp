@@ -7,14 +7,14 @@ int main()
 {	
 	TEST_INIT();
 
-	CPPUNIT_ASSERT_EQUAL(d_STDSQRT_d(4),2);
+	WASABI_CHECK_EQUAL(d_STDSQRT_d(4),2);
 
 	CPPUNIT_ASSERT_EQUAL_STR(str_VECTOR_DOUBLE_d(13),"Test OK");
 	
 	
 	int* pRes = NULL;
 	pRes = pi_NEW_INT_v();
-	CPPUNIT_ASSERT(pRes);
+	WASABI_CHECK_NOTEQUAL(nullptr, pRes);
 
 	std::cout << "Call v_DELETE_pv \n";
 	v_DELETE_pv(pRes);

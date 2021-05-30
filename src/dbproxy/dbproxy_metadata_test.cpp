@@ -17,24 +17,24 @@ int main()
     std::shared_ptr<DBProxy> dbProxy = DBProxy::getDBProxy(cnxStr);
 	
 	const std::vector<TableDescr>& tables = dbProxy->getTables();
-	CPPUNIT_ASSERT_EQUAL(tables.size(),1);
+	WASABI_CHECK_EQUAL(tables.size(),1);
 	for(const auto& tableDescr : tables)
 	{
 		const std::string& tableName = tableDescr.getName();		
-		CPPUNIT_ASSERT_EQUAL(tableDescr,dbProxy->getTableDescr(tableName));
+		WASABI_CHECK_EQUAL(&tableDescr, &dbProxy->getTableDescr(tableName));
 	}
 	
 	const TableDescr& tableDescr = dbProxy->getTableDescr(tableNameStr);
 	const std::vector<ColumnDescr>& cols = tableDescr.getColumnsDescr();
-	CPPUNIT_ASSERT_EQUAL(cols.size(),4);
-	CPPUNIT_ASSERT_EQUAL(cols.at(0).getName(),"text");
-	CPPUNIT_ASSERT_EQUAL(cols.at(0).getDataType(),"TEXT");
-	CPPUNIT_ASSERT_EQUAL(cols.at(1).getName(),"varchar");
-	CPPUNIT_ASSERT_EQUAL(cols.at(1).getDataType(),"VARCHAR");
-	CPPUNIT_ASSERT_EQUAL(cols.at(2).getName(),"real");
-	CPPUNIT_ASSERT_EQUAL(cols.at(2).getDataType(),"REAL");
-	CPPUNIT_ASSERT_EQUAL(cols.at(3).getName(),"integer");
-	CPPUNIT_ASSERT_EQUAL(cols.at(3).getDataType(),"INTEGER");
+	WASABI_CHECK_EQUAL(cols.size(),4);
+	WASABI_CHECK_EQUAL(cols.at(0).getName(),"text");
+	WASABI_CHECK_EQUAL(cols.at(0).getDataType(),"TEXT");
+	WASABI_CHECK_EQUAL(cols.at(1).getName(),"varchar");
+	WASABI_CHECK_EQUAL(cols.at(1).getDataType(),"VARCHAR");
+	WASABI_CHECK_EQUAL(cols.at(2).getName(),"real");
+	WASABI_CHECK_EQUAL(cols.at(2).getDataType(),"REAL");
+	WASABI_CHECK_EQUAL(cols.at(3).getName(),"integer");
+	WASABI_CHECK_EQUAL(cols.at(3).getDataType(),"INTEGER");
 	
 	/*
 	{

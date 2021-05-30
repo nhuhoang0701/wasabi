@@ -1,4 +1,4 @@
-#define WASABI_NOLOG
+//#define WASABI_NOLOG
 
 #include "object.h"
 
@@ -101,7 +101,7 @@ namespace calculator
 
 		Logger::debug("getValueCallback2 row:", row);
 		Logger::debug("getValueCallback2 name:", name);
-		Logger::debug("getValueCallback2 data:", data==nullptr);
+		Logger::debug("getValueCallback2 data!=nullptr:", data!=nullptr);
 		Logger::debug("getValueCallback2 data->haveCol(name):", data==nullptr?false:data->haveCol(name));
 		value = data->getColumn(name)->getValueAtRowIdx(row);
 	}
@@ -123,14 +123,15 @@ namespace calculator
 			double sum = 0;
 			for(size_t rowIndex = 0; rowIndex < m_dataColumn->getRowCount(); rowIndex++)
 			{
+				ScopeLog sc(std::to_string(rowIndex));
 				if(selection == nullptr)
-					sum +=  std::get<double>(m_dataColumn->getValueAtRowIdx(rowIndex));
+					sum +=  m_dataColumn->getValueAtRowIdx(rowIndex).getDouble();
 				else
 				{
 					Context ctxt(rowIndex, m_datastorage);
 					if(ina::query_model::eval(&ctxt, selection, getValueCallback2))
 					{
-						sum +=  std::get<double>(m_dataColumn->getValueAtRowIdx(rowIndex));
+						sum +=  m_dataColumn->getValueAtRowIdx(rowIndex).getDouble();
 					}
 				}
 			}
@@ -140,6 +141,7 @@ namespace calculator
 		{
 			value = "#MULTIVALUE";
 		}
+		Logger::log("value", value);
 		return value;
 	}
 	common::Value Object::aggregate(const indexisSet& indexes, const ina::query_model::Selection* selection) const
@@ -166,6 +168,7 @@ namespace calculator
 
 		if(indexes.size() == 1)
 		{
+			ScopeLog sc(std::to_string(indexes[0]));
 			if(selection == nullptr)
 				value = m_dataColumn->getValueAtRowIdx(indexes[0]);
 			else
@@ -185,14 +188,15 @@ namespace calculator
 				double sum = 0;
 				for(const auto& rowIndex : indexes)
 				{
+					ScopeLog sc(std::to_string(rowIndex));
 					if(selection == nullptr)
-						sum +=  std::get<double>(m_dataColumn->getValueAtRowIdx(rowIndex));
+						sum +=  m_dataColumn->getValueAtRowIdx(rowIndex).getDouble();
 					else
 					{
 						Context ctxt(rowIndex, m_datastorage);
 						if(ina::query_model::eval(&ctxt, selection, getValueCallback2))
 						{
-							sum +=  std::get<double>(m_dataColumn->getValueAtRowIdx(rowIndex));
+							sum +=  m_dataColumn->getValueAtRowIdx(rowIndex).getDouble();
 						}
 					}
 				}
@@ -203,6 +207,7 @@ namespace calculator
 				value = "#MULTIVALUE"; // TODO: Add vlaue exception in common::Value
 			}
 		}
+		Logger::log("value", value);
 		return value;
 	}
 
