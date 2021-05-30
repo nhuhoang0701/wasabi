@@ -110,7 +110,13 @@ namespace ina::query_model {
                     if(attribut.first != "[Measures].[Measures]")
                     {
                         if(!containsIt(attribut.first, resultObjects))
-                            resultObjects.push_back(std::make_tuple(attribut.first, "", common::eDataType::String));
+                        {
+                            common::eDataType dt = m_dsCube->getDataType(attribut.first);
+                            if(dt==common::eDataType::Undefined)
+                                resultObjects.push_back(std::make_tuple(attribut.first, "", common::eDataType::String)); // TODO: datatype
+                            else
+                                resultObjects.push_back(std::make_tuple(attribut.first, "", dt));
+                        }
                     }
                 }
             }
@@ -120,7 +126,11 @@ namespace ina::query_model {
             {
                 if(isDataSourceObject(attribut.getName())==false)
                     continue;
-                resultObjects.push_back(std::make_tuple(attribut.getName(), "", common::eDataType::String));
+                common::eDataType dt = m_dsCube->getDataType(attribut.getName());
+                if(dt==common::eDataType::Undefined)
+                    resultObjects.push_back(std::make_tuple(attribut.getName(), "", common::eDataType::String )); // TODO: datatype
+                else
+                     resultObjects.push_back(std::make_tuple(attribut.getName(), "", dt ));;
             }
         }
     }
@@ -459,7 +469,7 @@ namespace ina::query_model {
             {
                 if(element.getComparisonOperator()==ina::query_model::Element::ComparisonOperator::EqualTo)
                 {
-                    Logger::log("element.getLowValue()", element.getLowValue().getString());
+                    Logger::log("element.getLowValue()", element.getLowValue());
                     if(element.getLowValue()==value)
                     {
                         Logger::log("match", true);

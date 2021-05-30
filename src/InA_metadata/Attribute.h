@@ -55,7 +55,7 @@ namespace ina::metadata
 		private:
 			std::string       m_name; 
 			std::string       m_description;
-			common::eDataType m_datatype = common::eDataType::Uniti;
+			common::eDataType m_datatype = common::eDataType::Undefined;
 			eAttrType         m_type = eAttrType::Uninit;
 
 			const Dimension* m_dimension = nullptr;

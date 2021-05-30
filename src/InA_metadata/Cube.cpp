@@ -5,6 +5,8 @@
 #include <InA_query_model/DataSource.h>
 #include <metadata_enrichment/Tables.h>
 
+#include <common/Log.h>
+
 #include <memory>
 #include <iostream>
 #include <stdexcept>
@@ -173,24 +175,49 @@ namespace ina::metadata
 
      bool Cube::containsDataSourceColumn(const std::string& attributeName) const
      {
-         //std::cout << __PRETTY_FUNCTION__ << " attributeName:" << attributeName << std::endl;
+         ScopeLog sc("Cube::containsDataSourceColumn");
+         Logger::log("attributeName", attributeName);
          for(const auto& dim : m_dimensions)
          {
              for(const auto& attribut : dim->getAttributes())
              {
-                //std::cout << "attribut_dim:" << attribut.getName() << std::endl;
+                Logger::log("attribut_dim", attribut.getName());
                  if(attribut.getName() == attributeName)
                     return true;
              }
              for(const auto& member : dim->getMembers())
              {
-                //std::cout << "member_dim:" << member.getName().second << std::endl;
+                Logger::log("member_dim", member.getName().first);
                  if(member.getUniqueName().second == attributeName)
                     return true;
+            }
          }
-         }
-        //std::cout << "containsAttributes:" << false << std::endl;
+         Logger::log("containsAttributes", false);
 
          return false;
+     }
+
+     common::eDataType Cube::getDataType(const std::string& attributeName) const
+     {
+         ScopeLog sc("Cube::getDataType");
+         Logger::log("attributeName", attributeName);
+         common::eDataType dt = common::eDataType::Undefined;
+         for(const auto& dim : m_dimensions)
+         {
+             for(const auto& attribut : dim->getAttributes())
+             {
+                Logger::log("attribut_dim", attribut.getName());
+                 if(attribut.getName() == attributeName)
+                 {
+                    dt = attribut.getDataType();
+                    Logger::log("datatype", static_cast<uint16_t>(dt));
+                    break;
+                 }
+             }
+             if(dt != common::eDataType::Undefined)
+                break;
+         }
+
+         return dt;
      }
 }
