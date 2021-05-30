@@ -11,7 +11,7 @@ namespace ina::metadata
     {
         switch (dataType)
         {
-        case common::eDataType::Uniti : throw std::runtime_error("eDatatype value not init.");
+        case common::eDataType::Undefined : throw std::runtime_error("eDatatype value not init.");
         case common::eDataType::String : return "String";
         case common::eDataType::Numeric :return "Long";
         default:

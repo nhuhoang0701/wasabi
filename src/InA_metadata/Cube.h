@@ -26,7 +26,8 @@ namespace ina::metadata
 		const Dimension&                                getDimension(const std::string& name) const;
 		const std::vector<std::unique_ptr<Dimension>>&  getDimensions() const;
 
-		bool containsDataSourceColumn(const std::string& attributeName) const;
+		bool                  containsDataSourceColumn(const std::string& attributeName) const;
+		common::eDataType     getDataType(const std::string& attributeName) const;
 
 		private:
 		Dimension&                                getDimension(const std::string& name);

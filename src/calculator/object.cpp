@@ -94,6 +94,7 @@ namespace calculator
 	
 
 	typedef std::tuple<size_t, const DataStorage*> Context;
+	//TODO: Perf. use index instead name
 	void getValueCallback2(const void* context, const std::string& name, common::Value& value)
 	{
 		const DataStorage* data = std::get<1>(*static_cast<const Context*>(context));

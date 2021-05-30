@@ -20,6 +20,7 @@ int main()
 
 	std::shared_ptr<DataStorage> storage(new DataStorage());
 	storage->addColumn("Dim", common::eDataType::String, eColumnType::Indexed);
+	storage->addColumn("DimNum", common::eDataType::Numeric, eColumnType::Indexed);
 	storage->addColumn("DimA", common::eDataType::String, eColumnType::Indexed);
 	storage->addColumn("DimB", common::eDataType::String, eColumnType::Indexed);
 	storage->addColumn("Meas0", common::eDataType::Numeric, eColumnType::NoneIndexed);
@@ -42,10 +43,10 @@ int main()
 	}
 
 	{
-		storage->insertRow({"A", "val0","val0","1","2"});
-		storage->insertRow({"B", "val1","val0","2","2"});
-		storage->insertRow({"C", "val1","val1","3","2"});
-		storage->insertRow({"D", "val1","val2","3","2"});
+		storage->insertRow({"A", "0", "val0","val0","1","2"});
+		storage->insertRow({"B", "1", "val1","val0","2","2"});
+		storage->insertRow({"C", "2", "val1","val1","3","2"});
+		storage->insertRow({"D", "3", "val1","val2","3","2"});
 	}
 
 	{
@@ -167,9 +168,8 @@ int main()
 			WASABI_CHECK_EQUAL("2", cube.getBody().getValue(cube.getBody().getIndex("Meas1"), 0, 3).getString());
 	}
 
-	{
-		JSONReader reader;
-		
+	JSONReader reader;
+	{		
 		ina::query_model::Formula formula1;
 		read(formula1, reader.parse(R"({"Name":"fct1", "Function":{"Name": "+","Parameters": [{"Constant": {"ValueType": "String","Value": "9"}},{"Member": {"Name": "Meas0"}}]}})"));
 
@@ -185,17 +185,41 @@ int main()
 
 		WASABI_CHECK_EQUAL(4, cube.getAxe(calculator::eAxe::Row).getCardinality());
 			WASABI_CHECK_EQUAL(1,    cube.getBody().getValue(cube.getBody().getIndex("Meas0"), 0, 0).getDouble());
-			WASABI_CHECK_EQUAL(1+9,  cube.getBody().getValue(cube.getBody().getIndex("fct1"), 0, 0).getDouble());
-			WASABI_CHECK_EQUAL(1+9+7,cube.getBody().getValue(cube.getBody().getIndex("fct2"), 0, 0).getDouble());
+			WASABI_CHECK_EQUAL(1+9,  cube.getBody().getValue(cube.getBody().getIndex("fct1"),  0, 0).getDouble());
+			WASABI_CHECK_EQUAL(1+9+7,cube.getBody().getValue(cube.getBody().getIndex("fct2"),  0, 0).getDouble());
 			WASABI_CHECK_EQUAL(2,    cube.getBody().getValue(cube.getBody().getIndex("Meas0"), 0, 1).getDouble());
-			WASABI_CHECK_EQUAL(2+9,  cube.getBody().getValue(cube.getBody().getIndex("fct1"), 0, 1).getDouble());
-			WASABI_CHECK_EQUAL(2+9+7,cube.getBody().getValue(cube.getBody().getIndex("fct2"), 0, 1).getDouble());
+			WASABI_CHECK_EQUAL(2+9,  cube.getBody().getValue(cube.getBody().getIndex("fct1"),  0, 1).getDouble());
+			WASABI_CHECK_EQUAL(2+9+7,cube.getBody().getValue(cube.getBody().getIndex("fct2"),  0, 1).getDouble());
 		WASABI_CHECK_EQUAL(0, cube.getAxe(calculator::eAxe::Column).getCardinality());
 	}
 
 	{
-		JSONReader reader;
-		
+		ina::query_model::Selection selection;
+		read(selection, reader.parse(R"({"Operator":{"Code":"And","SubSelections":[{"SetOperand":{"FieldName":"[Measures].[Measures]","Elements":[{"Comparison":"=","Low":"Meas0"}]}},{"SetOperand":{"FieldName":"Dim","Elements":[{"Comparison":"=","Low":"A"}]}}]}})"));
+
+		Cube cube;	
+		cube.setStorage(storage);
+		cube.addMeasure(Object("Meas0"));
+		cube.addRestriction(Object("rest1"), selection);
+		cube.materialyze();
+
+		WASABI_CHECK_EQUAL(1.0, cube.getBody().getValue(cube.getBody().getIndex("rest1"), 0, 0).getDouble());
+	}
+
+	{
+		ina::query_model::Selection selection;
+		read(selection, reader.parse(R"({"Operator":{"Code":"And","SubSelections":[{"SetOperand":{"FieldName":"[Measures].[Measures]","Elements":[{"Comparison":"=","Low":"Meas0"}]}},{"SetOperand":{"FieldName":"DimNum","Elements":[{"Comparison":"=","Low":1}]}}]}})"));
+
+		Cube cube;	
+		cube.setStorage(storage);
+		cube.addMeasure(Object("Meas0"));
+		cube.addRestriction(Object("rest1"), selection);
+		cube.materialyze();
+
+		WASABI_CHECK_EQUAL(2.0, cube.getBody().getValue(cube.getBody().getIndex("rest1"), 0, 0).getDouble());
+	}
+
+	{
 		ina::query_model::Selection selection1;
 		read(selection1, reader.parse(R"({"Operator":{"Code":"And","SubSelections":[{"SetOperand":{"FieldName":"[Measures].[Measures]","Elements":[{"Comparison":"=","Low":"Meas0"}]}},{"SetOperand":{"FieldName":"Dim","Elements":[{"Comparison":"=","Low":"A"}]}}]}})"));
 
@@ -204,15 +228,12 @@ int main()
 
 		Cube cube;	
 		cube.setStorage(storage);
-		cube.addMeasure(Object("Meas0"));
 		cube.addRestriction(Object("rest1"), selection1);
 		cube.addRestriction(Object("rest2"), selection2);
 		cube.materialyze();
 
-		WASABI_CHECK_EQUAL(0, cube.getAxe(calculator::eAxe::Row).getCardinality());
-			WASABI_CHECK_EQUAL(1.0, cube.getBody().getValue(cube.getBody().getIndex("rest1"), 0, 0).getDouble());
-			WASABI_CHECK_EQUAL(2.0, cube.getBody().getValue(cube.getBody().getIndex("rest2"), 0, 0).getDouble());
-		WASABI_CHECK_EQUAL(0, cube.getAxe(calculator::eAxe::Column).getCardinality());
+		WASABI_CHECK_EQUAL(1.0, cube.getBody().getValue(cube.getBody().getIndex("rest1"), 0, 0).getDouble());
+		WASABI_CHECK_EQUAL(2.0, cube.getBody().getValue(cube.getBody().getIndex("rest2"), 0, 0).getDouble());
 	}
 
 	return TEST_HAVEERROR();
