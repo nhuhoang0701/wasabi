@@ -5,7 +5,7 @@
 
 namespace common
 {
-	enum class eDataType {Uniti = -1, Numeric=0, String, DateTime};
+	enum class eDataType {Undefined = -1, Numeric=0, String, DateTime};
 
 	class Value
 	{
@@ -26,10 +26,6 @@ namespace common
 			if(std::holds_alternative<double>(m_data))
 			{
 				return std::get<double>(m_data);
-			}
-			if(std::holds_alternative<std::string>(m_data))
-			{
-				return std::stod(std::get<std::string>(m_data));
 			}
 			throw std::runtime_error("getDouble: Not a double");
 		}
@@ -59,7 +55,7 @@ namespace common
 		{
 			stream << std::to_string(value.getDouble());
 		}
-		if(value.isString())
+		else if(value.isString())
 		{
 			stream << value.getString();
 		}

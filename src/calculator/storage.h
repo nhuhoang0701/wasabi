@@ -146,9 +146,7 @@ namespace calculator
 				if(dt == common::eDataType::String)
 					colData->push_back(common::Value(row[idx].getString()));
 				else if(dt == common::eDataType::Numeric)
-				{
 					colData->push_back(common::Value(std::stod(row[idx].getString())));
-				}
 				else
 					throw std::runtime_error("unknow column type");
 				idx++;
