@@ -40,41 +40,41 @@ static void Test_reader()
 	LDE_CPPUNIT_EXCEPTION(arrayObj.getDouble(""), std::logic_error);
 	LDE_CPPUNIT_EXCEPTION(arrayObj.getString(""), std::logic_error);
 
-	CPPUNIT_ASSERT_EQUAL((size_t)10, arrayObj.size());
+	WASABI_CHECK_EQUAL((size_t)10, arrayObj.size());
 	LDE_CPPUNIT_EXCEPTION(arrayObj.getString(10), std::invalid_argument);
 
 	CPPUNIT_ASSERT(!arrayObj.isNull(0));
 	CPPUNIT_ASSERT(arrayObj.isString(0));
-	CPPUNIT_ASSERT_EQUAL(std::string(""), arrayObj.getString(0));
+	WASABI_CHECK_EQUAL(std::string(""), arrayObj.getString(0));
 
 	CPPUNIT_ASSERT(arrayObj.isString(1));
-	CPPUNIT_ASSERT_EQUAL(std::string("string"), arrayObj.getString(1));
+	WASABI_CHECK_EQUAL(std::string("string"), arrayObj.getString(1));
 
 	CPPUNIT_ASSERT(arrayObj.isDouble(2));
 	CPPUNIT_ASSERT(!arrayObj.isInteger(2));
-	CPPUNIT_ASSERT_EQUAL(-1.1, arrayObj.getDouble(2));
+	WASABI_CHECK_EQUAL(-1.1, arrayObj.getDouble(2));
 
 	LDE_CPPUNIT_EXCEPTION(arrayObj.getString(3), invalid_argument);
 	CPPUNIT_ASSERT(arrayObj.isInteger(3));
-	CPPUNIT_ASSERT_EQUAL((int64_t)-1, arrayObj.getInteger(3));
+	WASABI_CHECK_EQUAL((int64_t)-1, arrayObj.getInteger(3));
 
 	CPPUNIT_ASSERT(arrayObj.isBool(4));
-	CPPUNIT_ASSERT_EQUAL(true, arrayObj.getBool(4));
+	WASABI_CHECK_EQUAL(true, arrayObj.getBool(4));
 
 	CPPUNIT_ASSERT(arrayObj.isBool(5));
-	CPPUNIT_ASSERT_EQUAL(false, arrayObj.getBool(5));
+	WASABI_CHECK_EQUAL(false, arrayObj.getBool(5));
 
 	CPPUNIT_ASSERT(!arrayObj.isBool(6));
 	CPPUNIT_ASSERT(arrayObj.isNull(6));
 
 	CPPUNIT_ASSERT(arrayObj[7]);
 
-	CPPUNIT_ASSERT_EQUAL((size_t)0, arrayObj[8].size());
+	WASABI_CHECK_EQUAL((size_t)0, arrayObj[8].size());
 	LDE_CPPUNIT_EXCEPTION(arrayObj[8].getString(1), std::logic_error);
 
-	CPPUNIT_ASSERT_EQUAL((size_t)1, arrayObj[9].size());
+	WASABI_CHECK_EQUAL((size_t)1, arrayObj[9].size());
 	LDE_CPPUNIT_EXCEPTION(arrayObj[9].getString(2), std::logic_error);
-	CPPUNIT_ASSERT_EQUAL((int64_t)0, arrayObj[9].getInteger(0));
+	WASABI_CHECK_EQUAL((int64_t)0, arrayObj[9].getInteger(0));
 	CPPUNIT_ASSERT(arrayObj[9].isInteger(0));
 
 	JSONGenericObject map0Obj = root.getObject("key").getObject("map0");
@@ -104,24 +104,24 @@ static void Test_reader()
 	CPPUNIT_ASSERT(!map0Obj.isNull(""));
 	CPPUNIT_ASSERT_IGNORED(!map0Obj.isInteger("0.0"));
 
-	CPPUNIT_ASSERT_EQUAL(std::string(""), map0Obj.getString(""));
-	CPPUNIT_ASSERT_EQUAL(0.0, map0Obj.getDouble("0.0"));
-	CPPUNIT_ASSERT_EQUAL(0.0, map0Obj.getDouble("0"));
-	CPPUNIT_ASSERT_EQUAL((int64_t)0, map0Obj.getInteger("0"));
-	CPPUNIT_ASSERT_EQUAL(std::string("string"), map0Obj.getString("string"));
-	CPPUNIT_ASSERT_EQUAL(true, map0Obj.getBool("true"));
-	CPPUNIT_ASSERT_EQUAL(false, map0Obj.getBool("false"));
+	WASABI_CHECK_EQUAL(std::string(""), map0Obj.getString(""));
+	WASABI_CHECK_EQUAL(0.0, map0Obj.getDouble("0.0"));
+	WASABI_CHECK_EQUAL(0.0, map0Obj.getDouble("0"));
+	WASABI_CHECK_EQUAL((int64_t)0, map0Obj.getInteger("0"));
+	WASABI_CHECK_EQUAL(std::string("string"), map0Obj.getString("string"));
+	WASABI_CHECK_EQUAL(true, map0Obj.getBool("true"));
+	WASABI_CHECK_EQUAL(false, map0Obj.getBool("false"));
 
 	CPPUNIT_ASSERT(!map0Obj.getArray("{}"));
 
 	CPPUNIT_ASSERT(!map0Obj.getObject("[]"));
 	CPPUNIT_ASSERT(map0Obj.getArray("[]"));
-	CPPUNIT_ASSERT_EQUAL((size_t)0, map0Obj.getArray("[]").size());
+	WASABI_CHECK_EQUAL((size_t)0, map0Obj.getArray("[]").size());
 
 	CPPUNIT_ASSERT(map0Obj.getArray("[0]"));
-	CPPUNIT_ASSERT_EQUAL((size_t)1, map0Obj.getArray("[0]").size());
+	WASABI_CHECK_EQUAL((size_t)1, map0Obj.getArray("[0]").size());
 	CPPUNIT_ASSERT(map0Obj.getArray("[0]").isInteger(0));
-	CPPUNIT_ASSERT_EQUAL((int64_t)0, map0Obj.getArray("[0]").getInteger(0));
+	WASABI_CHECK_EQUAL((int64_t)0, map0Obj.getArray("[0]").getInteger(0));
 }
 
 

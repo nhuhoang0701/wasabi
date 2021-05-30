@@ -139,19 +139,19 @@ EXPORT ptr_on_i_FCT_i pv_getFctPtr_str(const char* fctName)
 
 void TestNumericalOperator()
 {
-	CPPUNIT_ASSERT_EQUAL(i_MULT_i(2), 4)
-	CPPUNIT_ASSERT_EQUAL(i_DIV_i(2), 1);
-	CPPUNIT_ASSERT_EQUAL(i_ADD_i (2),  4);
-	CPPUNIT_ASSERT_EQUAL(i_SUB_i (2), 4);
-	CPPUNIT_ASSERT_EQUAL(i_DIV_i_i(4,4), 1);
-	CPPUNIT_ASSERT_EQUAL(d_DIV_d_d(4,4), 1);
+	C_WASABI_CHECK_EQUAL(i_MULT_i(2), 4)
+	C_WASABI_CHECK_EQUAL(i_DIV_i(2), 1);
+	C_WASABI_CHECK_EQUAL(i_ADD_i (2),  4);
+	C_WASABI_CHECK_EQUAL(i_SUB_i (2), 4);
+	C_WASABI_CHECK_EQUAL(i_DIV_i_i(4,4), 1);
+	C_WASABI_CHECK_EQUAL(d_DIV_d_d(4,4), 1);
 }
 
 void TestChar_C()
 {
 	CPPUNIT_ASSERT_EQUAL_STR(str_STATICSTR_c('c'), "cHIS IS A STATIC CHAR*");
 	CPPUNIT_ASSERT_EQUAL_STR(str_LOCALSTR_c('c'), "cHIS IS A LOCAL CHAR*");
-	CPPUNIT_ASSERT_EQUAL(c_ITOCHAR_i(8), '8');
+	C_WASABI_CHECK_EQUAL(c_ITOCHAR_i(8), '8');
 	char* pC = "STRING TO LOWER";
 	CPPUNIT_ASSERT_EQUAL_STR(str_TOLOWER_str(pC), "string to lower");
 	void* pV = (void*)pC;

@@ -252,7 +252,7 @@ namespace ina::query_model {
                             if (filter.getComparisonOperator() == Element::ComparisonOperator::EqualTo )
                             {
                                 //TODO: Check getLowValue datatype
-                                if(std::get<std::string>(filter.getLowValue()) == ina::query_model::Member::getName(member))
+                                if(filter.getLowValue().getString() == ina::query_model::Member::getName(member))
                                     visibleMembers.push_back(member);
                             }
                             else
@@ -327,19 +327,6 @@ namespace ina::query_model {
 
         return nbOfDeps;
     }
-    
-    double getDouble(const common::Value& val)
-    {
-        if(std::holds_alternative<double>(val))
-        {
-            return std::get<double>(val);
-        }
-        if(std::holds_alternative<std::string>(val))
-        {
-            return std::stod(std::get<std::string>(val));
-        }
-        throw std::runtime_error("getDouble: Not a double");
-    }
 
     common::Value eval(const void* context, const ina::query_model::Function& fct, void (*getValueCallback)(const void* context, const std::string& nameObj, common::Value& value))
     {
@@ -354,33 +341,32 @@ namespace ina::query_model {
         {
             case ina::query_model::Function::eAdd:
             {
-                return getDouble(paramValues[0]) + getDouble(paramValues[1]);
+                return common::Value(paramValues[0].getDouble() + paramValues[1].getDouble());
             }
             case ina::query_model::Function::eSubtract:
             {
-                return getDouble(paramValues[0]) - getDouble(paramValues[1]);
+                return  common::Value(paramValues[0].getDouble() - paramValues[1].getDouble());
             }
             case ina::query_model::Function::eMultipy:
             {
-                return getDouble(paramValues[0]) * getDouble(paramValues[1]);
+                return common::Value(paramValues[0].getDouble() * paramValues[1].getDouble());
             }
             case ina::query_model::Function::eDivide:
             {
-                return getDouble(paramValues[0]) / getDouble(paramValues[1]);
+                return common::Value(paramValues[0].getDouble() / paramValues[1].getDouble());
             }
             case ina::query_model::Function::eSquare:
             {
-                return std::pow(getDouble(paramValues[0]), getDouble(paramValues[1]));
+                return common::Value(std::pow(paramValues[0].getDouble(), paramValues[1].getDouble()));
             }
             case ina::query_model::Function::eDecFloat:
             {
-                return std::stod(std::get<std::string>(paramValues[0]));
+                return common::Value(std::stod(paramValues[0].getString()));
             }
             default:
                 throw std::runtime_error("Not yet implemented function parameter type");
 
         }
-        return 42.0;
     }
 
     size_t getDeps(const ina::query_model::Function& fct, std::vector<std::string>& deps)
@@ -454,7 +440,7 @@ namespace ina::query_model {
                 else if(code == ina::query_model::LogicalOperator::Not)
                     evalRes = !res;
 
-                Logger::log("evalRes", evalRes);  
+                Logger::log("evalRes", static_cast<uint16_t>(evalRes));  
             }
             return evalRes;
         }
@@ -473,7 +459,7 @@ namespace ina::query_model {
             {
                 if(element.getComparisonOperator()==ina::query_model::Element::ComparisonOperator::EqualTo)
                 {
-                    Logger::log("element.getLowValue()", element.getLowValue());
+                    Logger::log("element.getLowValue()", element.getLowValue().getString());
                     if(element.getLowValue()==value)
                     {
                         Logger::log("match", true);
@@ -497,7 +483,7 @@ namespace ina::query_model {
         const auto& measures = selector["[Measures].[Measures]"];
         for(const auto& measure: measures)
         {
-            deps.push_back(std::get<std::string>(measure.getLowValue()));
+            deps.push_back(measure.getLowValue().getString());
         }
 
         return measures.size();

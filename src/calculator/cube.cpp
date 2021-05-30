@@ -35,7 +35,7 @@ namespace calculator
 		Logger::log("  nb dim", m_AxeColumns.size());
 
 		Logger::log(" Body cells nbr", m_body.getCellCount());
-		Logger::log("  nb meas", m_body.getVisibleObjects().size());
+		Logger::log("  nb meas", m_body.getNumberOfVisibleObjects());
 		Logger::log("  nb getColNbrs", m_body.getColumnCount());
 		Logger::log("  nb getRowNbrs", m_body.getRowCount());
 	}

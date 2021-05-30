@@ -6,7 +6,7 @@ int main()
 {
 	TEST_INIT();
 	
-	CPPUNIT_ASSERT_EQUAL(0,0);
+	WASABI_CHECK_EQUAL(0,0);
 	
 	return TEST_HAVEERROR();
 }
