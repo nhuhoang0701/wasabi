@@ -23,27 +23,28 @@ namespace calculator
 	}
 
 	typedef std::tuple<size_t, size_t, const Body*, const ina::query_model::Selection*> Context;
-	void getValueCallback(const void* context, const std::string& name, common::Value& value)
+	void getValueCallback(const void* context, const std::string& objName, common::Value& value)
 	{
 		const Body* body = std::get<2>(*static_cast<const Context*>(context));
 		const size_t row = std::get<0>(*static_cast<const Context*>(context));
 		const size_t col = std::get<1>(*static_cast<const Context*>(context));
 
-		value = body->getValue(name, col, row);
+		const size_t indexObj = body->getIndex(objName);
+		value = body->getValue(indexObj, col, row);
 	}
 	void Body::materialyze()
 	{
 		ScopeLog sc("Body::materialyze()");
 
 		for(auto& object : m_VisibleObjects)
-			object->materialyze(m_cube);
+			object.first->materialyze(m_cube);
 
 		if(getRowCount() == 0 || getColumnCount() == 0)
 			return;
 
 		////////////////////////////////////////////////////////////
 		// Allocation
-		for(const auto& measure : m_VisibleObjects)
+		for(auto& measure : m_VisibleObjects)
 		{
 			//Instantiate memory body indexes
 			m_BodyIdx.resize(getRowCount());
@@ -53,7 +54,7 @@ namespace calculator
 			}
 
 			//Create cells entry for this measure
-			auto& values = m_VisibleCells.insert(std::pair(measure->getName(), CellsValue())).first->second;
+			auto& values = measure.second;
 			//Instantiate memory for cells values
 			values.resize(getRowCount());
 			for(auto& rowValues : values)
@@ -129,19 +130,19 @@ namespace calculator
 
 		////////////////////////////////////////////////////////////
 		// Compute measures
-		for(const auto& measure : m_VisibleObjects)
+		for(auto& measure : m_VisibleObjects)
 		{
-			if(measure->m_formula != nullptr || measure->m_selection != nullptr)
+			if(measure.first->m_formula != nullptr || measure.first->m_selection != nullptr)
 				continue;
 
-			auto& values = m_VisibleCells.at(measure->getName());
+			auto& values = measure.second;
 			size_t row = 0;
 			for(auto& rowValues : values)
 			{
 				size_t col = 0;
 				for(auto& value : rowValues)
 				{
-					value = measure->aggregate(*m_BodyIdx[row][col]);
+					value = measure.first->aggregate(*m_BodyIdx[row][col]);
 					col++;
 				}
 				row++;
@@ -151,12 +152,12 @@ namespace calculator
 		
 		////////////////////////////////////////////////////////////
 		// Compute formula
-		for(const auto& measure : m_VisibleObjects)
+		for(auto& measure : m_VisibleObjects)
 		{
-			if(measure->m_formula == nullptr)
+			if(measure.first->m_formula == nullptr)
 				continue;
 
-			auto& values = m_VisibleCells.at(measure->getName());
+			auto& values = measure.second;
 			size_t row = 0;
 			for(auto& rowValues : values)
 			{
@@ -164,7 +165,7 @@ namespace calculator
 				for(auto& value : rowValues)
 				{
 					Context context(row, col, this, nullptr);
-					value = ina::query_model::eval(&context, *measure->m_formula, getValueCallback);
+					value = ina::query_model::eval(&context, *measure.first->m_formula, getValueCallback);
 					col++;
 				}
 				row++;
@@ -173,19 +174,19 @@ namespace calculator
 		
 		////////////////////////////////////////////////////////////
 		// Compute restrictions
-		for(const auto& restriction : m_VisibleObjects)
+		for(auto& restriction : m_VisibleObjects)
 		{
-			if(restriction->m_selection == nullptr)
+			if(restriction.first->m_selection == nullptr)
 				continue;
 
-			auto& values = m_VisibleCells.at(restriction->getName());
+			auto& values = restriction.second;
 			size_t row = 0;
 			for(auto& rowValues : values)
 			{
 				size_t col = 0;
 				for(auto& value : rowValues)
 				{
-					value = restriction->m_restrictedObject->aggregate(*m_BodyIdx[row][col], restriction->m_selection);
+					value = restriction.first->m_restrictedObject->aggregate(*m_BodyIdx[row][col], restriction.first->m_selection);
 					col++;
 				}
 				row++;
@@ -197,12 +198,12 @@ namespace calculator
 
 	size_t  Body::getCellCount() const
 	{
-		return getRowCount() * getColumnCount() * getVisibleObjects().size();
+		return getRowCount() * getColumnCount() * getNumberOfVisibleObjects();
 	}
 
 	size_t  Body::getColumnCount() const
 	{
-		if(getVisibleObjects().empty())
+		if(m_VisibleObjects.empty())
 			return 0;
 		else if(m_axeCol.empty())
 			return m_cube.getStorage().haveData()?1:0;
@@ -220,19 +221,19 @@ namespace calculator
 		return m_axeRow.getCardinality();
 	}
 
-	const std::vector<std::shared_ptr<Object>>& Body::getVisibleObjects() const
+	size_t Body::getNumberOfVisibleObjects() const
 	{
-		return m_VisibleObjects;
+		return m_VisibleObjects.size();
 	}
-	std::vector<std::shared_ptr<Object>>& Body::_getVisibleObjects()
+	const Object& Body::getVisibleObject(size_t index) const
 	{
-		return m_VisibleObjects;
+		return *m_VisibleObjects.at(index).first;
 	}
 
 	bool Body::contain(const std::string& name) const
 	{
 		for( const auto& object : m_VisibleObjects )
-			if(object->getName() == name)
+			if(object.first->getName() == name)
 				return true;
 		
 		return false;
@@ -240,13 +241,13 @@ namespace calculator
 
 	void Body::addMeasure(const Object& obj, const ina::query_model::Selection* selection)
 	{
-		ScopeLog sc("addMeasure");
+		ScopeLog sc("Body::addMeasure");
 		Logger::log("name",  obj.getName());
 		Logger::log("selection", (selection!=nullptr));
 		if(contain(obj.getName()))
 			throw std::runtime_error("Object name already use");
 		if(selection==nullptr)
-			m_VisibleObjects.push_back(std::make_shared<Object>(obj.getName()));
+			m_VisibleObjects.push_back(std::make_pair(std::make_shared<Object>(obj.getName()), CellsValue()));
 		else
 		 	m_restrictedObjects.push_back(std::make_shared<Object>(obj.getName()));
 	}
@@ -258,10 +259,10 @@ namespace calculator
 
 	std::shared_ptr<Object>& Body::_getObject(const std::string& measureName)
 	{
-		for(size_t i = 0; i < _getVisibleObjects().size(); i++ )
+		for(auto& obj :m_VisibleObjects )
 		{
-			if(m_VisibleObjects.at(i)->getName() == measureName)
-				return _getVisibleObjects()[i];
+			if(obj.first->getName() == measureName)
+				return obj.first;
 		}
 		throw std::runtime_error("Body: getMeasure(): measure not found:" + measureName);
 	}
@@ -276,11 +277,11 @@ namespace calculator
 		for(const auto& dep : deps)
 		{
 			if(contain(dep) == false)
-				addMeasure(dep);
+				addMeasure(dep, selection);
 		}
 
-		m_VisibleObjects.push_back(std::make_shared<Object>(obj.getName()));
-		m_VisibleObjects.back()->m_formula = &formula;
+		m_VisibleObjects.push_back(std::make_pair(std::make_shared<Object>(obj.getName()), CellsValue()));
+		m_VisibleObjects.back().first->m_formula = &formula;
 	}
 
 	void Body::addRestriction(const Object& obj, const ina::query_model::Selection& selection)
@@ -293,18 +294,22 @@ namespace calculator
 		if(contain(deps[0]) == false)
 			addMeasure(deps[0]);
 
-		m_VisibleObjects.push_back(std::make_shared<Object>(obj.getName()));
-		m_VisibleObjects.back()->m_restrictedObject = _getObject(deps[0]);
-		m_VisibleObjects.back()->m_selection = &selection;
+		m_VisibleObjects.push_back(std::make_pair(std::make_shared<Object>(obj.getName()), CellsValue()));
+		m_VisibleObjects.back().first->m_restrictedObject = _getObject(deps[0]);
+		m_VisibleObjects.back().first->m_selection = &selection;
 	}
 
-	const common::Value& Body::getValue(const std::string& measureName, size_t col, size_t row) const
+	size_t Body::getIndex(const std::string& objName) const
 	{
-		return m_VisibleCells.at(measureName)[row][col];
-	}
-	const indexisSet& Body::getParentIndexes(const std::string& measureName, size_t col, size_t row) const
-	{
-		return *m_BodyIdx[row][col];
+		for(size_t index = 0; index < m_VisibleObjects.size(); index++)
+			if(m_VisibleObjects[index].first->getName() == objName)
+				return index;
+
+		throw std::runtime_error("Body: getIndex(): object not found:" + objName);
 	}
 
+	const common::Value& Body::getValue(size_t index, size_t col, size_t row) const
+	{
+		return m_VisibleObjects[index].second[row][col];
+	}
 } // namespace calculator

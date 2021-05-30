@@ -14,37 +14,57 @@ static int wasabi_cppunit_haveerror = 0;
 
 #define ASSERT_MESSAGE(m) (printf("FAILED assertion: %s From function: %s at %s: %d  \n", m, __func__, __FILE__, __LINE__))
 
-#define CPPUNIT_ASSERT_MSG(x, msg) \
+#define CPPUNIT_ASSERT_MSG(assertion, msg) \
 {\
-	if (!(x))\
+	if (!(assertion))\
 	{\
 		ASSERT_MESSAGE(msg);\
 		TEST_SETERROR();\
 	}\
 	else\
 	{\
-		printf("OK: %s  \n", WASABI_xstr(x));\
+		printf("OK: %s  \n", WASABI_xstr(assertion));\
 	}\
 }
 
-#define CPPUNIT_ASSERT(x) \
+
+#define CPPUNIT_ASSERT(assertion) \
 {\
-	CPPUNIT_ASSERT_MSG(x, WASABI_xstr(x));\
+	CPPUNIT_ASSERT_MSG(assertion, WASABI_xstr(assertion));\
 }
 
-#define CPPUNIT_ASSERT_IGNORED(x) \
+#if defined (__cplusplus)
+#include <iostream>
+#define CPPUNIT_ASSERT_LOG(assertion, lhs, rhs) \
+{\
+	if (!(assertion))\
+	{\
+		std::cout << "FAILED assertion: '" << WASABI_xstr(assertion) << " ('" << lhs << "','" << rhs << "')  From function: " << __func__ << " at " << __FILE__ << ": " << __LINE__ << "\n";\
+		TEST_SETERROR();\
+	}\
+	else\
+	{\
+		printf("OK: %s  \n", WASABI_xstr(assertion));\
+	}\
+}
+#endif
+
+#define CPPUNIT_ASSERT_IGNORED(assertion) \
 {\
 	{\
-		printf("IGNORED: %s \n", WASABI_xstr(x));\
+		printf("IGNORED: %s \n", WASABI_xstr(assertion));\
 	}\
 }
 
-#define CPPUNIT_ASSERT_EQUAL(x,y) CPPUNIT_ASSERT((x) == (y) );
-#define CPPUNIT_ASSERT_NOTEQUAL(x,y) CPPUNIT_ASSERT((x) != (y) );
+#define WASABI_CHECK_EQUAL(lhs,rhs) CPPUNIT_ASSERT_LOG((lhs) == (rhs), lhs, rhs);
+#define C_WASABI_CHECK_EQUAL(lhs,rhs) CPPUNIT_ASSERT((lhs) == (rhs));
 
-#define CPPUNIT_ASSERT_EQUAL_STR(x,y) CPPUNIT_ASSERT_MSG((strcmp(x, y) == 0), x );
+#define WASABI_CHECK_NOTEQUAL(lhs,rhs) CPPUNIT_ASSERT_LOG((lhs) != (rhs), lhs, rhs);
+#define C_WASABI_CHECK_NOTEQUAL(lhs,rhs) CPPUNIT_ASSERT((lhs) != (rhs));
 
-#define LDE_CPPUNIT_EXCEPTION(x, y)
+#define CPPUNIT_ASSERT_EQUAL_STR(lhs,rhs) CPPUNIT_ASSERT_MSG((strcmp(lhs, rhs) == 0), lhs );
+
+#define LDE_CPPUNIT_EXCEPTION(lhs, rhs)
 
 
 

@@ -50,10 +50,10 @@ namespace query_generator
         filterSQL += toSql(filter.getComparisonOperator());
         // In case of unary operator, now low/high value
         std::string valueStr;
-        if(std::holds_alternative<std::string>(filter.getLowValue()))
-            valueStr = std::get<std::string>(filter.getLowValue());
-        else if(std::holds_alternative<double>(filter.getLowValue()))
-            valueStr = std::to_string(std::get<double>(filter.getLowValue()));
+        if(filter.getLowValue().isString())
+            valueStr = filter.getLowValue().getString();
+        else if(filter.getLowValue().isDouble())
+            valueStr = std::to_string(filter.getLowValue().getDouble());
         else
             throw std::runtime_error("common::Value : a datatype is NYI.");
         if (!valueStr.empty())

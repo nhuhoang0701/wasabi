@@ -129,12 +129,12 @@ namespace ina::grid
                                 {
                                 case common::eDataType::String:
                                 {
-                                    writer.value(std::get<std::string>(data));
+                                    writer.value(data.getString());
                                     break;
                                 }
                                 case common::eDataType::Numeric:
                                 {
-                                    writer.value(std::get<double>(data));
+                                    writer.value(data.getDouble());
                                     break;
                                 }
                                 default:
@@ -222,18 +222,19 @@ namespace ina::grid
                     {
                         for(size_t colIndex = cells.getColumnFrom(); colIndex < cells.getColumnTo(); colIndex++)
                         {
-                            const auto& measure = cells.getCubeBody().getVisibleObjects()[dimMeasureOnCol?(colIndex%memberDivCol):(rowIndex%memberDivRow)];
-                            const auto& data = cells.getCubeBody().getValue(measure->getName(), colIndex/memberDivCol, rowIndex/memberDivRow);
-                            switch (measure->getDataType())
+                            const size_t indexInCube = dimMeasureOnCol?(colIndex%memberDivCol):(rowIndex%memberDivRow);
+                            const auto& measure = cells.getCubeBody().getVisibleObject(indexInCube);
+                            const auto& data = cells.getCubeBody().getValue(indexInCube, colIndex/memberDivCol, rowIndex/memberDivRow);
+                            switch (measure.getDataType())
                             {
                             case common::eDataType::String:
                             {
-                                writer.value(std::get<std::string>(data));
+                                writer.value(data.getString());
                                 break;
                             }
                             case common::eDataType::Numeric:
                             {
-                                writer.value(std::get<double>(data));
+                                writer.value(data.getDouble());
                                 break;
                             }
                             default:
@@ -256,18 +257,19 @@ namespace ina::grid
                     {
                         for(size_t colIndex = cells.getColumnFrom(); colIndex < cells.getColumnTo(); colIndex++)
                         {
-                            const auto& measure = cells.getCubeBody().getVisibleObjects()[dimMeasureOnCol?(colIndex%memberDivCol):(rowIndex%memberDivRow)];
-                            const auto& data = cells.getCubeBody().getValue(measure->getName(), colIndex/memberDivCol, rowIndex/memberDivRow);
-                            switch (measure->getDataType())
+                            const size_t indexInCube = dimMeasureOnCol?(colIndex%memberDivCol):(rowIndex%memberDivRow);
+                            const auto& measure = cells.getCubeBody().getVisibleObject(indexInCube);
+                            const auto& data = cells.getCubeBody().getValue(indexInCube, colIndex/memberDivCol, rowIndex/memberDivRow);
+                            switch (measure.getDataType())
                             {
                             case common::eDataType::String:
                             {
-                                writer.value(std::get<std::string>(data));
+                                writer.value(data.getString());
                                 break;
                             }
                             case common::eDataType::Numeric:
                             {
-                                writer.value(std::get<double>(data));
+                                writer.value(data.getDouble());
                                 break;
                             }
                             default:
@@ -288,8 +290,8 @@ namespace ina::grid
                     {
                         for(size_t colIndex = cells.getColumnFrom(); colIndex < cells.getColumnTo(); colIndex++)
                         {
-                            const auto& measure = cells.getCubeBody().getVisibleObjects()[dimMeasureOnCol?(colIndex%memberDivCol):(rowIndex%memberDivRow)];
-                            switch (measure->getDataType())
+                            const auto& measure = cells.getCubeBody().getVisibleObject(dimMeasureOnCol?(colIndex%memberDivCol):(rowIndex%memberDivRow));
+                            switch (measure.getDataType())
                             {
                             case common::eDataType::String:
                             {

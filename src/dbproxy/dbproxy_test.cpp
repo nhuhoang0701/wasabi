@@ -20,7 +20,7 @@ int main()
 		{
 			if(line == 0)
 			{
-				CPPUNIT_ASSERT_EQUAL(row[0].getStringView(),std::string_view("text1"));
+				WASABI_CHECK_EQUAL(row[0].getStringView(),std::string_view("text1"));
 				CPPUNIT_ASSERT_EQUAL_STR(row[2].getString().c_str(),"1.0");
 			}
 			else if(line == 3)
@@ -33,20 +33,20 @@ int main()
 		};
 		dbProxy->executeSQL("SELECT * FROM " + tableNameStr, &lambda);
 		//std::cout << "line:" << line << std::endl;
-		CPPUNIT_ASSERT_EQUAL(line,4);
+		WASABI_CHECK_EQUAL(line,4);
 	}
 	
 	{
 		size_t line = 0;
 		std::function<void(const Row&)> lambda = [&line](const Row& row)
 		{
-			CPPUNIT_ASSERT_EQUAL(row.size(), 1);
+			WASABI_CHECK_EQUAL(row.size(), 1);
 			CPPUNIT_ASSERT_EQUAL_STR("6.0", row[0].getString().c_str());
 			line++;
 		};
 		dbProxy->executeSQL("SELECT sum(real) FROM " + tableNameStr, &lambda);
 		//std::cout << "line:" << line << std::endl;
-		CPPUNIT_ASSERT_EQUAL(line,1);
+		WASABI_CHECK_EQUAL(line,1);
 	}
 	
 	{
@@ -57,7 +57,7 @@ int main()
 		};
 		dbProxy->executeSQL("", &lambda);
 		//std::cout << "line:" << line << std::endl;
-		CPPUNIT_ASSERT_EQUAL(line,0);
+		WASABI_CHECK_EQUAL(line,0);
 	}
 	return TEST_HAVEERROR();
 }
