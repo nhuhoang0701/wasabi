@@ -38,6 +38,7 @@ namespace calculator
 
 		common::Value          aggregate(const indexisSet& rowIndexes, const ina::query_model::Selection* selection = nullptr) const;
 
+		//TODO: use own resolved/optimized(index in storage instead name of attribut, computed constant expression part) formula AST
 		const ina::query_model::Formula* m_formula = nullptr; // TMP: WIP
 	
 		std::shared_ptr<Object>            m_restrictedObject; // TMP: WIP

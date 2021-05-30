@@ -26,7 +26,7 @@ class ScopeLog
     {
         #if !defined (NDEBUG) && !defined (WASABI_NOLOG)
         indent(std::cout) << name << ":" << std::endl;
-        indent(std::cout)<< '{' << std::endl;
+        indent(std::cout) << '{' << std::endl;
         depth_log+=1;
         #endif
     }
@@ -69,11 +69,25 @@ template<typename M>
         #if !defined (NDEBUG) && !defined (WASABI_NOLOG)
         if(value.isDouble())
         {
-            indent(std::cout) << "WASABI: '" << name << "' : '" << value.getDouble() << "'" << std::endl;
+            indent(std::cout) << "WASABI: '" << name << "' : double(" << value.getDouble() << ")" << std::endl;
         }
         else if(value.isString())
         {
-            indent(std::cout) << "WASABI: '" << name << "' : '" << value.getString() << "'" << std::endl;
+            indent(std::cout) << "WASABI: '" << name << "' : string(" << value.getString() << ")" << std::endl;
+        }
+        #endif
+    }
+template<typename M>
+    static void log(const M& name, const bool value)
+    {
+        #if !defined (NDEBUG) && !defined (WASABI_NOLOG)
+        if(value)
+        {
+            indent(std::cout) << "WASABI: '" << name << "' : 'true'" << std::endl;
+        }
+        else
+        {
+            indent(std::cout) << "WASABI: '" << name << "' : 'false'" << std::endl;
         }
         #endif
     }
