@@ -21,8 +21,8 @@ void Test_writer()
     {
       JSONReader aReader;
       auto root = aReader.parse(aStream.str());
-      CPPUNIT_ASSERT(root.getInteger("test1")==1);
-      CPPUNIT_ASSERT(root.getString("test2")=="2");
+      WASABI_CHECK_EQUAL(root.getInteger("test1"), 1);
+      WASABI_CHECK_EQUAL(root.getString("test2"), "2");
       CPPUNIT_ASSERT(root.isNull("test3"));
     }
   }

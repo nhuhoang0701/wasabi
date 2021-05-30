@@ -15,7 +15,7 @@ namespace calculator
 	class ColumnData;
 	class DataStorage;
 
-	// Create subclass for Formaul, Restriction...
+	// Create subclass for Formula, Restriction...
 	class Object
 	{
 	public:
@@ -50,8 +50,9 @@ namespace calculator
 		
 		common::Value          aggregate(const ina::query_model::Selection* selection = nullptr) const;
 	};
-
-	class ObjectFormula
+/*
+//TODO:
+	class ObjectFormula : public Object
 	{
 	public:
 		ObjectFormula(const std::string& name);
@@ -61,8 +62,6 @@ namespace calculator
 		bool operator==(const ObjectFormula& rhs) const;
 
 		void materialyze(const Cube& cube);
-
-		common::eDataType  getDataType() const;
 
 		size_t                 getRowCount() const;
 		const common::Value&   getValueAtRowIdx(size_t rowIndex) const;
@@ -77,5 +76,5 @@ namespace calculator
 	private:
 		common::Value          aggregate(const ina::query_model::Selection* selection = nullptr) const;
 	};
-
+*/
 } // cube

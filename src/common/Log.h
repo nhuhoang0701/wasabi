@@ -67,13 +67,13 @@ template<typename M>
     static void log(const M& name, const common::Value& value)
     {
         #if !defined (NDEBUG) && !defined (WASABI_NOLOG)
-        if(std::holds_alternative<double>(value))
+        if(value.isDouble())
         {
-            indent(std::cout) << "WASABI: '" << name << "' : '" << std::get<double>(value) << "'" << std::endl;
+            indent(std::cout) << "WASABI: '" << name << "' : '" << value.getDouble() << "'" << std::endl;
         }
-        else if(std::holds_alternative<std::string>(value))
+        else if(value.isString())
         {
-            indent(std::cout) << "WASABI: '" << name << "' : '" << std::get<std::string>(value) << "'" << std::endl;
+            indent(std::cout) << "WASABI: '" << name << "' : '" << value.getString() << "'" << std::endl;
         }
         #endif
     }
