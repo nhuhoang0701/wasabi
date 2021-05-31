@@ -50,72 +50,102 @@ namespace ina::query_model {
     
     void QueryEx::getResultObjects(std::vector<std::tuple<std::string /*name*/, std::string/*aggregation*/, common::eDataType>>& resultObjects) const
     {
+        ScopeLog sc("QueryEx::getResultObjects");
         for (const auto& dimension : getQueryDefinition().getDimensions())
         {
             // From members
-            for(const auto& member : getVisibleMembers(dimension) )
             {
-                const std::string& memberName = ina::query_model::Member::getName(member);
-                if(isDataSourceObject(memberName)==false)
-                    continue;
-
-                std::string agg = member.getAggregation();
-                if(agg.empty())
+                ScopeLog sc("parse members");
+                for(const auto& member : getVisibleMembers(dimension) )
                 {
-                    Logger::error("No aggreation in the InA request for member(NYI: read it from metadata)", memberName );
-                    agg = "SUM";
-                }
-                resultObjects.push_back(std::make_tuple(memberName, agg, common::eDataType::Numeric)); // TODO: Add datatype to Member
-            }
-            // From formulas
-            for(const auto& member : getVisibleMembers(dimension) )
-            {
-                if(member.getFormula() == nullptr)
-                    continue;
-
-                std::vector<std::string> deps;
-                getDeps(*member.getFormula(), deps);
-
-                for(const auto&memberName : deps )
-                {
+                    const std::string& memberName = ina::query_model::Member::getName(member);
+                    Logger::log("memberName", memberName);
                     if(isDataSourceObject(memberName)==false)
                         continue;
 
-                    if(containsIt(memberName, resultObjects))
-                        continue;
-
-                    std::string agg = member.getAggregation();
+                    Aggregation agg = member.getAggregation();
                     if(agg.empty())
                     {
-                        std::string msg;
-                        msg += "Missing aggreation in the InA request for member '" + memberName + "' hardcoded SUM will be used, TODO: Read it from metadata\n";
-                        Logger::error(msg);
+                        Logger::error("No aggreation in the InA request for member(NYI: read it from metadata)", memberName );
                         agg = "SUM";
                     }
-                    resultObjects.push_back(std::make_tuple(memberName, agg, common::eDataType::Numeric)); // TODO: datatype
+                    resultObjects.push_back(std::make_tuple(memberName, agg, common::eDataType::Numeric)); // TODO: Add datatype to Member
+                    Logger::log("added", true);
+                }
+            }
+            // From formulas
+            {
+                ScopeLog sc("parse formula");
+                for(const auto& member : getVisibleMembers(dimension) )
+                {
+                    if(member.getFormula() == nullptr)
+                        continue;
+
+                    std::vector<std::string> deps;
+                    getDeps(*member.getFormula(), deps);
+
+                    for(const auto& dep : deps )
+                    {
+                        Logger::log("dep", dep);
+                        if(isDataSourceObject(dep)==false)
+                            continue;
+
+                        if(containsIt(dep, resultObjects))
+                            continue;
+
+                        Aggregation agg = member.getAggregation();
+                        if(agg.empty())
+                        {
+                            std::string msg;
+                            msg += "Missing aggreation in the InA request for member '" + dep + "' hardcoded SUM will be used, TODO: Read it from metadata\n";
+                            Logger::error(msg);
+                            agg = "SUM";
+                        }
+                        resultObjects.push_back(std::make_tuple(dep, agg, common::eDataType::Numeric)); // TODO: datatype
+                        Logger::log("added", true);
+                    }
                 }
             }
             // From restriction
-            for(const auto& member : getVisibleMembers(dimension) )
             {
-                if(member.getSelection() == nullptr)
-                    continue;
-
-                std::map<std::string, std::vector<Element>> selector;
-
-                traverse(selector, member.getSelection()->getOperator());
-                
-                for(const auto& attribut: selector)
+                ScopeLog sc("parse restriction");
+                for(const auto& member : getVisibleMembers(dimension) )
                 {
-                    if(attribut.first != "[Measures].[Measures]")
+                    if(member.getSelection() == nullptr)
+                        continue;
+
+                    std::map<std::string, std::vector<Element>> selector;
+
+                    traverse(selector, member.getSelection()->getOperator());
+                    
+                    for(const auto& attribut: selector)
                     {
-                        if(!containsIt(attribut.first, resultObjects))
+                        Logger::log("fieldname", attribut.first);
+                        if(attribut.first != "[Measures].[Measures]")
                         {
-                            common::eDataType dt = m_dsCube->getDataType(attribut.first);
-                            if(dt==common::eDataType::Undefined)
-                                resultObjects.push_back(std::make_tuple(attribut.first, "", common::eDataType::String)); // TODO: datatype
-                            else
-                                resultObjects.push_back(std::make_tuple(attribut.first, "", dt));
+                            if(!containsIt(attribut.first, resultObjects))
+                            {
+                                if(m_dsCube!=nullptr)
+                                    resultObjects.push_back(std::make_tuple(attribut.first, "", m_dsCube->getDataType(attribut.first)));
+                                else
+                                    resultObjects.push_back(std::make_tuple(attribut.first, "", common::eDataType::String)); // For unit test
+                            }
+                        }
+                        else
+                        {
+                            for(const auto& selectionMeasure : attribut.second)
+                            {
+                                const std::string measureName = selectionMeasure.getLowValue().getString();
+                                Logger::log("lowvalue", measureName);
+                                if(!containsIt(measureName, resultObjects))
+                                {
+                                    if(m_dsCube!=nullptr)
+                                        resultObjects.push_back(std::make_tuple(measureName, "", common::eDataType::Numeric));
+                                    else
+                                        resultObjects.push_back(std::make_tuple(measureName, "", common::eDataType::Numeric)); // For unit test
+                                    Logger::log("added", true);
+                                }
+                            }
                         }
                     }
                 }
@@ -126,11 +156,10 @@ namespace ina::query_model {
             {
                 if(isDataSourceObject(attribut.getName())==false)
                     continue;
-                common::eDataType dt = m_dsCube->getDataType(attribut.getName());
-                if(dt==common::eDataType::Undefined)
-                    resultObjects.push_back(std::make_tuple(attribut.getName(), "", common::eDataType::String )); // TODO: datatype
+                if(m_dsCube != nullptr)
+                    resultObjects.push_back(std::make_tuple(attribut.getName(), "", m_dsCube->getDataType(attribut.getName())));
                 else
-                     resultObjects.push_back(std::make_tuple(attribut.getName(), "", dt ));;
+                    resultObjects.push_back(std::make_tuple(attribut.getName(), "", common::eDataType::String )); // For unit test only
             }
         }
     }

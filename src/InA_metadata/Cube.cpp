@@ -217,6 +217,8 @@ namespace ina::metadata
              if(dt != common::eDataType::Undefined)
                 break;
          }
+        if(dt == common::eDataType::Undefined)
+            throw std::runtime_error("Missing datatype for :" + attributeName);
 
          return dt;
      }
