@@ -59,7 +59,7 @@ namespace ina::query_model {
                 for(const auto& member : getVisibleMembers(dimension) )
                 {
                     const std::string& memberName = ina::query_model::Member::getName(member);
-                    Logger::log("memberName", memberName);
+                    Logger::debug("memberName", memberName);
                     if(isDataSourceObject(memberName)==false)
                         continue;
 
@@ -70,7 +70,7 @@ namespace ina::query_model {
                         agg = "SUM";
                     }
                     resultObjects.push_back(std::make_tuple(memberName, agg, common::eDataType::Numeric)); // TODO: Add datatype to Member
-                    Logger::log("added", true);
+                    Logger::debug("added", true);
                 }
             }
             // From formulas
@@ -86,7 +86,7 @@ namespace ina::query_model {
 
                     for(const auto& dep : deps )
                     {
-                        Logger::log("dep", dep);
+                        Logger::debug("dep", dep);
                         if(isDataSourceObject(dep)==false)
                             continue;
 
@@ -102,7 +102,7 @@ namespace ina::query_model {
                             agg = "SUM";
                         }
                         resultObjects.push_back(std::make_tuple(dep, agg, common::eDataType::Numeric)); // TODO: datatype
-                        Logger::log("added", true);
+                        Logger::debug("added", true);
                     }
                 }
             }
@@ -120,7 +120,7 @@ namespace ina::query_model {
                     
                     for(const auto& attribut: selector)
                     {
-                        Logger::log("fieldname", attribut.first);
+                        Logger::debug("fieldname", attribut.first);
                         if(attribut.first != "[Measures].[Measures]")
                         {
                             if(!containsIt(attribut.first, resultObjects))
@@ -136,14 +136,14 @@ namespace ina::query_model {
                             for(const auto& selectionMeasure : attribut.second)
                             {
                                 const std::string measureName = selectionMeasure.getLowValue().getString();
-                                Logger::log("lowvalue", measureName);
+                                Logger::debug("lowvalue", measureName);
                                 if(!containsIt(measureName, resultObjects))
                                 {
                                     if(m_dsCube!=nullptr)
                                         resultObjects.push_back(std::make_tuple(measureName, "", common::eDataType::Numeric));
                                     else
                                         resultObjects.push_back(std::make_tuple(measureName, "", common::eDataType::Numeric)); // For unit test
-                                    Logger::log("added", true);
+                                    Logger::debug("added", true);
                                 }
                             }
                         }
@@ -469,7 +469,7 @@ namespace ina::query_model {
                     continue;
 
                 bool res = eval(context, childSelectionElement, getValueCallback);
-                Logger::log("res", res);
+                Logger::debug("res", res);
                 if(evalRes == 2)
                     evalRes = res;
                 else if(code == ina::query_model::LogicalOperator::Or)
@@ -479,7 +479,7 @@ namespace ina::query_model {
                 else if(code == ina::query_model::LogicalOperator::Not)
                     evalRes = !res;
 
-                Logger::log("evalRes", static_cast<uint16_t>(evalRes));  
+                Logger::debug("evalRes", static_cast<uint16_t>(evalRes));  
             }
             return evalRes;
         }
@@ -487,28 +487,28 @@ namespace ina::query_model {
         {
             ScopeLog sc("eval SelectionElement SetOperand");
             const std::string& fieldName = selectionElement.getFieldName();
-            Logger::log("fieldName", fieldName);
+            Logger::debug("fieldName", fieldName);
             if(fieldName=="[Measures].[Measures]")
                 return false;
 
             common::Value value;
             getValueCallback(context, fieldName, value);
-            Logger::log("value", value);
+            Logger::debug("value", value);
             for(const auto& element : selectionElement.getElements())
             {
                 if(element.getComparisonOperator()==ina::query_model::Element::ComparisonOperator::EqualTo)
                 {
-                    Logger::log("element.getLowValue()", element.getLowValue());
+                    Logger::debug("element.getLowValue()", element.getLowValue());
                     if(element.getLowValue()==value)
                     {
-                        Logger::log("match", true);
+                        Logger::debug("match", true);
                         return true;
                     }
                 }
                 else
                     throw std::runtime_error("Only ComparisonOperator is implemented");
             }
-            Logger::log("match", false); 
+            Logger::debug("match", false); 
         }
         return false;
     }

@@ -242,8 +242,8 @@ namespace calculator
 	void Body::addMeasure(const Object& obj, const ina::query_model::Selection* selection)
 	{
 		ScopeLog sc("Body::addMeasure");
-		Logger::log("name",  obj.getName());
-		Logger::log("selection", (selection!=nullptr));
+		Logger::debug("name",  obj.getName());
+		Logger::debug("selection", (selection!=nullptr));
 		if(contain(obj.getName()))
 			throw std::runtime_error("Object name already use");
 		if(selection==nullptr)
@@ -270,8 +270,8 @@ namespace calculator
 	void Body::addFormula(const Object& obj, const ina::query_model::Formula& formula, const ina::query_model::Selection* selection)
 	{
 		ScopeLog sc("Body::addFormula");
-		Logger::log("name",  obj.getName());
-		Logger::log("selection", (selection!=nullptr));
+		Logger::debug("name",  obj.getName());
+		Logger::debug("selection", (selection!=nullptr));
 		std::vector<std::string> deps;
 		ina::query_model::getDeps(formula, deps);
 		for(const auto& dep : deps)
@@ -287,10 +287,10 @@ namespace calculator
 	void Body::addRestriction(const Object& obj, const ina::query_model::Selection& selection)
 	{
 		ScopeLog sc("addRestriction");
-		Logger::log("name",  obj.getName());
+		Logger::debug("name",  obj.getName());
 		std::vector<std::string> deps;
 		ina::query_model::getDeps(selection, deps);
-		Logger::log("deps[0]",  deps[0]);
+		Logger::debug("deps[0]",  deps[0]);
 		if(contain(deps[0]) == false)
 			addMeasure(deps[0]);
 

@@ -1,4 +1,37 @@
+
 #pragma once
+
+#define WASABI_LOG
+//#define WASABI_DEBUG
+#define WASABI_ERROR
+
+#if defined (WASABI_LOG) || defined (WASABI_DEBUG) || defined (WASABI_ERROR)
+#define WASABI_SOMELOG_ENABLE
+#endif
+
+#if defined (WASABI_SOMELOG_ENABLE)
+#define WASABI_LOGGER_PARAM(parameter) parameter
+#else
+#define WASABI_LOGGER_PARAMLOG(parameter)
+#endif
+
+#if defined (WASABI_LOG)
+#define WASABI_LOGGER_PARAMLOG(parameter) parameter
+#else
+#define WASABI_LOGGER_PARAMLOG(parameter)
+#endif
+
+#if defined (WASABI_ERROR)
+#define WASABI_LOGGER_PARAMERROR(parameter) parameter
+#else
+#define WASABI_LOGGER_PARAMERROR(parameter)
+#endif
+
+#if defined (WASABI_DEBUG)
+#define WASABI_LOGGER_PARAMDEBUG(parameter) parameter
+#else
+#define WASABI_LOGGER_PARAMDEBUG(parameter)
+#endif
 
 #include "common/data.h"
 #include <sstream>
@@ -12,27 +45,29 @@
 static size_t depth_log = 0;
 inline std::ostream& indent(std::ostream& out)
 {
+    #if defined (WASABI_SOMELOG_ENABLE)
     for(size_t i =0; i < depth_log; i++)
     {
         out << "\t ";
     }
+    #endif
     return out;
 }
 
 class ScopeLog
 {
     public:
-    ScopeLog(const std::string_view& name)
+    inline ScopeLog(const std::string_view& WASABI_LOGGER_PARAM(name))
     {
-        #if !defined (NDEBUG) && !defined (WASABI_NOLOG)
+        #if defined (WASABI_SOMELOG_ENABLE)
         indent(std::cout) << name << ":" << std::endl;
         indent(std::cout) << '{' << std::endl;
         depth_log+=1;
         #endif
     }
-    ~ScopeLog()
+    inline ~ScopeLog()
     {
-        #if !defined (NDEBUG) && !defined (WASABI_NOLOG)
+        #if defined (WASABI_SOMELOG_ENABLE)
         depth_log-=1;
         indent(std::cout) << '}'  << std::endl;
         #endif
@@ -43,30 +78,34 @@ class Logger
 {
     public:
 template<typename T> 
-    static void error(const T& error_message)
+    static void error(const T& WASABI_LOGGER_PARAMERROR(error_message))
     {
+        #if defined (WASABI_ERROR)
         std::stringstream sstr;
         sstr << "WASABI error:'" << error_message << "'" << std::endl;
         indent(std::cerr) << sstr.str();
+        #endif
     }
 template<typename M, typename V> 
-    static void error(const M& error_message, const V& error_value)
+    static void error(const M& WASABI_LOGGER_PARAMERROR(error_message), const V& WASABI_LOGGER_PARAMERROR(error_value))
     {
+        #if defined (WASABI_ERROR)
         std::stringstream sstr;
         sstr  << "WASABI error: '" << error_message << "'" << ":'" << error_value << "'" << std::endl;
         indent(std::cerr) << sstr.str();
+        #endif
     }
 template<typename M, typename V>
-    static void log(const M& name, const V& value)
+    static void log(const M& WASABI_LOGGER_PARAMLOG(name), const V& WASABI_LOGGER_PARAMLOG(value))
     {
-        #if !defined (NDEBUG) && !defined (WASABI_NOLOG)
+        #if defined (WASABI_LOG)
         indent(std::cout) << "WASABI: '" << name << "' : '" << value << "'" << std::endl;
         #endif
     }
 template<typename M>
-    static void log(const M& name, const common::Value& value)
+    static void log(const M& WASABI_LOGGER_PARAMLOG(name), const common::Value& WASABI_LOGGER_PARAMLOG(value))
     {
-        #if !defined (NDEBUG) && !defined (WASABI_NOLOG)
+        #if defined (WASABI_LOG)
         if(value.isDouble())
         {
             indent(std::cout) << "WASABI: '" << name << "' : double(" << value.getDouble() << ")" << std::endl;
@@ -78,9 +117,9 @@ template<typename M>
         #endif
     }
 template<typename M>
-    static void log(const M& name, const bool value)
+    static void log(const M& WASABI_LOGGER_PARAMLOG(name), const bool WASABI_LOGGER_PARAMLOG(value))
     {
-        #if !defined (NDEBUG) && !defined (WASABI_NOLOG)
+        #if defined (WASABI_LOG)
         if(value)
         {
             indent(std::cout) << "WASABI: '" << name << "' : 'true'" << std::endl;
@@ -92,9 +131,9 @@ template<typename M>
         #endif
     }
 template<typename T>
-    static void debug(std::string_view name, const T& value)
+    static void debug(std::string_view WASABI_LOGGER_PARAMDEBUG(name), const T& WASABI_LOGGER_PARAMDEBUG(value))
     {
-        #if !defined (NDEBUG) && !defined (WASABI_NOLOG)
+        #if !defined (NDEBUG) && defined (WASABI_DEBUG)
         indent(std::cout) << "WASABI: '" << name << "' : '" << value << "'" << std::endl;
         #endif
     }
