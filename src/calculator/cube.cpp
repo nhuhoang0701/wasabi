@@ -29,15 +29,15 @@ namespace calculator
 		m_AxeColumns.materialyze();
 		m_body.materialyze();
 
-		Logger::log(" Row axis card", m_AxeRows.getCardinality());
-		Logger::log("  nb dim", m_AxeRows.size());
-		Logger::log(" Col axis card", m_AxeColumns.getCardinality());
-		Logger::log("  nb dim", m_AxeColumns.size());
+		Logger::debug(" Row axis card", m_AxeRows.getCardinality());
+		Logger::debug("  nb dim", m_AxeRows.size());
+		Logger::debug(" Col axis card", m_AxeColumns.getCardinality());
+		Logger::debug("  nb dim", m_AxeColumns.size());
 
-		Logger::log(" Body cells nbr", m_body.getCellCount());
-		Logger::log("  nb meas", m_body.getNumberOfVisibleObjects());
-		Logger::log("  nb getColNbrs", m_body.getColumnCount());
-		Logger::log("  nb getRowNbrs", m_body.getRowCount());
+		Logger::debug(" Body cells nbr", m_body.getCellCount());
+		Logger::debug("  nb meas", m_body.getNumberOfVisibleObjects());
+		Logger::debug("  nb getColNbrs", m_body.getColumnCount());
+		Logger::debug("  nb getRowNbrs", m_body.getRowCount());
 	}
 	
 	const DataStorage&  Cube::getStorage() const

@@ -176,23 +176,23 @@ namespace ina::metadata
      bool Cube::containsDataSourceColumn(const std::string& attributeName) const
      {
          ScopeLog sc("Cube::containsDataSourceColumn");
-         Logger::log("attributeName", attributeName);
+         Logger::debug("attributeName", attributeName);
          for(const auto& dim : m_dimensions)
          {
              for(const auto& attribut : dim->getAttributes())
              {
-                Logger::log("attribut_dim", attribut.getName());
+                Logger::debug("attribut_dim", attribut.getName());
                  if(attribut.getName() == attributeName)
                     return true;
              }
              for(const auto& member : dim->getMembers())
              {
-                Logger::log("member_dim", member.getName().first);
+                Logger::debug("member_dim", member.getName().first);
                  if(member.getUniqueName().second == attributeName)
                     return true;
             }
          }
-         Logger::log("containsAttributes", false);
+         Logger::debug("containsAttributes", false);
 
          return false;
      }
@@ -200,17 +200,17 @@ namespace ina::metadata
      common::eDataType Cube::getDataType(const std::string& attributeName) const
      {
          ScopeLog sc("Cube::getDataType");
-         Logger::log("attributeName", attributeName);
+         Logger::debug("attributeName", attributeName);
          common::eDataType dt = common::eDataType::Undefined;
          for(const auto& dim : m_dimensions)
          {
              for(const auto& attribut : dim->getAttributes())
              {
-                Logger::log("attribut_dim", attribut.getName());
+                Logger::debug("attribut_dim", attribut.getName());
                  if(attribut.getName() == attributeName)
                  {
                     dt = attribut.getDataType();
-                    Logger::log("datatype", static_cast<uint16_t>(dt));
+                    Logger::debug("datatype", static_cast<uint16_t>(dt));
                     break;
                  }
              }
