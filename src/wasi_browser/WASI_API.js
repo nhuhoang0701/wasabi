@@ -209,10 +209,17 @@ let WASI_API = {
     wasabi_error : wasabi_error = function(msg) {
         console.error(msg);
         if(typeof document !== 'undefined') {
-            msg += "\n";
-            document.getElementById('log').innerHTML += msg.replace(/\n( *)/g, function (match, p1) {
+            let forHTML= msg += "\n";
+            document.getElementById('log').innerHTML += forHTML.replace(/\n( *)/g, function (match, p1) {
                 return '<br>' + '&nbsp;'.repeat(p1.length);
             });
+        }
+
+        // For the moment JS excpetion can be throw by writing in the error output
+        // 'throw this message' was also hardcoded in the c++ code in cxa_exception.cpp
+        let contains = msg.startsWith('throw this message');
+        if(contains) {
+            throw Error(msg.substring(18));//TODO: Throw a specific error to allow caller to cacth it and unload reload the module
         }
     },
 
@@ -255,8 +262,7 @@ let WASI_API = {
     // process
     proc_exit: function(rval) {
         log(Array.prototype.slice.call(arguments));
-        error("function proce_exit not yet implemented");
-        return WASI_ENOSYS;
+        throw Error("wasi proc_exit with code :" + rval);
     },
 
     //*************************************************************
