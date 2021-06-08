@@ -38,7 +38,7 @@ namespace ina::metadata
                     if(colName=="agg1_id")
                     {
                         std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[index]", "index");
-                        dim->addKeyAttribute(Attribute(*dim, colName, "agg. idx", eAttrType::Key, column.getDataType()));
+                        dim->addKeyAttribute(Attribute(*dim, colName, "agg.idx", eAttrType::Key, column.getDataType()));
                         m_dimensions.push_back(std::move(dim));
                     }
                     else if(colName=="Yr")
