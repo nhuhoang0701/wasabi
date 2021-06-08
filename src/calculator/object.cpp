@@ -27,7 +27,7 @@ namespace calculator
 	void Object::materialyze(const Cube& cube)
 	{
 		ScopeLog sc("Object::materialyze");
-		Logger::log("name", getName());
+		Logger::debug("name", getName());
 		m_datastorage = &cube.getStorage();
 		if(m_formula == nullptr && m_selection == nullptr)
 		{
@@ -142,14 +142,14 @@ namespace calculator
 		{
 			value = "#MULTIVALUE";
 		}
-		Logger::log("value", value);
+		Logger::debug("value", value);
 		return value;
 	}
 	common::Value Object::aggregate(const indexisSet& indexes, const ina::query_model::Selection* selection) const
 	{
 		ScopeLog sc("Object::aggregate");
-		Logger::log("name", getName());
-		Logger::log("indexes.size()", indexes.size());
+		Logger::debug("name", getName());
+		Logger::debug("indexes.size()", indexes.size());
 		if(indexes.isAll())
 			return aggregate(selection);
 
@@ -158,12 +158,12 @@ namespace calculator
 		//TODO: Add value exception in common::Value
 		if(datatype == common::eDataType::Numeric)
 		{
-			Logger::log("datatype", "Numeric");
+			Logger::debug("datatype", "Numeric");
 			value = std::nan("0");
 		}
 		else
 		{
-			Logger::log("datatype", "String");
+			Logger::debug("datatype", "String");
 			value = "##NULL##";
 		}
 
@@ -208,7 +208,7 @@ namespace calculator
 				value = "#MULTIVALUE"; // TODO: Add vlaue exception in common::Value
 			}
 		}
-		Logger::log("value", value);
+		Logger::debug("value", value);
 		return value;
 	}
 
