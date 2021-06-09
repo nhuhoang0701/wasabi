@@ -93,6 +93,10 @@ if ("${WASABI_PLATFORM_TARGET}" STREQUAL "wasm")
 	set(CMAKE_C_COMPILER_RANLIB "${CMAKE_RANLIB}")
 	set(CMAKE_CXX_COMPILER_RANLIB "${CMAKE_RANLIB}")
 
+	if (NOT "${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+		set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
+	endif ()
+
 elseif ("${WASABI_PLATFORM_TARGET}" STREQUAL "linux")
 	set(CMAKE_C_COMPILER ${LLVM_DIR}/bin/clang)
 	set(CMAKE_CXX_COMPILER ${LLVM_DIR}/bin/clang++)
@@ -105,13 +109,29 @@ elseif ("${WASABI_PLATFORM_TARGET}" STREQUAL "linux")
 	set(CMAKE_C_COMPILER_RANLIB "${CMAKE_RANLIB}")
 	set(CMAKE_CXX_COMPILER_RANLIB "${CMAKE_RANLIB}")
 	
-	set(CMAKE_CXX_FLAGS           "-gsplit-dwarf -stdlib=libc++  -I${LLVM_DIR}/include/c++/v1")
-	set(CMAKE_EXE_LINKER_FLAGS    "-gsplit-dwarf -fuse-ld=lld -static-libstdc++ -rtlib=compiler-rt -stdlib=libc++ -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libunwind.a -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libc++abi.a")
+	set(CMAKE_EXE_LINKER_FLAGS    "-fuse-ld=lld")
+	set(CMAKE_SHARED_LINKER_FLAGS    "-fuse-ld=lld")
+
+	set(CMAKE_CXX_FLAGS           "${CMAKE_CXX_FLAGS} -stdlib=libc++  -I${LLVM_DIR}/include/c++/v1")
+	set(CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++ -rtlib=compiler-rt -stdlib=libc++ -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libunwind.a -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libc++abi.a")
+	set(CMAKE_SHARED_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++ -rtlib=compiler-rt -stdlib=libc++ -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libunwind.a -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libc++abi.a")
+
+	set(CMAKE_CXX_FLAGS           "${CMAKE_CXX_FLAGS} -gsplit-dwarf")
+	set(CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} -gsplit-dwarf")
+	set(CMAKE_SHARED_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} -gsplit-dwarf")
+
+if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+	set(CMAKE_CXX_FLAGS           "${CMAKE_CXX_FLAGS} -fprofile-instr-generate -fcoverage-mapping")
+	set(CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} -fprofile-instr-generate -fcoverage-mapping")
+	set(CMAKE_SHARED_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} -fprofile-instr-generate -fcoverage-mapping")
 
 	set(CMAKE_CXX_FLAGS           "${CMAKE_CXX_FLAGS} -fsanitize=address")
 	set(CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
-#	set(CMAKE_CXX_FLAGS           "${CMAKE_CXX_FLAGS} -fsanitize=memory -Wl,--exclude-libs=libc++.a")
-#	set(CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=memory -Wl,--exclude-libs=libc++.a")
+	set(CMAKE_SHARED_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
+#	set(CMAKE_CXX_FLAGS           "${CMAKE_CXX_FLAGS} -fsanitize=memory")
+#	set(CMAKE_SHARED_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=memory")
+#	set(CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=memory")
+endif()
 
 #TODO: use musl as static libc
 #	set(CLANG_TARGET_TRIPLE x86_64-linux-musl)
@@ -139,9 +159,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-if ("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
-set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
-endif ()
 #add_compile_options("-Wall")
 add_compile_options("-Werror")
 
