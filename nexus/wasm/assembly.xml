@@ -8,8 +8,8 @@
   </formats>
   <fileSets>
     <fileSet>
-      <directory>${project.basedir}/../install/wasm/Release/.</directory>
-	  <outputDirectory>..</outputDirectory>
+      <directory>${project.basedir}/../../install/wasm/Release/.</directory>
+	    <outputDirectory>..</outputDirectory>
       <includes>
          <include>Microcube_worker.js</include>
          <include>InA_Interpreter.wasm</include>
