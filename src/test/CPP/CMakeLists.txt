@@ -12,15 +12,14 @@ project(
 
 include_directories(${WASABI_ROOT_DIR}/src/test_tools/include)
 
-add_library(CPP_libcxx CPP_libcxx.cpp )
 
 add_executable(CPP_nolib_class CPP_nolib_class.cpp)
 add_executable(CPP_nolib_exception CPP_nolib_exception.cpp)
-add_executable(CPP_Withlibcxx CPP_Withlibcxx.cpp )
+add_executable(CPP_Withlibcxx CPP_Withlibcxx.cpp CPP_libcxx.cpp)
 
 
 target_link_libraries(CPP_nolib_exception PRIVATE exceptions )
-target_link_libraries(CPP_Withlibcxx PRIVATE CPP_libcxx exceptions )
+target_link_libraries(CPP_Withlibcxx PRIVATE exceptions )
 
 ## [main]
 add_test(NAME CPP_nolib_class COMMAND CPP_nolib_class)
