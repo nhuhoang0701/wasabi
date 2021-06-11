@@ -50,12 +50,12 @@ namespace ina::query_model {
     
     void QueryEx::getResultObjects(std::vector<std::tuple<std::string /*name*/, std::string/*aggregation*/, common::eDataType>>& resultObjects) const
     {
-        ScopeLog sc("QueryEx::getResultObjects");
+        ScopeDebug sc("QueryEx::getResultObjects");
         for (const auto& dimension : getQueryDefinition().getDimensions())
         {
             // From members
             {
-                ScopeLog sc("parse members");
+                ScopeDebug sc("parse members");
                 for(const auto& member : getVisibleMembers(dimension) )
                 {
                     const std::string& memberName = ina::query_model::Member::getName(member);
@@ -75,7 +75,7 @@ namespace ina::query_model {
             }
             // From formulas
             {
-                ScopeLog sc("parse formula");
+                ScopeDebug sc("parse formula");
                 for(const auto& member : getVisibleMembers(dimension) )
                 {
                     if(member.getFormula() == nullptr)
@@ -108,7 +108,7 @@ namespace ina::query_model {
             }
             // From restriction
             {
-                ScopeLog sc("parse restriction");
+                ScopeDebug sc("parse restriction");
                 for(const auto& member : getVisibleMembers(dimension) )
                 {
                     if(member.getSelection() == nullptr)
@@ -458,13 +458,13 @@ namespace ina::query_model {
     {
         if (selectionElement.getType() == SelectionElement::Type::Operator) 
         {
-            ScopeLog sc("eval SelectionElement Operator");
+            ScopeDebug sc("eval SelectionElement Operator");
             uint8_t evalRes = 2;
             ina::query_model::LogicalOperator code = selectionElement.getCode();
             for(const auto& childSelectionElement : selectionElement.getSubSelections()) 
             {
                 const std::string& fieldName = childSelectionElement.getFieldName();
-                ScopeLog sc(fieldName);
+                ScopeDebug sc(fieldName);
                 if(fieldName=="[Measures].[Measures]")
                     continue;
 
@@ -485,7 +485,7 @@ namespace ina::query_model {
         }
         else if (selectionElement.getType() == SelectionElement::Type::SetOperand)
         {
-            ScopeLog sc("eval SelectionElement SetOperand");
+            ScopeDebug sc("eval SelectionElement SetOperand");
             const std::string& fieldName = selectionElement.getFieldName();
             Logger::debug("fieldName", fieldName);
             if(fieldName=="[Measures].[Measures]")

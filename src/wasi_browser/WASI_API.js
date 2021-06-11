@@ -453,7 +453,7 @@ let WASI_API = {
         }
         else
         {
-            wasabi_log('wasm module not asyncified');
+            log('wasm module not asyncified');
         }
 
         let memory = updatedMemoryView();
