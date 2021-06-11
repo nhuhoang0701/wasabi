@@ -24,7 +24,7 @@ namespace calculator
 	
 	void Cube::materialyze()
 	{
-		ScopeLog sc("Cube::materialyze");
+		ScopeDebug sc("Cube::materialyze");
 		m_AxeRows.materialyze();
 		m_AxeColumns.materialyze();
 		m_body.materialyze();

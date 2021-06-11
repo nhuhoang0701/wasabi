@@ -74,6 +74,26 @@ class ScopeLog
     }
 };
 
+class ScopeDebug
+{
+    public:
+    inline ScopeDebug(const std::string_view& WASABI_LOGGER_PARAMDEBUG(name))
+    {
+        #if defined (WASABI_DEBUG)
+        indent(std::cout) << name << ":" << std::endl;
+        indent(std::cout) << '{' << std::endl;
+        depth_log+=1;
+        #endif
+    }
+    inline ~ScopeDebug()
+    {
+        #if defined (WASABI_DEBUG)
+        depth_log-=1;
+        indent(std::cout) << '}'  << std::endl;
+        #endif
+    }
+};
+
 class Logger
 {
     public:
@@ -135,6 +155,12 @@ template<typename T>
     {
         #if !defined (NDEBUG) && defined (WASABI_DEBUG)
         indent(std::cout) << "WASABI: '" << name << "' : '" << value << "'" << std::endl;
+        #endif
+    }
+    static void debug(std::string_view WASABI_LOGGER_PARAMDEBUG(name))
+    {
+        #if !defined (NDEBUG) && defined (WASABI_DEBUG)
+        indent(std::cout) << "WASABI: '" << name << "'" << std::endl;
         #endif
     }
 };

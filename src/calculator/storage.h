@@ -3,6 +3,7 @@
 #include <dbproxy/dbproxy.h>  // For dbproxy::Row
 
 #include <common/data.h>
+#include <common/Log.h>
 
 #include <memory>
 #include <stdexcept>
@@ -135,14 +136,18 @@ namespace calculator
 
 		void    insertRow(const dbproxy::Row& row)
 		{
+			//ScopeLog sc("DataStorage::insertRow");
 			if(row.size() != m_cols.size())
 				throw std::runtime_error("row size didn't match column size input:" + std::to_string(row.size()) + " expected" + std::to_string(m_cols.size()));
 
+			// Ignore first line which have the column name
+			if(m_cols[0]->getRowCount()==0 && row[0].getString() == m_cols[0]->getName())
+				return;
 			size_t idx = 0;
 			for(auto& colData : m_cols)
 			{
 				const common::eDataType dt = colData->getDataType();
-
+				//Logger::debug("row[idx].getString()", row[idx].getString());
 				if(dt == common::eDataType::String)
 					colData->push_back(common::Value(row[idx].getString()));
 				else if(dt == common::eDataType::Numeric)

@@ -14,6 +14,7 @@ namespace ina::metadata
         case common::eDataType::Undefined : throw std::runtime_error("eDatatype value not init.");
         case common::eDataType::String : return "String";
         case common::eDataType::Numeric :return "Long";
+        case common::eDataType::DateTime :return "DateTime";
         default:
             throw std::runtime_error("eDatatype unknow value");
         }

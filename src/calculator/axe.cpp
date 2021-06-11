@@ -1,4 +1,5 @@
 #include "axe.h"
+#include "common/Log.h"
 
 #include <memory>
 #include <stdexcept>
@@ -22,6 +23,7 @@ namespace calculator
 {
 	void Axe::materialyze()
 	{
+		ScopeDebug sc("Axe::materialyze()");
 		size_t rowCount = std::numeric_limits<size_t>::max();
 		for(auto& object : *this)
 		{
@@ -33,11 +35,10 @@ namespace calculator
 		}
 
 		m_tuples.clear();
-		//std::cout << "*****************************************\n";
-		//std::cout << "Axe :\n";
-		//std::for_each(this->cbegin(), this->cend(), [] (const Object& obj) {std::cout << obj.getName() << "\t";} );
-		//std::cout << "\n";
-		//std::cout << "Tuples :\n";
+		{
+			ScopeDebug sc("Axe:");
+			std::for_each(this->cbegin(), this->cend(), [] (const auto& obj) {Logger::debug("Name", obj->getName());} );
+		}
 		if(empty() == false)
 		{
 			std::unordered_map<Tuple, size_t, TupleHash> tuplesSet;
@@ -55,14 +56,14 @@ namespace calculator
 				auto iterUtplesSet = tuplesSet.find(tuple);
 				if(iterUtplesSet == tuplesSet.end())
 				{
-					//std::cout << "+";
+					Logger::debug("+");
 					tuplesSet[tuple] = m_tuples.size();
 					m_tuples.push_back(std::make_pair(tuple, std::make_shared<indexisSet>()));
 					m_tuples.back().second->push_back(rowIndex);
 				}
 				else
 				{
-					//std::cout << "=";
+					Logger::debug("=");
 					m_tuples[iterUtplesSet->second].second->push_back(rowIndex);
 				}
 				//std::for_each(m_tuples[tuplesSet.at(tuple)].first.cbegin(), m_tuples[tuplesSet.at(tuple)].first.cend(), [] (const size_t c) {std::cout << c << "\t";} );
@@ -72,7 +73,6 @@ namespace calculator
 			}
 			//std::cout << "\n";
 		}
-		//std::cout << "End Axe \n";
 		m_materialyzed = true;
 	}
 

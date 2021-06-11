@@ -31,6 +31,8 @@ namespace ina::query_model
 			return TypeCatalogView;
 		if ("View" == str)
 			return TypeView;
+		if ("Query" == str)
+			return Query;
 		if("" == str)
 			return Query;
 		throw TRACED_InA_EXCEPTION(std::string("Unknown datasource type: ") + str);
@@ -39,6 +41,11 @@ namespace ina::query_model
 	DataSource::~DataSource()
 	{
 		m_type = TypeUndef;
+	}
+
+	bool DataSource::isCatalogBrowsing() const
+	{
+		return m_objName == "$$DataSource$$";
 	}
 
 	void DataSource::validate() const

@@ -36,6 +36,8 @@ namespace ina::query_model
 		DataSource() = default;
 		~DataSource();
 
+		bool  isCatalogBrowsing() const;
+
 		void  validate() const;
 
 		const std::string&	getObjectName() const;

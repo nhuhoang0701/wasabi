@@ -19,10 +19,10 @@ namespace ina::grid
 	class Grid
 	{
 	public:
-		Grid(const ina::query_model::QueryEx& queryExec, const calculator::Cube& cube);
+		Grid(const ina::query_model::QueryEx& queryExec, std::shared_ptr<const calculator::Cube> cube);
 
 		const ina::query_model::QueryEx& getQuery() const {return m_queryExec;};
-		const calculator::Cube&        getCube() const {return m_cube;};
+		const calculator::Cube&        getCube() const {return *m_cube;};
 
 		const Axis&        getRowAxis() const {return m_rowAxe;};
 		const Axis&        getColumnAxis() const {return m_colAxe;};
@@ -36,7 +36,7 @@ namespace ina::grid
 
 	private:
 		const ina::query_model::QueryEx& m_queryExec;
-		const calculator::Cube&        m_cube;
+		std::shared_ptr<const calculator::Cube>  m_cube;
 
 		Axis  m_rowAxe;
 		Axis  m_colAxe;
