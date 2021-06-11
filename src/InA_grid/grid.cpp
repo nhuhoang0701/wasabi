@@ -15,11 +15,11 @@
 
 namespace ina::grid
 {
-    Grid::Grid(const ina::query_model::QueryEx& queryExec, const calculator::Cube& cube)
+    Grid::Grid(const ina::query_model::QueryEx& queryExec, std::shared_ptr<const calculator::Cube> cube)
     : m_queryExec(queryExec), m_cube(cube),
-      m_rowAxe("ROWS", cube.getAxe(calculator::eAxe::Row)), 
-      m_colAxe("COLUMNS", cube.getAxe(calculator::eAxe::Column)),
-      m_cells(m_rowAxe, m_colAxe, cube.getBody())
+      m_rowAxe("ROWS", cube->getAxe(calculator::eAxe::Row)), 
+      m_colAxe("COLUMNS", cube->getAxe(calculator::eAxe::Column)),
+      m_cells(m_rowAxe, m_colAxe, cube->getBody())
     {
         for (const auto& dimension : m_queryExec.getQueryDefinition().getDimensions()) 
         {

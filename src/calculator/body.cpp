@@ -241,7 +241,7 @@ namespace calculator
 
 	void Body::addMeasure(const Object& obj, const ina::query_model::Selection* selection)
 	{
-		ScopeLog sc("Body::addMeasure");
+		ScopeDebug sc("Body::addMeasure");
 		Logger::debug("name",  obj.getName());
 		Logger::debug("selection", (selection!=nullptr));
 		if(contain(obj.getName()))
@@ -269,7 +269,7 @@ namespace calculator
 
 	void Body::addFormula(const Object& obj, const ina::query_model::Formula& formula, const ina::query_model::Selection* selection)
 	{
-		ScopeLog sc("Body::addFormula");
+		ScopeDebug sc("Body::addFormula");
 		Logger::debug("name",  obj.getName());
 		Logger::debug("selection", (selection!=nullptr));
 		std::vector<std::string> deps;
@@ -286,7 +286,7 @@ namespace calculator
 
 	void Body::addRestriction(const Object& obj, const ina::query_model::Selection& selection)
 	{
-		ScopeLog sc("addRestriction");
+		ScopeDebug sc("addRestriction");
 		Logger::debug("name",  obj.getName());
 		std::vector<std::string> deps;
 		ina::query_model::getDeps(selection, deps);

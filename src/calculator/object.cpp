@@ -26,7 +26,7 @@ namespace calculator
 
 	void Object::materialyze(const Cube& cube)
 	{
-		ScopeLog sc("Object::materialyze");
+		ScopeDebug sc("Object::materialyze");
 		Logger::debug("name", getName());
 		m_datastorage = &cube.getStorage();
 		if(m_formula == nullptr && m_selection == nullptr)
@@ -108,7 +108,7 @@ namespace calculator
 	}
 	common::Value Object::aggregate(const ina::query_model::Selection* selection) const
 	{
-		ScopeLog sc("Object::aggregate_all");
+		ScopeDebug sc("Object::aggregate_all");
 		const common::eDataType datatype = m_dataColumn->getDataType();
 
 		common::Value value;
@@ -124,7 +124,7 @@ namespace calculator
 			double sum = 0;
 			for(size_t rowIndex = 0; rowIndex < m_dataColumn->getRowCount(); rowIndex++)
 			{
-				ScopeLog sc(std::to_string(rowIndex));
+				ScopeDebug sc(std::to_string(rowIndex));
 				if(selection == nullptr)
 					sum +=  m_dataColumn->getValueAtRowIdx(rowIndex).getDouble();
 				else
@@ -147,7 +147,7 @@ namespace calculator
 	}
 	common::Value Object::aggregate(const indexisSet& indexes, const ina::query_model::Selection* selection) const
 	{
-		ScopeLog sc("Object::aggregate");
+		ScopeDebug sc("Object::aggregate");
 		Logger::debug("name", getName());
 		Logger::debug("indexes.size()", indexes.size());
 		if(indexes.isAll())
@@ -169,7 +169,7 @@ namespace calculator
 
 		if(indexes.size() == 1)
 		{
-			ScopeLog sc(std::to_string(indexes[0]));
+			ScopeDebug sc(std::to_string(indexes[0]));
 			if(selection == nullptr)
 				value = m_dataColumn->getValueAtRowIdx(indexes[0]);
 			else
@@ -189,7 +189,7 @@ namespace calculator
 				double sum = 0;
 				for(const auto& rowIndex : indexes)
 				{
-					ScopeLog sc(std::to_string(rowIndex));
+					ScopeDebug sc(std::to_string(rowIndex));
 					if(selection == nullptr)
 						sum +=  m_dataColumn->getValueAtRowIdx(rowIndex).getDouble();
 					else

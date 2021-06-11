@@ -4,6 +4,7 @@
 #include "Sort.h"
 
 #include "ResultSetFeatureRequest.h"
+#include "common/Log.h"
 
 #include <json/jsonReader.h>
 #include <exceptions/InA_Exception.h>
@@ -39,7 +40,7 @@ namespace ina::query_model
 		}
 		if (const auto& dynamicFilterNode = definitionNode.getObject("DynamicFilter"))
 		{
-			std::cout << "Reading DynamicFilter" << std::endl;
+			ScopeDebug sc("Reading DynamicFilter");
 			if (const auto& selectionNode = dynamicFilterNode.getObject("Selection"))
 			{
 				read(definition.m_selection, selectionNode);
