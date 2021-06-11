@@ -1,4 +1,5 @@
 #include "InA_Interpreter.h"
+#include "common/data.h"
 
 #include <InA_metadata/Cube.h>
 
@@ -47,11 +48,12 @@ const char* json_getServerInfo()
 
 void processQuery(JSONWriter& writer, const ina::query_model::Query& query);
 void writeResponse(JSONWriter& writer, const ina::metadata::Cube* dsCube, const ina::grid::Grid* grid);
-void getDataCube(const ina::query_model::QueryEx& queryExec, calculator::Cube& cube);
+std::shared_ptr<calculator::Cube> getDataCube(const ina::query_model::QueryEx& queryExec);
 
 extern "C"
 const char* json_getResponse_json(const char* InA)
 {
+	ScopeLog sc("json_getResponse_json");
 	JSONReader reader;
 	ina::query_model::Queries queries;
 	read(queries, reader.parse(InA));
@@ -84,15 +86,15 @@ const char* json_getResponse_json(const char* InA)
 
 void processQuery(JSONWriter& writer, const ina::query_model::Query& query)
 {
+	ScopeLog sc("processQuery");
 	std::unique_ptr<ina::metadata::Cube> dsCube = std::make_unique<ina::metadata::Cube>(query.getDataSource());
 
-	calculator::Cube dataCube;
 	std::unique_ptr<ina::grid::Grid> grid;
 	ina::query_model::QueryEx queryExec(query.getDefinition(), *dsCube);
 
 	if(query.getType() == ina::query_model::Query::qAnalytics)
 	{		
-		getDataCube(queryExec, dataCube);
+		std::shared_ptr<calculator::Cube> dataCube = getDataCube(queryExec);
 		grid = std::make_unique<ina::grid::Grid>(queryExec, dataCube);
 	}
 
@@ -103,6 +105,7 @@ void processQuery(JSONWriter& writer, const ina::query_model::Query& query)
 
 void writeResponse(JSONWriter& writer, const ina::metadata::Cube* dsCube, const ina::grid::Grid* grid)
 {
+	ScopeLog sc("writeResponse");
 	////////////////////////////////////////////
 	// write the result
 	JSON_MAP(writer);
@@ -133,23 +136,61 @@ void writeResponse(JSONWriter& writer, const ina::metadata::Cube* dsCube, const 
 }
 
 
-void getDataCube(const ina::query_model::QueryEx& queryEx, calculator::Cube& cube)
+std::shared_ptr<calculator::DataStorage> getDataStorage(const ina::query_model::QueryEx& queryEx)
 {
-	const query_generator::query_generator& queryGen = query_generator::query_generator(queryEx);
+	ScopeLog sc("getDataStorage");
+	const auto& metadataCube = *queryEx.getDSCube();
 
 	std::shared_ptr<calculator::DataStorage> data(new calculator::DataStorage());
-	queryGen.prepareStorage(data);
-	std::function<void(const dbproxy::Row&)> lambda = [&data](const dbproxy::Row& row)
+	if(!metadataCube.getDataSource().isCatalogBrowsing())
 	{
-		data->insertRow(row);
-	};
-	const std::string& cnxString = queryEx.getDSCube()->getDataSource().getPackageName();
-	const std::string sql = queryGen.getSQL();
-	Logger::log("SQL: ", sql);
-	dbproxy::DBProxy::getDBProxy(cnxString)->executeSQL(sql, &lambda);
-	Logger::log("    Nbrs of rows ", data->getRowCount());
+		const query_generator::query_generator& queryGen = query_generator::query_generator(queryEx);
 
-	cube.setStorage(data);
+		queryGen.prepareStorage(data);
+		std::function<void(const dbproxy::Row&)> lambda = [&data](const dbproxy::Row& row)
+		{
+			data->insertRow(row);
+		};
+		const std::string& cnxString = metadataCube.getDataSource().getPackageName();
+		const std::string sql = queryGen.getSQL();
+		Logger::log("SQL: ", sql);
+		dbproxy::DBProxy::getDBProxy(cnxString)->executeSQL(sql, &lambda);
+	}
+	else
+	{
+		for(const auto& dim : metadataCube.getDimensions())
+		{
+			for(const auto& attribut : dim->getAttributes())
+			{
+				data->addColumn(attribut.getName(), attribut.getDataType(), calculator::eColumnType::Indexed);
+			}
+		}
+		using namespace dbproxy;
+		wasabi::metadata::Catalog catalog("local:sqlite:efashion_lite");
+
+		for(const auto& tableName : catalog.getTableNames())
+		{
+			const auto& table = catalog.getTable(tableName);
+			
+			dbproxy::Row row1 = {Value("Query"), Value("???"), Value(tableName.c_str()), Value(tableName.c_str()), Value("local:sqlite:efashion_lite")};
+			data->insertRow(row1);
+		}
+	}
+
+	Logger::log("    Nbrs of rows ", data->getRowCount());
+	return data;
+}
+
+
+std::shared_ptr<calculator::Cube> getDataCube(const ina::query_model::QueryEx& queryEx)
+{
+	ScopeLog sc("getDataCube");
+	
+	std::shared_ptr<calculator::DataStorage> dataStorage = getDataStorage(queryEx);
+
+	std::shared_ptr<calculator::Cube> dataCube = std::make_shared<calculator::Cube>();
+	dataCube->setStorage(dataStorage);
+
 	for (const auto& dimension : queryEx.getQueryDefinition().getDimensions()) 
 	{
 		if(!ina::query_model::QueryEx::isDimensionOfMeasures(dimension) )
@@ -162,31 +203,33 @@ void getDataCube(const ina::query_model::QueryEx& queryEx, calculator::Cube& cub
 			else throw std::runtime_error("Unknow axis type");
 			
 			for(const auto& attribut : dimension.getAttributes())
-				cube.addDim(axe, attribut.getName());
+				dataCube->addDim(axe, attribut.getName());
 		}
 		else
 		{
 			// Add Measures
-			for(const auto member : queryEx.getVisibleMembers(dimension))
+			for(const auto& member : queryEx.getVisibleMembers(dimension))
 			{
 				if(member.getFormula() == nullptr && member.getSelection() ==nullptr)
-					cube.addMeasure(ina::query_model::Member::getName(member));
+					dataCube->addMeasure(ina::query_model::Member::getName(member));
 			}
 			// Add formula
-			for(const auto member : queryEx.getVisibleMembers(dimension))
+			for(const auto& member : queryEx.getVisibleMembers(dimension))
 			{
 				auto formula = calculator::Object(member.getName());
-				if(member.getFormula() != nullptr && !cube.contain(member.getName()))
-					cube.addFormula(formula, *member.getFormula());
+				if(member.getFormula() != nullptr && !dataCube->contain(member.getName()))
+					dataCube->addFormula(formula, *member.getFormula());
 			}
 			// Add restriction
-			for(const auto member : queryEx.getVisibleMembers(dimension))
+			for(const auto& member : queryEx.getVisibleMembers(dimension))
 			{
 				auto restriction = calculator::Object(member.getName());
-				if(member.getSelection() != nullptr && !cube.contain(member.getName()))
-					cube.addRestriction(restriction, *member.getSelection());
+				if(member.getSelection() != nullptr && !dataCube->contain(member.getName()))
+					dataCube->addRestriction(restriction, *member.getSelection());
 			}
 		}
 	}
-	cube.materialyze();
+	dataCube->materialyze();
+
+	return dataCube;
 }
