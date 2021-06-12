@@ -1,5 +1,6 @@
 #include "dbproxy.h"
 
+#include "common/Log.h"
 #include "sqlite/sqlite.h"
 
 #include <stdexcept>
@@ -15,6 +16,8 @@ namespace dbproxy
 
 	std::shared_ptr<DBProxy> DBProxy::getDBProxy(const std::string& cnxString)
 	{
+		ScopeDebug sc("DBProxy::getDBProx");
+		Logger::debug("cnxString", cnxString);
 		std::string segment;
 		std::vector<std::string> seglist;
 		std::stringstream cnxStringSS;
@@ -36,7 +39,7 @@ namespace dbproxy
 		else if(seglist[0] == "remote")
 			throw std::runtime_error("DBProxy::remote not implemented");
 		else
-			throw std::runtime_error("DBProxy::unknow cnx string format/value:" + cnxString);
+			throw std::runtime_error("DBProxy::unknow cnx string format/value: '" + cnxString +"'");
 	}
 
 	DBProxy::DBProxy()
