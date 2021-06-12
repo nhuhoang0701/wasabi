@@ -44,7 +44,7 @@ void __cxa_throw(void *thrown_object, std::type_info *tinfo, void (*dest)(void *
 	msg += " '" + typeinfo + "' ";
 	std::cerr << msg << std::flush;
 
-	std::exit(0);
+	std::exit(1);
 }
 
 void* __cxa_begin_catch(void* unwind_arg) throw()
