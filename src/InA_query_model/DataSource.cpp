@@ -54,49 +54,16 @@ namespace ina::query_model
 
 	const std::string&	DataSource::getObjectName() const
 	{
-		//TODO: Remove just to start dev.
-		if(m_objName.empty())
-		{
-			static std::string defaultObjectName;
-			if(defaultObjectName.empty())
-			{
-				defaultObjectName = "Agg_yr_qt_mt_mn_wk_rg_cy_sn_sr_qt_ma";
-				Logger::error("DataSource::getPackageName(): no objectName provided , default will be used", defaultObjectName);
-			}
-			return defaultObjectName;
-		}
 		return m_objName;
 	}
 
 	const std::string&	DataSource::getInstanceId() const
 	{
-		//TODO: Remove just to start dev.
-		if(m_InstanceId.empty())
-		{
-			static std::string defaultInstanceId;
-			if(defaultInstanceId.empty())
-			{
-				defaultInstanceId = "0";
-				Logger::error("DataSource::getInstanceId(): no InstanceID provided , default will be used", defaultInstanceId);
-			}
-			return defaultInstanceId;
-		}
 		return m_InstanceId;
 	}
 
 	const std::string& DataSource::getPackageName() const
 	{
-		//TODO: Remove just to start dev.
-		if(m_packageName.empty())
-		{
-			static std::string default_packageName;
-			if(default_packageName.empty())
-			{
-				default_packageName =  "local:sqlite:efashion_lite";
-				Logger::error("DataSource::getPackageName(): no package name provided , default will be used", default_packageName);
-			}
-			return default_packageName;
-		}
 		return m_packageName;
 	}
 
@@ -114,33 +81,11 @@ namespace ina::query_model
 
 	const std::string& DataSource::getSchemaName() const
 	{
-		//TODO: Remove just to start dev.
-		if(m_schemaName.empty())
-		{
-			static std::string defaultSchemaName;
-			if(defaultSchemaName.empty())
-			{
-				defaultSchemaName = "default";
-				Logger::error("DataSource::getSchemaName(): no schemaname provided , default will be used", defaultSchemaName);
-			}
-			return defaultSchemaName;
-		}
 		return m_schemaName;
 	}
 
 	const std::string&	DataSource::getDescription() const
 	{
-		//TODO: Remove just to start dev.
-		if(m_description.empty())
-		{
-			static std::string default_description;
-			if(default_description.empty())
-			{
-				default_description =  "Revenue/City/Time";
-				Logger::error("DataSource::getDescription(): no description provided , default will be used", default_description);
-			}
-			return default_description;
-		}
 		return m_description;
 	}
 
