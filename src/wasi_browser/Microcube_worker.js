@@ -12,8 +12,11 @@ function initWasmModule(module, ID, action, param){
 	console.log('Worker: initWasmModule');
 	WASI_API.setModule(module);
 	
-	filesystem = [	"/resources/response_getSerververInfo.json",
-					"/resources/sqlite/efashion_lite/efashion_lite.db"];
+	filesystem = [
+		"/resources/response_getSerververInfo.json",
+		"/resources/sqlite/efashion_lite/efashion_lite.db",
+		"/resources/sqlite/chinook/chinook.db"
+	];
 	WASI_API.wasabi_initFS(param, filesystem).then(() => 
 	{
 		WASI_API.start();
