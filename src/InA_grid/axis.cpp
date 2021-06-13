@@ -35,6 +35,17 @@ namespace ina::grid
         {
             m_measDim = &dimension;
             m_measureDimensionMembers = queryEx.getVisibleMembers(*m_measDim);
+            if(m_measureDimensionMembers.empty())
+            {
+                throw std::runtime_error("No members specified on the Dimension of measures: '"+dimension.getName() + "'");
+            }
+        }
+        else
+        {
+            if(dimension.getAttributes().empty())
+            {
+                throw std::runtime_error("No attributs specified on the Dimension: '"+dimension.getName() + "'");
+            }
         }
     }
 

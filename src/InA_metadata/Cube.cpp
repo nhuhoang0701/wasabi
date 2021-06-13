@@ -45,8 +45,8 @@ namespace ina::metadata
         }
         else
         {
-            const std::string& cnxString = m_datasource.getPackageName();
-            std::shared_ptr<wasabi::metadata::Catalog> catalog = std::shared_ptr<wasabi::metadata::Catalog>(new wasabi::metadata::Catalog(cnxString));
+            const std::string& packageName = m_datasource.getPackageName();
+            std::shared_ptr<wasabi::metadata::Catalog> catalog = std::shared_ptr<wasabi::metadata::Catalog>(new wasabi::metadata::Catalog(packageName));
 
             const auto& colNames = catalog->getTable(tableName).getColumnNames();
             {
@@ -86,7 +86,7 @@ namespace ina::metadata
                                 m_dimensions.push_back(std::move(dim));
                             }
                             Dimension& dim = getDimension("[Month]");
-                            dim.addKeyAttribute(Attribute(dim, "Mth", "Month number", eAttrType::Key, column.getDataType()));
+                            dim.addKeyAttribute(Attribute(dim, colName, "Month number", eAttrType::Key, column.getDataType()));
                         }
                         else if(colName=="Month_name")
                         {
@@ -97,7 +97,7 @@ namespace ina::metadata
                                 m_dimensions.push_back(std::move(dim));
                             }
                             Dimension& dim = getDimension("[Month]");
-                            dim.addTextAttribute(Attribute(dim, "Month_name", "Month name", eAttrType::Text, column.getDataType()));
+                            dim.addTextAttribute(Attribute(dim, colName, "Month name", eAttrType::Text, column.getDataType()));
                         }
                         else if(colName=="Wk")
                         {
@@ -142,7 +142,7 @@ namespace ina::metadata
                         }
                         else if(colName=="Yr")
                         {
-                            std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[Year]", "Year", eAxe::Rows);
+                            std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[Year]", "Year");
                             dim->addKeyAttribute(Attribute(*dim, colName, "Year", eAttrType::Key, column.getDataType()));
                             m_dimensions.push_back(std::move(dim));
                         }
@@ -154,7 +154,7 @@ namespace ina::metadata
                         }
                         else if(colName=="State")
                         {
-                            std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[State]", "State");
+                            std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[State]", "State", eAxe::Rows);
                             dim->addKeyAttribute(Attribute(*dim, colName, "State", eAttrType::Key, column.getDataType()));
                             m_dimensions.push_back(std::move(dim));
                         }
@@ -166,7 +166,7 @@ namespace ina::metadata
                         }
                         else if(colName=="Category")
                         {
-                            std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[Category]", "Category");
+                            std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[Category]", "Category", eAxe::Columns);
                             dim->addKeyAttribute(Attribute(*dim, colName, "Category", eAttrType::Key, column.getDataType()));
                             m_dimensions.push_back(std::move(dim));
                         }
@@ -177,7 +177,7 @@ namespace ina::metadata
                         else
                             throw std::runtime_error("Unknow column:"+colName);
                     }
-                    else if(tableName == "Shop_facts" )
+                    /*else if(tableName == "Shop_facts" )
                     {
                         if(colName=="Shop_facts_id")
                         {
@@ -235,7 +235,7 @@ namespace ina::metadata
                         }
                         else
                             throw std::runtime_error("Unknow column:"+colName);
-                    }
+                    }*/
                     else if(tableName == "onetable_datatype" )
                     {
                         if(colName=="text")

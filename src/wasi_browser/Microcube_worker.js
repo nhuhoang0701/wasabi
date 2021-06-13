@@ -34,6 +34,22 @@ var WorkerEvent = {
     eGetResponse: 'GetResponse'
 }
 
+function ina_callback_response(ID, action, inaResponse) {
+	console.log("******************************************");
+	let js_action = WASI_API.convertWAsmStr2JSStr(action);
+	console.log("Worker: Message executed: ID '" + ID + "' Action:'" + action + "'");
+	console.log("Worker: Message executed: response");
+
+	let js_inaResponse = WASI_API.convertWAsmStr2JSStr(inaResponse);
+	try {
+		console.log(JSON.parse(js_inaResponse));
+	} catch(e) {
+		console.error(e);
+		console.log(js_inaResponse);
+	}
+	postMessage([ID, js_action, js_inaResponse]);
+}
+
 onmessage = function(e) {
 	var message = e.data;
 	if(message.length != 3) {
@@ -53,17 +69,17 @@ onmessage = function(e) {
 		console.log(param);
 	}
 
-	let valret = null;
 	try {
 		switch(action){
 		case WorkerEvent.eLoad:
 			if(isLoaded == true)
 				throw new Error("Worker: Already loaded");
 
+			let imports = {ina_callback_response:ina_callback_response};
 			var importObject =
 			{
 				wasi_snapshot_preview1: WASI_API,
-				env: {},
+				env: imports,
 				js : {mem: new WebAssembly.Memory({initial: 2,maximum: 100})}
 			};
 
@@ -104,8 +120,7 @@ onmessage = function(e) {
 			if(isLoaded == false)
 				throw new Error("Not loaded");
 
-			var wasmRes = WASI_API.getModuleInstanceExports().json_getServerInfo();
-			valret = WASI_API.convertWAsmStr2JSStr(wasmRes);		
+			WASI_API.getModuleInstanceExports().void_getServerInfo_int32(ID);
 			break;
 		case WorkerEvent.eGetResponse:
 			if(isLoaded == false)
@@ -113,27 +128,25 @@ onmessage = function(e) {
 
 			var queryJS = message[indexMsgParam];
 			var queryWAsm = WASI_API.convertJSStr2WAsm(queryJS);
-			var wasmRes = WASI_API.getModuleInstanceExports().json_getResponse_json(queryWAsm);
+			WASI_API.getModuleInstanceExports().void_getResponse_int32_json(ID, queryWAsm);
 			WASI_API.getModuleInstanceExports().free(queryWAsm);
-			valret = WASI_API.convertWAsmStr2JSStr(wasmRes);
 			break;
 		default:
 			throw  new Error('Unknow action:' + action);
 		}
 	} catch(error) {
 		console.log('Worker: error: ', error);
-		console.log("stack: ", error.stack),
-		valret = '{"HasErrors":true, "Messages": [{"Number":0,"Type":2,"Text":"'+error.message+'"}]}';
+		console.log("stack: ", error.stack);
+		let valret = '{"HasErrors":true, "Messages": [{"Number":0,"Type":2,"Text":"'+error.message+'"}]}';
+		console.log('Worker: return value:');
+		try {
+			console.log(JSON.parse(valret));
+		} catch(e) {
+			console.error(e);
+			console.log(valret);
+		}
+		postMessage([ID, action, valret]);
 	}
-	console.log('Worker: return value:');
-	try {
-		console.log(JSON.parse(valret));
-	} catch(e) {
-		console.error(e);
-		console.log(valret);
-	}
-	postMessage([ID, action, valret]);
-	
 }
 }());
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
