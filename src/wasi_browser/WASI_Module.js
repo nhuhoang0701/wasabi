@@ -27,10 +27,7 @@ function _start(response, filename) {
 	WebAssembly.instantiateStreaming(response, importObject).then(module =>
 	{
 		WASI_API.setModule(module);
-		filesystem = ["/resources/response_getSerververInfo.json",
-					 "/resources/text.txt",
-					 "/resources/sqlite/efashion_lite/efashion_lite.db",
-					 "/resources/sqlite/onetable_datatype/onetable_datatype.db"];
+		filesystem = [];
 		WASI_API.wasabi_initFS(".", filesystem).then(() => {
 			WASI_API.wasabi_log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 			WASI_API.wasabi_log(">> start: " + filename);
