@@ -10,9 +10,11 @@
 #include <sstream>
 #include <cstdint>
 
-namespace wasabi{
+namespace wasabi
+{
   using namespace std;
-  namespace utils{
+  namespace utils
+  {
     using namespace metadata;
     struct ColumnImpl
 	{
@@ -48,13 +50,22 @@ namespace wasabi{
       vector<string> itsColumnNames;
     };
     struct CatalogImpl
-	{
+    {
       CatalogImpl(){};
       ~CatalogImpl(){};
       CatalogImpl(const CatalogImpl&)=delete;
       CatalogImpl& operator=(const TableImpl&) = delete;
       vector<string> itsTableNames;
       unordered_map<string,unique_ptr<Table> > itsTables;
+    };
+
+    struct ConnectionsImpl
+	  {
+      ConnectionsImpl(){};
+      ~ConnectionsImpl(){};
+      ConnectionsImpl(const ConnectionsImpl&)=delete;
+      ConnectionsImpl& operator=(const ConnectionsImpl&) = delete;
+      vector<string> itsConnectionString;
     };
   }
   namespace metadata
