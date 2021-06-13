@@ -6,7 +6,6 @@
 
 
 let DATA_ADDR = null;
-let sleeping = false;
 
 let WASI_API = {
     //////////////////////////////////////////////////////////////
@@ -71,6 +70,11 @@ let WASI_API = {
         moduleMemoryView = new DataView(getModuleInstanceExports().memory.buffer);
     },
     start : start = function () {
+        if(getModuleInstanceExports().asyncify_get_state)
+            wasabi_log('start, asyncify_get_state:'+getModuleInstanceExports().asyncify_get_state());
+        else 
+            wasabi_log('wasm module not asyncified');
+
         if(getModuleInstanceExports()._initialize)
             getModuleInstanceExports()._initialize();
         else if(getModuleInstanceExports()._start)
@@ -78,11 +82,10 @@ let WASI_API = {
         else
             throw Error("no _start/_initialize entry point");
 
-        //TODO: Need a specific state
-        if(getModuleInstanceExports().asyncify_stop_unwind) {
-            if(sleeping==true) {
-                wasabi_log('2 asyncify_stop_unwind');
+        if(getModuleInstanceExports().asyncify_get_state) {
+            if(getModuleInstanceExports().asyncify_get_state()==1) {
                 getModuleInstanceExports().asyncify_stop_unwind();
+                wasabi_log('2 asyncify_stop_unwind(ed), state:'+getModuleInstanceExports().asyncify_get_state());
             }
         } else {
             wasabi_log('wasm module not asyncified');
@@ -290,10 +293,65 @@ let WASI_API = {
 
             if(!fs_Path2Data.get(virtualPath))
             {
-                error("Please register your file '" + virtualPath + "' by calling WASI_API::wasabi_initFS()");
-                return WASI_EBADF;
+                if(getModuleInstanceExports().asyncify_get_state)
+                {
+                    const memoryStackSize = 1024*1000;
+                    if(DATA_ADDR  == null)
+                    {
+                        DATA_ADDR = malloc(memoryStackSize);
+                    }
+                    memoryView().setUint32(DATA_ADDR, DATA_ADDR+8, true);
+                    memoryView().setUint32(DATA_ADDR+4, memoryStackSize, true);
+                    try {
+                        getModuleInstanceExports().asyncify_start_unwind(DATA_ADDR);
+                        wasabi_log('1 asyncify_start_unwind(ed), state:'+getModuleInstanceExports().asyncify_get_state());
+                        wasabi_log('fetch start');
+                        fetch(virtualPath)
+                        .then(
+                            function(response) {
+                            if (response.status !== 200) {
+                                console.log('Looks like there was a problem. Status Code: ' + response.status);
+                                return WASI_EBADF;
+                            }
+                            response.arrayBuffer().then(function(data) {
+                                let uint8View = new Uint8Array(data);
+                
+                                if(virtualPath.substring(0, 1) == "/")
+                                    virtualPath = virtualPath.substring(1);
+                                WASI_API.fs_Path2Data.set(virtualPath, uint8View);
+                                wasabi_log('fetch ended');
+                                this.getModuleInstanceExports().asyncify_start_rewind(DATA_ADDR);
+                                wasabi_log('3 asyncify_start_rewind(ed), state:'+getModuleInstanceExports().asyncify_get_state());
+                                // The code is now ready to rewind; to start the process, enter the
+                                // first function that should be on the call stack.
+                                if(WASI_API.getModuleInstanceExports().doIt)
+                                    WASI_API.getModuleInstanceExports().doIt(-1, -1, null);
+                                else
+                                    start();
+                                });
+                            }
+                        )
+                        .catch(function(err) {
+                            console.log('Fetch Error :-S', err);
+                        });
+
+                        return;
+                    }catch(e) {
+                        error(e);
+                    }
+                }
+                else
+                {
+                    error("Please register your file '" + virtualPath + "' by calling WASI_API::wasabi_initFS()");
+                    return WASI_EBADF;
+                }
             }
             entry.offset = BigInt(0);
+        }
+        if(getModuleInstanceExports().asyncify_get_state && getModuleInstanceExports().asyncify_get_state() == 2) {
+            // We are called as part of a resume/rewind. Stop sleeping.
+            getModuleInstanceExports().asyncify_stop_rewind();
+            wasabi_log('4 asyncify_stop_rewind(ed), state:'+getModuleInstanceExports().asyncify_get_state());
         }
 
         let offset = BigInt(0);
@@ -415,45 +473,6 @@ let WASI_API = {
         const entry = wasabi_getFileEntry(fd);
         if (!entry) {
             return WASI_EBADF;
-        }
-
-        if(getModuleInstanceExports().asyncify_start_unwind)
-        {
-            if(!sleeping) {
-                if(DATA_ADDR  == null)
-                {
-                    DATA_ADDR = malloc(1024*100);
-                }
-                memoryView().setUint32(DATA_ADDR, DATA_ADDR+8, true);
-                memoryView().setUint32(DATA_ADDR+4, 1024*100, true);
-                try {
-                    wasabi_log('1 asyncify_start_unwind');
-                    getModuleInstanceExports().asyncify_start_unwind(DATA_ADDR);
-                    sleeping = true;
-                    wasabi_log('timeout start');
-                    setTimeout(function() {
-                        wasabi_log('timeout ended');
-                        wasabi_log('3 asyncify_start_rewind');
-                        this.getModuleInstanceExports().asyncify_start_rewind(DATA_ADDR);
-                        // The code is now ready to rewind; to start the process, enter the
-                        // first function that should be on the call stack.
-                        start();
-                    }, 5000 /*ms*/);
-                    return;
-                }catch(e) {
-                    error(e);
-                }
-            } else {
-                // We are called as part of a resume/rewind. Stop sleeping.
-                wasabi_log('resume');
-                wasabi_log('4 asyncify_stop_rewind');
-                getModuleInstanceExports().asyncify_stop_rewind();
-                sleeping = false;
-            }
-        }
-        else
-        {
-            log('wasm module not asyncified');
         }
 
         let memory = updatedMemoryView();

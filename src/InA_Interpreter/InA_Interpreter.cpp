@@ -32,13 +32,37 @@
 #include <vector>
 
 
-extern "C"
-void ina_callback_response(int32_t ID, const char* action, const char* response);
+void getServerInfo(int32_t ID);
+void getResponse(int32_t ID, const char* inaRequest);
 
 extern "C"
-void void_getServerInfo_int32(int32_t ID)
+void doIt(int32_t ID, eRequestType type, const char* inaRequest)
+{
+	ScopeLog sc("doIt");
+	Logger::log("type", toString(type));
+	Logger::log("ID", ID);
+	switch (type)
+	{
+	case eGetServerInfo:
+	{
+		return getServerInfo(ID);
+	}
+	case eGetResponse:
+	{
+		return getResponse(ID, inaRequest);
+	}
+	case eSubmitCube:
+	throw std::runtime_error("eSubmitCube not yet implemented");
+	case eUndefined:
+	throw std::runtime_error("Invalid request type 'eUndefine'");
+	default:
+	throw std::runtime_error("Unknon request type '"+std::to_string(type) +"'");
+	}
+}
+
+void getServerInfo(int32_t ID)
 {	
-	ScopeLog sc("void_getServerInfo_int32");
+	ScopeLog sc("getServerInfo");
 
 	static std::string static_str_getserverinfo;
 	if(static_str_getserverinfo.empty() )
@@ -50,17 +74,16 @@ void void_getServerInfo_int32(int32_t ID)
 			throw std::runtime_error("Could not open file ./resources/response_getSerververInfo.json");
 	}
 
-	ina_callback_response(ID, "GetServerInfo", static_str_getserverinfo.c_str());
+	ina_callback_response(ID, eRequestType::eGetServerInfo, static_str_getserverinfo.c_str());
 }
 
 void processQuery(JSONWriter& writer, const ina::query_model::Query& query);
 void writeResponse(JSONWriter& writer, const ina::metadata::Cube* dsCube, const ina::grid::Grid* grid);
 std::shared_ptr<calculator::Cube> getDataCube(const ina::query_model::QueryEx& queryExec);
 
-extern "C"
-void void_getResponse_int32_json(int32_t ID, const char* InA)
+void getResponse(int32_t ID, const char* InA)
 {
-	ScopeLog sc("void_getResponse_int32_json");
+	ScopeLog sc("getResponse");
 	JSONReader reader;
 	ina::query_model::Queries queries;
 	read(queries, reader.parse(InA));
@@ -88,7 +111,7 @@ void void_getResponse_int32_json(int32_t ID, const char* InA)
 	static std::string static_str;
 	static_str = osstream.str();
 	
-	ina_callback_response(ID, "GetResponse", static_str.c_str());
+	ina_callback_response(ID, eRequestType::eGetResponse, static_str.c_str());
 }
 
 void processQuery(JSONWriter& writer, const ina::query_model::Query& query)
