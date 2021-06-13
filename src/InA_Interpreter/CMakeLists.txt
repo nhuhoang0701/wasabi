@@ -45,7 +45,7 @@ target_link_libraries(InA_Interpreter InA_Interpreter_lib)
 
 # External entries points
 if ("${WASABI_PLATFORM_TARGET}" STREQUAL "wasm")
-target_link_options( InA_Interpreter PRIVATE LINKER:--export=void_getServerInfo_int32,--export=void_getResponse_int32_json,--export=malloc,--export=free)
+target_link_options( InA_Interpreter PRIVATE LINKER:--export=doIt,--export=malloc,--export=free)
 target_link_options( InA_Interpreter PRIVATE LINKER:--allow-undefined-file=${PROJECT_SOURCE_DIR}/js_fct.syms)
 endif()
 
