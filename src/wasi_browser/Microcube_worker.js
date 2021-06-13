@@ -4,6 +4,13 @@
 
 importScripts('./WASI_API.js');
 
+// Should match  InA_Interpreter.h/Microcube_worker.js
+var eLoad = 0;
+var eGetServerInfo = 1;
+var eGetResponse = 2;
+var eSubmitCube = 3;
+var eRequestTypeName = ["Load", "GetServerInfo", "GetResponse", "SubmitCube"];
+
 const indexMsgId = 0;
 const indexMsgAction = 1;
 const indexMsgParam = 2;
@@ -11,11 +18,8 @@ const indexMsgParam = 2;
 function initWasmModule(module, ID, action, param){
 	console.log('Worker: initWasmModule');
 	WASI_API.setModule(module);
-	
+
 	filesystem = [
-		"/resources/response_getSerververInfo.json",
-		"/resources/sqlite/efashion_lite/efashion_lite.db",
-		"/resources/sqlite/chinook/chinook.db"
 	];
 	WASI_API.wasabi_initFS(param, filesystem).then(() => 
 	{
@@ -28,16 +32,11 @@ function initWasmModule(module, ID, action, param){
 (function(){
 var isLoaded = false;
 
-var WorkerEvent = {
-    eLoad: 'load',
-    eGetServerInfo: 'GetServerInfo',
-    eGetResponse: 'GetResponse'
-}
 
-function ina_callback_response(ID, action, inaResponse) {
-	console.log("******************************************");
-	let js_action = WASI_API.convertWAsmStr2JSStr(action);
-	console.log("Worker: Message executed: ID '" + ID + "' Action:'" + action + "'");
+
+function ina_callback_response(ID, type, inaResponse) {
+	console.log("****  ina_callback_response  *****");
+	console.log("Worker: Message executed: ID '" + ID + "' Type:'" + eRequestTypeName[type] + "'");
 	console.log("Worker: Message executed: response");
 
 	let js_inaResponse = WASI_API.convertWAsmStr2JSStr(inaResponse);
@@ -47,7 +46,7 @@ function ina_callback_response(ID, action, inaResponse) {
 		console.error(e);
 		console.log(js_inaResponse);
 	}
-	postMessage([ID, js_action, js_inaResponse]);
+	postMessage([ID, type, js_inaResponse]);
 }
 
 onmessage = function(e) {
@@ -61,7 +60,7 @@ onmessage = function(e) {
 	var param = message[indexMsgParam];
 
 	console.log("******************************************");
-	console.log("Worker: Message received: ID '" + ID + "' Action:'" + action + "'");
+	console.log("Worker: Message received: ID '" + ID + "' Action:'" + eRequestTypeName[action] + "'");
 	console.log("Worker: Message received: param");
 	try {
 		console.log(JSON.parse(param));
@@ -71,7 +70,7 @@ onmessage = function(e) {
 
 	try {
 		switch(action){
-		case WorkerEvent.eLoad:
+		case eLoad:
 			if(isLoaded == true)
 				throw new Error("Worker: Already loaded");
 
@@ -116,19 +115,27 @@ onmessage = function(e) {
 			});
 */
 			return;
-		case WorkerEvent.eGetServerInfo:
+		case eGetServerInfo:
 			if(isLoaded == false)
 				throw new Error("Not loaded");
 
-			WASI_API.getModuleInstanceExports().void_getServerInfo_int32(ID);
+			WASI_API.getModuleInstanceExports().doIt(ID, eGetServerInfo, null);
+			
+
+			if(WASI_API.getModuleInstanceExports().asyncify_get_state) {
+				if(WASI_API.getModuleInstanceExports().asyncify_get_state()==1) {
+					WASI_API.getModuleInstanceExports().asyncify_stop_unwind();
+					WASI_API.wasabi_log('2 asyncify_stop_unwind(ed), state:'+WASI_API.getModuleInstanceExports().asyncify_get_state());
+				}
+			}
 			break;
-		case WorkerEvent.eGetResponse:
+		case eGetResponse:
 			if(isLoaded == false)
 				throw new Error("Not loaded");
 
 			var queryJS = message[indexMsgParam];
 			var queryWAsm = WASI_API.convertJSStr2WAsm(queryJS);
-			WASI_API.getModuleInstanceExports().void_getResponse_int32_json(ID, queryWAsm);
+			WASI_API.getModuleInstanceExports().doIt(ID, eGetResponse, queryWAsm);
 			WASI_API.getModuleInstanceExports().free(queryWAsm);
 			break;
 		default:
