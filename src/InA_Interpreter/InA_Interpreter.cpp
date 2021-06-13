@@ -11,6 +11,7 @@
 #include <calculator/cube.h>
 
 #include <calculator/storage.h>
+#include <cstdint>
 #include <query_generator/query_generator.h>
 
 #include <InA_grid/grid.h>
@@ -26,14 +27,19 @@
 #include <fstream>      // std::ifstream
 #include <sstream>
 #include <stdexcept>
+#include <stdint.h>
 #include <string>
 #include <vector>
 
 
 extern "C"
-const char* json_getServerInfo()
-{
-	//std::cout << "InA_Interpreter => json_getServerInfo call received" << std::endl;
+void ina_callback_response(int32_t ID, const char* action, const char* response);
+
+extern "C"
+void void_getServerInfo_int32(int32_t ID)
+{	
+	ScopeLog sc("void_getServerInfo_int32");
+
 	static std::string static_str_getserverinfo;
 	if(static_str_getserverinfo.empty() )
 	{
@@ -43,7 +49,8 @@ const char* json_getServerInfo()
 		else
 			throw std::runtime_error("Could not open file ./resources/response_getSerververInfo.json");
 	}
-	return static_str_getserverinfo.c_str();
+
+	ina_callback_response(ID, "GetServerInfo", static_str_getserverinfo.c_str());
 }
 
 void processQuery(JSONWriter& writer, const ina::query_model::Query& query);
@@ -51,9 +58,9 @@ void writeResponse(JSONWriter& writer, const ina::metadata::Cube* dsCube, const 
 std::shared_ptr<calculator::Cube> getDataCube(const ina::query_model::QueryEx& queryExec);
 
 extern "C"
-const char* json_getResponse_json(const char* InA)
+void void_getResponse_int32_json(int32_t ID, const char* InA)
 {
-	ScopeLog sc("json_getResponse_json");
+	ScopeLog sc("void_getResponse_int32_json");
 	JSONReader reader;
 	ina::query_model::Queries queries;
 	read(queries, reader.parse(InA));
@@ -81,7 +88,7 @@ const char* json_getResponse_json(const char* InA)
 	static std::string static_str;
 	static_str = osstream.str();
 	
-	return static_str.c_str();
+	ina_callback_response(ID, "GetResponse", static_str.c_str());
 }
 
 void processQuery(JSONWriter& writer, const ina::query_model::Query& query)
@@ -139,11 +146,13 @@ void writeResponse(JSONWriter& writer, const ina::metadata::Cube* dsCube, const 
 std::shared_ptr<calculator::DataStorage> getDataStorage(const ina::query_model::QueryEx& queryEx)
 {
 	ScopeLog sc("getDataStorage");
-	const auto& metadataCube = *queryEx.getDSCube();
-
 	std::shared_ptr<calculator::DataStorage> data(new calculator::DataStorage());
+
+	const auto& metadataCube = *queryEx.getDSCube();
 	if(!metadataCube.getDataSource().isCatalogBrowsing())
 	{
+		const std::string& packageName = metadataCube.getDataSource().getPackageName();
+		
 		const query_generator::query_generator& queryGen = query_generator::query_generator(queryEx);
 
 		queryGen.prepareStorage(data);
@@ -151,13 +160,13 @@ std::shared_ptr<calculator::DataStorage> getDataStorage(const ina::query_model::
 		{
 			data->insertRow(row);
 		};
-		const std::string& cnxString = metadataCube.getDataSource().getPackageName();
 		const std::string sql = queryGen.getSQL();
 		Logger::log("SQL: ", sql);
-		dbproxy::DBProxy::getDBProxy(cnxString)->executeSQL(sql, &lambda);
+		dbproxy::DBProxy::getDBProxy(packageName)->executeSQL(sql, &lambda);
 	}
 	else
 	{
+        const std::string& cnxString = queryEx.getDSCube()->getDataSource().getPackageName();
 		for(const auto& dim : metadataCube.getDimensions())
 		{
 			for(const auto& attribut : dim->getAttributes())
@@ -166,14 +175,28 @@ std::shared_ptr<calculator::DataStorage> getDataStorage(const ina::query_model::
 			}
 		}
 		using namespace dbproxy;
-		wasabi::metadata::Catalog catalog("local:sqlite:efashion_lite");
-
-		for(const auto& tableName : catalog.getTableNames())
 		{
-			const auto& table = catalog.getTable(tableName);
-			
-			dbproxy::Row row1 = {Value("Query"), Value("???"), Value(tableName.c_str()), Value(tableName.c_str()), Value("local:sqlite:efashion_lite")};
-			data->insertRow(row1);
+			std::string packageName = "local:sqlite:efashion_lite";
+			wasabi::metadata::Catalog catalog(packageName);
+			for(const auto& tableName : catalog.getTableNames())
+			{
+				const auto& table = catalog.getTable(tableName);
+				
+				dbproxy::Row row1 = {Value("Query"), Value(tableName.c_str()), Value(tableName.c_str()), Value(""), Value(packageName.c_str())};
+				data->insertRow(row1);
+			}
+		}
+		if(false)
+		{
+			std::string packageName = "local:sqlite:chinook";
+			wasabi::metadata::Catalog catalog(packageName);
+			for(const auto& tableName : catalog.getTableNames())
+			{
+				const auto& table = catalog.getTable(tableName);
+				
+				dbproxy::Row row1 = {Value("Query"), Value(tableName.c_str()), Value(tableName.c_str()), Value(""), Value(packageName.c_str())};
+				data->insertRow(row1);
+			}
 		}
 	}
 

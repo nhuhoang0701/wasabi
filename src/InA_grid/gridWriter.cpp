@@ -171,18 +171,21 @@ namespace ina::grid
                             JSON_LIST(writer);
                             {
                                 const auto& members = axis.getMeasureDimMembers();
-                                const size_t memberDiv = members.size()==0?1:members.size();
+                                const size_t memberDiv = members.empty()?1:members.size();
                                 //std::cout << "member.size(): " << members.size() << "\n";
                                 for (size_t tupleIndex = axis.getFrom(); tupleIndex < axis.getTo(); tupleIndex++)
                                 {
                                     uint32_t idx = -1;
                                     if(dimension == axis.getMeasureDimension() )
+                                    {
                                         idx = (tupleIndex%memberDiv);
+                                    }
                                     else
+                                    {
                                         //TODO: dimension->getAttributes().at(0)? Certainly the Key Attributes
                                         // if yes so we should also use ina metadata Dimension here
                                         idx = static_cast<uint32_t>(axis.getCubeAxis().getValueIndex(dimension->getAttributes().at(0).getName(), tupleIndex/memberDiv));
-
+                                    }
                                     writer.value(idx);
                                 }
                             }
