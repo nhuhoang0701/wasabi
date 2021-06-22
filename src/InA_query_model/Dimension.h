@@ -19,7 +19,7 @@ namespace ina::query_model
 	class Dimension
 	{
 		public:
-			enum class eAxe {Uninit=0, Rows, Columns};
+			enum class eAxe {Uninit=0, None, Rows, Columns};
 
 			Dimension() = default;
 

@@ -13,6 +13,8 @@ namespace ina::query_model
 			dim._axe = Dimension::eAxe::Rows;
 		else if(axisName=="Columns")
 			dim._axe = Dimension::eAxe::Columns;
+		else if(axisName=="None")
+			dim._axe = Dimension::eAxe::None;
 		else
 			throw std::runtime_error("Unkown InA Axis: " + axisName);
 
