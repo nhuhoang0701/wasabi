@@ -71,9 +71,9 @@ let WASI_API = {
     },
     start : start = function () {
         if(getModuleInstanceExports().asyncify_get_state)
-            wasabi_log('start, asyncify_get_state:'+getModuleInstanceExports().asyncify_get_state());
+            log('start, asyncify_get_state:'+getModuleInstanceExports().asyncify_get_state());
         else 
-            wasabi_log('wasm module not asyncified');
+            log('wasm module not asyncified');
 
         if(getModuleInstanceExports()._initialize)
             getModuleInstanceExports()._initialize();
@@ -85,15 +85,32 @@ let WASI_API = {
         if(getModuleInstanceExports().asyncify_get_state) {
             if(getModuleInstanceExports().asyncify_get_state()==1) {
                 getModuleInstanceExports().asyncify_stop_unwind();
-                wasabi_log('2 asyncify_stop_unwind(ed), state:'+getModuleInstanceExports().asyncify_get_state());
+                log('2 asyncify_stop_unwind(ed), state:'+getModuleInstanceExports().asyncify_get_state());
             }
         } else {
             wasabi_log('wasm module not asyncified');
         }
     },
+
+    doIt : doIt = function(ID, type, query) {
+        try {
+            var queryWAsm = convertJSStr2WAsm(query);
+            getModuleInstanceExports().doIt(ID, type, queryWAsm);
+            if(getModuleInstanceExports().asyncify_get_state) {
+                if(getModuleInstanceExports().asyncify_get_state()==1) {
+                    getModuleInstanceExports().asyncify_stop_unwind();
+                    log('2 asyncify_stop_unwind(ed), state:'+getModuleInstanceExports().asyncify_get_state());
+                }
+            }
+        } finally {
+            getModuleInstanceExports().free(queryWAsm);
+        }
+    },
+
     getModuleInstanceExports : getModuleInstanceExports =function () {
         return moduleWasm.instance.exports;
     },
+
     // Memory
     updatedMemoryView : updatedMemoryView = function() {
         moduleMemoryView = new DataView(getModuleInstanceExports().memory.buffer);
@@ -103,16 +120,24 @@ let WASI_API = {
         return moduleMemoryView;
     },
     malloc : malloc = function (size) {
+        if(!getModuleInstanceExports().malloc)
+            throw Error("malloc not exported fomr the WAsm module");
+
         let ptr = getModuleInstanceExports().malloc(size);
         moduleMemoryView = new DataView(getModuleInstanceExports().memory.buffer);
         return ptr;
     },
     free : free = function (ptr) {
+        if(!getModuleInstanceExports().free)
+        throw Error("free not exported fomr the WAsm module");
+
         getModuleInstanceExports().free(ptr);
         moduleMemoryView = new DataView(getModuleInstanceExports().memory.buffer);
     },
     convertJSStr2WAsm : convertJSStr2WAsm =function(js_str)
     {
+        if(js_str==null)
+            return null;
         let uint8array = new TextEncoder("utf-8").encode(js_str);
         let size = uint8array.length;
 
@@ -163,7 +188,7 @@ let WASI_API = {
             if(virtualPath.substring(0, 1) == "/")
                 virtualPath = virtualPath.substring(1);
             fs_Path2Data.set(virtualPath, uint8View);
-            wasabi_log("WASI FileSystem: [" +WASASBI_SERVER_ROOT_PATH + "," + virtualPath + "] loaded from '" + path + "' (" + uint8View.length + " bytes)");
+            log("WASI FileSystem: [" +WASASBI_SERVER_ROOT_PATH + "," + virtualPath + "] loaded from '" + path + "' (" + uint8View.length + " bytes)");
         }
     },
     wasabi_getFileEntry : wasabi_getFileEntry = function(fd) {
@@ -304,8 +329,8 @@ let WASI_API = {
                     memoryView().setUint32(DATA_ADDR+4, memoryStackSize, true);
                     try {
                         getModuleInstanceExports().asyncify_start_unwind(DATA_ADDR);
-                        wasabi_log('1 asyncify_start_unwind(ed), state:'+getModuleInstanceExports().asyncify_get_state());
-                        wasabi_log('fetch start');
+                        log('1 asyncify_start_unwind(ed), state:'+getModuleInstanceExports().asyncify_get_state());
+                        log('fetch start');
                         fetch(virtualPath)
                         .then(
                             function(response) {
@@ -319,14 +344,14 @@ let WASI_API = {
                                 if(virtualPath.substring(0, 1) == "/")
                                     virtualPath = virtualPath.substring(1);
                                 WASI_API.fs_Path2Data.set(virtualPath, uint8View);
-                                wasabi_log('fetch ended');
+                                log('fetch ended');
                                 this.getModuleInstanceExports().asyncify_start_rewind(DATA_ADDR);
-                                wasabi_log('3 asyncify_start_rewind(ed), state:'+getModuleInstanceExports().asyncify_get_state());
+                                log('3 asyncify_start_rewind(ed), state:'+getModuleInstanceExports().asyncify_get_state());
                                 // The code is now ready to rewind; to start the process, enter the
                                 // first function that should be on the call stack.
-                                if(WASI_API.getModuleInstanceExports().doIt)
-                                    WASI_API.getModuleInstanceExports().doIt(-1, -1, null);
-                                else
+                                if(WASI_API.doIt) {
+                                    WASI_API.doIt(-1, -1, null);
+                                } else
                                     start();
                                 });
                             }
@@ -351,7 +376,7 @@ let WASI_API = {
         if(getModuleInstanceExports().asyncify_get_state && getModuleInstanceExports().asyncify_get_state() == 2) {
             // We are called as part of a resume/rewind. Stop sleeping.
             getModuleInstanceExports().asyncify_stop_rewind();
-            wasabi_log('4 asyncify_stop_rewind(ed), state:'+getModuleInstanceExports().asyncify_get_state());
+            log('4 asyncify_stop_rewind(ed), state:'+getModuleInstanceExports().asyncify_get_state());
         }
 
         let offset = BigInt(0);
