@@ -171,6 +171,7 @@ std::shared_ptr<calculator::DataStorage> getDataStorage(const ina::query_model::
 	ScopeLog sc("getDataStorage");
 	std::shared_ptr<calculator::DataStorage> data(new calculator::DataStorage());
 
+	const std::string catalogType = "Query";
 	const auto& metadataCube = *queryEx.getDSCube();
 	if(!metadataCube.getDataSource().isCatalogBrowsing())
 	{
@@ -205,7 +206,7 @@ std::shared_ptr<calculator::DataStorage> getDataStorage(const ina::query_model::
 			{
 				const auto& table = catalog.getTable(tableName);
 				
-				dbproxy::Row row1 = {Value("View"), Value(tableName.c_str()), Value(tableName.c_str()), Value(""), Value(packageName.c_str())};
+				dbproxy::Row row1 = {Value(catalogType.c_str()), Value(tableName.c_str()), Value(tableName.c_str()), Value(""), Value(packageName.c_str())};
 				data->insertRow(row1);
 			}
 		}
@@ -217,7 +218,7 @@ std::shared_ptr<calculator::DataStorage> getDataStorage(const ina::query_model::
 			{
 				const auto& table = catalog.getTable(tableName);
 				
-				dbproxy::Row row1 = {Value("View"), Value(tableName.c_str()), Value(tableName.c_str()), Value(""), Value(packageName.c_str())};
+				dbproxy::Row row1 = {Value(catalogType.c_str()), Value(tableName.c_str()), Value(tableName.c_str()), Value(""), Value(packageName.c_str())};
 				data->insertRow(row1);
 			}
 		}
@@ -246,6 +247,8 @@ std::shared_ptr<calculator::Cube> getDataCube(const ina::query_model::QueryEx& q
 				axe = calculator::eAxe::Row;
 			else if (dimension.getAxe() == ina::query_model::Dimension::eAxe::Columns)
 				axe = calculator::eAxe::Column;
+			else if (dimension.getAxe() == ina::query_model::Dimension::eAxe::None)
+				continue;
 			else throw std::runtime_error("Unknow axis type");
 			
 			for(const auto& attribut : dimension.getAttributes())

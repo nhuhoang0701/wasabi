@@ -1,7 +1,7 @@
 
 #pragma once
 
-#define WASABI_LOG
+//#define WASABI_LOG
 //#define WASABI_DEBUG
 #define WASABI_ERROR
 
@@ -40,7 +40,12 @@
 
 #include <iostream>
 
-
+/*
+#include "json/jsonWriter.h"
+#include <memory>
+static std::stringstream sstr;
+static std::unique_ptr<JSONWriter> logwriter;
+*/
 
 static size_t depth_log = 0;
 inline std::ostream& indent(std::ostream& out)
