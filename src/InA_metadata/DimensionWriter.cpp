@@ -5,6 +5,7 @@
 
 namespace ina::metadata
 {
+	static void writeAttributeHierarchy(JSONWriter& writer, const Dimension& dim);
 	static void writeAttributes(JSONWriter& writer, const Dimension& dim);
 	static void writeMembers(JSONWriter& writer, const Dimension& dim);
 
@@ -19,6 +20,7 @@ namespace ina::metadata
 		writer.pair("Description", dim.getDescription());
 		writer.pair("DimensionType", static_cast<std::uint32_t>(dim.getDimensionType()));
 
+		writeAttributeHierarchy(writer, dim);
 		writeAttributes(writer, dim);
 
 		writer.pair("NumberOfHierarchies", 0u);
@@ -93,6 +95,20 @@ namespace ina::metadata
 				write(member, writer);
 			}
 		}
+	}
+
+	void writeAttributeHierarchy(JSONWriter& writer, const Dimension& dim)
+	{
+		writer.key("AttributeHierarchy");
+		{
+			JSON_MAP(writer);
+			writer.pair("Name", dim.getName());
+			writer.pair("Description", dim.getDescription());
+			writer.pair("DefaultKeyAttribute", dim.getKeyAttribute().getName());
+			if(dim.haveTextAttribute())
+				writer.pair("DefaultTextAttribute", dim.getTextAttribute().getName());
+		}
+
 	}
 
 	void writeAttributes(JSONWriter & writer, const Dimension & dim)

@@ -11,8 +11,13 @@ project(
   VERSION 1.0
   LANGUAGES CXX)
 
+if ("${WASABI_PLATFORM_TARGET}" STREQUAL "wasm")
 add_library(exceptions cxa_exception.cpp)
+else ()
+add_library(exceptions cxa_exception_empty.cpp)
+endif()
 
 install(TARGETS exceptions DESTINATION lib)
+#target_link_options( exceptions PUBLIC LINKER:--export=enableThrowJSException,--allow-undefined-file=${WASABI_ROOT_DIR}/src/exceptions/js_fcts.syms)
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)

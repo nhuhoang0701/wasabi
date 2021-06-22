@@ -4,12 +4,12 @@ echo
 echo -----------------------------------
 echo --------- set variables -----------
 export WASABI_PLATFORM_TARGET=${WASABI_PLATFORM_TARGET:-wasm}
-echo -e "WASABI_PLATFORM_TARGET{wasm|linux}: " "\t'"$WASABI_PLATFORM_TARGET"'";
+echo -e "WASABI_PLATFORM_TARGET=wasm|linux: " "\t'"$WASABI_PLATFORM_TARGET"'";
 export WASABI_LLVM=${WASABI_LLVM:-external}
-echo -e "WASABI_LLVM{compiled|external|git|local}: " "'"$WASABI_LLVM"'";
+echo -e "WASABI_LLVM=compiled|external|git|loca}: " "'"$WASABI_LLVM"'";
 
 export WASABI_BUILD_TYPE=${WASABI_BUILD_TYPE:-Debug}
-echo -e "WASABI_BUILD_TYPE{Debug|Release}: " "\t'"$WASABI_BUILD_TYPE"'";
+echo -e "WASABI_BUILD_TYPE=Debug|Release|RelWithDebInfo: " "\t'"$WASABI_BUILD_TYPE"'";
 
 export WASABI_ROOT_DIR=${WASABI_ROOT_DIR:-$(pwd)}
 echo -e "WASABI_ROOT_DIR: " "\t'"$WASABI_ROOT_DIR"'";
@@ -84,19 +84,25 @@ alias setenv='unset WASABI_ROOT_DIR && source ./scripts/set_env.sh'
 alias run_server='python3 -m http.server 8080 -d $WASABI_INSTAL_DIR'
 alias clean='$CMAKE --build $WASABI_BUILD_DIR_NAME --target clean'
 alias compile='$CMAKE --build $WASABI_BUILD_DIR_NAME'
-alias test='(cd "$WASABI_BUILD_DIR_NAME" && $CTEST -j8 -T test --output-on-failure)'
+alias test='(cd "$WASABI_BUILD_DIR_NAME" && $CTEST -V)'
+alias test_none_reg='(cd "$WASABI_BUILD_DIR_NAME" && $CTEST -j8 -T test --output-on-failure)'
 alias install='$CMAKE --build $WASABI_BUILD_DIR_NAME --target install'
-alias build='$CMAKE -B $WASABI_BUILD_DIR_NAME . -G Ninja -DCMAKE_BUILD_TYPE=$WASABI_BUILD_TYPE -DCMAKE_MAKE_PROGRAM=$NINJA -DCMAKE_INSTALL_PREFIX:PATH=$WASABI_INSTAL_DIR && install && test'
+alias build='$CMAKE -B $WASABI_BUILD_DIR_NAME . -G Ninja -DCMAKE_BUILD_TYPE=$WASABI_BUILD_TYPE -DCMAKE_MAKE_PROGRAM=$NINJA -DCMAKE_INSTALL_PREFIX:PATH=$WASABI_INSTAL_DIR && install && test_none_reg'
 alias rebuild='rm -rf $WASABI_BUILD_DIR_NAME && mkdir -p $WASABI_BUILD_DIR_NAME && build'
 
-alias asyncify='($WASABI_EXTERNAL_DIR/binaryen/install/bin/wasm-opt --asyncify $WASABI_INSTAL_DIR/bin/C_read.wasm -o $WASABI_INSTAL_DIR/bin/C_read.wasm)'
+export METHOD_ASYNC=doIt,processQuery*,getResponse*,ina::metadata::Cube::Cube*,wasabi::metadata::Catalog::Catalog*,dbproxy::DBProxy::getDBProxy*,dbproxy::DBSQLite::DBSQLite*,sqlite3_open_v2,openDatabase*,sqlite3BtreeOpen*,sqlite3PagerOpen*,sqlite3OsOpen*,demoOpen,open*,__wasilibc_openat_nomode
+alias asyncify='($WASABI_EXTERNAL_DIR/binaryen/install/bin/wasm-opt -Oz --pass-arg=asyncify-addlist@$METHOD_ASYNC --pass-arg=asyncify-imports@wasi_snapshot_preview1.path_open --asyncify $WASABI_INSTAL_DIR/InA_Interpreter.wasm -o $WASABI_INSTAL_DIR/InA_Interpreter.wasm )'
+alias asyncify_test='($WASABI_EXTERNAL_DIR/binaryen/install/bin/wasm-opt --pass-arg=asyncify-ignore-indirect --pass-arg=asyncify-imports@wasi_snapshot_preview1.path_open --asyncify $WASABI_INSTAL_DIR/bin/C_read.wasm -o $WASABI_INSTAL_DIR/bin/C_read.wasm)'
+
 alias wasmopt='(export LD_LIBRARY_PATH=$WASABI_EXTERNAL_DIR/binaryen/install/lib && $WASABI_EXTERNAL_DIR/binaryen/install/bin/wasm-opt $WASABI_INSTAL_DIR/InA_Interpreter.wasm -Oz -o $WASABI_INSTAL_DIR/InA_Interpreter.wasm && chmod 777 $WASABI_INSTAL_DIR/InA_Interpreter.wasm)'
-alias export2nexus='(mvn -e -f $WASABI_ROOT_DIR/nexus/pom.xml clean deploy)'
+alias exportwasm2nexus='(mvn -e -f $WASABI_ROOT_DIR/nexus/wasm/pom.xml clean deploy)'
+alias exportlinux2nexus='(mvn -e -f $WASABI_ROOT_DIR/nexus/native/pom.xml clean deploy)'
+
 alias export2firefly='(
-scp $WASABI_INSTAL_DIR/InA_Interpreter.wasm ccloud@10.47.240.98:/srv/tomcat/webapps/sap/resources/sap/zen/commons/thirdparty/wasabi 
-scp $WASABI_INSTAL_DIR/Microcube_worker.js  ccloud@10.47.240.98:/srv/tomcat/webapps/sap/resources/sap/zen/commons/thirdparty/wasabi 
-scp $WASABI_INSTAL_DIR/resources/response_getSerververInfo.json  ccloud@10.47.240.98:/srv/tomcat/webapps/sap/resources/sap/zen/commons/thirdparty/wasabi/resources 
-scp $WASABI_INSTAL_DIR/resources/sqlite/efashion_lite/efashion_lite.db  ccloud@10.47.240.98:/srv/tomcat/webapps/sap/resources/sap/zen/commons/thirdparty/wasabi/resources/sqlite/efashion_lite/efashion_lite.db 
+scp $WASABI_INSTAL_DIR/InA_Interpreter.wasm ccloud@10.47.240.98:/srv/tomcat/webapps/ROOT/wasabi/resources/sap/zen/commons/thirdparty/wasabi/InA_Interpreter.wasm
+scp $WASABI_INSTAL_DIR/Microcube_worker.js  ccloud@10.47.240.98:/srv/tomcat/webapps/ROOT/wasabi/resources/sap/zen/commons/thirdparty/wasabi/Microcube_worker.js
+scp $WASABI_INSTAL_DIR/resources/response_getSerververInfo.json  ccloud@10.47.240.98:/srv/tomcat/webapps/ROOT/wasabi/resources/sap/zen/commons/thirdparty/wasabi/resources/response_getSerververInfo.json
+scp $WASABI_INSTAL_DIR/resources/sqlite/efashion_lite/efashion_lite.db  ccloud@10.47.240.98:/srv/tomcat/webapps/ROOT/wasabi/resources/sap/zen/commons/thirdparty/wasabi/resources/sqlite/efashion_lite/efashion_lite.db 
 )'
 
 echo

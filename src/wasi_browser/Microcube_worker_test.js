@@ -21,13 +21,22 @@ function _startWorkerTest() {
 		
 		if(response_value.stack && response_value.message)
 		{ 
-			console.error("Worker_test.onmessage, ID_msg:'" + response_ID + "' message:" + response_value.message);
+			WASI_API.wasabi_error("Worker_test ERROR: ID_msg:'" + response_ID + "' message:" + response_value.message);
 		}
 		else
-		{
+		{		
+			try {
+				response_value = JSON.parse(response_value);
+			} catch(e) {
+				WASI_API.wasabi_error(e);
+			}
+			if(response_value.HasErrors )
+			{ 
+				WASI_API.wasabi_error("Worker_test ERROR: ID_msg:'" + response_ID + "' message:" + response_value.Messages[0].Text);
+			}
 			if(response_ID == 0 && response_Action==eLoad)
 			{
-				worker.postMessage([ID_msg++, eGetServerInfo, ""]);
+				worker.postMessage([ID_msg++, eGetServerInfo, null]);
 			}
 			else if(response_ID == 1 && response_Action==eGetServerInfo)
 			{

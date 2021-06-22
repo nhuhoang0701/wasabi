@@ -119,24 +119,14 @@ onmessage = function(e) {
 			if(isLoaded == false)
 				throw new Error("Not loaded");
 
-			WASI_API.getModuleInstanceExports().doIt(ID, eGetServerInfo, null);
-			
-
-			if(WASI_API.getModuleInstanceExports().asyncify_get_state) {
-				if(WASI_API.getModuleInstanceExports().asyncify_get_state()==1) {
-					WASI_API.getModuleInstanceExports().asyncify_stop_unwind();
-					WASI_API.wasabi_log('2 asyncify_stop_unwind(ed), state:'+WASI_API.getModuleInstanceExports().asyncify_get_state());
-				}
-			}
+			WASI_API.doIt(ID, eGetServerInfo, null);
 			break;
 		case eGetResponse:
 			if(isLoaded == false)
 				throw new Error("Not loaded");
 
 			var queryJS = message[indexMsgParam];
-			var queryWAsm = WASI_API.convertJSStr2WAsm(queryJS);
-			WASI_API.getModuleInstanceExports().doIt(ID, eGetResponse, queryWAsm);
-			WASI_API.getModuleInstanceExports().free(queryWAsm);
+			WASI_API.doIt(ID, eGetResponse, queryJS);
 			break;
 		default:
 			throw  new Error('Unknow action:' + action);
