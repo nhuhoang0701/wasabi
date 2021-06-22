@@ -102,6 +102,14 @@ namespace ina::metadata
 		writer.key("AttributeHierarchy");
 		{
 			JSON_MAP(writer);
+			writer.key("AttributeNames");
+			{
+				JSON_LIST(writer);
+				for(const auto& attr : dim.getAttributes())
+				{
+					writer.value(attr.getName());
+				}
+			}
 			writer.pair("Name", dim.getName());
 			writer.pair("Description", dim.getDescription());
 			writer.pair("DefaultKeyAttribute", dim.getKeyAttribute().getName());
