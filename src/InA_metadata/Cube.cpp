@@ -23,23 +23,23 @@ namespace ina::metadata
         {
             {
                 std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("Type", "Type");
-                dim->addKeyAttribute(Attribute(*dim, "Type.KEY", "", eAttrType::Key, common::eDataType::String));
+                dim->addKeyAttribute(Attribute(*dim, "KeyType", "", eAttrType::Key, common::eDataType::String));
                 m_dimensions.push_back(std::move(dim));
             }
             {
                 std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("SchemaName", "SchemaName");
-                dim->addKeyAttribute(Attribute(*dim, "SchemaName.KEY", "", eAttrType::Key, common::eDataType::String));
+                dim->addKeyAttribute(Attribute(*dim, "KeySchemaName", "", eAttrType::Key, common::eDataType::String));
                 m_dimensions.push_back(std::move(dim));
             }
             {
                 std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("ObjectName", "ObjectName");
-                dim->addKeyAttribute(Attribute(*dim, "ObjectName.KEY", "", eAttrType::Key, common::eDataType::String));
-                dim->addTextAttribute(Attribute(*dim, "ObjectName.LONG_TEXT", "", eAttrType::Text, common::eDataType::String));
+                dim->addKeyAttribute(Attribute(*dim, "KeyObjectName", "", eAttrType::Key, common::eDataType::String));
+                //dim->addTextAttribute(Attribute(*dim, "ObjectName.LONG_TEXT", "", eAttrType::Text, common::eDataType::String));
                 m_dimensions.push_back(std::move(dim));
             }
             {
                 std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("PackageName", "PackageName");
-                dim->addKeyAttribute(Attribute(*dim, "PackageName.KEY", "", eAttrType::Key, common::eDataType::String));
+                dim->addKeyAttribute(Attribute(*dim, "KeyPackageName", "", eAttrType::Key, common::eDataType::String));
                 m_dimensions.push_back(std::move(dim));
             }
         }

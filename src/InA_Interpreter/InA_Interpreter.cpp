@@ -200,13 +200,13 @@ std::shared_ptr<calculator::DataStorage> getDataStorage(const ina::query_model::
 		}
 		using namespace dbproxy;
 		{
-			std::string packageName = "local:sqlite:efashion_lite";
+			std::string packageName = "local:sqlite:efashion";
 			wasabi::metadata::Catalog catalog(packageName);
 			for(const auto& tableName : catalog.getTableNames())
 			{
 				const auto& table = catalog.getTable(tableName);
 				
-				dbproxy::Row row1 = {Value(catalogType.c_str()), Value(tableName.c_str()), Value(tableName.c_str()), Value(""), Value(packageName.c_str())};
+				dbproxy::Row row1 = {Value(catalogType.c_str()), Value(tableName.c_str()), Value(tableName.c_str()), Value(packageName.c_str())};
 				data->insertRow(row1);
 			}
 		}
@@ -218,7 +218,7 @@ std::shared_ptr<calculator::DataStorage> getDataStorage(const ina::query_model::
 			{
 				const auto& table = catalog.getTable(tableName);
 				
-				dbproxy::Row row1 = {Value(catalogType.c_str()), Value(tableName.c_str()), Value(tableName.c_str()), Value(""), Value(packageName.c_str())};
+				dbproxy::Row row1 = {Value(catalogType.c_str()), Value(tableName.c_str()), Value(tableName.c_str()), Value(packageName.c_str())};
 				data->insertRow(row1);
 			}
 		}
