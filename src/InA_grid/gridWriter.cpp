@@ -85,6 +85,7 @@ namespace ina::grid
                     {
                         JSON_MAP(writer);
                         writer.pair("Name", attribut.getName());
+                        //TODO: writer.pair("IsKey", attribut.isKey());
                        /**/
                         bool isKey = idxAttr==0; // TODO: Remove it use isKey from ina::metadata::Attribut
                         idxAttr++;

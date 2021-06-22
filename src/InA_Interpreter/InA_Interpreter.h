@@ -43,9 +43,9 @@ extern "C" void doIt(int32_t ID, eRequestType type, const char* inaRequest);
 /**
  * @name ina_callback_response , callback which provide the result of doIt function
  *
- * @param ID Identifier the request (will be propagated to the ina_callback_response)
- * @param type Type of the request (will be propagated to the ina_callback_response)
- * @param inaRequest The request , nullptr for GetServerInfo
+ * @param ID Identifier the request (this value is the value of the type parameter pass to @doIt)
+ * @param type Type of the request (this value is the value of the type parameter pass to @doIt)
+ * @param inaResponse The response of the request
  *
  */
 extern "C" void ina_callback_response(int32_t ID, eRequestType type, const char* inaResponse);

@@ -69,12 +69,14 @@ namespace ina::metadata
                         {
                             std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[Year]", "Year", eAxe::Rows);
                             dim->addKeyAttribute(Attribute(*dim, colName, "Year", eAttrType::Key, column.getDataType()));
+ //                           dim->addTextAttribute(Attribute(*dim, colName, "Year.text", eAttrType::Text, column.getDataType()));
                             m_dimensions.push_back(std::move(dim));
                         }
                         else if(colName=="Qtr")
                         {
                             std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[Quarter]", "Quarter");
                             dim->addKeyAttribute(Attribute(*dim, colName, "Quarter", eAttrType::Key, column.getDataType()));
+//                            dim->addTextAttribute(Attribute(*dim, colName, "Quarter.text", eAttrType::Text, column.getDataType()));
                             m_dimensions.push_back(std::move(dim));
                         }
                         else if(colName=="Mth")
@@ -103,18 +105,21 @@ namespace ina::metadata
                         {
                             std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[Week]", "Week");
                             dim->addKeyAttribute(Attribute(*dim, colName, "Week", eAttrType::Key, column.getDataType()));
+//                            dim->addTextAttribute(Attribute(*dim, colName, "Week.key", eAttrType::Text, column.getDataType()));
                             m_dimensions.push_back(std::move(dim));
                         }
                         else if(colName=="City")
                         {
                             std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[City]", "City");
                             dim->addKeyAttribute(Attribute(*dim, colName, "City", eAttrType::Key, column.getDataType()));
+//                            dim->addTextAttribute(Attribute(*dim, colName, "City.text", eAttrType::Text, column.getDataType()));
                             m_dimensions.push_back(std::move(dim));
                         }
                         else if(colName=="Store_name")
                         {
                             std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[Store_name]", "Store name");
-                            dim->addKeyAttribute(Attribute(*dim, colName, "Store name", eAttrType::Key, column.getDataType()));
+                            dim->addKeyAttribute(Attribute(*dim, colName, "Store_name", eAttrType::Key, column.getDataType()));
+//                            dim->addTextAttribute(Attribute(*dim, colName, "Store name.key", eAttrType::Text, column.getDataType()));
                             m_dimensions.push_back(std::move(dim));
                         }
                         else if(colName=="Sales_revenue")
@@ -144,30 +149,35 @@ namespace ina::metadata
                         {
                             std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[Year]", "Year");
                             dim->addKeyAttribute(Attribute(*dim, colName, "Year", eAttrType::Key, column.getDataType()));
+//                            dim->addKeyAttribute(Attribute(*dim, colName, "Year.text", eAttrType::Text, column.getDataType()));
                             m_dimensions.push_back(std::move(dim));
                         }
                         else if(colName=="Qtr")
                         {
                             std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[Quarter]", "Quarter");
                             dim->addKeyAttribute(Attribute(*dim, colName, "Quarter", eAttrType::Key, column.getDataType()));
+//                            dim->addKeyAttribute(Attribute(*dim, colName, "Quarter.text", eAttrType::Text, column.getDataType()));
                             m_dimensions.push_back(std::move(dim));
                         }
                         else if(colName=="State")
                         {
                             std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[State]", "State", eAxe::Rows);
                             dim->addKeyAttribute(Attribute(*dim, colName, "State", eAttrType::Key, column.getDataType()));
+//                            dim->addKeyAttribute(Attribute(*dim, colName, "State.text", eAttrType::Text, column.getDataType()));
                             m_dimensions.push_back(std::move(dim));
                         }
                         else if(colName=="Line")
                         {
                             std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[Line]", "Line");
                             dim->addKeyAttribute(Attribute(*dim, colName, "Line", eAttrType::Key, column.getDataType()));
+//                            dim->addKeyAttribute(Attribute(*dim, colName, "Line.text", eAttrType::Text, column.getDataType()));
                             m_dimensions.push_back(std::move(dim));
                         }
                         else if(colName=="Category")
                         {
                             std::unique_ptr<Dimension> dim = std::make_unique<Dimension>("[Category]", "Category", eAxe::Columns);
                             dim->addKeyAttribute(Attribute(*dim, colName, "Category", eAttrType::Key, column.getDataType()));
+//                            dim->addKeyAttribute(Attribute(*dim, colName, "Category.text", eAttrType::Text, column.getDataType()));
                             m_dimensions.push_back(std::move(dim));
                         }
                         else if(colName=="Sales_revenue")
