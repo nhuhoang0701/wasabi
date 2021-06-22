@@ -11,6 +11,7 @@ namespace ina::metadata
         {
         case eAxe::Uninit : throw std::runtime_error("eAxe value not init.");
         case eAxe::Free : return "Free";
+        case eAxe::None : return "None";
         case eAxe::Rows :return "Rows";
         case eAxe::Columns : return "Columns";
         default:
