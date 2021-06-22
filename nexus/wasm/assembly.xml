@@ -7,6 +7,8 @@
     <format>zip</format>
   </formats>
   <fileSets>
+  
+    <!--  Release binaries -->
     <fileSet>
       <directory>${project.basedir}/../../install/wasm/Release/.</directory>
 	    <outputDirectory>..</outputDirectory>
@@ -15,6 +17,8 @@
          <include>InA_Interpreter.wasm</include>
          <include>resources/response_getSerververInfo.json</include>
          <include>resources/sqlite/efashion_lite/efashion_lite.db</include>
+         <include>resources/sqlite/chinook/chinook.db</include>
+         <include>resources/sqlite/efashion/efashion.db</include>
       </includes>
       <useDefaultExcludes>false</useDefaultExcludes>
     </fileSet>

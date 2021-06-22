@@ -205,7 +205,7 @@ std::shared_ptr<calculator::DataStorage> getDataStorage(const ina::query_model::
 			{
 				const auto& table = catalog.getTable(tableName);
 				
-				dbproxy::Row row1 = {Value("Query"), Value(tableName.c_str()), Value(tableName.c_str()), Value(""), Value(packageName.c_str())};
+				dbproxy::Row row1 = {Value("View"), Value(tableName.c_str()), Value(tableName.c_str()), Value(""), Value(packageName.c_str())};
 				data->insertRow(row1);
 			}
 		}
@@ -217,7 +217,7 @@ std::shared_ptr<calculator::DataStorage> getDataStorage(const ina::query_model::
 			{
 				const auto& table = catalog.getTable(tableName);
 				
-				dbproxy::Row row1 = {Value("Query"), Value(tableName.c_str()), Value(tableName.c_str()), Value(""), Value(packageName.c_str())};
+				dbproxy::Row row1 = {Value("View"), Value(tableName.c_str()), Value(tableName.c_str()), Value(""), Value(packageName.c_str())};
 				data->insertRow(row1);
 			}
 		}
