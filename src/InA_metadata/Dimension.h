@@ -16,7 +16,7 @@ namespace ina::metadata
 
 	void write(const Dimension& obj, JSONWriter& jsonNode);
 
-	enum class eAxe {Uninit=0, Free, Rows, Columns};
+	enum class eAxe {Uninit=0, Free, None, Rows, Columns};
 	std::string_view toString(eAxe);
 
 	enum class eDimType {Uninit=0, MeasuresDimension = 2, Dimension = 3};
