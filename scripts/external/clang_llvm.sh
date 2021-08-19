@@ -1,4 +1,4 @@
-echo 
+echo
 echo
 echo -----------------------------------
 echo ---------- install clang ----------
@@ -50,8 +50,8 @@ then
 	then
 		echo "    - download clang '$LLVM_VERSION'"
 		rm -rf $LLVM_DIR
-		rm -rf $WASABI_EXTERNAL_DIR/$LLVMFile
-		wget -qO - https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVM_VERSION/$LLVMFile.tar.xz | tar xfJ - -C $WASABI_EXTERNAL_DIR/
+		rm -rf $WASABI_EXTERNAL_DIR/$LLVM_COMPRESSED_FILE
+		wget -qO - https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVM_VERSION/$LLVM_COMPRESSED_FILE.tar.xz | tar xfJ - -C $WASABI_EXTERNAL_DIR/
 	elif [ "$WASABI_LLVM" = "git" ]
 	then
 		echo "    - extract clang '$LLVM_VERSION' from git"
@@ -66,15 +66,28 @@ then
 else
 	echo "    - already installed in '$LLVM_DIR'"
 fi
-echo -----------------------------------
+
+echo -----------------------
 echo "clang version:"
 $LLVM_DIR/bin/clang --version
 echo --------------
-ldd $LLVM_DIR/bin/clang || true
-echo -----------------------------------
+
 echo "lld version:"
-$LLVM_DIR/bin/lld --version
-echo --------------
-ldd $LLVM_DIR/bin/lld || true
+if [ "$(uname)" == "Darwin" ]
+then
+	otool -L $LLVM_DIR/bin/clang || true
+	echo --------------
+	$LLVM_DIR/bin/lld --version
+	echo --------------
+	otool -L $LLVM_DIR/bin/lld || true
+elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]
+then
+	lld $LLVM_DIR/bin/clang || true
+	echo --------------
+	$LLVM_DIR/bin/lld --version
+	echo --------------
+	ldd $LLVM_DIR/bin/lld || true
+fi
+
 echo -----------------------------------
 echo "end at $(date +"%T")"
