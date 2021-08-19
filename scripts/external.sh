@@ -4,7 +4,7 @@
 set -e
 
 warning() {
-    printf '\n\033[1;33mWarning\033[0m: %s\n\n' "$1" 
+    printf '\n\033[1;33mWarning\033[0m: %s\n\n' "$1"
 }
 
 source ./scripts/set_env.sh
@@ -30,13 +30,5 @@ then
 	echo -------- compile toolhain ---------
 	$WASABI_ROOT_DIR/scripts/external/musl.sh | tee -a $outfile
 fi
-#$WASABI_ROOT_DIR/scripts/external/binaryen.sh | tee -a $outfile
-$WASABI_ROOT_DIR/scripts/external/wasmtime.sh | tee -a $outfile
-$WASABI_ROOT_DIR/scripts/external/wasmsysroot.sh | tee -a $outfile
-
-
-$WASABI_ROOT_DIR/scripts/external/sqlite.sh | tee -a $outfile
-$WASABI_ROOT_DIR/scripts/external/cjson.sh | tee -a $outfile
-
 
 echo "End $(date +"%T")"
