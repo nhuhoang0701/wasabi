@@ -25,6 +25,5 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/Microcube_worker_test.js        DESTIN
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/index.html     DESTINATION . )
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/favicon.ico     DESTINATION . )
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/CS_proto.js     DESTINATION . )
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/CS_test.js     DESTINATION . )
 
 include (${WASABI_ROOT_DIR}/scripts/cmake/wasabi.post.cmake)
