@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 project(cjson-install NONE)
 
+
 set(CJSON_VERSION 1.7.14)
 
 if(NOT EXISTS ${WASABI_EXTERNAL_DIR}/cJSON)
@@ -69,11 +70,13 @@ message(STATUS "cJSON is installed successfully")
 endif()
 else()
 message(STATUS "cJSON is already installed")
+
 endif()
 
 # Test file cJSON_test on specific platform
 message("Testing cJSON")
 execute_process(COMMAND ${WASABI_EXTERNAL_DIR}/wasmtime/wasmtime ${WASABI_INSTALL_DIR}/cJSON/bin/cJSON_test
+
 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 RESULT_VARIABLE cjson_test)
 
@@ -84,6 +87,7 @@ WORKING_DIRECTORY ${WASABI_EXTERNAL_DIR})
 message(FATAL_ERROR "cjson test doesn't work: ${cjson_test}")
 else()
 message(STATUS "cjson test passed")
+
 endif()
 
 message(STATUS "--------------------------------------------------------------")
