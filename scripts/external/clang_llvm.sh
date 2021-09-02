@@ -82,7 +82,7 @@ then
 	otool -L $LLVM_DIR/bin/lld || true
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]
 then
-	lld $LLVM_DIR/bin/clang || true
+	ldd $LLVM_DIR/bin/clang || true
 	echo --------------
 	$LLVM_DIR/bin/lld --version
 	echo --------------
