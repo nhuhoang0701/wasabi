@@ -59,7 +59,7 @@ echo -e "BINARYEN_DIR: " "\t\t'"$BINARYEN_DIR"'";
 # export WASMSDK_DIR=$WASABI_EXTERNAL_DIR/wasmsdk4compile
 # echo -e "WASMSDK_DIR: " "\t\t'"$WASMSDK_DIR"'";
 
-export WASMTIME=${WASMTIME:-$$WASABI_EXTERNAL_DIR/wasmtime/wasmtime}
+export WASMTIME=${WASMTIME:-$WASABI_EXTERNAL_DIR/wasmtime/wasmtime}
 echo -e "WASMTIME: " "\t\t'"$WASMTIME"'";
 export WASMTIME_BACKTRACE_DETAILS=1
 

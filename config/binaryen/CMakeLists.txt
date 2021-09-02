@@ -18,6 +18,9 @@ if(NOT EXISTS ${WASABI_EXTERNAL_DIR}/binaryen/install)
     FetchContent_Declare(
         binaryen
         URL https://github.com/WebAssembly/binaryen/releases/download/${BINARYEN_VERSION}/${BINARYEN_COMPRESSED_FILE}.tar.gz
+        DOWNLOAD_NO_EXTRACT TRUE
+        DOWNLOAD_DIR ${WASABI_EXTERNAL_DIR}/binaryen
+        DOWNLOAD_NAME binaryen.tar.gz
     )
 
     FetchContent_Populate(binaryen)
@@ -25,11 +28,12 @@ if(NOT EXISTS ${WASABI_EXTERNAL_DIR}/binaryen/install)
     message(STATUS "Binaryen source directory downloaded from git: " ${binaryen_SOURCE_DIR})
 
     # Copy to external folder (optional)
-    file(GLOB BINARYEN_ALL_FILES
-            ${binaryen_SOURCE_DIR}/*)
-    file(COPY ${BINARYEN_ALL_FILES}
-            DESTINATION ${WASABI_EXTERNAL_DIR}/binaryen/install
-    )
+    execute_process(COMMAND ${CMAKE_COMMAND} -E tar -Jfx "${WASABI_EXTERNAL_DIR}/binaryen/binaryen.tar.gz"
+                    WORKING_DIRECTORY ${WASABI_EXTERNAL_DIR}/binaryen)
+
+    execute_process( COMMAND ${CMAKE_COMMAND} -E rename "binaryen-${BINARYEN_VERSION}" "install"
+                    WORKING_DIRECTORY ${WASABI_EXTERNAL_DIR}/binaryen)
+
     message(STATUS "New binaryen directory: " ${WASABI_EXTERNAL_DIR}/binaryen/install)
     set(BINARYEN_DIR ${WASABI_EXTERNAL_DIR}/binaryen CACHE PATH "binaryen path" FORCE)
 else()
