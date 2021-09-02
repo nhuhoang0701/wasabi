@@ -24,7 +24,7 @@ elseif("${WASABI_OS}" STREQUAL "UNIX")
     set(LLVM_COMPRESSED_FILE clang+llvm-${LLVM_VERSION}-x86_64-linux-gnu-ubuntu-20.04)
 
 endif()
-set(LLVM_DIR ${WASABI_EXTERNAL_DIR}/${LLVM_COMPRESSED_FILE})
+set(LLVM_DIR $ENV{LLVM_DIR})
 
 # define wasabi_root_dir
 if (NOT DEFINED WASABI_ROOT_DIR AND DEFINED ENV{WASABI_ROOT_DIR})
