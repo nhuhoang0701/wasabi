@@ -10,9 +10,6 @@ elseif("${WASABI_OS}" STREQUAL "APPLE")
     set(WASMTIME_COMPRESSED_FILE wasmtime-${WASMTIME_VERSION}-x86_64-macos)
 endif()
 
-# Set environment variable
-set(ENV{WASMTIME} ${WASABI_EXTERNAL_DIR}/wasmtime/wasmtime)
-message(STATUS "WASMTIME=$ENV{WASMTIME}")
 
 # Download wasmtime if not already installed
 if (NOT EXISTS ${WASABI_EXTERNAL_DIR}/wasmtime/wasmtime)
@@ -20,16 +17,21 @@ if (NOT EXISTS ${WASABI_EXTERNAL_DIR}/wasmtime/wasmtime)
     FetchContent_Declare(
         wasmtime
         URL https://github.com/bytecodealliance/wasmtime/releases/download/${WASMTIME_VERSION}/${WASMTIME_COMPRESSED_FILE}.tar.xz
+        DOWNLOAD_NO_EXTRACT TRUE
+        DOWNLOAD_DIR ${WASABI_EXTERNAL_DIR}
+        DOWNLOAD_NAME wasmtime.tar.xz
     )
 
     FetchContent_Populate(wasmtime)
 
+# Extract in external folder
+    execute_process(COMMAND ${CMAKE_COMMAND} -E tar -Jfx "${WASABI_EXTERNAL_DIR}/wasmtime.tar.xz"
+                    WORKING_DIRECTORY ${WASABI_EXTERNAL_DIR})
 
-    file(GLOB WASMTIME_ALL_FILES
-            ${wasmtime_SOURCE_DIR}/*)
-    file(COPY ${WASMTIME_ALL_FILES}
-            DESTINATION ${WASABI_EXTERNAL_DIR}/wasmtime
-    )
+    execute_process(COMMAND ${CMAKE_COMMAND} -E rename ${WASMTIME_COMPRESSED_FILE} "wasmtime"
+COMMAND ${CMAKE_COMMAND} -E rm -f wasmtime.tar.xz
+                    WORKING_DIRECTORY ${WASABI_EXTERNAL_DIR})
+
 
     if (EXISTS ${WASABI_EXTERNAL_DIR}/wasmtime/wasmtime)
         message(STATUS "New wasmtime path: " ${WASABI_EXTERNAL_DIR}/wasmtime/wasmtime)
