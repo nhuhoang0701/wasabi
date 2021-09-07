@@ -1,18 +1,19 @@
-cmake_minimum_required(VERSION 3.16)
-
-project(sqlite-install NONE)
-
 # Build sqlite
-execute_process(COMMAND ${CMAKE} -B ${WASABI_BUILD_DIR_NAME}/sqlite
+set (SQLITE_COMMAND ${CMAKE} -B ${WASABI_BUILD_DIR_NAME}/sqlite
                         -S ${WASABI_EXTERNAL_DIR}/sqlite
-                        -G Ninja -DCMAKE_MAKE_PROGRAM=${NINJA}
+                        -G Ninja
+                        -DCMAKE_MAKE_PROGRAM=${NINJA}
                         -Wno-dev
-                        -DCMAKE_INSTALL_PREFIX=${WASABI_INSTALL_DIR}/sqlite
                         -DCMAKE_TOOLCHAIN_FILE=${CMAKE_SOURCE_DIR}/scripts/cmake/wasabi.cmake
-                        -DCMAKE_C_FLAGS=-fno-stack-protector
+                        -DCMAKE_C_FLAGS=-fno-stack-protector)
+list(APPEND SQLITE_COMMAND ${WASABI_CLI_VARS})
+# Override CMAKE_INSTALL_PREFIX of sqlite over default one passed in command
+list(APPEND SQLITE_COMMAND -DCMAKE_INSTALL_PREFIX=${WASABI_INSTALL_DIR}/sqlite)
 
+execute_process(COMMAND ${SQLITE_COMMAND}
                 WORKING_DIRECTORY ${WASABI_EXTERNAL_DIR}/sqlite
                 RESULT_VARIABLE result_build)
+
 
 # Check result of build step
 if(result_build)

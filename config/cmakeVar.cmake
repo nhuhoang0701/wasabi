@@ -1,6 +1,3 @@
-cmake_minimum_required(VERSION 3.16)
-
-project(cmake-set-vars NONE)
 
 set(WASABI_CMAKE_DIR ${WASABI_EXTERNAL_DIR}/cmake CACHE PATH "Path of local cmake directory" FORCE)
 message(TRACE "WASABI_CMAKE_DIR=" ${WASABI_CMAKE_DIR})

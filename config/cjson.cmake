@@ -1,6 +1,3 @@
-cmake_minimum_required(VERSION 3.16)
-
-project(cjson-install NONE)
 
 
 set(CJSON_VERSION 1.7.14)
@@ -29,21 +26,25 @@ COMMAND ${CMAKE_COMMAND} -E rm -f cjson.zip
 set(cjson ${WASABI_EXTERNAL_DIR}/cJSON CACHE PATH "cjson path" FORCE)
 
 # build cjson step
-execute_process(COMMAND ${CMAKE} -B ${WASABI_BUILD_DIR_NAME}/cjson
--G Ninja -DCMAKE_MAKE_PROGRAM=${NINJA}
--Wno-dev
--DCMAKE_INSTALL_PREFIX=${WASABI_INSTALL_DIR}/cJSON
--DCMAKE_TOOLCHAIN_FILE=${CMAKE_SOURCE_DIR}/scripts/cmake/wasabi.cmake
--DCMAKE_C_FLAGS=-fno-stack-protector
--DENABLE_CJSON_TEST=on
--DENABLE_CJSON_UTILS=off
--DBUILD_SHARED_LIBS=off
--DENABLE_VALGRIND=off
--DENABLE_SANITIZERS=off
--DENABLE_CUSTOM_COMPILER_FLAGS=off
+set(CJSON_COMMAND ${CMAKE} -B ${WASABI_BUILD_DIR_NAME}/cjson
+				-G Ninja -DCMAKE_MAKE_PROGRAM=${NINJA}
+				-Wno-dev
+				-DCMAKE_TOOLCHAIN_FILE=${CMAKE_SOURCE_DIR}/scripts/cmake/wasabi.cmake
+				-DCMAKE_C_FLAGS=-fno-stack-protector
+				-DENABLE_CJSON_TEST=on
+				-DENABLE_CJSON_UTILS=off
+				-DBUILD_SHARED_LIBS=off
+				-DENABLE_VALGRIND=off
+				-DENABLE_SANITIZERS=off
+				-DENABLE_CUSTOM_COMPILER_FLAGS=off)
 
-WORKING_DIRECTORY ${WASABI_EXTERNAL_DIR}/cJSON
-RESULT_VARIABLE result_build)
+list(APPEND CJSON_COMMAND ${WASABI_CLI_VARS})
+list(APPEND CJSON_COMMAND -DCMAKE_INSTALL_PREFIX=${WASABI_INSTALL_DIR}/cJSON)
+
+execute_process(COMMAND ${CJSON_COMMAND}
+
+				WORKING_DIRECTORY ${WASABI_EXTERNAL_DIR}/cJSON
+				RESULT_VARIABLE result_build)
 
 # Check cJSON build step
 if(result_build)
@@ -76,18 +77,16 @@ endif()
 # Test file cJSON_test on specific platform
 message("Testing cJSON")
 execute_process(COMMAND ${WASABI_EXTERNAL_DIR}/wasmtime/wasmtime ${WASABI_INSTALL_DIR}/cJSON/bin/cJSON_test
-
-WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-RESULT_VARIABLE cjson_test)
+				WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+				RESULT_VARIABLE cjson_test)
 
 # Check if cJSON test works
 if(cjson_test)
-execute_process(COMMAND rm -rf cJSON
-WORKING_DIRECTORY ${WASABI_EXTERNAL_DIR})
-message(FATAL_ERROR "cjson test doesn't work: ${cjson_test}")
+	execute_process(COMMAND rm -rf cJSON
+					WORKING_DIRECTORY ${WASABI_EXTERNAL_DIR})
+	message(FATAL_ERROR "cjson test doesn't work: ${cjson_test}")
 else()
-message(STATUS "cjson test passed")
-
+	message(STATUS "cjson test passed")
 endif()
 
 message(STATUS "--------------------------------------------------------------")
