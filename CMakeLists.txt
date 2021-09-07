@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.16)
 
+message(STATUS "- WASABI_BUILD_TYPE='${WASABI_BUILD_TYPE}'")
+message(STATUS "- WASABI_PLATFORM_TARGET='${WASABI_PLATFORM_TARGET}'")
+
 # Identify operating system on which the current machine is running
 if(UNIX AND NOT APPLE)
   set(WASABI_OS "UNIX" CACHE STRING "running os" FORCE)
@@ -8,8 +11,6 @@ elseif(APPLE)
 endif()
 
 # wasabi variables
-set(WASABI_BUILD_TYPE "Debug")
-set(WASABI_PLATFORM_TARGET "wasm")
 set(WASABI_BUILD_DIR_NAME ${CMAKE_SOURCE_DIR}/build/${WASABI_PLATFORM_TARGET}/${WASABI_BUILD_TYPE})
 set(WASABI_EXTERNAL_DIR ${CMAKE_SOURCE_DIR}/external)
 set(WASABI_INSTALL_DIR ${CMAKE_SOURCE_DIR}/install/${WASABI_PLATFORM_TARGET}/${WASABI_BUILD_TYPE})
