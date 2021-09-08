@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-message(STATUS "- WASABI_BUILD_TYPE='${WASABI_BUILD_TYPE}'")
+message(STATUS "- CMAKE_BUILD_TYPE='${CMAKE_BUILD_TYPE}'")
 message(STATUS "- WASABI_PLATFORM_TARGET='${WASABI_PLATFORM_TARGET}'")
 
 # Identify operating system on which the current machine is running
@@ -11,18 +11,14 @@ elseif(APPLE)
 endif()
 
 # set wasabi variables which cannot be empty string if they are not undefined
-if(NOT DEFINED WASABI_BUILD_TYPE)
-    set(WASABI_BUILD_TYPE "Debug")
-endif()
-
 if(NOT DEFINED WASABI_PLATFORM_TARGET)
     set(WASABI_PLATFORM_TARGET "wasm")
 endif()
 
 # set other variables
-set(WASABI_BUILD_DIR_NAME ${CMAKE_SOURCE_DIR}/build/${WASABI_PLATFORM_TARGET}/${WASABI_BUILD_TYPE})
+set(WASABI_BUILD_DIR_NAME ${CMAKE_SOURCE_DIR}/build/${WASABI_PLATFORM_TARGET}/${CMAKE_BUILD_TYPE})
 set(WASABI_EXTERNAL_DIR ${CMAKE_SOURCE_DIR}/external)
-set(WASABI_INSTALL_DIR ${CMAKE_SOURCE_DIR}/install/${WASABI_PLATFORM_TARGET}/${WASABI_BUILD_TYPE})
+set(WASABI_INSTALL_DIR ${CMAKE_SOURCE_DIR}/install/${WASABI_PLATFORM_TARGET}/${CMAKE_BUILD_TYPE})
 set(outfile ${WASABI_EXTERNAL_DIR}/output_ext.log)
 
 # LLVM variables
