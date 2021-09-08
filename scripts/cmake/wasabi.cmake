@@ -104,9 +104,10 @@ elseif ("${WASABI_PLATFORM_TARGET}" STREQUAL "linux")
 	set(CMAKE_EXE_LINKER_FLAGS    "-fuse-ld=lld")
 	set(CMAKE_SHARED_LINKER_FLAGS    "-fuse-ld=lld")
 
-	set(CMAKE_CXX_FLAGS           "${CMAKE_CXX_FLAGS} -stdlib=libc++  -I${LLVM_DIR}/include/c++/v1")
-	set(CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++ -rtlib=compiler-rt -stdlib=libc++ -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libunwind.a -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libc++abi.a")
-	set(CMAKE_SHARED_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++ -rtlib=compiler-rt -stdlib=libc++ -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libunwind.a -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libc++abi.a")
+	#To use llvm libc++
+	#set(CMAKE_CXX_FLAGS           "${CMAKE_CXX_FLAGS} -stdlib=libc++  -I${LLVM_DIR}/include/c++/v1")
+	#set(CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++ -rtlib=compiler-rt -stdlib=libc++ -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libunwind.a -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libc++abi.a")
+	#set(CMAKE_SHARED_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++ -rtlib=compiler-rt -stdlib=libc++ -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libunwind.a -L${LLVM_DIR}/lib ${LLVM_DIR}/lib/libc++abi.a")
 
 	set(CMAKE_CXX_FLAGS           "${CMAKE_CXX_FLAGS} -gsplit-dwarf")
 	set(CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} -gsplit-dwarf")
