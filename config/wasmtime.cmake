@@ -1,4 +1,3 @@
-cmake_minimum_required(VERSION 3.16)
 
 
 set(WASMTIME_VERSION v0.22.0)

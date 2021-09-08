@@ -2,7 +2,27 @@ message (STATUS "--------------------------------------------------------------"
 message (STATUS "-- wasabi.cmake toolchain")
 
 ###########################################
-# Variables
+# Toolchain file is executed multiple times with unpredictable behavior of reading cached variables,
+# this function is used to overcome it
+macro(set_temp_var var)
+	if(${var})
+		# The first time toolchain file is executed, cached variable is read by toolchain file, we
+		# save that variable in a temporary env. variable
+		set(ENV{_${var}} ${${var}})
+	else()
+		# In the time that toolchain file doesn't read cached variable, we set that variable again
+		# by using temporary env. variable that is set in the first execution of toolchain file
+		set(${var} $ENV{_${var}})
+	endif()
+endmacro()
+
+set_temp_var(WASABI_PLATFORM_TARGET)
+set_temp_var(WASMTIME)
+set_temp_var(LLVM_DIR)
+set_temp_var(SYSROOT_WASI_DIR)
+set_temp_var(SYSROOT_LINUX_DIR)
+
+
 if(DEFINED WASABI_PLATFORM_TARGET)
 	message(STATUS "- WASABI_PLATFORM_TARGET='${WASABI_PLATFORM_TARGET}'")
 elseif (DEFINED ENV{WASABI_PLATFORM_TARGET})
