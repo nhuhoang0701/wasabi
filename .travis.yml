@@ -7,7 +7,7 @@ language:
 compiler:
   clang
 env:
-  WASABI_PLATFORM_TARGET="linux"
+  WASABI_PLATFORM_TARGET="wasm"
   WASABI_BUILD_TYPE="Debug"
 script:
   - ./wasabi.sh
