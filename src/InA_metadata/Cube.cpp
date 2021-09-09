@@ -3,10 +3,10 @@
 #include "InA_metadata/Member.h"
 #include "common/data.h"
 
-#include <InA_query_model/DataSource.h>
-#include <metadata_enrichment/Tables.h>
+#include "InA_query_model/DataSource.h"
+#include "metadata_enrichment/Tables.h"
 
-#include <common/Log.h>
+#include "common/Log.h"
 
 #include <memory>
 #include <iostream>
@@ -289,7 +289,7 @@ namespace ina::metadata
          for(const auto& dimension : m_dimensions)
             if(dimension && dimension->getName() == name)
                 return true;
-         
+
          return false;
      }
 
@@ -303,7 +303,7 @@ namespace ina::metadata
          for(const auto& dimension : m_dimensions)
             if(dimension->getName() == name)
                 return *dimension;
-         
+
          throw std::runtime_error("Cube::getDimension : dimension not found: " + name);
      }
 
