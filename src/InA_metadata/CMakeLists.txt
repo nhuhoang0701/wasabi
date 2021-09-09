@@ -12,7 +12,7 @@ project(InA_metadata VERSION 1.0)
 add_library(InA_metadata Member.cpp MemberWriter.cpp Attribute.cpp AttributeWriter.cpp Dimension.cpp DimensionWriter.cpp Cube.cpp CubeWriter.cpp)
 set_target_properties(InA_metadata PROPERTIES PUBLIC_HEADER Attribute.h Dimension.h Member.h)
 
-target_link_libraries(InA_metadata PUBLIC calculator exceptions)
+target_link_libraries(InA_metadata PUBLIC calculator exceptions metadata_enrichment)
 target_link_directories(InA_metadata PUBLIC ${WASABI_LIBS})
 
 ################################################
@@ -25,7 +25,7 @@ target_link_directories(InA_metadata PUBLIC ${WASABI_LIBS})
 #add_test(NAME InA_metadata COMMAND InA_metadata_test)
 
 ## [installation]
-install(TARGETS InA_metadata 
+install(TARGETS InA_metadata
 		LIBRARY DESTINATION ${WASABI_LIBS}
 		PUBLIC_HEADER DESTINATION ${WASABI_INCLUDES})
 
