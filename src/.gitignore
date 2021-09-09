@@ -54,3 +54,6 @@ _deps
 
 # Tests output
 *.out.txt
+
+# vscode
+.vscode

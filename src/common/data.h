@@ -2,6 +2,7 @@
 
 #include <string>
 #include <variant>
+#include <stdexcept>
 
 namespace common
 {
@@ -19,7 +20,7 @@ namespace common
 		Value& operator =(const double& rhs) { m_data = rhs; return *this;};
 
 		bool operator ==(const Value& rhs) const { return m_data == rhs.m_data;};
-		    
+
 		bool isDouble() const {return std::holds_alternative<double>(m_data);}
 		double getDouble() const
 		{
@@ -29,7 +30,7 @@ namespace common
 			}
 			throw std::runtime_error("getDouble: Not a double");
 		}
-		
+
 		bool isString() const {return std::holds_alternative<std::string>(m_data);}
 		const std::string getString() const
 		{
@@ -48,7 +49,7 @@ namespace common
 	{
 		return ( lhs.m_data < rhs.m_data );
 	}
-	
+
     inline std::ostream& operator<<(std::ostream& stream, const Value& value)
 	{
 		if(value.isDouble())
