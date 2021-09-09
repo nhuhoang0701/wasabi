@@ -76,9 +76,15 @@ endif()
 
 # Test file cJSON_test on specific platform
 message("Testing cJSON")
-execute_process(COMMAND ${WASABI_EXTERNAL_DIR}/wasmtime/wasmtime ${WASABI_INSTALL_DIR}/cJSON/bin/cJSON_test
-				WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-				RESULT_VARIABLE cjson_test)
+if("${WASABI_PLATFORM_TARGET}" STREQUAL "wasm")
+	execute_process(COMMAND ${WASABI_EXTERNAL_DIR}/wasmtime/wasmtime ${WASABI_INSTALL_DIR}/cJSON/bin/cJSON_test
+					WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+					RESULT_VARIABLE cjson_test)
+elseif("${WASABI_PLATFORM_TARGET}" STREQUAL "linux")
+	execute_process(COMMAND  ${WASABI_INSTALL_DIR}/cJSON/bin/cJSON_test
+					WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+					RESULT_VARIABLE cjson_test)
+endif()
 
 # Check if cJSON test works
 if(cjson_test)
