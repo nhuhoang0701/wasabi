@@ -152,7 +152,7 @@ void TestChar_C()
 	CPPUNIT_ASSERT_EQUAL_STR(str_STATICSTR_c('c'), "cHIS IS A STATIC CHAR*");
 	// CPPUNIT_ASSERT_EQUAL_STR(str_LOCALSTR_c('c'), "cHIS IS A LOCAL CHAR*");
 	C_WASABI_CHECK_EQUAL(c_ITOCHAR_i(8), '8');
-	char* pC = "STRING TO LOWER";
+	char pC[] = "STRING TO LOWER";
 	CPPUNIT_ASSERT_EQUAL_STR(str_TOLOWER_str(pC), "string to lower");
 	void* pV = (void*)pC;
 	CPPUNIT_ASSERT_EQUAL_STR(str_TOLOWER_pv(pV), "string to lower");
