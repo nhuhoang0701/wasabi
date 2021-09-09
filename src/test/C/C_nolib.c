@@ -46,12 +46,12 @@ EXPORT const char* str_STATICSTR_c(char firstChar)
 	return staticstr;
 }
 
-EXPORT const char* str_LOCALSTR_c(char firstChar)
-{
-	char localstr[] = "THIS IS A LOCAL CHAR*";
-	localstr[0] = firstChar;
-	return localstr;
-}
+// EXPORT const char* str_LOCALSTR_c(char firstChar)
+// {
+// 	char localstr[] = "THIS IS A LOCAL CHAR*";
+// 	localstr[0] = firstChar;
+// 	return localstr;
+// }
 
 EXPORT char c_ITOCHAR_i(unsigned int i)
 {
