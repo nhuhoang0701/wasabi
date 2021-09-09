@@ -1,9 +1,9 @@
 #include <test_tools/TestAssert.h>
 
 //TODO: Centralyze
-#define EXPORT 
+#define EXPORT
 
-EXPORT static char* staticstr = "THIS IS A STATIC CHAR*";
+EXPORT static char staticstr[] = "THIS IS A STATIC CHAR*";
 
 
 /*********************************************
@@ -48,7 +48,7 @@ EXPORT const char* str_STATICSTR_c(char firstChar)
 
 EXPORT const char* str_LOCALSTR_c(char firstChar)
 {
-	char* localstr = "THIS IS A LOCAL CHAR*";
+	char localstr[] = "THIS IS A LOCAL CHAR*";
 	localstr[0] = firstChar;
 	return localstr;
 }
@@ -124,7 +124,7 @@ EXPORT ptr_on_i_FCT_i pv_getFctPtr_str(const char* fctName)
 	{
 		return i_CALLFCT_I_ADD_I_i;
 	}
-	
+
 	return 0;
 }
 
@@ -185,6 +185,6 @@ int main()
 	TestNumericalOperator();
 	TestChar_C();
 	Test_CFunctionPointer();
-	
+
 	return TEST_HAVEERROR();
 }
