@@ -6,9 +6,12 @@ language:
   cpp
 compiler:
   clang
+env:
+  WASABI_PLATFORM_TARGET="linux"
+  WASABI_BUILD_TYPE="Debug"
 script:
   - ./wasabi.sh
   - source ./scripts/set_env.sh
-  - ./external/cmake/bin/cmake -S. -Bbuild/linux/Debug -GNinja -DWASABI_ROOT_DIR=${TRAVIS_BUILD_DIR} -DWASMTIME=${TRAVIS_BUILD_DIR}/external/wasmtime/wasmtime -DSYSROOT_WASI_DIR=${TRAVIS_BUILD_DIR}/external/sysroot/wasi-sysroot -DSYSROOT_LINUX_DIR=${TRAVIS_BUILD_DIR}/external/sysroot/linux-sysroot -DLLVM_DIR=${TRAVIS_BUILD_DIR}/external/clang+llvm-11.0.0-x86_64-linux-gnu-ubuntu-20.04 -DCMAKE_MAKE_PROGRAM=${TRAVIS_BUILD_DIR}/external/ninja/ninja -DCMAKE_INSTALL_PREFIX:PATH=${TRAVIS_BUILD_DIR}/install/linux/Debug/ -DWASABI_PLATFORM_TARGET=linux -DCMAKE_BUILD_TYPE=Debug
-  - ./external/cmake/bin/cmake --build build/linux/Debug --target install
-  - cd build/linux/Debug && ${TRAVIS_BUILD_DIR}/external/cmake/bin/ctest -j8 -T test --output-on-failure
+  - ./external/cmake/bin/cmake -S. -Bbuild/${WASABI_PLATFORM_TARGET}/${WASABI_BUILD_TYPE} -GNinja -DWASABI_ROOT_DIR=${TRAVIS_BUILD_DIR} -DWASMTIME=${TRAVIS_BUILD_DIR}/external/wasmtime/wasmtime -DSYSROOT_WASI_DIR=${TRAVIS_BUILD_DIR}/external/sysroot/wasi-sysroot -DSYSROOT_LINUX_DIR=${TRAVIS_BUILD_DIR}/external/sysroot/linux-sysroot -DLLVM_DIR=${TRAVIS_BUILD_DIR}/external/clang+llvm-11.0.0-x86_64-linux-gnu-ubuntu-20.04 -DCMAKE_MAKE_PROGRAM=${TRAVIS_BUILD_DIR}/external/ninja/ninja -DCMAKE_INSTALL_PREFIX:PATH=${TRAVIS_BUILD_DIR}/install/${WASABI_PLATFORM_TARGET}/${WASABI_BUILD_TYPE}/ -DWASABI_PLATFORM_TARGET=${WASABI_PLATFORM_TARGET} -DCMAKE_BUILD_TYPE=${WASABI_BUILD_TYPE}
+  - ./external/cmake/bin/cmake --build build/${WASABI_PLATFORM_TARGET}/${WASABI_BUILD_TYPE} --target install
+  - cd build/${WASABI_PLATFORM_TARGET}/${WASABI_BUILD_TYPE} && ${TRAVIS_BUILD_DIR}/external/cmake/bin/ctest -j8 -T test --output-on-failure
